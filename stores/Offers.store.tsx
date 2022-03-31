@@ -29,38 +29,37 @@ export class OffersStore {
     // )
   }
 
-  // private filterShownNFTs(offers: any[], collectionFilters: string[]): any[] {
-  //   const prefiltered =
-  //     collectionFilters.length > 0 ? offers.filter((item) => collectionFilters.includes(item.collection)) : offers
-  //   const filtered = prefiltered.filter((item) => item.account.state === 0)
+  private filterShownNFTs(offers: any[], collectionFilters: string[]): any[] {
+    const prefiltered =
+      collectionFilters.length > 0 ? offers.filter((item) => collectionFilters.includes(item.collection)) : offers
+    const filtered = prefiltered.filter((item) => item.account.state === 0)
 
-  //   return filtered
-  // }
-
-  // questionable
-  // private sliceShownNFTs(offers: any[], currentPage: number, itemsPerPage: number): any[] {
-  //   const start = (currentPage - 1) * itemsPerPage
-  //   const end = start + (itemsPerPage < offers.length ? itemsPerPage : offers.length)
-
-  //   const sliced = offers.slice(start, end)
-
-  //   return sliced
-  // }
+    return filtered
+  }
 
   // questionable
-  // @action.bound refreshShownNFTs(): void {
-  //   try {
-  //     const filteredSubOffers = this.filterShownNFTs(this.offers, this.collectionFilters)
-  //     const sortedSubOffers = sortNftsByField(filteredSubOffers, 'name')
-  //     const slicedSubOffers = this.sliceShownNFTs(sortedSubOffers, this.currentPage, this.itemsPerPage)
+  private sliceShownNFTs(offers: any[], currentPage: number, itemsPerPage: number): any[] {
+    const start = (currentPage - 1) * itemsPerPage
+    const end = start + (itemsPerPage < offers.length ? itemsPerPage : offers.length)
 
-  //     this.setMaxPage(Math.ceil(filteredSubOffers.length / this.itemsPerPage))
-  //     this.setFilteredOffers(slicedSubOffers)
-  //   } catch (e) {
-  //     // eslint-disable-next-line no-console
-  //     console.log(e)
-  //   }
-  // }
+    const sliced = offers.slice(start, end)
+
+    return sliced
+  }
+
+  // questionable
+  @action.bound refreshShownNFTs(): void {
+    try {
+      // const filteredSubOffers = this.filterShownNFTs(this.offers, this.collectionFilters)
+      // const sortedSubOffers = sortNftsByField(filteredSubOffers, 'name')
+      // const slicedSubOffers = this.sliceShownNFTs(sortedSubOffers, this.currentPage, this.itemsPerPage)
+      // this.setMaxPage(Math.ceil(filteredSubOffers.length / this.itemsPerPage))
+      // this.setFilteredOffers(slicedSubOffers)
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.log(e)
+    }
+  }
 
   @action.bound fetchCollectionForNfts = flow(function* (this: OffersStore) {
     this.resetNFTCollectionsCollections()
@@ -80,7 +79,7 @@ export class OffersStore {
 
       this.buildCollectionFilters()
 
-      console.log(offers)
+      console.log('offers: ', offers)
       this.setOffersData(offers)
     } catch (e) {
       // eslint-disable-next-line no-console
@@ -143,11 +142,11 @@ export class OffersStore {
   @action.bound setCollectionFilters = (value: string | string[]): void => {
     this.collectionFilterSelected = value
     // if (Array.isArray(value)) {
-    //   // this.collectionFilters = value
+    // this.collectionFilters = value
     // } else if (this.collectionFilters.includes(value)) {
-    //   // this.collectionFilters = this.collectionFilters.filter((f) => f !== value)
+    // this.collectionFilters = this.collectionFilters.filter((f) => f !== value)
     // } else {
-    //   this.collectionFilters.push(value)
+    // this.collectionFilters.push(value)
     // }
 
     // if (value !== this.collectionFilterSelected) {
@@ -157,9 +156,11 @@ export class OffersStore {
   }
 
   @action.bound buildCollectionFilters = () => {
+    console.log('nftCollections: ', this.nftCollections)
     this.collectionFilters = this.nftCollections.map((collection) => {
       return { label: collection, value: collection }
     })
+    console.log('collection filters data: ', this.collectionFilters)
   }
 
   @action.bound setOffersData(data: any[]): void {
