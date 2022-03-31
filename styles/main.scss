@@ -1,11 +1,40 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&family=Red+Hat+Display:wght@400;700&display=swap');
+
 @import './normalize';
 @import './mixins';
 @import './variables';
 @import './themes';
 
 @import './icons';
+@import './tooltip';
 @import './walletAdapter';
+@import './layout';
+@import './layoutTop';
+@import './userToolbox';
+
+* {
+  box-sizing: border-box;
+}
 
 body {
-  background-color: rebeccapurple;
+  @include theme-aware('background-color', 'color-background');
+  @include theme-aware('color', 'color-primary');
+  font-family: 'Open Sans', sans-serif;
+  box-sizing: border-box;
+  padding: 0px;
+  margin: 0px;
+  width: 100%;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: 'Red Hat Display';
+  @include theme-aware('color', 'color-primary');
+}
+
+a {
+  @include theme-aware('color', 'color-primary');
+  transition: color 0.5s;
 }

@@ -44,7 +44,7 @@ const Home: NextPage = observer(() => {
 
   return (
     <StoreDataAdapter>
-      <div className='offers'>
+      <div className='page offers'>
         <Head>
           <title>{localesHome.pageTitle}</title>
 

@@ -1,0 +1,35 @@
+.layout-top {
+  display: flex;
+  width: $pg-col;
+  margin-top: 50px;
+  justify-content: space-between;
+}
+
+.top-menu {
+  display: flex;
+  margin: 25px 0 0;
+  padding: 0;
+  list-style: none;
+
+  li a {
+    @include theme-aware('color', 'color-content');
+    text-decoration: none;
+    font-size: $tp-lg;
+    padding: 4px 8px;
+    margin-right: 12px;
+    transition: background 0.3s ease-in-out, color 0.3s ease-in-out;
+
+    &:hover {
+      @include theme-aware('background-color', 'color-accent');
+    }
+
+    &.active {
+      @include theme-aware('background-color', 'color-primary');
+      @include theme-aware('color', 'color-content');
+    }
+  }
+
+  li:last-child a {
+    margin-right: 0;
+  }
+}

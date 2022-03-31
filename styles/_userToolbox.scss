@@ -1,0 +1,26 @@
+.user-toolbox {
+  display: flex;
+  margin-top: 14px;
+}
+
+.theme-switcher {
+  margin: 13px 0 0 10px;
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  outline: none;
+  border: none;
+  border-radius: $brd-rds-lg;
+  -moz-box-shadow: 1px 1px 5px 0px rgba(0, 0, 0, 0.75);
+  box-shadow: 1px 1px 5px 0px rgba(0, 0, 0, 0.75);
+  transition: background 0.5s ease-in-out;
+  cursor: pointer;
+
+  &--dark {
+    @include theme-aware('background-color', 'color-primary');
+  }
+
+  &--light {
+    @include theme-aware('background-color', 'color-secondary');
+  }
+}

@@ -1,20 +1,20 @@
 $themes: (
   light: (
-    background: #ebe8fa,
-    primary: #e00a7f,
-    secondary: #2e13d2,
-    accent: #b4ace2,
-    accentDim: #eae7fb,
-    accentDark: #ffffff,
-    content: #210d48
+    color-background: #ebe8fa,
+    color-primary: #e00a7f,
+    color-secondary: #2e13d2,
+    color-accent: #b4ace2,
+    color-accentDim: #eae7fb,
+    color-accentDark: #ffffff,
+    color-content: #210d48
   ),
   dark: (
-    background: #210d48,
-    primary: #e00a7f,
-    secondary: #9e6cff,
-    accent: #482688,
-    accentDim: #402a6b,
-    accentDark: #13072b,
-    content: #ffffff
+    color-background: #210d48,
+    color-primary: #e00a7f,
+    color-secondary: #9e6cff,
+    color-accent: #482688,
+    color-accentDim: #402a6b,
+    color-accentDark: #13072b,
+    color-content: #ffffff
   )
 );
