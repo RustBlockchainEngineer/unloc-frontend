@@ -1,7 +1,6 @@
-import { FC, useMemo, createContext } from 'react'
+import { FC, useMemo, createContext, useEffect } from 'react'
 import type { AppProps } from 'next/app'
 
-// Wallet Integration
 import { WalletAdapterNetwork } from '@solana/wallet-adapter-base'
 import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react'
 import { WalletModalProvider } from '@solana/wallet-adapter-react-ui'
@@ -16,13 +15,14 @@ import {
 } from '@solana/wallet-adapter-wallets'
 import { clusterApiUrl } from '@solana/web3.js'
 
+import { config } from '../constants/config'
 import { rootStore } from '../stores/Root.store'
 import '../styles/main.scss'
 
 export const StoreContext = createContext(rootStore)
 
 const Unloc: FC<AppProps> = ({ Component, pageProps }) => {
-  const network = WalletAdapterNetwork.Devnet // base this on config
+  const network = config.devnet ? WalletAdapterNetwork.Devnet : WalletAdapterNetwork.Mainnet
   const endpoint = useMemo(() => clusterApiUrl(network), [network])
   const wallets = useMemo(
     () => [
@@ -36,6 +36,11 @@ const Unloc: FC<AppProps> = ({ Component, pageProps }) => {
     ],
     [network]
   )
+
+  useEffect(() => {
+    document.documentElement.className = ''
+    document.documentElement.classList.add(`theme-dark`)
+  }, [])
 
   return (
     <ConnectionProvider endpoint={endpoint}>

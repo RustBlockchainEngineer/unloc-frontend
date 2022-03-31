@@ -1,3 +1,9 @@
+@import './normalize';
+@import './mixins';
+@import './variables';
+@import './themes';
+
+@import './icons';
 @import './walletAdapter';
 
 body {

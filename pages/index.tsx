@@ -1,11 +1,47 @@
+import { useContext, useEffect, useState } from 'react'
 import type { NextPage } from 'next'
 import Head from 'next/head'
+import { observer } from 'mobx-react'
 
+import { StoreContext } from './_app'
 import { localesHome } from '../constants/locales'
 import { StoreDataAdapter } from '../components/storeDataAdapter'
 import { LayoutTop } from '../components/layout/layoutTop'
+import { OffersTop } from '../components/offersPage/offersTop'
 
-const Home: NextPage = () => {
+const Home: NextPage = observer(() => {
+  const store = useContext(StoreContext)
+  const { wallet, connected } = store.Wallet
+
+  const [loading, setLoading] = useState(true)
+
+  const handleOffers = async () => {
+    try {
+      if (connected && wallet) {
+        setLoading(true)
+        await store.Offers.fetchOffers()
+        await store.Offers.fetchCollectionForNfts()
+        setLoading(false)
+      }
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
+  useEffect(() => {
+    if (wallet && connected) {
+      handleOffers()
+    }
+  }, [wallet, connected])
+
+  useEffect(() => {
+    console.log('collections: ', store.Offers.nftCollections)
+  }, [store.Offers.nftCollections])
+
+  useEffect(() => {
+    console.log('offers: ', store.Offers.offers, store.Offers.offers.length)
+  }, [store.Offers.offers])
+
   return (
     <StoreDataAdapter>
       <div className='offers'>
@@ -34,11 +70,11 @@ const Home: NextPage = () => {
 
         <main>
           <LayoutTop />
-          <h1>Offers</h1>
+          <OffersTop />
         </main>
       </div>
     </StoreDataAdapter>
   )
-}
+})
 
 export default Home

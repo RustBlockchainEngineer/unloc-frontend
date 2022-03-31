@@ -1,0 +1,158 @@
+.icon {
+  display: inline-block;
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+
+.icon--interactive {
+  cursor: pointer;
+}
+
+.icon--nft {
+  background-image: url('/icons/nft-icon.svg');
+}
+
+.icon--share {
+  background-image: url('/icons/share-icon.svg');
+
+  &--light {
+    background-image: url('/icons/share-light.svg');
+  }
+
+  &--dark {
+    background-image: url('/icons/share-dark.svg');
+  }
+}
+
+.icon--eye {
+  background-image: url('/icons/eye-icon.svg');
+}
+
+.icon--copy {
+  background-image: url('/icons/copy-icon.svg');
+}
+
+.icon--cross {
+  background-image: url('/icons/cross-icon.svg');
+}
+.icon--cross--black {
+  background-image: url('/icons/cross-icon-black.svg');
+  background-size: contain;
+}
+.icon--cross--primary {
+  background-image: url('/icons/cross-icon-primary.svg');
+  background-size: contain;
+}
+
+.icon--arrow {
+  &--left {
+    background-image: url('/icons/arrow-left.svg');
+  }
+
+  &--right {
+    background-image: url('/icons/arrow-right.svg');
+  }
+}
+
+.icon--grid {
+  &--light {
+    background-image: url('/icons/display-grid-light.svg');
+  }
+
+  &--dark {
+    background-image: url('/icons/display-grid-dark.svg');
+  }
+}
+
+.icon--table {
+  &--light {
+    background-image: url('/icons/display-table-light.svg');
+  }
+
+  &--dark {
+    background-image: url('/icons/display-table-dark.svg');
+  }
+}
+
+.icon--caret {
+  &--down {
+    background-image: url('/icons/caret-down.svg');
+  }
+
+  &--up {
+    background-image: url('/icons/caret-up.svg');
+  }
+}
+
+.icon--fb {
+  background-image: url('/icons/facebook-light.svg');
+}
+
+.icon--twitter {
+  background-image: url('/icons/twitter-light.svg');
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+.icon--discord {
+  background-image: url('/icons/discord-icon.svg');
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+.icon--telegram {
+  background-image: url('/icons/telegram-icon.svg');
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+.icon--twitter--circle {
+  background-image: url('/icons/twitter-circle.svg');
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+.icon--discord--circle {
+  background-image: url('/icons/discord-circle.svg');
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+.icon--telegram--circle {
+  background-image: url('/icons/telegram-circle.svg');
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+.icon--twitter--small {
+  background-image: url('/icons/twitter-icon.svg');
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+.icon--tn {
+  width: 12px;
+  height: 12px;
+}
+
+.icon--vs {
+  width: 15px;
+  height: 15px;
+}
+
+.icon--sm {
+  width: 25px;
+  height: 25px;
+}
+.icon--smd {
+  width: 40px;
+  height: 40px;
+}
+.icon--md {
+  width: 50px;
+  height: 50px;
+}
+
+.icon--lg {
+  width: 75px;
+  height: 75px;
+}
