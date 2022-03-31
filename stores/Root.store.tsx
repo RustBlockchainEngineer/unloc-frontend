@@ -1,8 +1,4 @@
 import { WalletStore } from './Wallet.store'
-import { OffersStore } from './Offers.store'
-import { SingleOfferStore } from './SingleOffer.store'
-import { UserWalletStore } from './UserWallet.store'
-import { LoanActionsStore } from './LoanActions.store'
 
 export class RootStore {
   Wallet: WalletStore
