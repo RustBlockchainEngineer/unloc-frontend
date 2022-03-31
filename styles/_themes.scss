@@ -2,19 +2,29 @@ $themes: (
   light: (
     color-background: #ebe8fa,
     color-primary: #e00a7f,
+    color-primary-dark: #ad1468,
     color-secondary: #2e13d2,
+    color-secondary-dark: #24119a,
     color-accent: #b4ace2,
     color-accentDim: #eae7fb,
     color-accentDark: #ffffff,
-    color-content: #210d48
+    color-content: #210d48,
+    color-label: #ffffff,
+    bg-home: url('/home_bg.png'),
+    bg-home-bottom: url('/home_bg_bottom.png')
   ),
   dark: (
     color-background: #210d48,
     color-primary: #e00a7f,
+    color-primary-dark: #ad1468,
     color-secondary: #9e6cff,
+    color-secondary-dark: #6c48b4,
     color-accent: #482688,
     color-accentDim: #402a6b,
     color-accentDark: #13072b,
-    color-content: #ffffff
+    color-content: #ffffff,
+    color-label: #ffffff,
+    bg-home: url('/home_bg.png'),
+    bg-home-bottom: url('/home_bg_bottom.png')
   )
 );

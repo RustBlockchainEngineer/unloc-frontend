@@ -1,0 +1,52 @@
+.btn {
+  display: flex;
+  outline: none;
+  border: none;
+  font-size: $tp-md;
+  transition: all 0.3s ease-in-out;
+  cursor: pointer;
+
+  &--md {
+    height: 38px;
+    line-height: 38px;
+    padding: 0 30px;
+    font-size: $tp-md;
+    border-radius: $brd-rds-lg;
+
+    .icon {
+      margin-top: 6px;
+      margin-right: 5px;
+    }
+  }
+
+  &--primary {
+    @include theme-aware('background-color', 'color-primary');
+    @include theme-aware('color', 'color-label');
+
+    &:hover {
+      @include theme-aware('background-color', 'color-primary-dark');
+    }
+  }
+
+  &--secondary {
+    @include theme-aware('background-color', 'color-secondary');
+    @include theme-aware('color', 'color-label');
+
+    &:hover {
+      @include theme-aware('background-color', 'color-secondary-dark');
+    }
+  }
+
+  &--bordered {
+    background-color: transparent;
+    border: 1px solid;
+    @include theme-aware('border-color', 'color-primary');
+    @include theme-aware('background-color', 'color-background');
+    @include theme-aware('color', 'color-primary');
+
+    &:hover {
+      @include theme-aware('background-color', 'color-primary-dark');
+      @include theme-aware('color', 'color-label');
+    }
+  }
+}

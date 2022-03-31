@@ -6,10 +6,11 @@ import { LayoutTop } from '../../components/layout/layoutTop'
 const MyOffers: NextPage = () => {
   return (
     <StoreDataAdapter>
-      <div className='my-offers'>
+      <div className='page my-offers'>
         <LayoutTop />
         <h2>My Offers Page</h2>
       </div>
+      <div className='home-bg-bottom' />
     </StoreDataAdapter>
   )
 }
