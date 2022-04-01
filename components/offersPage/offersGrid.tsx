@@ -3,19 +3,27 @@ import { observer } from 'mobx-react'
 
 import { StoreContext } from '../../pages/_app'
 import { OffersGridItem } from './offersGridItem'
+import { currencyMints } from '../../constants/currency'
 
 export const OffersGrid = observer(() => {
   const store = useContext(StoreContext)
   const { offers } = store.Offers
 
-  useEffect(() => {
-    console.log(offers)
-  }, [])
   return (
     <div className='offers-grid'>
       {offers.map((offer) => {
         const offerKey = offer.account.offer.toBase58()
-        return <OffersGridItem key={offerKey} subOfferKey={offerKey} image={offer.nftMeta.arweaveMetadata.image} />
+        return (
+          <OffersGridItem
+            key={offerKey}
+            subOfferKey={offer.publicKey.toBase58()}
+            image={offer.nftMeta.arweaveMetadata.image}
+            amount={offer.account.offerAmount.toNumber() / 1000000}
+            apr={offer.account.aprNumerator.toNumber()}
+            duration={Math.floor(offer.account.loanDuration.toNumber() / (3600 * 24))}
+            currency={currencyMints[offer.account.offerMint.toBase58()]}
+          />
+        )
       })}
     </div>
   )
