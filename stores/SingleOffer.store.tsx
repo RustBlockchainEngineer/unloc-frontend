@@ -46,10 +46,11 @@ export class SingleOfferStore {
 
   @action.bound fetchSubOffers = flow(function* (this: SingleOfferStore, id: string) {
     const subOfferKey = new anchor.web3.PublicKey(id)
-    const _subOfferData: any = yield getSubOffer(subOfferKey)
-    _subOfferData.publicKey = subOfferKey
+    console.log(subOfferKey.toString())
+    // const _subOfferData: any = yield getSubOffer(subOfferKey)
+    // _subOfferData.publicKey = subOfferKey
 
-    const data = yield getSubOfferList(undefined, _subOfferData?.nftMint, undefined)
+    const data = yield getSubOfferList(undefined, new PublicKey(id), undefined)
 
     const loansArr: Array<LoanInterface> = []
     data.forEach(
