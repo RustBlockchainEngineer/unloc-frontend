@@ -1,12 +1,13 @@
 import { WalletStore } from './Wallet.store'
 import { OffersStore } from './Offers.store'
 import { InterfaceStore } from './Interface.store'
+import { SingleOfferStore } from './SingleOffer.store'
 
 export class RootStore {
   Wallet: WalletStore
   Offers: OffersStore
   Interface: InterfaceStore
-  // SingleOffer: SingleOfferStore
+  SingleOffer: SingleOfferStore
   // UserWallet: UserWalletStore
   // LoanActions: LoanActionsStore
 
@@ -14,7 +15,7 @@ export class RootStore {
     this.Wallet = new WalletStore(this)
     this.Offers = new OffersStore(this)
     this.Interface = new InterfaceStore(this)
-    // this.SingleOffer = new SingleOfferStore(this)
+    this.SingleOffer = new SingleOfferStore(this)
     // this.UserWallet = new UserWalletStore(this)
     // this.LoanActions = new LoanActionsStore(this)
   }

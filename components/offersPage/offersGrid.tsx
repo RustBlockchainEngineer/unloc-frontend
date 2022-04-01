@@ -12,11 +12,12 @@ export const OffersGrid = observer(() => {
   return (
     <div className='offers-grid'>
       {offers.map((offer) => {
+        console.log(offer)
         const offerKey = offer.account.offer.toBase58()
         return (
           <OffersGridItem
             key={offerKey}
-            subOfferKey={offer.publicKey.toBase58()}
+            subOfferKey={offer.nftMeta.mint}
             image={offer.nftMeta.arweaveMetadata.image}
             amount={offer.account.offerAmount.toNumber() / 1000000}
             apr={offer.account.aprNumerator.toNumber()}

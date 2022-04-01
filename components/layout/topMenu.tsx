@@ -23,6 +23,11 @@ export const TopMenu = () => {
           <a className={handleCurrent('/my-offers')}>{localesTop.myOffers}</a>
         </Link>
       </li>
+      <li>
+        <Link href='/offers'>
+          <a className={handleCurrent('/offers')}>singleOffer</a>
+        </Link>
+      </li>
     </ul>
   )
 }
