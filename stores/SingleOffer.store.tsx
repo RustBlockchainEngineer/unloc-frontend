@@ -50,7 +50,7 @@ export class SingleOfferStore {
     // const _subOfferData: any = yield getSubOffer(subOfferKey)
     // _subOfferData.publicKey = subOfferKey
 
-    const data = yield getSubOfferList(undefined, new PublicKey(id), undefined)
+    const data = yield getSubOfferList(undefined, subOfferKey, undefined)
 
     const loansArr: Array<LoanInterface> = []
     data.forEach(
