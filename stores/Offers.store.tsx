@@ -85,7 +85,7 @@ export class OffersStore {
 
       this.buildCollectionFilters()
       this.setOffersData(offers)
-      console.log('offers: ', offers)
+      // console.log('offers: ', offers)
     } catch (e) {
       // eslint-disable-next-line no-console
       console.log(e)
@@ -125,7 +125,7 @@ export class OffersStore {
           console.log(e)
         }
       }
-      console.log('newSubOffers: ', newSubOffers)
+      // console.log('newSubOffers: ', newSubOffers)
       this.setOffersData(newSubOffers)
       // this.refreshShownNFTs()
     } catch (e) {
