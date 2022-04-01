@@ -5,6 +5,9 @@
   grid-template-columns: 1fr 1fr 1fr 1fr;
   grid-template-rows: 1fr 1fr 1fr 1fr;
   gap: 20px 20px;
+  animation: fadeInAnimation ease 0.8s;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
 
   .offers-grid-item {
     border-radius: $brd-rds-sm;
@@ -19,6 +22,7 @@
       bottom: 0;
       left: 0;
       @include theme-aware('background-color', 'bg-overlay-bright');
+      @include theme-aware('color', 'color-label');
       z-index: 1;
       padding: 20px;
       justify-content: space-evenly;
