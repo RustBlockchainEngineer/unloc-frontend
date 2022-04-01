@@ -2,11 +2,20 @@ import React, { useContext, useState } from 'react'
 import { observer } from 'mobx-react'
 
 import { StoreContext } from '../../pages/_app'
-import { FilterOffers } from '../filters/filterOffers'
+import { Filter } from '../filters/filter'
 
 export const OffersTop = observer(() => {
   const store = useContext(StoreContext)
-  const { collectionFilters, collectionFilterSelected } = store.Offers
+  const {
+    collectionFilters,
+    collectionFilterSelected,
+    filterAprMin,
+    filterAprMax,
+    filterAmountMin,
+    filterAmountMax,
+    filterDurationMin,
+    filterDurationMax
+  } = store.Offers
 
   const [filtersVisible, setFiltersVisible] = useState(true)
 
@@ -36,11 +45,33 @@ export const OffersTop = observer(() => {
         </div>
       </div>
       <div className={`offers-filters ${filtersVisible ? 'active' : ''}`}>
-        <FilterOffers
+        <Filter
           title='Collections'
+          type='multi'
           items={collectionFilters}
           action={store.Offers.setCollectionFilters}
-          value={collectionFilterSelected}
+          values={collectionFilterSelected}
+        />
+        <Filter
+          title='APR'
+          type='minmax'
+          valuesRange={{ min: filterAprMin, max: filterAprMax }}
+          actionMin={store.Offers.setFilterAprMin}
+          actionMax={store.Offers.setFilterAprMax}
+        />
+        <Filter
+          title='Amount'
+          type='minmax'
+          valuesRange={{ min: filterAmountMin, max: filterAmountMax }}
+          actionMin={store.Offers.setFilterAmountMin}
+          actionMax={store.Offers.setFilterAmountMax}
+        />
+        <Filter
+          title='Duration'
+          type='minmax'
+          valuesRange={{ min: filterDurationMin, max: filterDurationMax }}
+          actionMin={store.Offers.setFilterDurationMin}
+          actionMax={store.Offers.setFilterDurationMax}
         />
       </div>
     </div>

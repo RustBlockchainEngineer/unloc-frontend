@@ -1,4 +1,4 @@
-import { action, flow, makeAutoObservable, reaction } from 'mobx'
+import { action, flow, makeAutoObservable, reaction, values } from 'mobx'
 import { PublicKey } from '@solana/web3.js'
 import axios from 'axios'
 
@@ -15,9 +15,15 @@ export class OffersStore {
   itemsPerPage = 16
   nftCollections: string[] = []
   collectionFilters: { label: string; value: string }[] = []
-  collectionFilterSelected: string | string[] = ''
+  collectionFilterSelected: string[] = []
   refresh = false
   viewType: 'grid' | 'table' = 'grid'
+  filterAprMin = 1
+  filterAprMax = 2000 //take this value dynamically from offers
+  filterAmountMin = 1
+  filterAmountMax = 1000 //take this value dynamically from offers
+  filterDurationMin = 1
+  filterDurationMax = 90
 
   constructor(rootStore: any) {
     makeAutoObservable(this)
@@ -139,28 +145,22 @@ export class OffersStore {
       : this.nftCollections.concat(collection)
   }
 
-  @action.bound setCollectionFilters = (value: string | string[]): void => {
-    this.collectionFilterSelected = value
-    // if (Array.isArray(value)) {
-    // this.collectionFilters = value
-    // } else if (this.collectionFilters.includes(value)) {
-    // this.collectionFilters = this.collectionFilters.filter((f) => f !== value)
-    // } else {
-    // this.collectionFilters.push(value)
-    // }
+  @action.bound setCollectionFilters = (value: string[]): void => {
+    value.forEach((item) => {
+      const hasValue = this.collectionFilterSelected.indexOf(item)
 
-    // if (value !== this.collectionFilterSelected) {
-    //   this.collectionFilterSelected = value
-    // }
-    console.log('collection filters: ', this.collectionFilters)
+      if (hasValue === -1) {
+        this.collectionFilterSelected.push(item)
+      } else {
+        this.collectionFilterSelected.splice(hasValue, 1)
+      }
+    })
   }
 
   @action.bound buildCollectionFilters = () => {
-    console.log('nftCollections: ', this.nftCollections)
     this.collectionFilters = this.nftCollections.map((collection) => {
       return { label: collection, value: collection }
     })
-    console.log('collection filters data: ', this.collectionFilters)
   }
 
   @action.bound setOffersData(data: any[]): void {
@@ -181,5 +181,29 @@ export class OffersStore {
 
   @action.bound setViewType(viewType: 'grid' | 'table'): void {
     this.viewType = viewType
+  }
+
+  @action.bound setFilterAprMin = (value: number): void => {
+    this.filterAprMin = value
+  }
+
+  @action.bound setFilterAprMax = (value: number): void => {
+    this.filterAprMax = value
+  }
+
+  @action.bound setFilterAmountMin = (value: number): void => {
+    this.filterAmountMin = value
+  }
+
+  @action.bound setFilterAmountMax = (value: number): void => {
+    this.filterAmountMax = value
+  }
+
+  @action.bound setFilterDurationMin = (value: number): void => {
+    this.filterDurationMin = value
+  }
+
+  @action.bound setFilterDurationMax = (value: number): void => {
+    this.filterDurationMax = value
   }
 }
