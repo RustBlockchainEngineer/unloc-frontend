@@ -17,6 +17,14 @@
       margin-top: 6px;
       margin-right: 5px;
     }
+
+    &.btn--bordered {
+      line-height: 35px;
+
+      .icon {
+        margin-top: 4px;
+      }
+    }
   }
 
   &--primary {
@@ -39,7 +47,7 @@
 
   &--bordered {
     background-color: transparent;
-    border: 1px solid;
+    border: 2px solid;
     @include theme-aware('border-color', 'color-primary');
     @include theme-aware('background-color', 'color-background');
     @include theme-aware('color', 'color-primary');
