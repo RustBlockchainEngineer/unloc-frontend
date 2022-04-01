@@ -9,10 +9,12 @@ import { StoreDataAdapter } from '../components/storeDataAdapter'
 import { LayoutTop } from '../components/layout/layoutTop'
 import { OffersTop } from '../components/offersPage/offersTop'
 import { OffersGrid } from '../components/offersPage/offersGrid'
+import { OffersTable } from '../components/offersPage/offersTable'
 
 const Home: NextPage = observer(() => {
   const store = useContext(StoreContext)
   const { wallet, connected } = store.Wallet
+  const { viewType } = store.Offers
 
   const [loading, setLoading] = useState(true)
 
@@ -72,7 +74,7 @@ const Home: NextPage = observer(() => {
         <main>
           <LayoutTop />
           <OffersTop />
-          <OffersGrid />
+          {viewType === 'grid' ? <OffersGrid /> : <OffersTable />}
         </main>
         <div className='home-bg-bottom' />
       </div>

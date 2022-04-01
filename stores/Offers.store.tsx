@@ -96,6 +96,7 @@ export class OffersStore {
   @action.bound fetchOffers = flow(function* (this: OffersStore) {
     try {
       const allSubOffers: any[] = yield getSubOfferList(undefined, undefined, SubOfferState.Proposed)
+      console.log(allSubOffers)
       const _allSubOffers: any[] = getUniqueNFTsByNFTMint(allSubOffers)
       const newSubOffers: any[] = []
       const nftMintKeys: PublicKey[] = []
@@ -106,6 +107,10 @@ export class OffersStore {
           nftMintKeys.push(nftMint)
         }
       }
+      console.log('nft mint:', _allSubOffers[1].account.nftMint.toBase58())
+
+      const allSubOffersTest: any[] = yield getSubOfferList(undefined, _allSubOffers[1].account.nftMint, undefined)
+      console.log('by mint: ', allSubOffersTest)
 
       const multipleNft = new MultipleNFT(nftMintKeys)
       yield multipleNft.initialize()
