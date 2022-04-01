@@ -2,6 +2,7 @@ import type { NextPage } from 'next'
 
 import { StoreDataAdapter } from '../../components/storeDataAdapter'
 import { LayoutTop } from '../../components/layout/layoutTop'
+import Header from '../../components/singleOffer/Header/Header'
 
 const MyOffers: NextPage = () => {
   return (

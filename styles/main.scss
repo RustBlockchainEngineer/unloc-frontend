@@ -13,10 +13,9 @@
 @import './layoutTop';
 @import './userToolbox';
 @import './offersTop';
-
-* {
-  box-sizing: border-box;
-}
+@import './singleOffer/hedaer';
+@import './singleOffer/offer';
+@import './singleOffer/page';
 
 body {
   @include theme-aware('background-color', 'color-background');
@@ -41,6 +40,7 @@ body {
   left: 0;
   @include theme-aware('background-image', 'bg-home-bottom');
   background-repeat: no-repeat;
+  z-index: -1;
 }
 
 h1,

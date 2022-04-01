@@ -11,10 +11,10 @@ import { useContext } from 'react'
 const MyOffers: NextPage = observer(() => {
   const store = useContext(StoreContext)
 
-  const [data, setData] = store.Offers
+  // const [data, setData] = store.Offers
   return (
     <StoreDataAdapter>
-      {console.log(data)}
+      {/* {console.log(data)} */}
       <div className='page my-offers'>
         <LayoutTop />
         <Header
