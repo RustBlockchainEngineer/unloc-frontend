@@ -13,7 +13,7 @@
     margin-top: 40px;
 
     &.active {
-      @include theme-aware('background-color', 'color-secondary-dark');
+      @include theme-aware('background-color', 'color-accent');
       border-radius: 24px 24px 0 0;
       margin-top: 50px;
     }
@@ -35,7 +35,7 @@
   width: 100%;
   transform: scaleY(0);
   transition: transform 0.3s ease-in-out, padding 0.3s ease-in-out, margin 0.3s ease-in-out;
-  @include theme-aware('background-color', 'color-secondary-dark');
+  @include theme-aware('background-color', 'color-accent');
   padding: 0;
   height: 1px;
   border-radius: $brd-rds-lg;
@@ -52,7 +52,7 @@
     padding-right: 20px;
     margin-left: 20px;
     border-right: 1px dotted;
-    @include theme-aware('border-color', 'color-accent');
+    @include theme-aware('border-color', 'color-secondary');
 
     &:first-child {
       padding-left: 0;

@@ -7,8 +7,8 @@ import { Filter } from '../filters/filter'
 export const OffersTop = observer(() => {
   const store = useContext(StoreContext)
   const {
-    collectionFilters,
-    collectionFilterSelected,
+    filterCollection,
+    filterCollectionSelected,
     filterAprMin,
     filterAprMax,
     filterAmountMin,
@@ -48,9 +48,9 @@ export const OffersTop = observer(() => {
         <Filter
           title='Collections'
           type='multi'
-          items={collectionFilters}
-          action={store.Offers.setCollectionFilters}
-          values={collectionFilterSelected}
+          items={filterCollection}
+          action={store.Offers.setFilterCollection}
+          values={filterCollectionSelected}
         />
         <Filter
           title='APR'

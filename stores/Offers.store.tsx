@@ -14,8 +14,8 @@ export class OffersStore {
   maxPage = 1
   itemsPerPage = 16
   nftCollections: string[] = []
-  collectionFilters: { label: string; value: string }[] = []
-  collectionFilterSelected: string[] = []
+  filterCollection: { label: string; value: string }[] = []
+  filterCollectionSelected: string[] = []
   refresh = false
   viewType: 'grid' | 'table' = 'grid'
   filterAprMin = 1
@@ -35,9 +35,9 @@ export class OffersStore {
     // )
   }
 
-  private filterShownNFTs(offers: any[], collectionFilters: string[]): any[] {
+  private filterShownNFTs(offers: any[], filterCollection: string[]): any[] {
     const prefiltered =
-      collectionFilters.length > 0 ? offers.filter((item) => collectionFilters.includes(item.collection)) : offers
+      filterCollection.length > 0 ? offers.filter((item) => filterCollection.includes(item.collection)) : offers
     const filtered = prefiltered.filter((item) => item.account.state === 0)
 
     return filtered
@@ -83,7 +83,7 @@ export class OffersStore {
         if (offers[el.index].account.state === 0) this.addToNFTCollections(responses[el.index].data)
       }
 
-      this.buildCollectionFilters()
+      this.buildFilterCollection()
       this.setOffersData(offers)
       // console.log('offers: ', offers)
     } catch (e) {
@@ -144,20 +144,20 @@ export class OffersStore {
       : this.nftCollections.concat(collection)
   }
 
-  @action.bound setCollectionFilters = (value: string[]): void => {
+  @action.bound setFilterCollection = (value: string[]): void => {
     value.forEach((item) => {
-      const hasValue = this.collectionFilterSelected.indexOf(item)
+      const hasValue = this.filterCollection.map((e) => e.value).indexOf(item)
 
       if (hasValue === -1) {
-        this.collectionFilterSelected.push(item)
+        this.filterCollectionSelected.push(item)
       } else {
-        this.collectionFilterSelected.splice(hasValue, 1)
+        this.filterCollectionSelected.splice(hasValue, 1)
       }
     })
   }
 
-  @action.bound buildCollectionFilters = () => {
-    this.collectionFilters = this.nftCollections.map((collection) => {
+  @action.bound buildFilterCollection = () => {
+    this.filterCollection = this.nftCollections.map((collection) => {
       return { label: collection, value: collection }
     })
   }
