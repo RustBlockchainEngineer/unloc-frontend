@@ -5,6 +5,7 @@
 @import './variables';
 @import './themes';
 
+@import './animations';
 @import './icons';
 @import './buttons';
 @import './tooltip';
@@ -15,6 +16,7 @@
 @import './filter';
 @import './offersPage/offersTop';
 @import './offersPage/offersGrid';
+@import './offersPage/offersTable';
 
 * {
   box-sizing: border-box;
