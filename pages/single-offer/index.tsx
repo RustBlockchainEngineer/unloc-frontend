@@ -5,13 +5,16 @@ import { LayoutTop } from '../../components/layout/layoutTop'
 import Header from '../../components/singleOffer/Header/Header'
 import Offer from '../../components/singleOffer/Offer/Offer'
 import { observer } from 'mobx-react'
+import { getQueryParamAsString } from '../../utils/getQueryParamsAsString'
 import { StoreContext } from '../_app'
-import { useContext } from 'react'
+import { useContext, useEffect, useState } from 'react'
+import { getOfferList } from '../../integration/nftLoan'
 
 const MyOffers: NextPage = observer(() => {
   const store = useContext(StoreContext)
+  const { connected, wallet } = store.Wallet
+  const [loaded, setLoaded] = useState(false)
 
-  // const [data, setData] = store.Offers
   return (
     <StoreDataAdapter>
       {/* {console.log(data)} */}
