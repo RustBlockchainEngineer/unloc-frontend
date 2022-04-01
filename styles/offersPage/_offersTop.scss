@@ -1,0 +1,66 @@
+.offers-top {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 50px;
+
+  h1 {
+    font-size: $tp-1xl;
+    margin-bottom: 0;
+  }
+
+  .btn--filters {
+    margin-top: 40px;
+
+    &.active {
+      @include theme-aware('background-color', 'color-secondary-dark');
+      border-radius: 24px 24px 0 0;
+      margin-top: 50px;
+    }
+  }
+}
+
+.offers-view {
+  display: flex;
+  margin-top: 40px;
+
+  button:last-child {
+    margin-left: 20px;
+  }
+}
+
+.offers-filters {
+  display: flex;
+  justify-items: center;
+  width: 100%;
+  transform: scaleY(0);
+  transition: transform 0.3s ease-in-out, padding 0.3s ease-in-out, margin 0.3s ease-in-out;
+  @include theme-aware('background-color', 'color-secondary-dark');
+  padding: 0;
+  height: 1px;
+  border-radius: $brd-rds-lg;
+
+  &.active {
+    width: 100%;
+    margin-top: 0px;
+    transform: scaleY(1);
+    height: auto;
+    padding: 30px;
+  }
+
+  .filter-generic {
+    padding-right: 20px;
+    margin-left: 20px;
+    border-right: 1px dotted;
+    @include theme-aware('border-color', 'color-accent');
+
+    &:first-child {
+      padding-left: 0;
+    }
+
+    &:last-child {
+      margin-right: 0;
+      border: none;
+    }
+  }
+}

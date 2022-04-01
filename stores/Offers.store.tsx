@@ -1,4 +1,4 @@
-import { action, flow, makeAutoObservable, reaction } from 'mobx'
+import { action, flow, makeAutoObservable, reaction, values } from 'mobx'
 import { PublicKey } from '@solana/web3.js'
 import axios from 'axios'
 
@@ -14,24 +14,30 @@ export class OffersStore {
   maxPage = 1
   itemsPerPage = 16
   nftCollections: string[] = []
-  collectionFilters: string[] = []
+  collectionFilters: { label: string; value: string }[] = []
+  collectionFilterSelected: string[] = []
   refresh = false
   viewType: 'grid' | 'table' = 'grid'
+  filterAprMin = 1
+  filterAprMax = 2000 //take this value dynamically from offers
+  filterAmountMin = 1
+  filterAmountMax = 1000 //take this value dynamically from offers
+  filterDurationMin = 1
+  filterDurationMax = 90
 
   constructor(rootStore: any) {
     makeAutoObservable(this)
     this.rootStore = rootStore
 
-    reaction(
-      () => this.currentPage,
-      () => this.refreshShownNFTs()
-    )
+    // reaction(
+    //   () => this.currentPage,
+    //   () => this.refreshShownNFTs()
+    // )
   }
 
   private filterShownNFTs(offers: any[], collectionFilters: string[]): any[] {
     const prefiltered =
       collectionFilters.length > 0 ? offers.filter((item) => collectionFilters.includes(item.collection)) : offers
-
     const filtered = prefiltered.filter((item) => item.account.state === 0)
 
     return filtered
@@ -50,12 +56,11 @@ export class OffersStore {
   // questionable
   @action.bound refreshShownNFTs(): void {
     try {
-      const filteredSubOffers = this.filterShownNFTs(this.offers, this.collectionFilters)
-      const sortedSubOffers = sortNftsByField(filteredSubOffers, 'name')
-      const slicedSubOffers = this.sliceShownNFTs(sortedSubOffers, this.currentPage, this.itemsPerPage)
-
-      this.setMaxPage(Math.ceil(filteredSubOffers.length / this.itemsPerPage))
-      this.setFilteredOffers(slicedSubOffers)
+      // const filteredSubOffers = this.filterShownNFTs(this.offers, this.collectionFilters)
+      // const sortedSubOffers = sortNftsByField(filteredSubOffers, 'name')
+      // const slicedSubOffers = this.sliceShownNFTs(sortedSubOffers, this.currentPage, this.itemsPerPage)
+      // this.setMaxPage(Math.ceil(filteredSubOffers.length / this.itemsPerPage))
+      // this.setFilteredOffers(slicedSubOffers)
     } catch (e) {
       // eslint-disable-next-line no-console
       console.log(e)
@@ -63,7 +68,7 @@ export class OffersStore {
   }
 
   @action.bound fetchCollectionForNfts = flow(function* (this: OffersStore) {
-    this.resetNFTCollectionsCollections()
+    this.resetNFTCollections()
 
     try {
       const offers = this.offers
@@ -75,11 +80,12 @@ export class OffersStore {
 
       for (const el of requests) {
         offers[el.index].collection = responses[el.index].data
-        if (offers[el.index].account.state === 0) this.addCollectionToNFTCollections(responses[el.index].data)
+        if (offers[el.index].account.state === 0) this.addToNFTCollections(responses[el.index].data)
       }
 
-      console.log(offers)
+      this.buildCollectionFilters()
       this.setOffersData(offers)
+      // console.log('offers: ', offers)
     } catch (e) {
       // eslint-disable-next-line no-console
       console.log(e)
@@ -119,33 +125,41 @@ export class OffersStore {
           console.log(e)
         }
       }
-      console.log('newSubOffers: ', newSubOffers)
+      // console.log('newSubOffers: ', newSubOffers)
       this.setOffersData(newSubOffers)
-      this.refreshShownNFTs()
+      // this.refreshShownNFTs()
     } catch (e) {
       // eslint-disable-next-line no-console
       console.log(e)
     }
   })
 
-  @action.bound resetNFTCollectionsCollections(): void {
+  @action.bound resetNFTCollections(): void {
     this.nftCollections = []
   }
 
-  private addCollectionToNFTCollections(collection: string): void {
+  private addToNFTCollections(collection: string): void {
     this.nftCollections = this.nftCollections.includes(collection)
       ? this.nftCollections
       : this.nftCollections.concat(collection)
   }
 
-  @action.bound setCollectionFilters = (flt: string | string[]): void => {
-    if (Array.isArray(flt)) {
-      this.collectionFilters = flt
-    } else if (this.collectionFilters.includes(flt)) {
-      this.collectionFilters = this.collectionFilters.filter((f) => f !== flt)
-    } else {
-      this.collectionFilters.push(flt)
-    }
+  @action.bound setCollectionFilters = (value: string[]): void => {
+    value.forEach((item) => {
+      const hasValue = this.collectionFilterSelected.indexOf(item)
+
+      if (hasValue === -1) {
+        this.collectionFilterSelected.push(item)
+      } else {
+        this.collectionFilterSelected.splice(hasValue, 1)
+      }
+    })
+  }
+
+  @action.bound buildCollectionFilters = () => {
+    this.collectionFilters = this.nftCollections.map((collection) => {
+      return { label: collection, value: collection }
+    })
   }
 
   @action.bound setOffersData(data: any[]): void {
@@ -166,5 +180,29 @@ export class OffersStore {
 
   @action.bound setViewType(viewType: 'grid' | 'table'): void {
     this.viewType = viewType
+  }
+
+  @action.bound setFilterAprMin = (value: number): void => {
+    this.filterAprMin = value
+  }
+
+  @action.bound setFilterAprMax = (value: number): void => {
+    this.filterAprMax = value
+  }
+
+  @action.bound setFilterAmountMin = (value: number): void => {
+    this.filterAmountMin = value
+  }
+
+  @action.bound setFilterAmountMax = (value: number): void => {
+    this.filterAmountMax = value
+  }
+
+  @action.bound setFilterDurationMin = (value: number): void => {
+    this.filterDurationMin = value
+  }
+
+  @action.bound setFilterDurationMax = (value: number): void => {
+    this.filterDurationMax = value
   }
 }

@@ -8,6 +8,7 @@ import { localesHome } from '../constants/locales'
 import { StoreDataAdapter } from '../components/storeDataAdapter'
 import { LayoutTop } from '../components/layout/layoutTop'
 import { OffersTop } from '../components/offersPage/offersTop'
+import { OffersGrid } from '../components/offersPage/offersGrid'
 
 const Home: NextPage = observer(() => {
   const store = useContext(StoreContext)
@@ -71,7 +72,9 @@ const Home: NextPage = observer(() => {
         <main>
           <LayoutTop />
           <OffersTop />
+          <OffersGrid />
         </main>
+        <div className='home-bg-bottom' />
       </div>
     </StoreDataAdapter>
   )
