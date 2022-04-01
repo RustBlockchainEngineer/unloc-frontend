@@ -37,12 +37,30 @@
   transition: transform 0.3s ease-in-out, padding 0.3s ease-in-out, margin 0.3s ease-in-out;
   @include theme-aware('background-color', 'color-secondary-dark');
   padding: 0;
+  height: 1px;
   border-radius: $brd-rds-lg;
 
   &.active {
     width: 100%;
     margin-top: 0px;
     transform: scaleY(1);
+    height: auto;
     padding: 30px;
+  }
+
+  .filter-generic {
+    padding-right: 20px;
+    margin-left: 20px;
+    border-right: 1px dotted;
+    @include theme-aware('border-color', 'color-accent');
+
+    &:first-child {
+      padding-left: 0;
+    }
+
+    &:last-child {
+      margin-right: 0;
+      border: none;
+    }
   }
 }

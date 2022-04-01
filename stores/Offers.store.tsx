@@ -68,7 +68,7 @@ export class OffersStore {
   }
 
   @action.bound fetchCollectionForNfts = flow(function* (this: OffersStore) {
-    this.resetNFTCollectionsCollections()
+    this.resetNFTCollections()
 
     try {
       const offers = this.offers
@@ -80,13 +80,12 @@ export class OffersStore {
 
       for (const el of requests) {
         offers[el.index].collection = responses[el.index].data
-        if (offers[el.index].account.state === 0) this.addCollectionToNFTCollections(responses[el.index].data)
+        if (offers[el.index].account.state === 0) this.addToNFTCollections(responses[el.index].data)
       }
 
       this.buildCollectionFilters()
-
-      console.log('offers: ', offers)
       this.setOffersData(offers)
+      console.log('offers: ', offers)
     } catch (e) {
       // eslint-disable-next-line no-console
       console.log(e)
@@ -135,11 +134,11 @@ export class OffersStore {
     }
   })
 
-  @action.bound resetNFTCollectionsCollections(): void {
+  @action.bound resetNFTCollections(): void {
     this.nftCollections = []
   }
 
-  private addCollectionToNFTCollections(collection: string): void {
+  private addToNFTCollections(collection: string): void {
     this.nftCollections = this.nftCollections.includes(collection)
       ? this.nftCollections
       : this.nftCollections.concat(collection)
