@@ -34,8 +34,11 @@ export const Filter = ({
       items && items.length && action ? (
         items.map((item) => (
           <li key={item.value} onClick={() => action([item.value])}>
-            <input type='checkbox' defaultChecked={handleCheckedItem(item.value)} />
-            <span>{item.label}</span>
+            <label className='checkbox-label'>
+              <input type='checkbox' defaultChecked={handleCheckedItem(item.value)} />
+              <span className='checkbox-custom rectangular'></span>
+            </label>
+            <div className='input-title'>{item.label}</div>
           </li>
         ))
       ) : (
@@ -59,18 +62,24 @@ export const Filter = ({
           <h5>{title}</h5>
         </div>
         <div className='filter-minmax'>
-          <input
-            className='min'
-            type='number'
-            value={valuesRange.min}
-            onChange={(e) => actionMin(Number(e.target.value))}
-          />
-          <input
-            className='max'
-            type='number'
-            value={valuesRange.max}
-            onChange={(e) => actionMax(Number(e.target.value))}
-          />
+          <div className='filter-line'>
+            <span>Min: </span>
+            <input
+              className='min'
+              type='number'
+              value={valuesRange.min}
+              onChange={(e) => actionMin(Number(e.target.value))}
+            />
+          </div>
+          <div className='filter-line'>
+            <span>Max: </span>
+            <input
+              className='max'
+              type='number'
+              value={valuesRange.max}
+              onChange={(e) => actionMax(Number(e.target.value))}
+            />
+          </div>
         </div>
       </div>
     ) : (

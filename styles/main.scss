@@ -12,7 +12,9 @@
 @import './layout';
 @import './layoutTop';
 @import './userToolbox';
-@import './offersTop';
+@import './filter';
+@import './offersPage/offersTop';
+@import './offersPage/offersGrid';
 
 * {
   box-sizing: border-box;
@@ -41,12 +43,15 @@ body {
   left: 0;
   @include theme-aware('background-image', 'bg-home-bottom');
   background-repeat: no-repeat;
+  z-index: -1;
 }
 
 h1,
 h2,
 h3,
-h4 {
+h4,
+h5,
+h6 {
   font-family: 'Red Hat Display';
   @include theme-aware('color', 'color-content');
 }
