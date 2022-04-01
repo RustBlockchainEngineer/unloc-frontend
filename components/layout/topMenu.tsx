@@ -24,8 +24,8 @@ export const TopMenu = () => {
         </Link>
       </li>
       <li>
-        <Link href='/single-offer'>
-          <a className={handleCurrent('/single-offer')}>singleOffer</a>
+        <Link href='/offers'>
+          <a className={handleCurrent('/offers')}>singleOffer</a>
         </Link>
       </li>
     </ul>
