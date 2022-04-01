@@ -8,6 +8,7 @@ import { localesHome } from '../constants/locales'
 import { StoreDataAdapter } from '../components/storeDataAdapter'
 import { LayoutTop } from '../components/layout/layoutTop'
 import { OffersTop } from '../components/offersPage/offersTop'
+import { OffersGrid } from '../components/offersPage/offersGrid'
 
 const Home: NextPage = observer(() => {
   const store = useContext(StoreContext)
@@ -71,14 +72,7 @@ const Home: NextPage = observer(() => {
         <main>
           <LayoutTop />
           <OffersTop />
-          <p>
-            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the
-            industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and
-            scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into
-            electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of
-            Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like
-            Aldus PageMaker including versions of Lorem Ipsum.
-          </p>
+          <OffersGrid />
         </main>
         <div className='home-bg-bottom' />
       </div>

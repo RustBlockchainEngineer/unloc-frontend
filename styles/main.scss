@@ -16,6 +16,13 @@
 @import './singleOffer/hedaer';
 @import './singleOffer/offer';
 @import './singleOffer/page';
+@import './filter';
+@import './offersPage/offersTop';
+@import './offersPage/offersGrid';
+
+* {
+  box-sizing: border-box;
+}
 
 body {
   @include theme-aware('background-color', 'color-background');
@@ -46,7 +53,9 @@ body {
 h1,
 h2,
 h3,
-h4 {
+h4,
+h5,
+h6 {
   font-family: 'Red Hat Display';
   @include theme-aware('color', 'color-content');
 }
