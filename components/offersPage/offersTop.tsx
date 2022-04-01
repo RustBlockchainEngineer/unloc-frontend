@@ -14,7 +14,8 @@ export const OffersTop = observer(() => {
     filterAmountMin,
     filterAmountMax,
     filterDurationMin,
-    filterDurationMax
+    filterDurationMax,
+    viewType
   } = store.Offers
 
   const [filtersVisible, setFiltersVisible] = useState(true)
@@ -34,11 +35,17 @@ export const OffersTop = observer(() => {
         </button>
 
         <div className='offers-view'>
-          <button className='btn btn--md btn--bordered' onClick={() => store.Offers.setViewType('grid')}>
+          <button
+            className={`btn btn--md btn--bordered ${viewType === 'grid' ? 'active' : ''}`}
+            onClick={() => store.Offers.setViewType('grid')}
+          >
             <i className='icon icon--sm icon--grid--dark' />
             <span>Grid</span>
           </button>
-          <button className='btn btn--md btn--bordered' onClick={() => store.Offers.setViewType('table')}>
+          <button
+            className={`btn btn--md btn--bordered ${viewType === 'table' ? 'active' : ''}`}
+            onClick={() => store.Offers.setViewType('table')}
+          >
             <i className='icon icon--sm icon--table--dark' />
             <span>Table</span>
           </button>
