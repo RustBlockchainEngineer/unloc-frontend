@@ -2,12 +2,12 @@ import { action, makeAutoObservable, flow } from 'mobx'
 import axios from 'axios'
 import * as anchor from '@project-serum/anchor'
 
-import { getSubOffer, getSubOfferList } from '../functions/nftLoan'
+import { getSubOffer, getSubOfferList } from '../integration/nftLoan'
 import { currencies, currencyMints } from '../constants/currency'
 import { IOfferData } from '../@types/IOfferData'
 import { PublicKey } from '@solana/web3.js'
-import { getMetadata } from '../functions/nftIntegration'
-import getDecimalsForLoanAmount from '../functions/getDecimalForLoanAmount'
+import { getMetadata } from '../integration/nftIntegration'
+import getDecimalsForLoanAmount from '../integration/getDecimalForLoanAmount'
 
 interface LoanInterface {
   id: string
@@ -33,14 +33,14 @@ export class SingleOfferStore {
 
   @action.bound fetchNft = flow(function* (this: SingleOfferStore, id: string) {
     const subOfferKey = new anchor.web3.PublicKey(id)
-    const _subOfferData: any = yield getSubOffer(subOfferKey) // we need to stop depend on this function so much, this can be simplified
-    _subOfferData.publicKey = subOfferKey
-    const metadata = yield getMetadata(_subOfferData.nftMint)
-    const collection = yield axios.post('/api/collections/nft', { id: _subOfferData.nftMint.toBase58() })
+    // const _subOfferData: any = yield getSubOffer(subOfferKey) // we need to stop depend on this function so much, this can be simplified
+    // _subOfferData.publicKey = subOfferKey
+    const metadata = yield getMetadata(subOfferKey)
+    const collection = yield axios.post('/api/collections/nft', { id: subOfferKey.toBase58() })
     this.setNftData({
       collection,
       metadata,
-      mint: _subOfferData.nftMint.toBase58()
+      mint: subOfferKey.toBase58()
     })
   })
 

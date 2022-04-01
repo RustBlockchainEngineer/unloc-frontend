@@ -25,18 +25,6 @@ const MyOffers: NextPage = observer(() => {
           nftName='test'
           website='unloc.xyz'
         />
-        <div className='offer-grid'>
-          <Offer
-            offerID='1234-1234-1234-1234'
-            status='Active'
-            amount='10000'
-            token='USDC'
-            duration='90'
-            durationRemaning='20'
-            APR='20'
-            totalReapy='10293'
-          />
-        </div>
       </div>
       <div className='home-bg-bottom' />
     </StoreDataAdapter>

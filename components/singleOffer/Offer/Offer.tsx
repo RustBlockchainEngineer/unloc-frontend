@@ -7,18 +7,29 @@ type IProps = {
   token: string
   duration: string
   durationRemaning: string
-  APR: string
+  APR: number
   totalReapy: string
+  btnMessage: string
 }
 
-const Offer: React.FC<IProps> = ({ offerID, status, amount, token, duration, durationRemaning, APR, totalReapy }) => {
+const Offer: React.FC<IProps> = ({
+  offerID,
+  status,
+  amount,
+  token,
+  duration,
+  durationRemaning,
+  APR,
+  totalReapy,
+  btnMessage
+}) => {
   return (
     <div className='offer-root'>
       <div className='offer-container'>
         <div className='offer-header'>
           <div className='offer-ID'>
             <p>Offer ID</p>
-            <p>#{offerID}</p>
+            <p>{offerID}</p>
           </div>
           <div className='offer-status'>
             <p>Status</p>
@@ -56,7 +67,7 @@ const Offer: React.FC<IProps> = ({ offerID, status, amount, token, duration, dur
       </div>
       <div className='offer-lend'>
         <button className='lend-btn' onClick={() => {}}>
-          Lend money
+          {btnMessage}
         </button>
       </div>
     </div>
