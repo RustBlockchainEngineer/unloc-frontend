@@ -14,7 +14,15 @@ const MyOffers: NextPage = observer(() => {
   const store = useContext(StoreContext)
   const { connected, wallet } = store.Wallet
   const [loaded, setLoaded] = useState(false)
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await getOfferList()
+    }
+    fetchData().then((res) => console.log(res))
+  }, [])
 
+  const { nftData } = store.SingleOffer
+  console.log('data', nftData)
   return (
     <StoreDataAdapter>
       {/* {console.log(data)} */}
