@@ -12,7 +12,8 @@ $themes: (
     color-label: #ffffff,
     color-input-text: #210d48,
     bg-home: url('/home_bg.png'),
-    bg-home-bottom: url('/home_bg_bottom.png')
+    bg-home-bottom: url('/home_bg_bottom.png'),
+    bg-overlay-bright: rgba(46, 19, 210, 0.8)
   ),
   dark: (
     color-background: #210d48,
@@ -27,6 +28,7 @@ $themes: (
     color-label: #ffffff,
     color-input-text: #210d48,
     bg-home: url('/home_bg.png'),
-    bg-home-bottom: url('/home_bg_bottom.png')
+    bg-home-bottom: url('/home_bg_bottom.png'),
+    bg-overlay-bright: rgba(46, 19, 210, 0.8)
   )
 );
