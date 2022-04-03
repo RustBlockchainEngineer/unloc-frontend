@@ -10,6 +10,7 @@ interface OffersTableItemInterface {
   amount: number
   duration: number
   currency: string
+  count?: number
 }
 
 export const OffersTableRow = ({
@@ -19,7 +20,8 @@ export const OffersTableRow = ({
   apr,
   amount,
   duration,
-  currency
+  currency,
+  count
 }: OffersTableItemInterface) => {
   return (
     <div className='offers-table-row' key={subOfferKey}>
@@ -39,6 +41,10 @@ export const OffersTableRow = ({
           </div>
           <div className='row-cell'>
             <span className='text-content'>{duration} Days</span>
+          </div>
+
+          <div className='row-cell'>
+            <span className='text-content'>{count ? `${count}` : ``}</span>
           </div>
         </a>
       </Link>

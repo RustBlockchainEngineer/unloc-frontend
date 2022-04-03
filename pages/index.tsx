@@ -22,8 +22,7 @@ const Home: NextPage = observer(() => {
     try {
       if (connected && wallet) {
         setLoading(true)
-        await store.Offers.fetchOffers()
-        await store.Offers.fetchCollectionForNfts()
+        await store.Offers.getOffersForListings()
         setLoading(false)
       }
     } catch (e) {
@@ -40,10 +39,6 @@ const Home: NextPage = observer(() => {
   useEffect(() => {
     console.log('collections: ', store.Offers.nftCollections)
   }, [store.Offers.nftCollections])
-
-  useEffect(() => {
-    console.log('offers: ', store.Offers.offers, store.Offers.offers.length)
-  }, [store.Offers.offers])
 
   return (
     <StoreDataAdapter>

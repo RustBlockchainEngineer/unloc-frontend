@@ -17,7 +17,7 @@
   font-weight: $wg-bd;
   border-radius: $brd-rds-sm $brd-rds-sm 0 0;
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
 
   .row-cell {
     text-align: left;
@@ -29,7 +29,7 @@
 
   a {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
     width: 100%;
     @include theme-aware('background-color', 'bg-table');
     @include theme-aware('color', 'color-label');

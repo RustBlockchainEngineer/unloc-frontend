@@ -9,9 +9,18 @@ interface OffersGridItemInterface {
   amount: number
   duration: number
   currency: string
+  count?: number
 }
 
-export const OffersGridItem = ({ subOfferKey, image, apr, amount, duration, currency }: OffersGridItemInterface) => {
+export const OffersGridItem = ({
+  subOfferKey,
+  image,
+  apr,
+  amount,
+  duration,
+  currency,
+  count
+}: OffersGridItemInterface) => {
   return (
     <div className='offers-grid-item' key={subOfferKey}>
       <Link href={`/offers/${subOfferKey}`}>
@@ -31,6 +40,14 @@ export const OffersGridItem = ({ subOfferKey, image, apr, amount, duration, curr
               <span className='label'>Duration</span>
               <span className='content'>{duration} Days</span>
             </div>
+            {count ? (
+              <div className='hover-data-item'>
+                <span className='label'>Offers</span>
+                <span className='content'>{count}</span>
+              </div>
+            ) : (
+              <></>
+            )}
           </div>
           {image ? <Image src={image} alt='NFT Picture' width={500} height={500} /> : ''}
         </a>

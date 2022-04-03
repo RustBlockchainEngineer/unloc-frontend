@@ -12,8 +12,8 @@ const SOLANA_CONNECTION = new Connection(RPC_ENDPOINT, {
   disableRetryOnRateLimit: true
 })
 
-let program: anchor.Program<UnlocNftLoan> = null as unknown as anchor.Program<UnlocNftLoan>
-let programId: anchor.web3.PublicKey = null as unknown as anchor.web3.PublicKey
+export let program: anchor.Program<UnlocNftLoan> = null as unknown as anchor.Program<UnlocNftLoan>
+export let programId: anchor.web3.PublicKey = null as unknown as anchor.web3.PublicKey
 
 const systemProgram = anchor.web3.SystemProgram.programId
 const tokenProgram = TOKEN_PROGRAM_ID
@@ -119,6 +119,7 @@ export const getSubOfferList = async (
 ) => {
   const accountName = 'subOffer'
   const discriminator = anchor.AccountsCoder.accountDiscriminator(accountName)
+  console.log('discriminator: ', discriminator)
   const filters: any[] = []
   if (offer) {
     const filter: MemcmpFilter = {
@@ -148,7 +149,13 @@ export const getSubOfferList = async (
     filters.push(filter)
   }
 
-  return await program.account.subOffer.all(filters)
+  // filter by state
+  // filter by aprNumerator
+  // filter by offerAmount
+  // filter by loanDuration
+  const data = await program.account.subOffer.all(filters)
+  // console.log('getSubOffer data: ', data)
+  return data
 }
 
 export const getAllSubOffers = async () => {

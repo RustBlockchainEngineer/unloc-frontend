@@ -1,10 +1,14 @@
 import { action, flow, makeAutoObservable, reaction, values } from 'mobx'
 import { PublicKey } from '@solana/web3.js'
 import axios from 'axios'
+import { BigNumber } from 'bignumber.js'
 
-import { getSubOfferList, MultipleNFT, SubOfferState } from '../integration/nftLoan'
+import { getSubOfferList, MultipleNFT, SubOfferState, getSubOfferMultiple } from '../integration/nftLoan'
+import { getSubOffersKeysByState } from '../integration/offersListing'
 import { getUniqueNFTsByNFTMint } from '../methods/getUniqueNFTsByNFTMint'
 import sortNftsByField from '../methods/sortNftsByField'
+import { removeDuplicatesByPropertyIncludes } from '../utils/removeDuplicatesByPropertyIncludes'
+import { countDuplicatesToProperty } from '../utils/countDuplicatesToProperty'
 
 export class OffersStore {
   rootStore
@@ -13,10 +17,12 @@ export class OffersStore {
   currentPage = 1
   maxPage = 1
   itemsPerPage = 16
+  pageOfferData: any[] = [] // same type as offers, should describe it
+  pageNFTData: any[] = []
   nftCollections: string[] = []
   filterCollection: { label: string; value: string }[] = []
   filterCollectionSelected: string[] = []
-  refresh = false
+  refresh = false // not sure if this is really needed
   viewType: 'grid' | 'table' = 'grid'
   filterAprMin = 1
   filterAprMax = 2000 //take this value dynamically from offers
@@ -24,6 +30,10 @@ export class OffersStore {
   filterAmountMax = 1000 //take this value dynamically from offers
   filterDurationMin = 1
   filterDurationMax = 90
+
+  //new paginated offers:
+  offersKeys: PublicKey[] = []
+  offersCount: number = 0
 
   constructor(rootStore: any) {
     makeAutoObservable(this)
@@ -35,118 +45,22 @@ export class OffersStore {
     // )
   }
 
-  private filterShownNFTs(offers: any[], filterCollection: string[]): any[] {
-    const prefiltered =
-      filterCollection.length > 0 ? offers.filter((item) => filterCollection.includes(item.collection)) : offers
-    const filtered = prefiltered.filter((item) => item.account.state === 0)
-
-    return filtered
-  }
-
   // questionable
-  private sliceShownNFTs(offers: any[], currentPage: number, itemsPerPage: number): any[] {
-    const start = (currentPage - 1) * itemsPerPage
-    const end = start + (itemsPerPage < offers.length ? itemsPerPage : offers.length)
-
-    const sliced = offers.slice(start, end)
-
-    return sliced
-  }
-
-  // questionable
-  @action.bound refreshShownNFTs(): void {
-    try {
-      // const filteredSubOffers = this.filterShownNFTs(this.offers, this.collectionFilters)
-      // const sortedSubOffers = sortNftsByField(filteredSubOffers, 'name')
-      // const slicedSubOffers = this.sliceShownNFTs(sortedSubOffers, this.currentPage, this.itemsPerPage)
-      // this.setMaxPage(Math.ceil(filteredSubOffers.length / this.itemsPerPage))
-      // this.setFilteredOffers(slicedSubOffers)
-    } catch (e) {
-      // eslint-disable-next-line no-console
-      console.log(e)
-    }
-  }
-
-  @action.bound fetchCollectionForNfts = flow(function* (this: OffersStore) {
-    this.resetNFTCollections()
-
-    try {
-      const offers = this.offers
-      const requests = offers.map((offer, index) => ({
-        request: axios.post('/api/collections/nft', { id: offer.account.nftMint.toBase58() }),
-        index
-      }))
-      const responses = yield axios.all(requests.map((request) => request.request))
-
-      for (const el of requests) {
-        offers[el.index].collection = responses[el.index].data
-        if (offers[el.index].account.state === 0) this.addToNFTCollections(responses[el.index].data)
-      }
-
-      this.buildFilterCollection()
-      this.setOffersData(offers)
-      // console.log('offers: ', offers)
-    } catch (e) {
-      // eslint-disable-next-line no-console
-      console.log(e)
-    }
-  })
-
-  // This function still needs to be splitted into separate ones with single responsibility updating the store state asynchronously
-  @action.bound fetchOffers = flow(function* (this: OffersStore) {
-    try {
-      const allSubOffers: any[] = yield getSubOfferList(undefined, undefined, SubOfferState.Proposed)
-      console.log(allSubOffers)
-      const _allSubOffers: any[] = getUniqueNFTsByNFTMint(allSubOffers)
-      const newSubOffers: any[] = []
-      const nftMintKeys: PublicKey[] = []
-
-      for (let i = 0; i < _allSubOffers.length; i++) {
-        const nftMint = _allSubOffers[i].account.nftMint
-        if (!nftMintKeys.includes(nftMint)) {
-          nftMintKeys.push(nftMint)
-        }
-      }
-      console.log('nft mint:', _allSubOffers[1].account.nftMint.toBase58())
-
-      const allSubOffersTest: any[] = yield getSubOfferList(undefined, _allSubOffers[1].account.nftMint, undefined)
-      console.log('by mint: ', allSubOffersTest)
-
-      const multipleNft = new MultipleNFT(nftMintKeys)
-      yield multipleNft.initialize()
-      yield multipleNft.initArweavedata()
-
-      for (let i = 0; i < _allSubOffers.length; i++) {
-        try {
-          const nftMint = _allSubOffers[i].account.nftMint
-          const nftMeta = multipleNft.getNftMeta(nftMint)
-
-          if (nftMeta) {
-            _allSubOffers[i].nftMeta = nftMeta
-            newSubOffers.push(_allSubOffers[i])
-          }
-        } catch (e) {
-          // eslint-disable-next-line no-console
-          console.log(e)
-        }
-      }
-      // console.log('newSubOffers: ', newSubOffers)
-      this.setOffersData(newSubOffers)
-      // this.refreshShownNFTs()
-    } catch (e) {
-      // eslint-disable-next-line no-console
-      console.log(e)
-    }
-  })
+  // @action.bound refreshShownNFTs(): void {
+  //   try {
+  //     // const filteredSubOffers = this.filterShownNFTs(this.offers, this.collectionFilters)
+  //     // const sortedSubOffers = sortNftsByField(filteredSubOffers, 'name')
+  //     // const slicedSubOffers = this.sliceShownNFTs(sortedSubOffers, this.currentPage, this.itemsPerPage)
+  //     // this.setMaxPage(Math.ceil(filteredSubOffers.length / this.itemsPerPage))
+  //     // this.setFilteredOffers(slicedSubOffers)
+  //   } catch (e) {
+  //     // eslint-disable-next-line no-console
+  //     console.log(e)
+  //   }
+  // }
 
   @action.bound resetNFTCollections(): void {
     this.nftCollections = []
-  }
-
-  private addToNFTCollections(collection: string): void {
-    this.nftCollections = this.nftCollections.includes(collection)
-      ? this.nftCollections
-      : this.nftCollections.concat(collection)
   }
 
   @action.bound setFilterCollection = (value: string[]): void => {
@@ -209,5 +123,50 @@ export class OffersStore {
 
   @action.bound setFilterDurationMax = (value: number): void => {
     this.filterDurationMax = value
+  }
+
+  @action.bound setOffersKeys = (values: PublicKey[]): void => {
+    this.offersKeys = values
+  }
+
+  @action.bound setOffersCount = (count: number): void => {
+    // console.log(count)
+    this.offersCount = count
+  }
+
+  private initManyNfts = async (nftMintKeys: PublicKey[]) => {
+    const multipleNft = new MultipleNFT(nftMintKeys)
+    await multipleNft.initialize()
+    await multipleNft.initArweavedata()
+
+    return multipleNft
+  }
+
+  @action.bound getOffersForListings = async (): Promise<void> => {
+    const activeOffersKeys = await getSubOffersKeysByState([0])
+
+    if (activeOffersKeys && activeOffersKeys.length) {
+      this.setOffersKeys(activeOffersKeys)
+      this.setOffersCount(activeOffersKeys?.length)
+    }
+
+    const paginatedOffersPK = this.offersKeys.slice(
+      (this.currentPage - 1) * this.itemsPerPage,
+      this.currentPage * this.itemsPerPage
+    )
+
+    const offersData = await getSubOfferMultiple(paginatedOffersPK)
+
+    if (offersData) {
+      const resultOffers = countDuplicatesToProperty(offersData, 'nftMint', 'count')
+      this.pageOfferData = resultOffers
+
+      const nftMintKeys = removeDuplicatesByPropertyIncludes(offersData, 'nftMint')
+
+      if (nftMintKeys && nftMintKeys.length) {
+        const data = await this.initManyNfts(nftMintKeys)
+        this.pageNFTData = data.metadatas
+      }
+    }
   }
 }
