@@ -10,6 +10,7 @@ import { LayoutTop } from '../components/layout/layoutTop'
 import { OffersTop } from '../components/offersPage/offersTop'
 import { OffersGrid } from '../components/offersPage/offersGrid'
 import { OffersTable } from '../components/offersPage/offersTable'
+import Footer from '../components/layout/footer'
 
 const Home: NextPage = observer(() => {
   const store = useContext(StoreContext)
@@ -67,6 +68,7 @@ const Home: NextPage = observer(() => {
           {viewType === 'grid' ? <OffersGrid /> : <OffersTable />}
         </main>
         <div className='home-bg-bottom' />
+        <Footer />
       </div>
     </StoreDataAdapter>
   )

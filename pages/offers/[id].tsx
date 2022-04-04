@@ -11,6 +11,7 @@ import { getQueryParamAsString } from '../../utils/getQueryParamsAsString'
 import { compressAddress } from '../../utils/stringUtils/compressAdress'
 import { StoreContext } from '../_app'
 import { BlobLoader } from '../../components/layout/blobLoader'
+import Footer from '../../components/layout/footer'
 
 interface IOffer {
   amount: string
@@ -105,6 +106,7 @@ const SingleNftPage: NextPage = observer(({}) => {
             <BlobLoader />
           </div>
         )}
+        <Footer />
       </div>
       <div className='home-bg-bottom' />
     </StoreDataAdapter>
