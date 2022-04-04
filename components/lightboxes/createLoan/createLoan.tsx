@@ -20,6 +20,12 @@ const createLoan: React.FC<IProps> = ({ onClick }) => {
         <label htmlFor='duration'>Duration</label>
         <input type='range' value={1} min={1} max={90} />
       </div>
+      <div className='total-repay'>
+        <label htmlFor='APR'> APR(%)</label>
+        <input name='APR' />
+        <p>10,493 USDC</p>
+      </div>
+      <button>Create</button>
     </div>
   )
 }

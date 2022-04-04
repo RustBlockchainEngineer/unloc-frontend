@@ -9,11 +9,11 @@ export interface INFTCollateral {
   NFTId: string
   NFTCollection: string
   NFTImage: string
-  NFTAddress: string
+  NFTAddress: PublicKey
 }
 
 interface IProps {
-  NFT: NFTMetadata[]
+  NFT: INFTCollateral[]
 }
 
 const createOffer = (data: INFTCollateral | undefined) => {
@@ -37,14 +37,14 @@ const ChooseNFTCollateral: React.FC<IProps> = observer(({ NFT }) => {
         SORT BY INPUT
       </div>
       <div className='NFT-lb-collateral-list'>
-        {Object.values(NFT).map((item: NFTMetadata) => {
+        {Object.values(NFT).map((item) => {
           console.log(item)
           return (
             <LightboxItem
-              NFTAddress={item.mint}
-              NFTCollection={''}
-              NFTId={''}
-              NFTImage={''}
+              NFTAddress={item.NFTAddress}
+              NFTCollection={item.NFTCollection}
+              NFTId={item.NFTId}
+              NFTImage={item.NFTId}
               onClick={chooseNFT}
               choosen={address === ''}
             />
