@@ -9,3 +9,9 @@
   grid-template-columns: 1fr 1fr 1fr;
   grid-gap: 30px;
 }
+
+.offer-grid-empty {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}

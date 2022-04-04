@@ -9,11 +9,52 @@
   animation-iteration-count: 1;
   animation-fill-mode: forwards;
 
+  &--empty {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+
+  .offers-empty {
+    border-radius: $brd-rds-sm;
+    -moz-box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.75);
+    box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.75);
+    @include theme-aware('background-color', 'bg-table-hover');
+  }
+
   .offers-grid-item {
     border-radius: $brd-rds-sm;
     -moz-box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.75);
     box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.75);
     position: relative;
+    transform: scale(1);
+    transition: transform 0.2s ease-in-out;
+
+    &:hover {
+      transform: scale(1.03);
+    }
+
+    &.grid-sheet-low {
+      box-shadow:
+        /* The top layer shadow */ 0 1px 1px rgba(0, 0, 0, 0.15),
+        /* The second layer */ 0 8px 0 -4px #2e13d2, /* The second layer shadow */ 0 8px 1px -4px rgba(0, 0, 0, 0.15);
+    }
+
+    &.grid-sheet-mid {
+      box-shadow:
+        /* The top layer shadow */ 0 1px 1px rgba(0, 0, 0, 0.15),
+        /* The second layer */ 0 8px 0 -4px #2e13d2, /* The second layer shadow */ 0 8px 1px -4px rgba(0, 0, 0, 0.15),
+        /* The third layer */ 0 16px 0 -8px #ed8e19, /* The third layer shadow */ 0 16px 1px -8px rgba(0, 0, 0, 0.15);
+    }
+
+    &.grid-sheet-high {
+      box-shadow:
+        /* The top layer shadow */ 0 1px 1px rgba(0, 0, 0, 0.15),
+        /* The second layer */ 0 8px 0 -4px #2e13d2, /* The second layer shadow */ 0 8px 1px -4px rgba(0, 0, 0, 0.15),
+        /* The third layer */ 0 16px 0 -8px #ed8e19, /* The third layer shadow */ 0 16px 1px -8px rgba(0, 0, 0, 0.15),
+        /* The fourth layer */ 0 24px 0 -12px #e00a7f,
+        /* The fourth layer shadow */ 0 24px 1px -12px rgba(0, 0, 0, 0.15);
+    }
 
     .hover-data {
       position: absolute;

@@ -15,7 +15,6 @@ const MyOffers: NextPage = observer(() => {
   const [loaded, setLoaded] = useState(false)
   return (
     <StoreDataAdapter>
-      {/* {console.log(data)} */}
       <div className='page my-offers'>
         <LayoutTop />
         <Header

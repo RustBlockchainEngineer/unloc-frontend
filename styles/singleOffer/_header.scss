@@ -22,9 +22,13 @@
 .nft-image {
   width: 96px;
   height: 96px;
-  border: 1px solid;
-  @include theme-aware('border-color', 'color-border');
+  border: 8px solid;
+  border-spacing: 4px;
+  @include theme-aware('border-color', 'color-accent');
   margin-right: 11px;
+  border-radius: $brd-rds-lg;
+  -moz-box-shadow: 2px 3px 10px -1px rgba(19, 7, 43, 1);
+  box-shadow: 2px 3px 10px -1px rgba(19, 7, 43, 1);
 }
 
 .nft-info-name {
@@ -50,15 +54,20 @@
   @include theme-aware('background-color', 'color-primary');
   @include theme-aware('color', 'color-content');
   border-radius: 9px;
-  padding: 17px 13px;
+  padding: 17px 20px;
   p {
     font-size: 10px;
     font-weight: 400;
     line-height: 13px;
+    margin: 0 0 12px 0;
     span {
       font-size: 12px;
       font-weight: 700;
       line-height: 16px;
+    }
+
+    &:last-child {
+      margin: 0 0 6px 0;
     }
   }
 }

@@ -9,11 +9,46 @@ interface OffersGridItemInterface {
   amount: number
   duration: number
   currency: string
+  count?: number
 }
 
-export const OffersGridItem = ({ subOfferKey, image, apr, amount, duration, currency }: OffersGridItemInterface) => {
+export const OffersGridItem = ({
+  subOfferKey,
+  image,
+  apr,
+  amount,
+  duration,
+  currency,
+  count
+}: OffersGridItemInterface) => {
+  const rangeSheetsCount = (sheetCount: number) => {
+    if (sheetCount > 8) {
+      return 'high'
+    }
+    if (sheetCount > 5) {
+      return 'mid'
+    }
+    if (sheetCount > 2) {
+      return 'low'
+    }
+
+    return 'none'
+  }
+
+  const getSheets = (count: number) => {
+    let tick = 0
+    if (count) {
+      ;[...Array(count)].forEach((page, index) => {
+        tick++
+      })
+
+      return ` grid-sheet-${rangeSheetsCount(tick)}`
+    }
+    return 'grid-sheet-none'
+  }
+
   return (
-    <div className='offers-grid-item' key={subOfferKey}>
+    <div className={`offers-grid-item ${getSheets(count)}`} key={subOfferKey}>
       <Link href={`/offers/${subOfferKey}`}>
         <a>
           <div className='hover-data'>
@@ -31,6 +66,14 @@ export const OffersGridItem = ({ subOfferKey, image, apr, amount, duration, curr
               <span className='label'>Duration</span>
               <span className='content'>{duration} Days</span>
             </div>
+            {count ? (
+              <div className='hover-data-item'>
+                <span className='label'>Offers</span>
+                <span className='content'>{count}</span>
+              </div>
+            ) : (
+              <></>
+            )}
           </div>
           {image ? <Image src={image} alt='NFT Picture' width={500} height={500} /> : ''}
         </a>

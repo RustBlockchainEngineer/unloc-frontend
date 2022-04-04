@@ -31,6 +31,10 @@
   button.active {
     @include theme-aware('background-color', 'color-accent');
   }
+
+  button {
+    @include theme-aware('color', 'color-content');
+  }
 }
 
 .offers-filters {

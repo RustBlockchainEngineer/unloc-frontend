@@ -5,7 +5,9 @@ export interface IOfferData {
   tokenAccount?: PublicKey
   collection: string
   mint: string
-  metadata: IMetadata
+  image: string
+  name: string
+  external_url: string
 }
 
 export interface IMasterEdition {
