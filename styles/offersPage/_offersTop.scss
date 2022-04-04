@@ -65,6 +65,10 @@
       &:last-child {
         margin-left: 13px;
       }
+
+      &.btn--table {
+        display: none;
+      }
     }
   }
 }

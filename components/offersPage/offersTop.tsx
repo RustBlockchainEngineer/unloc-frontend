@@ -35,14 +35,14 @@ export const OffersTop = observer(() => {
 
         <div className='offers-view'>
           <button
-            className={`btn btn--md btn--bordered ${viewType === 'grid' ? 'active' : ''}`}
+            className={`btn btn--md btn--grid btn--bordered ${viewType === 'grid' ? 'active' : ''}`}
             onClick={() => store.Offers.setViewType('grid')}
           >
             <i className='icon icon--sm icon--grid--dark' />
             <span>Grid</span>
           </button>
           <button
-            className={`btn btn--md btn--bordered ${viewType === 'table' ? 'active' : ''}`}
+            className={`btn btn--md btn--table btn--bordered ${viewType === 'table' ? 'active' : ''}`}
             onClick={() => store.Offers.setViewType('table')}
           >
             <i className='icon icon--sm icon--table--dark' />
