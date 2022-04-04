@@ -12,10 +12,13 @@ export interface INFTCollateral {
 
 interface IProps {
   NFT: INFTCollateral[]
-  onSend: (data: any) => void
 }
 
-const ChooseNFTCollateral: React.FC<IProps> = ({ NFT, onSend }) => {
+const createOffer = (data: INFTCollateral | undefined) => {
+  console.log(data)
+}
+
+const ChooseNFTCollateral: React.FC<IProps> = ({ NFT }) => {
   const [item, setItem] = useState<INFTCollateral>()
   const [address, setAddress] = useState<string>('')
 
@@ -43,7 +46,7 @@ const ChooseNFTCollateral: React.FC<IProps> = ({ NFT, onSend }) => {
           )
         })}
       </div>
-      <button onClick={() => onSend(item)} className='lb-collateral-button'>
+      <button onClick={() => createOffer(item)} className='lb-collateral-button'>
         Use as Collateral
       </button>
     </div>

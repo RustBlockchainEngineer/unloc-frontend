@@ -59,31 +59,31 @@ const MyOffers: NextPage = observer(() => {
             NFTId: '1',
             NFTCollection: 'colledasdasdasdasction 1',
             NFTImage: 'test',
-            NFTAddress: new PublicKey('DSJdURFMnzPnDRmZA2LSUR15W4AooWb9RPqPoYJuWA4J')
+            NFTAddress: new PublicKey('856jKmXupTBXeE3F7kvzk5UFe4oo5scjbAaKdoReeRdi')
           },
           {
             NFTId: '1',
             NFTCollection: 'collection 1',
             NFTImage: 'test',
-            NFTAddress: new PublicKey('DSJdURFMnzPnDRmZA2LSUR15W4AooWb9RPqPoYJuWA4J')
+            NFTAddress: new PublicKey('3CGPVTdBUDXvSuUK9SbBue374HiBs1smgqKSWoeUPjGU')
           },
           {
             NFTId: '1',
             NFTCollection: 'collection 1',
             NFTImage: 'test',
-            NFTAddress: new PublicKey('DSJdURFMnzPnDRmZA2LSUR15W4AooWb9RPqPoYJuWA4J')
+            NFTAddress: new PublicKey('D2ZmM1Nrr7C9Q3gjCZo8ctTWHFQFJDthvaBq9rSYoQ5j')
           },
           {
             NFTId: '1',
             NFTCollection: 'collection 1',
             NFTImage: 'test',
-            NFTAddress: new PublicKey('DSJdURFMnzPnDRmZA2LSUR15W4AooWb9RPqPoYJuWA4J')
+            NFTAddress: new PublicKey('7U4E7p7hxXUj1w8EmWJiBiNazQeBLKSEuHSH2dcnVxJs')
           },
           {
             NFTId: '1',
             NFTCollection: 'collection 1',
             NFTImage: 'test',
-            NFTAddress: new PublicKey('Gsh7wYapR9v1CdKUgd2HmvyUwY61QbgF9GVCm9JvPwR3')
+            NFTAddress: new PublicKey('2zb9BnADv1VVP9C7i3sQ7hU1iphFE1DcrP12b3iYLJWU')
           },
           {
             NFTId: '1',
@@ -92,9 +92,6 @@ const MyOffers: NextPage = observer(() => {
             NFTAddress: new PublicKey('Gsh7wYapR9v1CdKUgd2HmvyUwY61QbgF9GVCm9JvPwR3')
           }
         ]}
-        onSend={(data: any) => {
-          console.log('send!')
-        }}
       />
       <Footer />
     </StoreDataAdapter>
