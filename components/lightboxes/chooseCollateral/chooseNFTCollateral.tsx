@@ -1,24 +1,28 @@
 import { PublicKey } from '@solana/web3.js'
 import LightboxItem from './lightboxItem/lightboxItem'
-import React, { useState } from 'react'
-import { INTERNALS } from 'next/dist/server/web/spec-extension/request'
+import React, { useContext, useState } from 'react'
+import { observer } from 'mobx-react'
+import { NFTMetadata } from '../../../integration/nftLoan'
+import { StoreContext } from '../../../pages/_app'
 
 export interface INFTCollateral {
   NFTId: string
   NFTCollection: string
   NFTImage: string
-  NFTAddress: PublicKey
+  NFTAddress: string
 }
 
 interface IProps {
-  NFT: INFTCollateral[]
+  NFT: NFTMetadata[]
 }
 
 const createOffer = (data: INFTCollateral | undefined) => {
   console.log(data)
 }
 
-const ChooseNFTCollateral: React.FC<IProps> = ({ NFT }) => {
+const ChooseNFTCollateral: React.FC<IProps> = observer(({ NFT }) => {
+  const store = useContext(StoreContext)
+
   const [item, setItem] = useState<INFTCollateral>()
   const [address, setAddress] = useState<string>('')
 
@@ -33,15 +37,16 @@ const ChooseNFTCollateral: React.FC<IProps> = ({ NFT }) => {
         SORT BY INPUT
       </div>
       <div className='NFT-lb-collateral-list'>
-        {Object.values(NFT).map((item) => {
+        {Object.values(NFT).map((item: NFTMetadata) => {
+          console.log(item)
           return (
             <LightboxItem
-              NFTAddress={item.NFTAddress}
-              NFTCollection={item.NFTCollection}
-              NFTId={item.NFTId}
-              NFTImage={item.NFTImage}
+              NFTAddress={item.mint}
+              NFTCollection={''}
+              NFTId={''}
+              NFTImage={''}
               onClick={chooseNFT}
-              choosen={address === item.NFTAddress.toString()}
+              choosen={address === ''}
             />
           )
         })}
@@ -51,6 +56,6 @@ const ChooseNFTCollateral: React.FC<IProps> = ({ NFT }) => {
       </button>
     </div>
   )
-}
+})
 
 export default ChooseNFTCollateral

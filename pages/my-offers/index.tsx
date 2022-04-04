@@ -8,7 +8,7 @@ import { StoreDataAdapter } from '../../components/storeDataAdapter'
 import { LayoutTop } from '../../components/layout/layoutTop'
 import Header from '../../components/singleOffer/Header/Header'
 import Footer from '../../components/layout/footer'
-import ChooseNFTCollateral from '../../components/lightboxes/chooseNFTCollateral'
+import ChooseNFTCollateral from '../../components/lightboxes/chooseCollateral/chooseNFTCollateral'
 
 const MyOffers: NextPage = observer(() => {
   const store = useContext(StoreContext)
@@ -50,10 +50,8 @@ const MyOffers: NextPage = observer(() => {
       <ChooseNFTCollateral
         NFT={[
           {
-            NFTId: '1',
-            NFTCollection: 'collection 1',
-            NFTImage: 'test',
-            NFTAddress: new PublicKey('DSJdURFMnzPnDRmZA2LSUR15W4AooWb9RPqPoYJuWA4J')
+            mint: new PublicKey('DSJdURFMnzPnDRmZA2LSUR15W4AooWb9RPqPoYJuWA4J').toString()
+            metadataPDA: new PublicKey('DSJdURFMnzPnDRmZA2LSUR15W4AooWb9RPqPoYJuWA4J').toString()
           },
           {
             NFTId: '1',

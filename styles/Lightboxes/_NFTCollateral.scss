@@ -13,6 +13,7 @@
   flex-direction: column;
   @include theme-aware(color, 'color-content');
   border-radius: 6px;
+  width: 80%;
 }
 
 .NFT-lb-header {
