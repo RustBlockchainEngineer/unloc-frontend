@@ -2,13 +2,13 @@ import React from 'react'
 
 type IProps = {
   offerID: string
-  status: 'Active' | 'Disable'
+  status: string
   amount: string
   token: string
   duration: string
-  durationRemaning: string
+  durationRemaning?: string
   APR: number
-  totalReapy: string
+  totalRepay: string
   btnMessage: string
 }
 
@@ -20,7 +20,7 @@ const Offer: React.FC<IProps> = ({
   duration,
   durationRemaning,
   APR,
-  totalReapy,
+  totalRepay,
   btnMessage
 }) => {
   return (
@@ -53,13 +53,13 @@ const Offer: React.FC<IProps> = ({
             <div className='item-box'>
               <p>Duration</p>
               <p>
-                {duration} days ({durationRemaning} days left)
+                {duration} days {durationRemaning ? `${durationRemaning} days left` : ''}
               </p>
             </div>
             <div className='item-box'>
               <p>Total repay amount</p>
               <p>
-                {totalReapy} {token}
+                {totalRepay} {token}
               </p>
             </div>
           </div>

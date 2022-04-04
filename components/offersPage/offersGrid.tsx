@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { observer } from 'mobx-react'
 
 import { StoreContext } from '../../pages/_app'
@@ -9,7 +9,7 @@ import { removeDuplicatesByPropertyIndex } from '../../utils/removeDuplicatesByP
 
 export const OffersGrid = observer(() => {
   const store = useContext(StoreContext)
-  const { pageOfferData, pageNFTData } = store.Offers
+  const { pageOfferData, pageNFTData, currentPage } = store.Offers
 
   return pageNFTData.length > 0 && pageOfferData.length > 0 ? (
     <div className='offers-grid'>
@@ -27,6 +27,8 @@ export const OffersGrid = observer(() => {
           />
         )
       })}
+      <button onClick={() => store.Offers.setCurrentPage(currentPage - 1)}>Prev Page</button>
+      <button onClick={() => store.Offers.setCurrentPage(currentPage + 1)}>Next Page</button>
     </div>
   ) : (
     <div>LOADING</div>

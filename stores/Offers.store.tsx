@@ -34,6 +34,7 @@ export class OffersStore {
   //new paginated offers:
   offersKeys: PublicKey[] = []
   offersCount: number = 0
+  offersKnown: any[] = []
 
   constructor(rootStore: any) {
     makeAutoObservable(this)
@@ -91,6 +92,9 @@ export class OffersStore {
 
   @action.bound setCurrentPage(page: number): void {
     this.currentPage = page
+    this.pageNFTData = []
+    this.pageOfferData = []
+    this.getOffersForListings()
   }
 
   @action.bound setFilteredOffers(offers: any[]): void {
@@ -130,7 +134,6 @@ export class OffersStore {
   }
 
   @action.bound setOffersCount = (count: number): void => {
-    // console.log(count)
     this.offersCount = count
   }
 
@@ -143,29 +146,50 @@ export class OffersStore {
   }
 
   @action.bound getOffersForListings = async (): Promise<void> => {
-    const activeOffersKeys = await getSubOffersKeysByState([0])
+    const activeOffersKeys = await getSubOffersKeysByState([0]) //add more filters
+    const reusedOffersKeys = await getSubOffersKeysByState([6]) //add more filters
 
-    if (activeOffersKeys && activeOffersKeys.length) {
-      this.setOffersKeys(activeOffersKeys)
-      this.setOffersCount(activeOffersKeys?.length)
-    }
+    if (activeOffersKeys && activeOffersKeys.length && reusedOffersKeys && reusedOffersKeys.length) {
+      const offersViable = [...activeOffersKeys, ...reusedOffersKeys]
 
-    const paginatedOffersPK = this.offersKeys.slice(
-      (this.currentPage - 1) * this.itemsPerPage,
-      this.currentPage * this.itemsPerPage
-    )
+      this.setOffersKeys(offersViable)
+      this.setOffersCount(offersViable?.length)
 
-    const offersData = await getSubOfferMultiple(paginatedOffersPK)
+      const offersData = await getSubOfferMultiple(this.offersKeys)
+      const offersCountedOnNft = countDuplicatesToProperty(offersData, 'nftMint', 'count')
+      this.setMaxPage(Math.ceil(offersCountedOnNft.length / this.itemsPerPage))
 
-    if (offersData) {
-      const resultOffers = countDuplicatesToProperty(offersData, 'nftMint', 'count')
-      this.pageOfferData = resultOffers
+      const nftMintKeys = removeDuplicatesByPropertyIncludes(offersCountedOnNft, 'nftMint')
+      const nftHandled: any[] = []
 
-      const nftMintKeys = removeDuplicatesByPropertyIncludes(offersData, 'nftMint')
+      nftMintKeys.forEach((key) => {
+        const mint = key.toBase58()
+        if (!nftHandled.includes(mint)) {
+          nftHandled.push(mint)
+        }
+      })
+      const keysTrimmed = nftHandled.map((key) => new PublicKey(key))
+      if (offersData && offersData) {
+        const offersByNFT = offersCountedOnNft.map((resultItem: any) => {
+          const element = offersCountedOnNft.find((item: any) => item.nftMint === resultItem.nftMint.toBase58)
+          return element ? element : resultItem
+        })
 
-      if (nftMintKeys && nftMintKeys.length) {
-        const data = await this.initManyNfts(nftMintKeys)
-        this.pageNFTData = data.metadatas
+        const paginatedOffersData = offersByNFT.slice(
+          (this.currentPage - 1) * this.itemsPerPage,
+          this.currentPage * this.itemsPerPage
+        )
+
+        this.pageOfferData = paginatedOffersData
+
+        if (keysTrimmed && keysTrimmed.length) {
+          const data = await this.initManyNfts(keysTrimmed)
+          const paginatedNFTData = data.metadatas.slice(
+            (this.currentPage - 1) * this.itemsPerPage,
+            this.currentPage * this.itemsPerPage
+          )
+          this.pageNFTData = paginatedNFTData
+        }
       }
     }
   }

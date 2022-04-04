@@ -16,14 +16,10 @@ const Home: NextPage = observer(() => {
   const { wallet, connected } = store.Wallet
   const { viewType } = store.Offers
 
-  const [loading, setLoading] = useState(true)
-
   const handleOffers = async () => {
     try {
       if (connected && wallet) {
-        setLoading(true)
         await store.Offers.getOffersForListings()
-        setLoading(false)
       }
     } catch (e) {
       console.log(e)
@@ -35,10 +31,6 @@ const Home: NextPage = observer(() => {
       handleOffers()
     }
   }, [wallet, connected])
-
-  useEffect(() => {
-    console.log('collections: ', store.Offers.nftCollections)
-  }, [store.Offers.nftCollections])
 
   return (
     <StoreDataAdapter>

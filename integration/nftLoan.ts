@@ -119,7 +119,6 @@ export const getSubOfferList = async (
 ) => {
   const accountName = 'subOffer'
   const discriminator = anchor.AccountsCoder.accountDiscriminator(accountName)
-  console.log('discriminator: ', discriminator)
   const filters: any[] = []
   if (offer) {
     const filter: MemcmpFilter = {

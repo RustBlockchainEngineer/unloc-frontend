@@ -8,7 +8,6 @@ import Header from '../../components/singleOffer/Header/Header'
 import Offer from '../../components/singleOffer/Offer/Offer'
 import { StoreDataAdapter } from '../../components/storeDataAdapter'
 import { getQueryParamAsString } from '../../utils/getQueryParamsAsString'
-import { secondsToDays } from '../../utils/mathUtils.ts/durationCalc'
 import { compressAddress } from '../../utils/stringUtils/compressAdress'
 import { StoreContext } from '../_app'
 
@@ -20,9 +19,11 @@ interface IOffer {
   id: string
   offerMint: string
   publicKey: PublicKey
+  status: number
+  totalRepay?: any
 }
 
-const MyOffers: NextPage = observer(({}) => {
+const SingleNftPage: NextPage = observer(({}) => {
   const router = useRouter()
   const store = useContext(StoreContext)
 
@@ -31,15 +32,10 @@ const MyOffers: NextPage = observer(({}) => {
   const { connected, wallet } = store.Wallet
   const { nftData, loansData } = store.SingleOffer
 
-  console.log(nftData)
   const handleData = async () => {
     try {
-      setLoaded(false)
       if (connected && wallet && router.query.id) {
-        // albo connect albo wallet nie pozwala na ściąganie danych z integracji
-        setMessage(getMessage())
-        // await store.SingleOffer.fetchNft(getQueryParamAsString(router.query.id))
-        setLoaded(true)
+        await store.SingleOffer.fetchNft(getQueryParamAsString(router.query.id))
         await store.SingleOffer.fetchSubOffers(getQueryParamAsString(router.query.id))
       }
     } catch (e) {
@@ -48,44 +44,54 @@ const MyOffers: NextPage = observer(({}) => {
     }
   }
 
-  const getMessage = () => {
-    if (!connected) {
-      return 'Please connect wallet'
-    }
-    return 'Lend Money'
-  }
-
   useEffect(() => {
     handleData()
   }, [router.query.id, connected, wallet])
+
+  useEffect(() => {
+    router.events.on('routeChangeStart', () => {
+      store.SingleOffer.setNftData({
+        collection: '',
+        mint: '',
+        image: '',
+        name: '',
+        external_url: ''
+      })
+      store.SingleOffer.setLoansData([])
+    })
+  }, [router.events, store.SingleOffer])
+
   return (
     <StoreDataAdapter>
       <div className='page my-offers'>
         <LayoutTop />
         <Header
-          collectionName='test'
-          nftAddress='4G7tnw4nFy1zK8KW77HJyDn4tTU4vFcwQJF3FF9ek5Rj'
-          nftImage='test'
-          nftName='test'
-          website='unloc.xyz'
+          collectionName={nftData.collection}
+          nftAddress={nftData.mint}
+          nftImage={nftData.image}
+          nftName={nftData.name}
+          website={nftData.external_url}
         />
         <div className='offer-grid'>
           {loansData.map((offer: IOffer) => {
-            console.log(offer)
-            return (
-              <Offer
-                key={offer.id}
-                offerID={compressAddress(4, offer.id)}
-                status='Active'
-                amount={offer.amount}
-                token='USDC'
-                duration={secondsToDays(offer.duration).toString()}
-                durationRemaning='20' // do zrobienia, w obiekcie nie ma info odnośnie rozpoczęcia stworzenia oferty
-                APR={offer.apr}
-                totalReapy='10293' // do zrobienia, pewnie to bedzie liczone po APR
-                btnMessage={message}
-              />
-            )
+            if (offer.status === 0 || offer.status === 6) {
+              return (
+                <Offer
+                  key={offer.id}
+                  offerID={compressAddress(4, offer.id)}
+                  status={offer.status.toString()}
+                  amount={offer.amount}
+                  token='USDC'
+                  duration={offer.duration.toString()}
+                  // durationRemaning='20' // TODO: include date of offer creation in Program data
+                  APR={offer.apr}
+                  totalRepay={offer.totalRepay}
+                  btnMessage={'Lend Money'}
+                />
+              )
+            } else {
+              return <></>
+            }
           })}
         </div>
       </div>
@@ -94,4 +100,4 @@ const MyOffers: NextPage = observer(({}) => {
   )
 })
 
-export default MyOffers
+export default SingleNftPage
