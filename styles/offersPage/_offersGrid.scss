@@ -27,6 +27,8 @@
     -moz-box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.75);
     box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.75);
     position: relative;
+    width: 304px;
+    height: 304px;
     transform: scale(1);
     transition: transform 0.2s ease-in-out;
 
@@ -101,7 +103,7 @@
     }
   }
 
-  @media (max-width: $bp-phone) {
+  @media (max-width: $bp-tablet) {
     display: flex;
     width: 100vw;
     flex-wrap: wrap;

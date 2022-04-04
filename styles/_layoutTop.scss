@@ -4,7 +4,7 @@
   margin-top: 50px;
   justify-content: space-between;
 
-  @media (max-width: $bp-phone) {
+  @media (max-width: $bp-tablet) {
     flex-direction: column;
     margin-top: 10px;
     width: 100%;
@@ -52,7 +52,7 @@
     margin-right: 0;
   }
 
-  @media (max-width: $bp-phone) {
+  @media (max-width: $bp-tablet) {
     width: 100vw;
     justify-content: center;
 

@@ -2,7 +2,7 @@
   width: $pg-col;
   margin: 0 auto;
 
-  @media (max-width: $bp-phone) {
+  @media (max-width: $bp-tablet) {
     width: 100vw;
   }
 }
