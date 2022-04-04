@@ -17,6 +17,9 @@
   align-items: center;
   justify-content: center;
   height: 96px;
+  animation: fadeInAnimation ease 0.8s;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
 }
 
 .nft-image {
@@ -29,6 +32,9 @@
   border-radius: $brd-rds-lg;
   -moz-box-shadow: 2px 3px 10px -1px rgba(19, 7, 43, 1);
   box-shadow: 2px 3px 10px -1px rgba(19, 7, 43, 1);
+  animation: fadeInAnimation ease 0.8s;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
 }
 
 .nft-info-name {
