@@ -42,6 +42,10 @@
   p:nth-child(2) {
     font-weight: 700;
   }
+
+  @media (max-width: $bp-tablet) {
+    width: 90vw;
+  }
 }
 
 .offer-header {
@@ -73,6 +77,11 @@
 
 .offer-lend {
   width: 100%;
+
+  @media (max-width: $bp-tablet) {
+    width: 90vw;
+    margin-bottom: 40px;
+  }
 }
 
 .lend-btn {

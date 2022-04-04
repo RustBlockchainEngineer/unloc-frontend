@@ -8,6 +8,14 @@
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   grid-gap: 30px;
+
+  @media (max-width: $bp-tablet) {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100vw;
+    grid-gap: 0;
+    padding: 0 5vw;
+  }
 }
 
 .offer-grid-empty {
