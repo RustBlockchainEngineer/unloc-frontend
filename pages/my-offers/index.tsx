@@ -1,10 +1,43 @@
+import React, { createContext, useEffect, useState, useContext } from 'react'
 import type { NextPage } from 'next'
+import { observer } from 'mobx-react'
+import { PublicKey } from '@solana/web3.js'
 
+import { StoreContext } from '../_app'
 import { StoreDataAdapter } from '../../components/storeDataAdapter'
 import { LayoutTop } from '../../components/layout/layoutTop'
 import Header from '../../components/singleOffer/Header/Header'
 
-const MyOffers: NextPage = () => {
+const MyOffers: NextPage = observer(() => {
+  const store = useContext(StoreContext)
+  const { wallet, connected } = store.Wallet
+  const { offers } = store.MyOffers
+
+  const refreshSubOffers = async () => {
+    try {
+      if (wallet && wallet.adapter.publicKey) {
+        await store.MyOffers.getOffersByWallet(wallet.adapter.publicKey)
+        await store.MyOffers.getSubOffersByOffers()
+      }
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.log(e)
+    }
+  }
+
+  useEffect(() => {
+    if (connected && wallet) {
+      refreshSubOffers()
+    }
+  }, [connected, wallet])
+
+  useEffect(() => {
+    if (offers && offers.length > 0) {
+      // store.UserWallet.getSubOffersByOffers() // this might be totally not needed
+      store.MyOffers.getNFTsData()
+    }
+  }, [offers, store.MyOffers, store.MyOffers.offers])
+
   return (
     <StoreDataAdapter>
       <div className='page my-offers'>
@@ -14,6 +47,6 @@ const MyOffers: NextPage = () => {
       <div className='home-bg-bottom' />
     </StoreDataAdapter>
   )
-}
+})
 
 export default MyOffers
