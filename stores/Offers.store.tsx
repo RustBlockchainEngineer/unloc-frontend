@@ -30,6 +30,7 @@ export class OffersStore {
   filterAmountMax = 1000 //take this value dynamically from offers
   filterDurationMin = 1
   filterDurationMax = 90
+  filtersVisible = true
 
   //new paginated offers:
   offersKeys: PublicKey[] = []
@@ -201,5 +202,9 @@ export class OffersStore {
         }
       }
     }
+  }
+
+  @action.bound setFiltersVisible = (visible: boolean): void => {
+    this.filtersVisible = visible
   }
 }

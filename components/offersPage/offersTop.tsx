@@ -15,10 +15,9 @@ export const OffersTop = observer(() => {
     filterAmountMax,
     filterDurationMin,
     filterDurationMax,
-    viewType
+    viewType,
+    filtersVisible
   } = store.Offers
-
-  const [filtersVisible, setFiltersVisible] = useState(true)
 
   return (
     <div className='layout-line'>
@@ -28,7 +27,7 @@ export const OffersTop = observer(() => {
         <button
           className={`btn--filters btn btn--md btn--secondary ${filtersVisible ? 'active' : ''}`}
           onClick={() => {
-            setFiltersVisible(!filtersVisible)
+            store.Offers.setFiltersVisible(!filtersVisible)
           }}
         >
           Filters
