@@ -75,7 +75,7 @@ export const OffersGridItem = ({
               <></>
             )}
           </div>
-          {image ? <Image src={image} alt='NFT Picture' width={500} height={500} /> : ''}
+          {image ? <Image src={image} alt='NFT Picture' layout='fill' /> : ''}
         </a>
       </Link>
     </div>

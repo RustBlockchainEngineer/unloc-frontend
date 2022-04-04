@@ -57,6 +57,8 @@ const Home: NextPage = observer(() => {
 
           <meta property='og:type' content='website' />
           <meta name='twitter:card' content='summary_large_image' />
+
+          <meta name='viewport' content='initial-scale=1, maximum-scale=1' />
         </Head>
 
         <main>

@@ -54,6 +54,11 @@ body {
   background-position: bottom left;
   background-size: 40%;
   z-index: -1;
+
+  @media (max-width: $bp-phone) {
+    width: 100vw;
+    height: 100vh;
+  }
 }
 
 h1,

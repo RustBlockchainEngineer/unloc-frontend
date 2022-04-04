@@ -3,15 +3,33 @@
   width: $pg-col;
   margin-top: 50px;
   justify-content: space-between;
+
+  @media (max-width: $bp-phone) {
+    flex-direction: column;
+    margin-top: 10px;
+    width: 100%;
+    justify-content: center;
+    text-align: center;
+
+    .unloc-logo {
+      display: none;
+    }
+  }
 }
 
 .top-menu {
   display: flex;
-  margin: 25px 0 0;
+  margin: 10px 20px;
   padding: 0;
   list-style: none;
+  justify-content: space-between;
+
+  li {
+    display: contents;
+  }
 
   li a {
+    display: inline-block;
     @include theme-aware('color', 'color-content');
     text-decoration: none;
     font-size: $tp-lg;
@@ -32,5 +50,14 @@
 
   li:last-child a {
     margin-right: 0;
+  }
+
+  @media (max-width: $bp-phone) {
+    width: 100vw;
+    justify-content: center;
+
+    li a {
+      padding: 8px 15px 9px 15px;
+    }
   }
 }

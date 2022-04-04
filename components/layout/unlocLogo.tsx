@@ -12,7 +12,7 @@ export const UnlocLogo: React.FC<UnlocLogoProps> = observer(({ classNames }: Unl
   const { theme } = store.Interface
 
   return (
-    <div className={`${classNames ? classNames : ''}`}>
+    <div className={`unloc-logo ${classNames ? classNames : ''}`}>
       <Link href='/'>
         <a>
           {theme === 'light' ? (

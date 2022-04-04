@@ -1,4 +1,8 @@
 .page {
   width: $pg-col;
   margin: 0 auto;
+
+  @media (max-width: $bp-phone) {
+    width: 100vw;
+  }
 }

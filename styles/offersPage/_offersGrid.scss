@@ -100,4 +100,32 @@
       display: flex;
     }
   }
+
+  @media (max-width: $bp-phone) {
+    display: flex;
+    width: 100vw;
+    flex-wrap: wrap;
+    align-items: center;
+    transform: scale(1);
+    gap: 0px;
+    justify-content: center;
+
+    .offers-grid-item {
+      width: 40vw;
+      height: 40vw;
+      margin: 2vw 2.5vw 2vw 2.5vw;
+
+      a {
+        display: inline-block;
+      }
+
+      .hover-data {
+        display: none;
+      }
+    }
+
+    &--empty {
+      width: 100vw;
+    }
+  }
 }
