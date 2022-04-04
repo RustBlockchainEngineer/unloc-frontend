@@ -23,6 +23,7 @@
 @import './offersPage/offersPagination';
 @import './blobLoader';
 @import './footer/footer';
+@import './Lightboxes/NFTCollateral';
 
 body {
   @include theme-aware('background-color', 'color-background');

@@ -8,6 +8,7 @@ import { StoreDataAdapter } from '../../components/storeDataAdapter'
 import { LayoutTop } from '../../components/layout/layoutTop'
 import Header from '../../components/singleOffer/Header/Header'
 import Footer from '../../components/layout/footer'
+import ChooseNFTCollateral from '../../components/lightboxes/chooseNFTCollateral'
 
 const MyOffers: NextPage = observer(() => {
   const store = useContext(StoreContext)
@@ -46,6 +47,55 @@ const MyOffers: NextPage = observer(() => {
         <h2>My Offers Page</h2>
       </div>
       <div className='home-bg-bottom' />
+      <ChooseNFTCollateral
+        NFT={[
+          {
+            NFTId: '1',
+            NFTCollection: 'collection 1',
+            NFTImage: 'test',
+            NFTAddress: new PublicKey('DSJdURFMnzPnDRmZA2LSUR15W4AooWb9RPqPoYJuWA4J')
+          },
+          {
+            NFTId: '1',
+            NFTCollection: 'colledasdasdasdasction 1',
+            NFTImage: 'test',
+            NFTAddress: new PublicKey('DSJdURFMnzPnDRmZA2LSUR15W4AooWb9RPqPoYJuWA4J')
+          },
+          {
+            NFTId: '1',
+            NFTCollection: 'collection 1',
+            NFTImage: 'test',
+            NFTAddress: new PublicKey('DSJdURFMnzPnDRmZA2LSUR15W4AooWb9RPqPoYJuWA4J')
+          },
+          {
+            NFTId: '1',
+            NFTCollection: 'collection 1',
+            NFTImage: 'test',
+            NFTAddress: new PublicKey('DSJdURFMnzPnDRmZA2LSUR15W4AooWb9RPqPoYJuWA4J')
+          },
+          {
+            NFTId: '1',
+            NFTCollection: 'collection 1',
+            NFTImage: 'test',
+            NFTAddress: new PublicKey('DSJdURFMnzPnDRmZA2LSUR15W4AooWb9RPqPoYJuWA4J')
+          },
+          {
+            NFTId: '1',
+            NFTCollection: 'collection 1',
+            NFTImage: 'test',
+            NFTAddress: new PublicKey('Gsh7wYapR9v1CdKUgd2HmvyUwY61QbgF9GVCm9JvPwR3')
+          },
+          {
+            NFTId: '1',
+            NFTCollection: 'collection 1',
+            NFTImage: 'test',
+            NFTAddress: new PublicKey('Gsh7wYapR9v1CdKUgd2HmvyUwY61QbgF9GVCm9JvPwR3')
+          }
+        ]}
+        onSend={(data: any) => {
+          console.log('send!')
+        }}
+      />
       <Footer />
     </StoreDataAdapter>
   )
