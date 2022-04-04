@@ -54,7 +54,8 @@
   }
 
   @media (max-width: $bp-tablet) {
-    width: 100vw;
+    width: 95vw;
+    margin: 10px 2.5vw;
     justify-content: center;
 
     li a {
