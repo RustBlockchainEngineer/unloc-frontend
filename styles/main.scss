@@ -29,7 +29,6 @@ body {
   @include theme-aware('background-image', 'bg-home');
   background-repeat: no-repeat;
   background-position: top right;
-  background-size: 40%;
   @include theme-aware('color', 'color-primary');
   font-family: 'Open Sans', sans-serif;
   box-sizing: border-box;
@@ -41,20 +40,40 @@ body {
 
 .home-bg-bottom {
   display: inline-block;
-  width: 916px;
-  height: 620px;
+
   position: fixed;
   bottom: 0;
   left: 0;
   @include theme-aware('background-image', 'bg-home-bottom');
   background-repeat: no-repeat;
   background-position: bottom left;
-  background-size: 40%;
   z-index: -1;
 
   @media (max-width: $bp-tablet) {
     width: 100vw;
     height: 100vh;
+  }
+}
+
+.theme-light {
+  body {
+    background-size: 40%;
+  }
+  .home-bg-bottom {
+    width: 916px;
+    height: 620px;
+    background-size: 40%;
+  }
+}
+
+.theme-dark {
+  body {
+    background-size: 60%;
+  }
+  .home-bg-bottom {
+    width: 1241px;
+    height: 748px;
+    background-size: 80%;
   }
 }
 
