@@ -1,0 +1,28 @@
+.offers-pagination {
+  display: flex;
+  width: 100%;
+  margin-bottom: 100px;
+
+  button {
+    @include theme-aware('background-color', 'color-accent');
+    @include theme-aware('color', 'color-label');
+    font-weight: $wg-lt;
+    border: none;
+    padding: 8px 20px;
+    margin: 0 10px;
+    border-radius: $brd-rds-lg;
+    cursor: pointer;
+    -moz-box-shadow: 2px 3px 10px -1px rgba(36, 17, 154, 1);
+    box-shadow: 2px 3px 10px -1px rgba(36, 17, 154, 1);
+    transition: background 0.3s ease-in-out;
+
+    &:hover,
+    &.active {
+      @include theme-aware('background-color', 'color-secondary');
+    }
+  }
+
+  &__pages {
+    display: contents;
+  }
+}

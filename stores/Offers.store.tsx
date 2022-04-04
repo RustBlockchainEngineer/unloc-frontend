@@ -39,26 +39,35 @@ export class OffersStore {
   constructor(rootStore: any) {
     makeAutoObservable(this)
     this.rootStore = rootStore
-
-    // reaction(
-    //   () => this.currentPage,
-    //   () => this.refreshShownNFTs()
-    // )
   }
 
-  // questionable
-  // @action.bound refreshShownNFTs(): void {
-  //   try {
-  //     // const filteredSubOffers = this.filterShownNFTs(this.offers, this.collectionFilters)
-  //     // const sortedSubOffers = sortNftsByField(filteredSubOffers, 'name')
-  //     // const slicedSubOffers = this.sliceShownNFTs(sortedSubOffers, this.currentPage, this.itemsPerPage)
-  //     // this.setMaxPage(Math.ceil(filteredSubOffers.length / this.itemsPerPage))
-  //     // this.setFilteredOffers(slicedSubOffers)
-  //   } catch (e) {
-  //     // eslint-disable-next-line no-console
-  //     console.log(e)
-  //   }
-  // }
+  private addCollectionToNFTCollections(collection: string): void {
+    this.nftCollections = this.nftCollections.includes(collection)
+      ? this.nftCollections
+      : this.nftCollections.concat(collection)
+  }
+
+  @action.bound fetchCollectionForNfts = flow(function* (this: OffersStore) {
+    this.filterCollection = []
+
+    try {
+      const requests = this.pageOfferData.map((item, index) => ({
+        request: axios.post('/api/collections/nft', { id: item.nftMint.toBase58() }),
+        index
+      }))
+      const responses = yield axios.all(requests.map((request) => request.request))
+
+      for (const el of requests) {
+        this.pageOfferData[el.index].collection = responses[el.index].data
+        this.addCollectionToNFTCollections(responses[el.index].data)
+      }
+
+      this.buildFilterCollection()
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.log(e)
+    }
+  })
 
   @action.bound resetNFTCollections(): void {
     this.nftCollections = []

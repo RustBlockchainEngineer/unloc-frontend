@@ -10,6 +10,7 @@ import { StoreDataAdapter } from '../../components/storeDataAdapter'
 import { getQueryParamAsString } from '../../utils/getQueryParamsAsString'
 import { compressAddress } from '../../utils/stringUtils/compressAdress'
 import { StoreContext } from '../_app'
+import { BlobLoader } from '../../components/layout/blobLoader'
 
 interface IOffer {
   amount: string
@@ -65,35 +66,45 @@ const SingleNftPage: NextPage = observer(({}) => {
     <StoreDataAdapter>
       <div className='page my-offers'>
         <LayoutTop />
-        <Header
-          collectionName={nftData.collection}
-          nftAddress={nftData.mint}
-          nftImage={nftData.image}
-          nftName={nftData.name}
-          website={nftData.external_url}
-        />
-        <div className='offer-grid'>
-          {loansData.map((offer: IOffer) => {
-            if (offer.status === 0 || offer.status === 6) {
-              return (
-                <Offer
-                  key={offer.id}
-                  offerID={compressAddress(4, offer.id)}
-                  status={offer.status.toString()}
-                  amount={offer.amount}
-                  token='USDC'
-                  duration={offer.duration.toString()}
-                  // durationRemaning='20' // TODO: include date of offer creation in Program data
-                  APR={offer.apr}
-                  totalRepay={offer.totalRepay}
-                  btnMessage={'Lend Money'}
-                />
-              )
-            } else {
-              return <></>
-            }
-          })}
-        </div>
+        {nftData ? (
+          <Header
+            collectionName={nftData.collection}
+            nftAddress={nftData.mint}
+            nftImage={nftData.image}
+            nftName={nftData.name}
+            website={nftData.external_url}
+          />
+        ) : (
+          <></>
+        )}
+        {loansData && loansData.length ? (
+          <div className='offer-grid'>
+            {loansData.map((offer: IOffer) => {
+              if (offer.status === 0 || offer.status === 6) {
+                return (
+                  <Offer
+                    key={offer.id}
+                    offerID={compressAddress(4, offer.id)}
+                    status={offer.status.toString()}
+                    amount={offer.amount}
+                    token='USDC'
+                    duration={offer.duration.toString()}
+                    // durationRemaning='20' // TODO: include date of offer creation in Program data
+                    APR={offer.apr}
+                    totalRepay={offer.totalRepay}
+                    btnMessage={'Lend Money'}
+                  />
+                )
+              } else {
+                return <></>
+              }
+            })}
+          </div>
+        ) : (
+          <div className='offer-grid-empty'>
+            <BlobLoader />
+          </div>
+        )}
       </div>
       <div className='home-bg-bottom' />
     </StoreDataAdapter>

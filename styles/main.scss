@@ -13,13 +13,15 @@
 @import './layout';
 @import './layoutTop';
 @import './userToolbox';
-@import './singleOffer/hedaer';
+@import './singleOffer/header';
 @import './singleOffer/offer';
 @import './singleOffer/page';
 @import './filter';
 @import './offersPage/offersTop';
 @import './offersPage/offersGrid';
 @import './offersPage/offersTable';
+@import './offersPage/offersPagination';
+@import './blobLoader';
 
 * {
   box-sizing: border-box;

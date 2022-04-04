@@ -20,6 +20,7 @@ const Home: NextPage = observer(() => {
     try {
       if (connected && wallet) {
         await store.Offers.getOffersForListings()
+        await store.Offers.fetchCollectionForNfts()
       }
     } catch (e) {
       console.log(e)

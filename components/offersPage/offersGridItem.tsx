@@ -21,8 +21,34 @@ export const OffersGridItem = ({
   currency,
   count
 }: OffersGridItemInterface) => {
+  const rangeSheetsCount = (sheetCount: number) => {
+    if (sheetCount > 8) {
+      return 'high'
+    }
+    if (sheetCount > 5) {
+      return 'mid'
+    }
+    if (sheetCount > 2) {
+      return 'low'
+    }
+
+    return 'none'
+  }
+
+  const getSheets = (count: number) => {
+    let tick = 0
+    if (count) {
+      ;[...Array(count)].forEach((page, index) => {
+        tick++
+      })
+
+      return ` grid-sheet-${rangeSheetsCount(tick)}`
+    }
+    return 'grid-sheet-none'
+  }
+
   return (
-    <div className='offers-grid-item' key={subOfferKey}>
+    <div className={`offers-grid-item ${getSheets(count)}`} key={subOfferKey}>
       <Link href={`/offers/${subOfferKey}`}>
         <a>
           <div className='hover-data'>
