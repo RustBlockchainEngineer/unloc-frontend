@@ -13,7 +13,7 @@ const MyOffers: NextPage = observer(() => {
   const { wallet, connected } = store.Wallet
   const { offers } = store.MyOffers
 
-  const refreshSubOffers = async () => {
+  const refreshSubOffers = async (wallet: { adapter: { publicKey: PublicKey } }) => {
     try {
       if (wallet && wallet.adapter.publicKey) {
         await store.MyOffers.getOffersByWallet(wallet.adapter.publicKey)
@@ -26,10 +26,10 @@ const MyOffers: NextPage = observer(() => {
   }
 
   useEffect(() => {
-    if (connected && wallet) {
-      refreshSubOffers()
+    if (connected && store.Wallet.wallet) {
+      refreshSubOffers(store.Wallet.wallet)
     }
-  }, [connected, wallet])
+  }, [connected, store.Wallet.wallet])
 
   useEffect(() => {
     if (offers && offers.length > 0) {
