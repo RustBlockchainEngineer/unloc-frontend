@@ -18,6 +18,26 @@
       margin-top: 50px;
     }
   }
+
+  @media (max-width: $bp-tablet) {
+    flex-direction: column;
+    width: 100vw;
+    position: relative;
+
+    h1 {
+      text-align: center;
+    }
+
+    .btn--filters {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      &.active {
+        border-radius: $brd-rds-lg;
+        margin-top: 40px;
+      }
+    }
+  }
 }
 
 .offers-view {
@@ -34,6 +54,18 @@
 
   button {
     @include theme-aware('color', 'color-content');
+  }
+
+  @media (max-width: $bp-tablet) {
+    margin: 30px 10px 20px;
+
+    button {
+      font-size: $tp-tn;
+
+      &:last-child {
+        margin-left: 13px;
+      }
+    }
   }
 }
 
@@ -69,6 +101,21 @@
     &:last-child {
       margin-right: 0;
       border: none;
+    }
+  }
+
+  @media (max-width: $bp-tablet) {
+    &.active {
+      width: 100vw;
+      flex-direction: column;
+
+      .filter-generic {
+        margin: 5px 0 15px 0;
+        padding: 0 0 15px;
+        border-right: none;
+        border-bottom: 1px dotted;
+        @include theme-aware('border-color', 'color-secondary');
+      }
     }
   }
 }

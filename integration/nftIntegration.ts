@@ -88,7 +88,7 @@ export const getTokensByPubKey = async (user: string): Promise<IOfferData[]> => 
   const { value: tokens } = await SOLANA_CONNECTION.getParsedTokenAccountsByOwner(USER_PUBKEY, {
     programId: TOKEN_PROGRAM_ID
   })
-  const nfts: IOfferData[] = []
+  const nfts: any[] = []
 
   const filteredTokens = tokens.filter((token) => {
     const { tokenAmount } = token.account.data.parsed.info
@@ -104,7 +104,7 @@ export const getTokensByPubKey = async (user: string): Promise<IOfferData[]> => 
         metadata: await getMetadata(filteredTokens[i].account.data.parsed.info.mint)
       }
 
-      nfts.push(nft)
+      nfts.push(nft as any)
     } catch (e) {
       // eslint-disable-next-line no-console
       console.log(e)

@@ -27,6 +27,9 @@
   -moz-box-shadow: 2px 3px 10px -1px rgba(19, 7, 43, 1);
   box-shadow: 2px 3px 10px -1px rgba(19, 7, 43, 1);
   transition: background 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  animation: fadeInAnimation ease 0.8s;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
 
   p {
     font-size: 12px;
@@ -38,6 +41,10 @@
   }
   p:nth-child(2) {
     font-weight: 700;
+  }
+
+  @media (max-width: $bp-tablet) {
+    width: 90vw;
   }
 }
 
@@ -70,6 +77,11 @@
 
 .offer-lend {
   width: 100%;
+
+  @media (max-width: $bp-tablet) {
+    width: 90vw;
+    margin-bottom: 40px;
+  }
 }
 
 .lend-btn {

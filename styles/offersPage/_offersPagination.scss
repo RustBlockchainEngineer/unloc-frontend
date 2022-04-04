@@ -25,4 +25,20 @@
   &__pages {
     display: contents;
   }
+
+  @media (max-width: $bp-tablet) {
+    width: 100vw;
+    flex-direction: column;
+    text-align: center;
+
+    button {
+      padding: 15px 30px;
+    }
+
+    &__pages {
+      width: 100vw;
+      display: flex;
+      margin: 40px 0;
+    }
+  }
 }
