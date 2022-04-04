@@ -8,6 +8,7 @@ import { getQueryParamAsString } from '../../utils/getQueryParamsAsString'
 import { StoreContext } from '../_app'
 import { useContext, useEffect, useState } from 'react'
 import { getOfferList } from '../../integration/nftLoan'
+import Footer from '../../components/layout/footer'
 
 const MyOffers: NextPage = observer(() => {
   const store = useContext(StoreContext)
@@ -26,6 +27,7 @@ const MyOffers: NextPage = observer(() => {
         />
       </div>
       <div className='home-bg-bottom' />
+      <Footer />
     </StoreDataAdapter>
   )
 })

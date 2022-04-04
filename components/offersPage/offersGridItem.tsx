@@ -48,7 +48,7 @@ export const OffersGridItem = ({
   }
 
   return (
-    <div className={`offers-grid-item ${count ? getSheets(count) : ''}`} key={subOfferKey}>
+    <div className={`offers-grid-item ${getSheets(count !== undefined ? count : 0)}`} key={subOfferKey}>
       <Link href={`/offers/${subOfferKey}`}>
         <a>
           <div className='hover-data'>

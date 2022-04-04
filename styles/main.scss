@@ -22,10 +22,7 @@
 @import './offersPage/offersTable';
 @import './offersPage/offersPagination';
 @import './blobLoader';
-
-* {
-  box-sizing: border-box;
-}
+@import './footer/footer';
 
 body {
   @include theme-aware('background-color', 'color-background');
