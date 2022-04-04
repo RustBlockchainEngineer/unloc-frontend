@@ -5,6 +5,12 @@
   animation: fadeInAnimation ease 0.8s;
   animation-iteration-count: 1;
   animation-fill-mode: forwards;
+
+  &--empty {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
 }
 
 .offers-table-heading {
