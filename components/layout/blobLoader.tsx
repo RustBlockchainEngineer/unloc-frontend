@@ -3,6 +3,7 @@ import React from 'react'
 interface BlobLoaderProps {
   classNames?: string
 }
+
 export const BlobLoader: React.FC<BlobLoaderProps> = ({ classNames }: BlobLoaderProps) => {
   return (
     <div className={`blob-loader ${classNames ? classNames : ''}`}>
