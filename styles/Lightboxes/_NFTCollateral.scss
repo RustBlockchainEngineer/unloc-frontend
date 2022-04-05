@@ -5,6 +5,8 @@
 }
 
 .collateral-lightbox {
+  position: relative;
+  z-index: 3;
   @include theme-aware('background-color', 'color-accent');
   padding: 42px;
   display: flex;

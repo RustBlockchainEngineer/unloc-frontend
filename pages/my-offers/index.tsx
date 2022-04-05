@@ -7,7 +7,6 @@ import { StoreContext } from '../_app'
 import { StoreDataAdapter } from '../../components/storeDataAdapter'
 import { LayoutTop } from '../../components/layout/layoutTop'
 import Footer from '../../components/layout/footer'
-import ChooseNFTCollateral from '../../components/lightboxes/chooseCollateral/chooseNFTCollateral'
 import { MyOffersTop } from '../../components/myOffers/myOffersTop'
 import { MyOffersNftList } from '../../components/myOffers/myOffersNftList'
 
@@ -43,9 +42,7 @@ const MyOffers: NextPage = observer(() => {
         {connected ? <MyOffersNftList /> : ''}
       </div>
       <div className='home-bg-bottom' />
-      <div style={{ width: '100%', display: 'flex', justifyContent: 'center', marginTop: 48 }}>
-        <ChooseNFTCollateral />
-      </div>
+
       <Footer />
     </StoreDataAdapter>
   )

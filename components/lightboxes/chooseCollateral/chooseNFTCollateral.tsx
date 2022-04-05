@@ -20,6 +20,7 @@ const createOffer = (mint: string) => {
 const ChooseNFTCollateral: React.FC = observer(() => {
   const store = useContext(StoreContext)
   const myOffers = store.MyOffers
+  const { setShowLightboxCollateral } = store.Lightbox
   const { wallet, connection, walletKey } = store.Wallet
 
   const [itemMint, setItemMint] = useState<string>('')
@@ -76,7 +77,13 @@ const ChooseNFTCollateral: React.FC = observer(() => {
             return <LightboxItem data={item} onClick={chooseNFT} choosen={address === ''} />
           })}
         </div>
-        <button onClick={() => createOffer(itemMint)} className='lb-collateral-button'>
+        <button
+          onClick={() => {
+            createOffer(itemMint)
+            store.Lightbox.setShowLightboxCollateral(false)
+          }}
+          className='lb-collateral-button'
+        >
           Use as Collateral
         </button>
       </div>
