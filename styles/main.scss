@@ -24,6 +24,8 @@
 @import './blobLoader';
 @import './footer/footer';
 @import './Lightboxes/NFTCollateral';
+@import './myOffers/_myOffersTop';
+@import './myOffers/myOffersNftList';
 
 body {
   @include theme-aware('background-color', 'color-background');
@@ -69,12 +71,12 @@ body {
 
 .theme-dark {
   body {
-    background-size: 60%;
+    background-size: 30%;
   }
   .home-bg-bottom {
     width: 1241px;
     height: 748px;
-    background-size: 80%;
+    background-size: 40%;
   }
 }
 

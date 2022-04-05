@@ -59,18 +59,18 @@ export const OffersTop = observer(() => {
           values={filterCollectionSelected}
         />
         <Filter
+          title='Loan Amount'
+          type='minmax'
+          valuesRange={{ min: filterAmountMin, max: filterAmountMax }}
+          actionMin={store.Offers.setFilterAmountMin}
+          actionMax={store.Offers.setFilterAmountMax}
+        />
+        <Filter
           title='APR'
           type='minmax'
           valuesRange={{ min: filterAprMin, max: filterAprMax }}
           actionMin={store.Offers.setFilterAprMin}
           actionMax={store.Offers.setFilterAprMax}
-        />
-        <Filter
-          title='Amount'
-          type='minmax'
-          valuesRange={{ min: filterAmountMin, max: filterAmountMax }}
-          actionMin={store.Offers.setFilterAmountMin}
-          actionMax={store.Offers.setFilterAmountMax}
         />
         <Filter
           title='Duration'
