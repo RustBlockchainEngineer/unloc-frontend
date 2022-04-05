@@ -24,23 +24,28 @@ const ChooseNFTCollateral: React.FC = observer(() => {
   const [itemMint, setItemMint] = useState<string>('')
   const [address, setAddress] = useState<string>('')
   const [sortOption, setSortOption] = useState<string>('')
-  const [data, setData] = useState<NFTMetadata[]>()
+  const [data, setData] = useState<NFTMetadata[]>(myOffers.collaterables)
 
   useEffect(() => {
     if (data) {
       if (sortOption === '') {
         return
       }
-      setData(data.sort())
+      setData(
+        data.sort((a, b) =>
+          a.arweaveMetadata.name > b.arweaveMetadata.name ? 1 : b.arweaveMetadata.name > a.arweaveMetadata.name ? -1 : 0
+        )
+      )
     }
   }, [sortOption])
 
   useEffect(() => {
     const fetchData = async () => {
+      await myOffers.getUserNFTs(new PublicKey('4NgrxbgLkXaQuP4XD8UeS4ZXxygQBtGsP1yR56rtM1bV'))
       await myOffers.getNFTsData()
     }
     fetchData()
-      .then(() => setData(myOffers.nftData))
+      .then(() => setData(myOffers.collaterables))
       .catch((err) => console.log(err))
   }, [])
 

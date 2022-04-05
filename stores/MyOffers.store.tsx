@@ -26,7 +26,6 @@ export class MyOffersStore {
     if (data) {
       runInAction(() => {
         this.setOffers(data as any)
-        console.log('MyOffers: ', this.offers)
       })
     }
   }
@@ -41,7 +40,6 @@ export class MyOffersStore {
     if (data) {
       runInAction(() => {
         this.setCollaterables(data as any)
-        console.log('MyNfts: ', this.collaterables)
       })
     }
   }
@@ -97,7 +95,6 @@ export class MyOffersStore {
           data.push(nftMeta)
         }
       }
-
       this.nftData = data
       console.log('this.nftData: ', this.nftData)
     }
