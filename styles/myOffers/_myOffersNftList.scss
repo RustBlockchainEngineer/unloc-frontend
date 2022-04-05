@@ -1,3 +1,7 @@
+.nft-list-item {
+  padding-bottom: 32px;
+}
+
 .my-offers-nft-list {
   width: 100%;
   display: flex;
@@ -11,8 +15,7 @@
   flex-direction: column;
   padding: 16px;
   @include theme-aware('background-color', 'color-accent');
-  border-radius: $brd-rds-lg;
-  margin-bottom: 40px;
+  border-radius: 8px 8px 0 0;
 
   .nft-item {
     display: flex;
@@ -70,13 +73,36 @@
     }
   }
 
-  .offers-list {
-    width: 100%;
+  .nft-metadata {
     display: flex;
-    @include theme-aware('background-color', 'color-accentDark');
-
-    .my-offers-nft__offer {
-      margin: 20px;
+    font-size: 14px;
+    color: #ffffff;
+    & p:nth-child(2) {
+      font-weight: 700;
     }
+
+    .metadata-item {
+      padding: 15px;
+    }
+  }
+}
+
+.offers-list {
+  width: 100%;
+  display: flex;
+  @include theme-aware('background-color', 'color-secondary');
+  border-radius: 0 0 8px 8px;
+  padding: 4px 16px;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 700;
+  .my-offers-nft__offer {
+    margin: 20px;
+  }
+
+  .offers-reveal-btn {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
   }
 }
