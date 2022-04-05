@@ -6,8 +6,8 @@ import { PublicKey } from '@solana/web3.js'
 import { StoreContext } from '../_app'
 import { StoreDataAdapter } from '../../components/storeDataAdapter'
 import { LayoutTop } from '../../components/layout/layoutTop'
-import Header from '../../components/singleOffer/Header/Header'
 import Footer from '../../components/layout/footer'
+import { MyOffersTop } from '../../components/myOffers/myOffersTop'
 
 const MyOffers: NextPage = observer(() => {
   const store = useContext(StoreContext)
@@ -43,7 +43,7 @@ const MyOffers: NextPage = observer(() => {
     <StoreDataAdapter>
       <div className='page my-offers'>
         <LayoutTop />
-        <h2>My Offers Page</h2>
+        <MyOffersTop />
       </div>
       <div className='home-bg-bottom' />
       <Footer />

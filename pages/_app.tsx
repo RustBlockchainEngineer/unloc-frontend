@@ -44,7 +44,7 @@ const Unloc: FC<AppProps> = ({ Component, pageProps }) => {
 
   return (
     <ConnectionProvider endpoint={endpoint}>
-      <WalletProvider wallets={wallets} autoConnect>
+      <WalletProvider wallets={wallets} autoConnect onError={rootStore.Wallet.handleWalletError}>
         <WalletModalProvider>
           <StoreContext.Provider value={rootStore}>
             <Component {...pageProps} />

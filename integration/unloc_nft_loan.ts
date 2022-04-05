@@ -245,7 +245,7 @@ export type UnlocNftLoan = {
         },
         {
           name: 'borrower'
-          isMut: true
+          isMut: false
           isSigner: false
         },
         {
@@ -264,12 +264,12 @@ export type UnlocNftLoan = {
           isSigner: false
         },
         {
-          name: 'offerVault'
+          name: 'borrowerOfferVault'
           isMut: true
           isSigner: false
         },
         {
-          name: 'userVault'
+          name: 'lenderOfferVault'
           isMut: true
           isSigner: false
         },
@@ -305,53 +305,7 @@ export type UnlocNftLoan = {
           isSigner: true
         },
         {
-          name: 'globalState'
-          isMut: false
-          isSigner: false
-        },
-        {
-          name: 'offer'
-          isMut: true
-          isSigner: false
-        },
-        {
-          name: 'subOffer'
-          isMut: true
-          isSigner: false
-        },
-        {
-          name: 'offerVault'
-          isMut: true
-          isSigner: false
-        },
-        {
-          name: 'userVault'
-          isMut: true
-          isSigner: false
-        },
-        {
-          name: 'tokenProgram'
-          isMut: false
-          isSigner: false
-        },
-        {
-          name: 'clock'
-          isMut: false
-          isSigner: false
-        }
-      ]
-      args: []
-    },
-    {
-      name: 'claimLoanPayment'
-      accounts: [
-        {
           name: 'lender'
-          isMut: true
-          isSigner: true
-        },
-        {
-          name: 'borrower'
           isMut: false
           isSigner: false
         },
@@ -361,45 +315,9 @@ export type UnlocNftLoan = {
           isSigner: false
         },
         {
-          name: 'offer'
+          name: 'treasuryWallet'
           isMut: true
           isSigner: false
-        },
-        {
-          name: 'subOffer'
-          isMut: true
-          isSigner: false
-        },
-        {
-          name: 'offerVault'
-          isMut: true
-          isSigner: false
-        },
-        {
-          name: 'userVault'
-          isMut: true
-          isSigner: false
-        },
-        {
-          name: 'treasuryVault'
-          isMut: true
-          isSigner: false
-        },
-        {
-          name: 'tokenProgram'
-          isMut: false
-          isSigner: false
-        }
-      ]
-      args: []
-    },
-    {
-      name: 'claimLoan'
-      accounts: [
-        {
-          name: 'borrower'
-          isMut: true
-          isSigner: true
         },
         {
           name: 'offer'
@@ -412,38 +330,7 @@ export type UnlocNftLoan = {
           isSigner: false
         },
         {
-          name: 'offerVault'
-          isMut: true
-          isSigner: false
-        },
-        {
-          name: 'userVault'
-          isMut: true
-          isSigner: false
-        },
-        {
-          name: 'tokenProgram'
-          isMut: false
-          isSigner: false
-        }
-      ]
-      args: []
-    },
-    {
-      name: 'claimCollateral'
-      accounts: [
-        {
-          name: 'borrower'
-          isMut: true
-          isSigner: true
-        },
-        {
-          name: 'offer'
-          isMut: true
-          isSigner: false
-        },
-        {
-          name: 'subOffer'
+          name: 'borrowerNftVault'
           isMut: true
           isSigner: false
         },
@@ -453,12 +340,32 @@ export type UnlocNftLoan = {
           isSigner: false
         },
         {
-          name: 'userVault'
+          name: 'lenderOfferVault'
           isMut: true
           isSigner: false
         },
         {
+          name: 'borrowerOfferVault'
+          isMut: true
+          isSigner: false
+        },
+        {
+          name: 'treasuryVault'
+          isMut: true
+          isSigner: false
+        },
+        {
+          name: 'systemProgram'
+          isMut: false
+          isSigner: false
+        },
+        {
           name: 'tokenProgram'
+          isMut: false
+          isSigner: false
+        },
+        {
+          name: 'clock'
           isMut: false
           isSigner: false
         }
@@ -522,6 +429,10 @@ export type UnlocNftLoan = {
           },
           {
             name: 'subOfferCount'
+            type: 'u64'
+          },
+          {
+            name: 'startSubOfferNum'
             type: 'u64'
           }
         ]
@@ -737,6 +648,11 @@ export type UnlocNftLoan = {
       code: 6009
       name: 'InvalidAmount'
       msg: 'InvalidAmount'
+    },
+    {
+      code: 6010
+      name: 'InvalidDenominator'
+      msg: 'InvalidDenominator'
     }
   ]
 }
@@ -988,7 +904,7 @@ export const IDL: UnlocNftLoan = {
         },
         {
           name: 'borrower',
-          isMut: true,
+          isMut: false,
           isSigner: false
         },
         {
@@ -1007,12 +923,12 @@ export const IDL: UnlocNftLoan = {
           isSigner: false
         },
         {
-          name: 'offerVault',
+          name: 'borrowerOfferVault',
           isMut: true,
           isSigner: false
         },
         {
-          name: 'userVault',
+          name: 'lenderOfferVault',
           isMut: true,
           isSigner: false
         },
@@ -1048,53 +964,7 @@ export const IDL: UnlocNftLoan = {
           isSigner: true
         },
         {
-          name: 'globalState',
-          isMut: false,
-          isSigner: false
-        },
-        {
-          name: 'offer',
-          isMut: true,
-          isSigner: false
-        },
-        {
-          name: 'subOffer',
-          isMut: true,
-          isSigner: false
-        },
-        {
-          name: 'offerVault',
-          isMut: true,
-          isSigner: false
-        },
-        {
-          name: 'userVault',
-          isMut: true,
-          isSigner: false
-        },
-        {
-          name: 'tokenProgram',
-          isMut: false,
-          isSigner: false
-        },
-        {
-          name: 'clock',
-          isMut: false,
-          isSigner: false
-        }
-      ],
-      args: []
-    },
-    {
-      name: 'claimLoanPayment',
-      accounts: [
-        {
           name: 'lender',
-          isMut: true,
-          isSigner: true
-        },
-        {
-          name: 'borrower',
           isMut: false,
           isSigner: false
         },
@@ -1104,45 +974,9 @@ export const IDL: UnlocNftLoan = {
           isSigner: false
         },
         {
-          name: 'offer',
+          name: 'treasuryWallet',
           isMut: true,
           isSigner: false
-        },
-        {
-          name: 'subOffer',
-          isMut: true,
-          isSigner: false
-        },
-        {
-          name: 'offerVault',
-          isMut: true,
-          isSigner: false
-        },
-        {
-          name: 'userVault',
-          isMut: true,
-          isSigner: false
-        },
-        {
-          name: 'treasuryVault',
-          isMut: true,
-          isSigner: false
-        },
-        {
-          name: 'tokenProgram',
-          isMut: false,
-          isSigner: false
-        }
-      ],
-      args: []
-    },
-    {
-      name: 'claimLoan',
-      accounts: [
-        {
-          name: 'borrower',
-          isMut: true,
-          isSigner: true
         },
         {
           name: 'offer',
@@ -1155,38 +989,7 @@ export const IDL: UnlocNftLoan = {
           isSigner: false
         },
         {
-          name: 'offerVault',
-          isMut: true,
-          isSigner: false
-        },
-        {
-          name: 'userVault',
-          isMut: true,
-          isSigner: false
-        },
-        {
-          name: 'tokenProgram',
-          isMut: false,
-          isSigner: false
-        }
-      ],
-      args: []
-    },
-    {
-      name: 'claimCollateral',
-      accounts: [
-        {
-          name: 'borrower',
-          isMut: true,
-          isSigner: true
-        },
-        {
-          name: 'offer',
-          isMut: true,
-          isSigner: false
-        },
-        {
-          name: 'subOffer',
+          name: 'borrowerNftVault',
           isMut: true,
           isSigner: false
         },
@@ -1196,12 +999,32 @@ export const IDL: UnlocNftLoan = {
           isSigner: false
         },
         {
-          name: 'userVault',
+          name: 'lenderOfferVault',
           isMut: true,
           isSigner: false
         },
         {
+          name: 'borrowerOfferVault',
+          isMut: true,
+          isSigner: false
+        },
+        {
+          name: 'treasuryVault',
+          isMut: true,
+          isSigner: false
+        },
+        {
+          name: 'systemProgram',
+          isMut: false,
+          isSigner: false
+        },
+        {
           name: 'tokenProgram',
+          isMut: false,
+          isSigner: false
+        },
+        {
+          name: 'clock',
           isMut: false,
           isSigner: false
         }
@@ -1265,6 +1088,10 @@ export const IDL: UnlocNftLoan = {
           },
           {
             name: 'subOfferCount',
+            type: 'u64'
+          },
+          {
+            name: 'startSubOfferNum',
             type: 'u64'
           }
         ]
@@ -1480,6 +1307,11 @@ export const IDL: UnlocNftLoan = {
       code: 6009,
       name: 'InvalidAmount',
       msg: 'InvalidAmount'
+    },
+    {
+      code: 6010,
+      name: 'InvalidDenominator',
+      msg: 'InvalidDenominator'
     }
   ]
 }

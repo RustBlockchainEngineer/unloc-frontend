@@ -22,4 +22,8 @@ export class WalletStore {
   @action.bound setConnection(connection: any): void {
     this.connection = connection
   }
+
+  @action.bound handleWalletError(error: any): void {
+    console.log(error)
+  }
 }
