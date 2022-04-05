@@ -13,7 +13,7 @@
   flex-direction: column;
   @include theme-aware(color, 'color-content');
   border-radius: 6px;
-  width: 60%;
+  width: 1023px;
 }
 
 .NFT-lb-header {
@@ -95,4 +95,24 @@
   font-weight: 700;
   color: #ffffff;
   cursor: pointer;
+}
+
+.sort-select {
+  border: 1px solid;
+  @include theme-aware('border-color', 'color-border');
+  @include theme-aware('background-color', 'color-accent');
+  color: #ffffff;
+  border-radius: 2px;
+  width: 188px;
+  font-size: 18px;
+  padding: 10px;
+  appearance: none;
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  background-image: url('./../../constants/icons/svg/Triangle.svg');
+  background-position: 95% 52%;
+  background-repeat: no-repeat;
+  &:focus {
+    outline: none;
+  }
 }

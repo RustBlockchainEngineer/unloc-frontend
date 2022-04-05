@@ -36,18 +36,11 @@ const ChooseNFTCollateral: React.FC = observer(() => {
   }, [sortOption])
 
   useEffect(() => {
-    if (wallet && connection) {
-      myOffers
-    }
-  })
-
-  useEffect(() => {
     const fetchData = async () => {
       await myOffers.getNFTsData()
     }
-
     fetchData()
-      .then((res) => setData(myOffers.nftData))
+      .then(() => setData(myOffers.nftData))
       .catch((err) => console.log(err))
   }, [])
 
@@ -63,13 +56,13 @@ const ChooseNFTCollateral: React.FC = observer(() => {
     <div className='collateral-lightbox'>
       <div className='NFT-lb-header'>
         <h1>Choose a NFT for collateral</h1>
-        <select onSelect={() => {}}>
-          <option value='name'></option>
+        <select onChange={(e) => sortNFT(e.target.value)} className='sort-select'>
+          <option value=''>Sort by</option>
+          <option value='name'>Sort by name</option>
         </select>
       </div>
       <div className='NFT-lb-collateral-list'>
         {data?.map((item: NFTMetadata) => {
-          console.log(item)
           return <LightboxItem data={item} onClick={chooseNFT} choosen={address === ''} />
         })}
       </div>
