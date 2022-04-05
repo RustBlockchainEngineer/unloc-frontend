@@ -45,7 +45,7 @@ const ChooseNFTCollateral: React.FC = observer(() => {
   useEffect(() => {
     if (wallet && walletKey) {
       const fetchData = async () => {
-        await myOffers.getUserNFTs(new PublicKey('4NgrxbgLkXaQuP4XD8UeS4ZXxygQBtGsP1yR56rtM1bV'))
+        await myOffers.getUserNFTs(walletKey)
         await myOffers.getNFTsData()
       }
       fetchData()
