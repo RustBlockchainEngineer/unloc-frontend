@@ -9,10 +9,16 @@
   animation-iteration-count: 1;
   animation-fill-mode: forwards;
 
-  &--empty {
+  &-empty {
     width: 100%;
     display: flex;
     justify-content: center;
+
+    .no-offers {
+      width: 100%;
+      text-align: center;
+      margin: 80px 0;
+    }
   }
 
   .offers-empty {

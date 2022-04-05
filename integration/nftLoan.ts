@@ -293,7 +293,6 @@ export const updateSubOffer = async (
   loanDuration: anchor.BN,
   minRepaidNumerator: anchor.BN,
   aprNumerator: anchor.BN,
-
   subOffer: anchor.web3.PublicKey,
   signer: anchor.web3.PublicKey = program.provider.wallet.publicKey,
   signers: anchor.web3.Keypair[] = []
@@ -349,37 +348,37 @@ export const cancelSubOffer = async (
   return tx
 }
 
-// export const acceptOffer = async (
-//   subOffer: anchor.web3.PublicKey,
-//   userVault: anchor.web3.PublicKey,
-//   signer: anchor.web3.PublicKey = program.provider.wallet.publicKey,
-//   signers: anchor.web3.Keypair[] = []
-// ) => {
-//   const lender = signer
-//   const subOfferData = await program.account.subOffer.fetch(subOffer)
-//   const offer = subOfferData.offer
-//   const offerMint = subOfferData.offerMint
-//   const offerVault = await pda([OFFER_VAULT_TAG, subOffer.toBuffer()], programId)
-//   const offerData = await program.account.offer.fetch(subOfferData.offer)
-//   const borrower = offerData.borrower
+export const acceptOffer = async (
+  subOffer: anchor.web3.PublicKey,
+  lenderOfferVault: anchor.web3.PublicKey,
+  signer: anchor.web3.PublicKey = program.provider.wallet.publicKey,
+  signers: anchor.web3.Keypair[] = []
+) => {
+  const lender = signer
+  const subOfferData = await program.account.subOffer.fetch(subOffer)
+  const offer = subOfferData.offer
+  const offerMint = subOfferData.offerMint
+  const borrowerOfferVault = await pda([OFFER_VAULT_TAG, subOffer.toBuffer()], programId)
+  const offerData = await program.account.offer.fetch(subOfferData.offer)
+  const borrower = offerData.borrower
 
-//   const tx = await program.rpc.acceptOffer({
-//     accounts: {
-//       lender,
-//       borrower,
-//       offer,
-//       subOffer,
-//       offerMint,
-//       offerVault,
-//       userVault,
-//       ...defaults
-//     },
-//     signers
-//   })
+  const tx = await program.rpc.acceptOffer({
+    accounts: {
+      lender,
+      borrower,
+      offer,
+      subOffer,
+      offerMint,
+      borrowerOfferVault,
+      lenderOfferVault,
+      ...defaults
+    },
+    signers
+  })
 
-//   // eslint-disable-next-line no-console
-//   console.log('acceptOffer tx = ', tx)
-// }
+  // eslint-disable-next-line no-console
+  console.log('acceptOffer tx = ', tx)
+}
 
 // deprecated
 // export const claimLoan = async (
