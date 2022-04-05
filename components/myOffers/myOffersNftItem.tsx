@@ -9,6 +9,7 @@ interface MyOffersNftItemProps {
   name: string
   image: string
   handleCreateSubOffer: (nftMint: string) => void
+  handleRepayLoan: (subOfferKey: string) => void
   offers?: any
   classNames?: string
 }
@@ -18,6 +19,7 @@ export const MyOffersNftItem: React.FC<MyOffersNftItemProps> = ({
   name,
   image,
   handleCreateSubOffer,
+  handleRepayLoan,
   offers,
   classNames
 }) => {
@@ -67,7 +69,12 @@ export const MyOffersNftItem: React.FC<MyOffersNftItemProps> = ({
       {offers && offers.length ? (
         <div className='offers-list'>
           {offers.map((offer: any) => (
-            <MyOffersNftOffer key={offer.subOfferKey.toBase58()} offerAmount={offer.offerAmount} />
+            <MyOffersNftOffer
+              publicKey={offer.subOfferKey.toBase58()}
+              handleRepayLoan={handleRepayLoan}
+              key={offer.subOfferKey.toBase58()}
+              offerAmount={offer.offerAmount}
+            />
           ))}
         </div>
       ) : (
