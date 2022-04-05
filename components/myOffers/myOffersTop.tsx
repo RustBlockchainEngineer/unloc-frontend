@@ -1,49 +1,42 @@
-import React, { useContext, useEffect, useState } from 'react'
-import Image from 'next/image'
+import React, { useContext, useEffect } from 'react'
 import { observer } from 'mobx-react'
-import { WalletDisconnectButton } from '@solana/wallet-adapter-react-ui'
 
 import { StoreContext } from '../../pages/_app'
 
 export const MyOffersTop: React.FC = observer(() => {
   const store = useContext(StoreContext)
-  const { wallet } = store.Wallet as any
-  const [walletKey, setWalletKey] = useState('')
-  const [walletName, setWalletName] = useState('')
-  const [walletIcon, setWalletIcon] = useState('')
+  const { wallet, walletKey, connected } = store.Wallet as any
 
   const handleWalletDisconnect = () => {
     if (wallet && wallet.adapter) {
-      wallet.adapter._wallet.disconnect()
+      store.Wallet.handleDisconnect()
     }
   }
 
-  useEffect(() => {
-    if (wallet && wallet.adapter) {
-      console.log(wallet)
-      setWalletKey(wallet.adapter._publicKey.toBase58())
-      setWalletIcon(wallet.adapter.icon)
-      setWalletName(wallet.adapter.name)
-    }
-  }, [wallet])
-
-  return (
+  return connected ? (
     <div className='my-offers-top'>
-      <div className='my-offers-top__left'>
-        {walletIcon ? (
-          <div className='wallet-info'>
-            <Image className='wallet-icon' src={walletIcon} alt='Wallet Icon' width='32px' height='32px' />
-            <span>{walletName}</span>
-          </div>
+      <div className='my-offers-top__heading'>
+        {walletKey ? (
+          <>
+            <span className='wallet-label'>Your wallet address:</span>
+            <h2>{walletKey.toBase58()}</h2>
+          </>
         ) : (
           ''
         )}
-        <h2>{walletKey}</h2>
       </div>
-      <div className='my-offers-top__right'>
-        <button>Deposit NFT</button>
-        {wallet && wallet.adapter ? <button onClick={() => handleWalletDisconnect()}>Disconnect</button> : ''}
+      <div className='my-offers-top__toolbox'>
+        <button className='btn btn--md btn--primary'>Deposit NFT</button>
+        {wallet && wallet.adapter ? (
+          <button className='btn btn--md btn--bordered' onClick={() => handleWalletDisconnect()}>
+            Disconnect
+          </button>
+        ) : (
+          ''
+        )}
       </div>
     </div>
+  ) : (
+    <div>Please connect your wallet first</div>
   )
 })

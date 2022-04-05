@@ -381,6 +381,7 @@ export const acceptOffer = async (
   console.log('acceptOffer tx = ', tx)
 }
 
+// deprecated
 export const claimLoan = async (
   subOffer: anchor.web3.PublicKey,
   signer: anchor.web3.PublicKey = program.provider.wallet.publicKey,
@@ -437,6 +438,7 @@ export const repayLoan = async (
   console.log('repayLoan tx = ', tx)
 }
 
+// deprecated
 export const claimLoanPayment = async (
   subOffer: anchor.web3.PublicKey,
   signer: anchor.web3.PublicKey = program.provider.wallet.publicKey,

@@ -2,7 +2,7 @@ import { action, makeAutoObservable, runInAction, flow } from 'mobx'
 import { PublicKey } from '@solana/web3.js'
 
 import { getWhitelistedNFTsByWallet } from '../integration/nftIntegration'
-import { getAllSubOffers, getOffersBy, getSubOfferList, MultipleNFT, NFTMetadata } from '../integration/nftLoan'
+import { getOffersBy, getSubOfferList, MultipleNFT, NFTMetadata } from '../integration/nftLoan'
 
 export class MyOffersStore {
   rootStore
@@ -11,10 +11,13 @@ export class MyOffersStore {
   subOffers: any[] = []
   nftData: NFTMetadata[] = []
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   constructor(rootStore: any) {
     makeAutoObservable(this)
     this.rootStore = rootStore
+  }
+
+  private filterOffersByState(offers: any[], state: number) {
+    return offers.filter((offer) => offer.account.state === state)
   }
 
   @action.bound setOffers(offers: never[]): void {
@@ -22,11 +25,13 @@ export class MyOffersStore {
   }
 
   @action.bound async getOffersByWallet(wallet: PublicKey): Promise<void> {
-    const data = await getOffersBy(wallet)
-    if (data) {
+    const offersData = await getOffersBy(wallet, undefined, undefined)
+    const proposedOffers = this.filterOffersByState(offersData, 0)
+    const activeOffers = this.filterOffersByState(offersData, 1)
+
+    if (offersData) {
       runInAction(() => {
-        this.setOffers(data as any)
-        console.log('MyOffers: ', this.offers)
+        this.setOffers([...activeOffers, ...proposedOffers] as any)
       })
     }
   }
@@ -41,7 +46,6 @@ export class MyOffersStore {
     if (data) {
       runInAction(() => {
         this.setCollaterables(data as any)
-        console.log('MyNfts: ', this.collaterables)
       })
     }
   }
@@ -53,11 +57,6 @@ export class MyOffersStore {
   @action.bound setSubOffers(subOffers: never[]): void {
     this.subOffers = subOffers
   }
-
-  @action.bound getAllSubOffers = flow(function* (this: MyOffersStore) {
-    const data = yield getAllSubOffers()
-    data && this.setSubOffers(data as any)
-  })
 
   @action.bound getSubOffersByOffers = flow(function* (this: MyOffersStore) {
     if (this.offers && this.offers.length > 0) {
@@ -99,12 +98,6 @@ export class MyOffersStore {
       }
 
       this.nftData = data
-      console.log('this.nftData: ', this.nftData)
     }
-  })
-
-  @action.bound handleRefreshData = flow(function* (this: MyOffersStore) {
-    yield this.getOffersByWallet(this.rootStore.Wallet.wallet.publicKey)
-    yield this.getSubOffersByOffers()
   })
 }

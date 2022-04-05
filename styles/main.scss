@@ -24,6 +24,7 @@
 @import './blobLoader';
 @import './footer/footer';
 @import './myOffers/_myOffersTop';
+@import './myOffers/myOffersNftList';
 
 body {
   @include theme-aware('background-color', 'color-background');

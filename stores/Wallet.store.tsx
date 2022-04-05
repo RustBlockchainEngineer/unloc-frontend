@@ -1,3 +1,4 @@
+import { PublicKey } from '@solana/web3.js'
 import { action, makeAutoObservable } from 'mobx'
 
 export class WalletStore {
@@ -5,6 +6,8 @@ export class WalletStore {
   connected = false
   wallet = undefined
   connection: any
+  disconnect: any
+  walletKey: PublicKey | undefined
 
   constructor(rootStore: any) {
     makeAutoObservable(this)
@@ -23,7 +26,21 @@ export class WalletStore {
     this.connection = connection
   }
 
+  @action.bound setHandleDisconnect(disconnect: any): void {
+    this.disconnect = disconnect
+  }
+
+  @action.bound handleDisconnect(): void {
+    this.disconnect()
+    this.walletKey = undefined
+    this.connected = false // we might need to flush data on this action in different stores also, TBD
+  }
+
   @action.bound handleWalletError(error: any): void {
     console.log(error)
+  }
+
+  @action.bound setWalletKey(key: PublicKey): void {
+    this.walletKey = key
   }
 }
