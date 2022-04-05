@@ -32,10 +32,10 @@ export class OffersStore {
   filterDurationMax = 90
   filtersVisible = true
 
-  //new paginated offers:
   offersKeys: PublicKey[] = []
   offersCount: number = 0
   offersKnown: any[] = []
+  offersEmpty: boolean = true
 
   constructor(rootStore: any) {
     makeAutoObservable(this)
@@ -160,6 +160,7 @@ export class OffersStore {
     const reusedOffersKeys = await getSubOffersKeysByState([6]) //add more filters
 
     if (activeOffersKeys && activeOffersKeys.length && reusedOffersKeys && reusedOffersKeys.length) {
+      this.offersEmpty = false
       const offersViable = [...activeOffersKeys, ...reusedOffersKeys]
 
       this.setOffersKeys(offersViable)
@@ -190,6 +191,7 @@ export class OffersStore {
           this.currentPage * this.itemsPerPage
         )
 
+        console.log('paginatedOffersData', paginatedOffersData)
         this.pageOfferData = paginatedOffersData
 
         if (keysTrimmed && keysTrimmed.length) {
@@ -198,13 +200,23 @@ export class OffersStore {
             (this.currentPage - 1) * this.itemsPerPage,
             this.currentPage * this.itemsPerPage
           )
+
+          console.log('paginatedNFTData', paginatedNFTData)
           this.pageNFTData = paginatedNFTData
         }
       }
+    } else {
+      this.pageOfferData = []
+      this.pageNFTData = []
+      this.offersEmpty = true
     }
   }
 
   @action.bound setFiltersVisible = (visible: boolean): void => {
     this.filtersVisible = visible
+  }
+
+  @action.bound setOffersEmpty = (offersEmpty: boolean) => {
+    this.offersEmpty = offersEmpty
   }
 }
