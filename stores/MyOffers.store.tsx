@@ -42,7 +42,6 @@ export class MyOffersStore {
 
   @action.bound async getUserNFTs(wallet: PublicKey): Promise<void> {
     const data = await getWhitelistedNFTsByWallet(wallet)
-
     if (data) {
       runInAction(() => {
         this.setCollaterables(data as any)
