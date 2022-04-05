@@ -46,6 +46,10 @@ const SingleNftPage: NextPage = observer(({}) => {
     }
   }
 
+  const handleAcceptOffer = (offerMint: string, offerPublicKey: string) => {
+    store.Offers.handleAcceptOffer(offerMint, offerPublicKey)
+  }
+
   useEffect(() => {
     handleData()
   }, [router.query.id, connected, wallet])
@@ -86,6 +90,8 @@ const SingleNftPage: NextPage = observer(({}) => {
                   <Offer
                     key={offer.id}
                     offerID={compressAddress(4, offer.id)}
+                    offerMint={offer.offerMint}
+                    offerPublicKey={offer.publicKey.toBase58()}
                     status={offer.status.toString()}
                     amount={offer.amount}
                     token='USDC'
@@ -94,6 +100,7 @@ const SingleNftPage: NextPage = observer(({}) => {
                     APR={offer.apr}
                     totalRepay={offer.totalRepay}
                     btnMessage={'Lend Tokens'}
+                    handleAcceptOffer={handleAcceptOffer}
                   />
                 )
               } else {

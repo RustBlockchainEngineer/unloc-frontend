@@ -45,7 +45,6 @@ export const initLoanProgram = (
   programId = pid
   // const provider = new anchor.Provider(connection, wallet, anchor.Provider.defaultOptions())
   const provider = new anchor.Provider(SOLANA_CONNECTION, wallet, { skipPreflight: true })
-
   // Generate the program client from IDL.
   program = new (anchor as any).Program(idl, programId, provider) as anchor.Program<UnlocNftLoan>
 }

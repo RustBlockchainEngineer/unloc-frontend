@@ -8,11 +8,19 @@ interface MyOffersNftItemProps {
   nftMint: string
   name: string
   image: string
+  handleCreateSubOffer: (nftMint: string) => void
   offers?: any
   classNames?: string
 }
 
-export const MyOffersNftItem: React.FC<MyOffersNftItemProps> = ({ nftMint, name, image, offers, classNames }) => {
+export const MyOffersNftItem: React.FC<MyOffersNftItemProps> = ({
+  nftMint,
+  name,
+  image,
+  handleCreateSubOffer,
+  offers,
+  classNames
+}) => {
   return (
     <div className={`my-offers-nft ${classNames ? classNames : ''}`}>
       {name && image ? (
@@ -33,7 +41,9 @@ export const MyOffersNftItem: React.FC<MyOffersNftItemProps> = ({ nftMint, name,
             </div>
             <div className='nft-info-buttons'>
               <button className=' btn--md btn--disabled'>NFT Locked, Loan Offer Taken</button>
-              <button className=' btn--md btn--primary'>Create Offer</button>
+              <button className=' btn--md btn--primary' onClick={() => handleCreateSubOffer(nftMint)}>
+                Create Offer
+              </button>
             </div>
           </div>
           <div className='nft-metadata'>

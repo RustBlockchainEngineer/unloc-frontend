@@ -3,7 +3,14 @@ import { PublicKey } from '@solana/web3.js'
 import axios from 'axios'
 import { BigNumber } from 'bignumber.js'
 
-import { getSubOfferList, MultipleNFT, SubOfferState, getSubOfferMultiple } from '../integration/nftLoan'
+import {
+  getSubOfferList,
+  MultipleNFT,
+  SubOfferState,
+  getSubOfferMultiple,
+  checkWalletATA,
+  acceptOffer
+} from '../integration/nftLoan'
 import { getSubOffersKeysByState } from '../integration/offersListing'
 import { getUniqueNFTsByNFTMint } from '../methods/getUniqueNFTsByNFTMint'
 import sortNftsByField from '../methods/sortNftsByField'
@@ -159,9 +166,18 @@ export class OffersStore {
     const activeOffersKeys = await getSubOffersKeysByState([0]) //add more filters
     const reusedOffersKeys = await getSubOffersKeysByState([6]) //add more filters
 
-    if (activeOffersKeys && activeOffersKeys.length && reusedOffersKeys && reusedOffersKeys.length) {
+    let offersViable: any[] = []
+
+    if (activeOffersKeys && activeOffersKeys.length) {
+      offersViable = [...offersViable, ...activeOffersKeys]
+    }
+
+    if (reusedOffersKeys && reusedOffersKeys.length) {
+      offersViable = [...offersViable, ...reusedOffersKeys]
+    }
+
+    if (offersViable && offersViable.length) {
       this.offersEmpty = false
-      const offersViable = [...activeOffersKeys, ...reusedOffersKeys]
 
       this.setOffersKeys(offersViable)
       this.setOffersCount(offersViable?.length)
@@ -191,7 +207,6 @@ export class OffersStore {
           this.currentPage * this.itemsPerPage
         )
 
-        console.log('paginatedOffersData', paginatedOffersData)
         this.pageOfferData = paginatedOffersData
 
         if (keysTrimmed && keysTrimmed.length) {
@@ -201,7 +216,6 @@ export class OffersStore {
             this.currentPage * this.itemsPerPage
           )
 
-          console.log('paginatedNFTData', paginatedNFTData)
           this.pageNFTData = paginatedNFTData
         }
       }
@@ -218,5 +232,10 @@ export class OffersStore {
 
   @action.bound setOffersEmpty = (offersEmpty: boolean) => {
     this.offersEmpty = offersEmpty
+  }
+
+  @action.bound handleAcceptOffer = async (offerMint: string, offerPublicKey: string) => {
+    const walletData = await checkWalletATA(offerMint)
+    await acceptOffer(new PublicKey(offerPublicKey), walletData)
   }
 }
