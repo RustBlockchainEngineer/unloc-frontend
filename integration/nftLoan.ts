@@ -349,156 +349,157 @@ export const cancelSubOffer = async (
   return tx
 }
 
-export const acceptOffer = async (
-  subOffer: anchor.web3.PublicKey,
-  userVault: anchor.web3.PublicKey,
-  signer: anchor.web3.PublicKey = program.provider.wallet.publicKey,
-  signers: anchor.web3.Keypair[] = []
-) => {
-  const lender = signer
-  const subOfferData = await program.account.subOffer.fetch(subOffer)
-  const offer = subOfferData.offer
-  const offerMint = subOfferData.offerMint
-  const offerVault = await pda([OFFER_VAULT_TAG, subOffer.toBuffer()], programId)
-  const offerData = await program.account.offer.fetch(subOfferData.offer)
-  const borrower = offerData.borrower
+// export const acceptOffer = async (
+//   subOffer: anchor.web3.PublicKey,
+//   userVault: anchor.web3.PublicKey,
+//   signer: anchor.web3.PublicKey = program.provider.wallet.publicKey,
+//   signers: anchor.web3.Keypair[] = []
+// ) => {
+//   const lender = signer
+//   const subOfferData = await program.account.subOffer.fetch(subOffer)
+//   const offer = subOfferData.offer
+//   const offerMint = subOfferData.offerMint
+//   const offerVault = await pda([OFFER_VAULT_TAG, subOffer.toBuffer()], programId)
+//   const offerData = await program.account.offer.fetch(subOfferData.offer)
+//   const borrower = offerData.borrower
 
-  const tx = await program.rpc.acceptOffer({
-    accounts: {
-      lender,
-      borrower,
-      offer,
-      subOffer,
-      offerMint,
-      offerVault,
-      userVault,
-      ...defaults
-    },
-    signers
-  })
+//   const tx = await program.rpc.acceptOffer({
+//     accounts: {
+//       lender,
+//       borrower,
+//       offer,
+//       subOffer,
+//       offerMint,
+//       offerVault,
+//       userVault,
+//       ...defaults
+//     },
+//     signers
+//   })
 
-  // eslint-disable-next-line no-console
-  console.log('acceptOffer tx = ', tx)
-}
-
-// deprecated
-export const claimLoan = async (
-  subOffer: anchor.web3.PublicKey,
-  signer: anchor.web3.PublicKey = program.provider.wallet.publicKey,
-  signers: anchor.web3.Keypair[] = []
-) => {
-  const borrower = signer
-  const subOfferData = await program.account.subOffer.fetch(subOffer)
-  const offer = subOfferData.offer
-  const offerVault = await pda([OFFER_VAULT_TAG, subOffer.toBuffer()], programId)
-  const userVault: anchor.web3.PublicKey = await checkWalletATA(subOfferData.offerMint.toBase58())
-
-  const tx = await program.rpc.claimLoan({
-    accounts: {
-      borrower,
-      offer,
-      subOffer,
-      offerVault,
-      userVault,
-      tokenProgram
-    },
-    signers
-  })
-
-  // eslint-disable-next-line no-console
-  console.log('claimLoan tx = ', tx)
-}
-
-export const repayLoan = async (
-  subOffer: anchor.web3.PublicKey,
-  signer: anchor.web3.PublicKey = program.provider.wallet.publicKey,
-  signers: anchor.web3.Keypair[] = []
-) => {
-  const globalState = await pda([GLOBAL_STATE_TAG], programId)
-  const borrower = signer
-  const subOfferData = await program.account.subOffer.fetch(subOffer)
-  const offer = subOfferData.offer
-  const offerVault = await pda([OFFER_VAULT_TAG, subOffer.toBuffer()], programId)
-  const userVault: anchor.web3.PublicKey = await checkWalletATA(subOfferData.offerMint.toBase58())
-  const tx = await program.rpc.repayLoan({
-    accounts: {
-      borrower,
-      globalState,
-      offer,
-      subOffer,
-      offerVault,
-      userVault,
-      tokenProgram,
-      clock
-    },
-    signers
-  })
-
-  // eslint-disable-next-line no-console
-  console.log('repayLoan tx = ', tx)
-}
+//   // eslint-disable-next-line no-console
+//   console.log('acceptOffer tx = ', tx)
+// }
 
 // deprecated
-export const claimLoanPayment = async (
-  subOffer: anchor.web3.PublicKey,
-  signer: anchor.web3.PublicKey = program.provider.wallet.publicKey,
-  signers: anchor.web3.Keypair[] = []
-) => {
-  const subOfferData = await program.account.subOffer.fetch(subOffer)
-  const globalState = await pda([GLOBAL_STATE_TAG], programId)
-  const lender = signer
-  const offer = subOfferData.offer
-  const offerData = await program.account.offer.fetch(offer)
-  const offerVault = await pda([OFFER_VAULT_TAG, subOffer.toBuffer()], programId)
-  const offerMint = subOfferData?.offerMint
-  const treasuryVault = await pda([TREASURY_VAULT_TAG, offerMint.toBuffer()], programId)
-  const userVault: anchor.web3.PublicKey = await checkWalletATA(subOfferData.offerMint.toBase58())
+// export const claimLoan = async (
+//   subOffer: anchor.web3.PublicKey,
+//   signer: anchor.web3.PublicKey = program.provider.wallet.publicKey,
+//   signers: anchor.web3.Keypair[] = []
+// ) => {
+//   const borrower = signer
+//   const subOfferData = await program.account.subOffer.fetch(subOffer)
+//   const offer = subOfferData.offer
+//   const offerVault = await pda([OFFER_VAULT_TAG, subOffer.toBuffer()], programId)
+//   const userVault: anchor.web3.PublicKey = await checkWalletATA(subOfferData.offerMint.toBase58())
 
-  const tx = await program.rpc.claimLoanPayment({
-    accounts: {
-      lender,
-      borrower: offerData.borrower,
-      globalState,
-      offer,
-      subOffer,
-      offerVault,
-      userVault,
-      treasuryVault,
-      tokenProgram
-    },
-    signers
-  })
+//   const tx = await program.rpc.claimLoan({
+//     accounts: {
+//       borrower,
+//       offer,
+//       subOffer,
+//       offerVault,
+//       userVault,
+//       tokenProgram
+//     },
+//     signers
+//   })
 
-  // eslint-disable-next-line no-console
-  console.log('claimLoanPayment tx = ', tx)
-}
+//   // eslint-disable-next-line no-console
+//   console.log('claimLoan tx = ', tx)
+// }
 
-export const claimCollateral = async (
-  subOffer: anchor.web3.PublicKey,
-  userVault: anchor.web3.PublicKey,
-  signer: anchor.web3.PublicKey = program.provider.wallet.publicKey,
-  signers: anchor.web3.Keypair[] = []
-) => {
-  const borrower = signer
-  const subOfferData = await program.account.subOffer.fetch(subOffer)
-  const offer = subOfferData.offer
-  const nftVault = await pda([NFT_VAULT_TAG, offer.toBuffer()], programId)
+// export const repayLoan = async (
+//   subOffer: anchor.web3.PublicKey,
+//   signer: anchor.web3.PublicKey = program.provider.wallet.publicKey,
+//   signers: anchor.web3.Keypair[] = []
+// ) => {
+//   const globalState = await pda([GLOBAL_STATE_TAG], programId)
+//   const borrower = signer
+//   const subOfferData = await program.account.subOffer.fetch(subOffer)
+//   const offer = subOfferData.offer
+//   const offerVault = await pda([OFFER_VAULT_TAG, subOffer.toBuffer()], programId)
+//   const userVault: anchor.web3.PublicKey = await checkWalletATA(subOfferData.offerMint.toBase58())
+//   const tx = await program.rpc.repayLoan({
+//     accounts: {
+//       borrower,
+//       globalState,
+//       offer,
+//       subOffer,
+//       offerVault,
+//       userVault,
+//       tokenProgram,
+//       clock
+//     },
+//     signers
+//   })
 
-  const tx = await program.rpc.claimCollateral({
-    accounts: {
-      borrower,
-      offer,
-      subOffer,
-      nftVault,
-      userVault,
-      tokenProgram
-    },
-    signers
-  })
+//   // eslint-disable-next-line no-console
+//   console.log('repayLoan tx = ', tx)
+// }
 
-  // eslint-disable-next-line no-console
-  console.log('claimCollateral tx = ', tx)
-}
+// deprecated
+// export const claimLoanPayment = async (
+//   subOffer: anchor.web3.PublicKey,
+//   signer: anchor.web3.PublicKey = program.provider.wallet.publicKey,
+//   signers: anchor.web3.Keypair[] = []
+// ) => {
+//   const subOfferData = await program.account.subOffer.fetch(subOffer)
+//   const globalState = await pda([GLOBAL_STATE_TAG], programId)
+//   const lender = signer
+//   const offer = subOfferData.offer
+//   const offerData = await program.account.offer.fetch(offer)
+//   const offerVault = await pda([OFFER_VAULT_TAG, subOffer.toBuffer()], programId)
+//   const offerMint = subOfferData?.offerMint
+//   const treasuryVault = await pda([TREASURY_VAULT_TAG, offerMint.toBuffer()], programId)
+//   const userVault: anchor.web3.PublicKey = await checkWalletATA(subOfferData.offerMint.toBase58())
+
+//   const tx = await program.rpc.claimLoanPayment({
+//     accounts: {
+//       lender,
+//       borrower: offerData.borrower,
+//       globalState,
+//       offer,
+//       subOffer,
+//       offerVault,
+//       userVault,
+//       treasuryVault,
+//       tokenProgram
+//     },
+//     signers
+//   })
+
+//   // eslint-disable-next-line no-console
+//   console.log('claimLoanPayment tx = ', tx)
+// }
+
+// deprecated
+// export const claimCollateral = async (
+//   subOffer: anchor.web3.PublicKey,
+//   userVault: anchor.web3.PublicKey,
+//   signer: anchor.web3.PublicKey = program.provider.wallet.publicKey,
+//   signers: anchor.web3.Keypair[] = []
+// ) => {
+//   const borrower = signer
+//   const subOfferData = await program.account.subOffer.fetch(subOffer)
+//   const offer = subOfferData.offer
+//   const nftVault = await pda([NFT_VAULT_TAG, offer.toBuffer()], programId)
+
+//   const tx = await program.rpc.claimCollateral({
+//     accounts: {
+//       borrower,
+//       offer,
+//       subOffer,
+//       nftVault,
+//       userVault,
+//       tokenProgram
+//     },
+//     signers
+//   })
+
+//   // eslint-disable-next-line no-console
+//   console.log('claimCollateral tx = ', tx)
+// }
 
 export async function pda(seeds: (Buffer | Uint8Array)[], pid: anchor.web3.PublicKey) {
   const [pdaKey] = await anchor.web3.PublicKey.findProgramAddress(seeds, pid)
