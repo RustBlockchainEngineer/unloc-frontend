@@ -74,7 +74,7 @@ const ChooseNFTCollateral: React.FC = observer(() => {
         </div>
         <div className='NFT-lb-collateral-list'>
           {data?.map((item: NFTMetadata) => {
-            return <LightboxItem data={item} onClick={chooseNFT} choosen={address === ''} />
+            return <LightboxItem key={item.mint} data={item} onClick={chooseNFT} choosen={address === ''} />
           })}
         </div>
         <button
