@@ -42,6 +42,7 @@ const MyOffers: NextPage = observer(() => {
         {connected ? <MyOffersNftList /> : ''}
       </div>
       <div className='home-bg-bottom' />
+
       <Footer />
     </StoreDataAdapter>
   )

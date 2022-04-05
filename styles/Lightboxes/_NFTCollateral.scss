@@ -1,0 +1,120 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.collateral-lightbox {
+  position: relative;
+  z-index: 3;
+  @include theme-aware('background-color', 'color-accent');
+  padding: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  @include theme-aware(color, 'color-content');
+  border-radius: 6px;
+  width: 1023px;
+}
+
+.NFT-lb-header {
+  padding-bottom: 16px;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  & h1 {
+    font-size: 36px;
+    font-weight: 700;
+    line-height: 0px;
+  }
+}
+
+.NFT-lb-collateral-list {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-gap: 20px;
+}
+
+.collateral-list-item {
+  border: 1px solid;
+  @include theme-aware('border-color', 'color-primary');
+  border-radius: 6px;
+  padding: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+
+  &.active {
+    @include theme-aware('background-color', 'color-accentDim');
+  }
+
+  &:hover {
+    cursor: pointer;
+    @include theme-aware('background-color', 'color-accentDim');
+  }
+
+  .collateral-image {
+    width: 80px;
+    height: 80px;
+    margin-right: 15px;
+  }
+
+  .collateral-list-item-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+
+    & h2 {
+      font-size: 24px;
+      font-weight: 700;
+    }
+
+    & p {
+      font-size: 14px;
+    }
+
+    & p:nth-child(1) {
+      font-weight: 400;
+    }
+
+    & p:nth-child(2) {
+      font-weight: 700;
+    }
+  }
+}
+
+.lb-collateral-button {
+  margin-top: 40px;
+  padding: 18px 0;
+  width: 100%;
+  background: linear-gradient(180deg, #5472d8 0%, #2e13d2 100%);
+  border-radius: 6px;
+  border: none;
+  font-weight: 700;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+.sort-select {
+  border: 1px solid;
+  @include theme-aware('border-color', 'color-border');
+  @include theme-aware('background-color', 'color-accent');
+  color: #ffffff;
+  border-radius: 2px;
+  width: 188px;
+  font-size: 18px;
+  padding: 10px;
+  appearance: none;
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  background-image: url('./../../constants/icons/svg/Triangle.svg');
+  background-position: 95% 52%;
+  background-repeat: no-repeat;
+  &:focus {
+    outline: none;
+  }
+}

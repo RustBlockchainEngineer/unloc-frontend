@@ -9,24 +9,64 @@
   width: 100%;
   display: flex;
   flex-direction: column;
+  padding: 16px;
   @include theme-aware('background-color', 'color-accent');
   border-radius: $brd-rds-lg;
   margin-bottom: 40px;
 
-  .nft-info {
+  .nft-item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
     width: 100%;
-    padding: 20px;
-    margin: 10px;
+  }
+
+  .nft-wrapper {
+    display: flex;
+    align-items: center;
+  }
+
+  .nft-info {
+    height: 100%;
+    padding-right: 36px;
+    .nft-img {
+      border-radius: 50%;
+    }
 
     .nft-info-inner {
       display: flex;
       flex-direction: column;
       margin-left: 15px;
+      color: #ffffff;
 
-      button {
-        margin-top: 20px;
-        display: block;
+      .nft-info-inner-mainData {
+        display: flex;
+        align-items: center;
+
+        .info-description {
+          padding-right: 12px;
+        }
       }
+      .info-name {
+        font-size: 24px;
+        @include theme-aware('color', 'color-primary');
+      }
+    }
+  }
+
+  .nft-info-buttons {
+    display: flex;
+
+    & button {
+      border-radius: 6px;
+      border: none;
+      min-width: 240px;
+      text-align: center;
+    }
+    .btn--disabled {
+      @include theme-aware('background-color', 'color-button-disabled');
+      margin-right: 20px;
     }
   }
 

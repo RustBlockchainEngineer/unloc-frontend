@@ -1,6 +1,10 @@
 import Redis from 'ioredis'
 
-const client = new Redis(process.env.REDIS_URL ? process.env.REDIS_URL : '')
+const client = new Redis(
+  process.env.REDIS_URL
+    ? process.env.REDIS_URL
+    : 'redis://:7b07028900384c74bce7026ee0d94bf9@eu1-loved-akita-34868.upstash.io:34868'
+)
 
 export const getCollections = async (): Promise<string[]> => {
   return await client.hkeys('collections')
