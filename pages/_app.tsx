@@ -51,17 +51,6 @@ const Unloc: FC<AppProps> = ({ Component, pageProps }) => {
         <WalletModalProvider>
           <StoreContext.Provider value={rootStore}>
             <Component {...pageProps} />
-            {rootStore.Lightbox.visible ? (
-              <Lightbox>
-                <>
-                  {rootStore.Lightbox.content === 'collateral' ? <CreateCollateral /> : <></>}
-                  {rootStore.Lightbox.content === 'loanCreate' ? <CreateLoan mode='new' /> : <></>}
-                  {rootStore.Lightbox.content === 'loanUpdate' ? <CreateLoan mode='update' /> : <></>}
-                </>
-              </Lightbox>
-            ) : (
-              <></>
-            )}
           </StoreContext.Provider>
         </WalletModalProvider>
       </WalletProvider>

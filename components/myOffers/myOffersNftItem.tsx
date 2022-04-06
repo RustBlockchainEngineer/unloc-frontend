@@ -1,11 +1,15 @@
 import React, { useContext } from 'react'
-import { compressAddress } from '../../utils/stringUtils/compressAdress'
-import icons from '../../constants/icons/icons'
+import { observer } from 'mobx-react'
 import Image from 'next/image'
 
-import { MyOffersNftOffer } from './myOffersNftOffers'
 import { StoreContext } from '../../pages/_app'
-import { observer } from 'mobx-react'
+import { compressAddress } from '../../utils/stringUtils/compressAdress'
+import icons from '../../constants/icons/icons'
+import { MyOffersNftOffer } from './myOffersNftOffers'
+import { ShowOnHover } from '../layout/showOnHover'
+import { SolscanExplorerIcon } from '../layout/solscanExplorerIcon'
+import { ClipboardButton } from '../layout/clipboardButton'
+
 interface MyOffersNftItemProps {
   offerKey: string
   nftMint: string
@@ -45,7 +49,13 @@ export const MyOffersNftItem: React.FC<MyOffersNftItemProps> = observer(
       if (status === 0) {
         return (
           <div className='nft-info-buttons'>
-            <button className=' btn--md btn--primary' onClick={() => store.Lightbox.setShowLightboxLoan('create')}>
+            <button
+              className=' btn--md btn--primary'
+              onClick={() => {
+                store.Lightbox.setContent('loanCreate')
+                store.Lightbox.setVisible(true)
+              }}
+            >
               Create Offer
             </button>
           </div>
@@ -59,6 +69,7 @@ export const MyOffersNftItem: React.FC<MyOffersNftItemProps> = observer(
         )
       }
     }
+
     return (
       <div className='nft-list-item'>
         <div className={`my-offers-nft ${classNames ? classNames : ''}`}>
@@ -71,16 +82,11 @@ export const MyOffersNftItem: React.FC<MyOffersNftItemProps> = observer(
                     <div className='nft-info-inner-mainData'>
                       <div className='info-description'>
                         <p>Offer ID:</p>
-                        <p>{compressAddress(4, offerKey)}</p>
+                        <ShowOnHover label={`#${compressAddress(4, offerKey)}`}>
+                          <ClipboardButton data={offerKey} />
+                          <SolscanExplorerIcon type={'account'} address={offerKey} />
+                        </ShowOnHover>
                       </div>
-                      <Image
-                        src={icons.copy}
-                        alt='NFT Image'
-                        width='18px'
-                        height='18px'
-                        className='clipboard-button'
-                        onClick={() => navigator.clipboard.writeText(offerKey)}
-                      />
                     </div>
                     <p className='info-name'>{name}</p>
                   </div>
@@ -90,7 +96,10 @@ export const MyOffersNftItem: React.FC<MyOffersNftItemProps> = observer(
               <div className='nft-metadata'>
                 <div className='metadata-item'>
                   <p>NFT mint</p>
-                  <p>{compressAddress(4, nftMint)}</p>
+                  <ShowOnHover label={`#${compressAddress(4, nftMint)}`}>
+                    <ClipboardButton data={nftMint} />
+                    <SolscanExplorerIcon type={'token'} address={nftMint} />
+                  </ShowOnHover>
                 </div>
                 <div className='metadata-item'>
                   <p>collection</p>

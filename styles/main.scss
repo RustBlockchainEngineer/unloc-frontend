@@ -13,21 +13,28 @@
 @import './layout';
 @import './layoutTop';
 @import './userToolbox';
+@import './filter';
+@import './blobLoader';
+@import './footer/footer';
+@import './showOnHover';
+@import './solscanExplorer';
+
 @import './singleOffer/header';
 @import './singleOffer/offer';
 @import './singleOffer/page';
-@import './filter';
+
 @import './offersPage/offersTop';
 @import './offersPage/offersGrid';
 @import './offersPage/offersTable';
 @import './offersPage/offersPagination';
-@import './blobLoader';
-@import './footer/footer';
-@import './Lightboxes/NFTCollateral';
+
 @import './myOffers/_myOffersTop';
 @import './myOffers/myOffersNftList';
-@import './lightbox';
-@import './Lightboxes/createLoan';
+
+@import './lightboxes/lightbox';
+@import './lightboxes/NFTCollateral';
+@import './lightboxes/createLoan';
+
 body {
   @include theme-aware('background-color', 'color-background');
   @include theme-aware('background-image', 'bg-home');

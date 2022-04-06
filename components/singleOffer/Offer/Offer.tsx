@@ -1,5 +1,9 @@
 import React from 'react'
 
+import { ShowOnHover } from '../../layout/showOnHover'
+import { ClipboardButton } from '../../layout/clipboardButton'
+import { SolscanExplorerIcon } from '../../layout/solscanExplorerIcon'
+
 type IProps = {
   offerID: string
   offerMint: string
@@ -15,7 +19,7 @@ type IProps = {
   offerPublicKey: string
 }
 
-const Offer: React.FC<IProps> = ({
+export const Offer: React.FC<IProps> = ({
   offerID,
   offerMint,
   status,
@@ -35,7 +39,10 @@ const Offer: React.FC<IProps> = ({
         <div className='offer-header'>
           <div className='offer-ID'>
             <p>Offer ID</p>
-            <p>{offerID}</p>
+            <ShowOnHover label={`#${offerID}`}>
+              <ClipboardButton data={offerID} />
+              <SolscanExplorerIcon type={'account'} address={offerID} />
+            </ShowOnHover>
           </div>
           <div className='offer-status'>
             <p>Status</p>
@@ -79,5 +86,3 @@ const Offer: React.FC<IProps> = ({
     </div>
   )
 }
-
-export default Offer

@@ -13,6 +13,7 @@ export class LightboxStore {
 
   @action.bound setVisible(visible: boolean) {
     this.visible = visible
+    console.log(this.visible)
   }
 
   @action.bound setContent(content: LightboxContent) {

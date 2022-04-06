@@ -234,8 +234,7 @@ export class OffersStore {
     this.offersEmpty = offersEmpty
   }
 
-  @action.bound handleAcceptOffer = async (offerMint: string, offerPublicKey: string) => {
-    const walletData = await checkWalletATA(offerMint)
+  @action.bound handleAcceptOffer = async (offerPublicKey: string) => {
     await acceptOffer(new PublicKey(offerPublicKey))
   }
 }
