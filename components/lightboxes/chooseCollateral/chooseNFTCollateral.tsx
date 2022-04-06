@@ -2,7 +2,7 @@ import { PublicKey } from '@solana/web3.js'
 import LightboxItem from './lightboxItem/lightboxItem'
 import React, { useContext, useEffect, useState } from 'react'
 import { observer } from 'mobx-react'
-import { NFTMetadata } from '../../../integration/nftLoan'
+import { NFTMetadata, setOffer } from '../../../integration/nftLoan'
 import { StoreContext } from '../../../pages/_app'
 import { StoreDataAdapter } from '../../storeDataAdapter'
 
@@ -14,7 +14,7 @@ export interface INFTCollateral {
 }
 
 const createOffer = (mint: string) => {
-  console.log(mint) // add functionality to send transaction
+  setOffer(new PublicKey(mint))
 }
 
 const ChooseNFTCollateral: React.FC = observer(() => {
@@ -27,8 +27,6 @@ const ChooseNFTCollateral: React.FC = observer(() => {
   const [address, setAddress] = useState<string>('')
   const [sortOption, setSortOption] = useState<string>('')
   const [data, setData] = useState<NFTMetadata[]>(myOffers.collaterables)
-  console.log(walletKey?.toString())
-  console.log(data)
   useEffect(() => {
     if (data) {
       if (sortOption === '') {
@@ -54,9 +52,9 @@ const ChooseNFTCollateral: React.FC = observer(() => {
     }
   }, [wallet, connection, walletKey])
 
-  const chooseNFT = (data: NFTMetadata) => {
-    setItemMint(data.mint)
-    setAddress(data.mint.toString())
+  const chooseNFT = (mint: any) => {
+    setItemMint(mint)
+    setAddress(mint.toString())
   }
 
   const sortNFT = (option: string) => {
@@ -74,13 +72,15 @@ const ChooseNFTCollateral: React.FC = observer(() => {
         </div>
         <div className='NFT-lb-collateral-list'>
           {data?.map((item: NFTMetadata) => {
-            return <LightboxItem key={item.mint} data={item} onClick={chooseNFT} choosen={address === ''} />
+            return (
+              <LightboxItem key={item.mint} data={item} onClick={() => chooseNFT(item.mint)} choosen={address === ''} />
+            )
           })}
         </div>
         <button
           onClick={() => {
             createOffer(itemMint)
-            store.Lightbox.setShowLightboxCollateral(false)
+            // store.Lightbox.setShowLightboxCollateral(false)
           }}
           className='lb-collateral-button'
         >

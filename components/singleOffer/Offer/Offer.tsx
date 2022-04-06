@@ -1,7 +1,9 @@
+import { PublicKey } from '@solana/web3.js'
 import React from 'react'
 
 type IProps = {
   offerID: string
+  offerMint: string
   status: string
   amount: string
   token: string
@@ -10,10 +12,13 @@ type IProps = {
   APR: number
   totalRepay: string
   btnMessage: string
+  handleAcceptOffer: (offerMint: string, offerPublicKey: string) => void
+  offerPublicKey: string
 }
 
 const Offer: React.FC<IProps> = ({
   offerID,
+  offerMint,
   status,
   amount,
   token,
@@ -21,7 +26,9 @@ const Offer: React.FC<IProps> = ({
   durationRemaning,
   APR,
   totalRepay,
-  btnMessage
+  btnMessage,
+  handleAcceptOffer,
+  offerPublicKey
 }) => {
   return (
     <div className='offer-root'>
@@ -66,7 +73,7 @@ const Offer: React.FC<IProps> = ({
         </div>
       </div>
       <div className='offer-lend'>
-        <button className='lend-btn' onClick={() => {}}>
+        <button className='lend-btn' onClick={() => handleAcceptOffer(offerMint, offerPublicKey)}>
           {btnMessage}
         </button>
       </div>

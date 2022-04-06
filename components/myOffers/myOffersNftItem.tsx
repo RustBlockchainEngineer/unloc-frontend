@@ -10,6 +10,8 @@ interface MyOffersNftItemProps {
   nftMint: string
   name: string
   image: string
+  handleCreateSubOffer: (nftMint: string) => void
+  handleRepayLoan: (subOfferKey: string) => void
   offers?: any
   classNames?: string
   reveal: boolean
@@ -24,9 +26,10 @@ export const MyOffersNftItem: React.FC<MyOffersNftItemProps> = ({
   classNames,
   reveal,
   offerKey,
-  onReveal
+  onReveal,
+  handleCreateSubOffer,
+  handleRepayLoan
 }) => {
-  console.log(offers)
   return (
     <div className='nft-list-item'>
       <div className={`my-offers-nft ${classNames ? classNames : ''}`}>

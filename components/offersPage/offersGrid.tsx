@@ -10,7 +10,7 @@ import { BlobLoader } from '../layout/blobLoader'
 
 export const OffersGrid = observer(() => {
   const store = useContext(StoreContext)
-  const { pageOfferData, pageNFTData, currentPage, maxPage, itemsPerPage } = store.Offers
+  const { pageOfferData, pageNFTData, currentPage, maxPage, itemsPerPage, offersEmpty } = store.Offers
 
   const generateEmptyFields = () => {
     const count = (itemsPerPage - pageNFTData.length) as number
@@ -19,7 +19,11 @@ export const OffersGrid = observer(() => {
     })
   }
 
-  return pageNFTData.length > 0 && pageOfferData.length > 0 ? (
+  return offersEmpty ? (
+    <div className='offers-grid-empty'>
+      <h2 className='no-offers'>No Offers Created yet</h2>
+    </div>
+  ) : pageNFTData.length > 0 && pageOfferData.length > 0 ? (
     <>
       <div className='offers-grid'>
         {removeDuplicatesByPropertyIndex(pageNFTData, 'mint').map((nftData, index) => {

@@ -7,7 +7,7 @@ export const getSubOffersKeysByState = async (state: SubOfferState[]) => {
   try {
     const accountName = 'subOffer'
     const discriminator = anchor.AccountsCoder.accountDiscriminator(accountName)
-
+    console.log(program.provider.connection)
     const data = await program.provider.connection.getProgramAccounts(programId, {
       dataSlice: { offset: 0, length: 0 }, // Fetch without any data.
       filters: [

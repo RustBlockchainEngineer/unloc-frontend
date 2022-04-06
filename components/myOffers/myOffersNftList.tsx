@@ -16,6 +16,13 @@ export const MyOffersNftList: React.FC = observer(() => {
     }
     setReveal(key)
   }
+  const handleCreateSubOffer = (nftMint: string): void => {
+    store.MyOffers.handleCreateSubOffer(nftMint)
+  }
+
+  const handleRepayLoan = (subOfferKey: string) => {
+    store.MyOffers.handleRepayLoan(subOfferKey)
+  }
 
   const renderOffers = () => {
     return offers.map((offer) => {
@@ -73,6 +80,8 @@ export const MyOffersNftList: React.FC = observer(() => {
           offers={offerSubOffers}
           reveal={reveal === offerSanitized.offerKey}
           onReveal={onReveal}
+          handleCreateSubOffer={handleCreateSubOffer}
+          handleRepayLoan={handleRepayLoan}
         />
       )
     })
