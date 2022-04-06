@@ -52,7 +52,7 @@ export const MyOffersNftOffer: React.FC<MyOffersNftOfferProps> = ({
       </div>
       <div className='nft__offer-item'>
         <h4>Duration: </h4>
-        <p>{Number(duration.toString()) / 60 / 60 / 24}</p>
+        <p>{Number(duration.toString()) / 60 / 60 / 24} DAYS</p>
       </div>
       <div className='nft__offer-item'>
         <h4>Min repaid value: </h4>

@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react'
 import { compressAddress } from '../../utils/stringUtils/compressAdress'
 import arrowImg from '../../constants/icons/png/Vector.png'
+import icons from '../../constants/icons/icons'
 import Image from 'next/image'
 
 import { MyOffersNftOffer } from './myOffersNftOffers'
-
 interface MyOffersNftItemProps {
   offerKey: string
   nftMint: string
@@ -13,9 +13,15 @@ interface MyOffersNftItemProps {
   handleCreateSubOffer: (nftMint: string) => void
   handleRepayLoan: (subOfferKey: string) => void
   offers?: any
+  state: number
   classNames?: string
   reveal: boolean
   onReveal: (key: string) => void
+}
+
+const setNFTState = (status: number) => {
+  if (status === 0) return <p style={{ color: 'red' }}>Proposed</p>
+  if (status === 1) return <p style={{ color: 'green' }}>Accepted</p>
 }
 
 export const MyOffersNftItem: React.FC<MyOffersNftItemProps> = ({
@@ -23,6 +29,7 @@ export const MyOffersNftItem: React.FC<MyOffersNftItemProps> = ({
   name,
   image,
   offers,
+  state,
   classNames,
   reveal,
   offerKey,
@@ -30,6 +37,24 @@ export const MyOffersNftItem: React.FC<MyOffersNftItemProps> = ({
   handleCreateSubOffer,
   handleRepayLoan
 }) => {
+  const setNFTActions = (status: number) => {
+    if (status === 0) {
+      return (
+        <div className='nft-info-buttons'>
+          <button className=' btn--md btn--primary' onClick={() => handleCreateSubOffer(nftMint)}>
+            Create Offer
+          </button>
+        </div>
+      )
+    }
+    if (status === 1) {
+      return (
+        <div className='nft-info-buttons'>
+          <button className=' btn--md btn--disabled'>NFT Locked, Loan Offer Taken</button>
+        </div>
+      )
+    }
+  }
   return (
     <div className='nft-list-item'>
       <div className={`my-offers-nft ${classNames ? classNames : ''}`}>
@@ -44,15 +69,18 @@ export const MyOffersNftItem: React.FC<MyOffersNftItemProps> = ({
                       <p>Offer ID:</p>
                       <p>{compressAddress(4, offerKey)}</p>
                     </div>
-                    <img src='' width='18px' height='18px' />
+                    <Image
+                      src={icons.copy}
+                      width='18px'
+                      height='18px'
+                      className='clipboard-button'
+                      onClick={() => navigator.clipboard.writeText(offerKey)}
+                    />
                   </div>
                   <p className='info-name'>{name}</p>
                 </div>
               </div>
-              <div className='nft-info-buttons'>
-                <button className=' btn--md btn--disabled'>NFT Locked, Loan Offer Taken</button>
-                <button className=' btn--md btn--primary'>Create Offer</button>
-              </div>
+              {setNFTActions(state)}
             </div>
             <div className='nft-metadata'>
               <div className='metadata-item'>
@@ -61,11 +89,11 @@ export const MyOffersNftItem: React.FC<MyOffersNftItemProps> = ({
               </div>
               <div className='metadata-item'>
                 <p>collection</p>
-                <p>test</p>
+                <p></p>
               </div>
               <div className='metadata-item'>
                 <p>status</p>
-                <p>test</p>
+                {setNFTState(state)}
               </div>
             </div>
           </div>
@@ -75,12 +103,12 @@ export const MyOffersNftItem: React.FC<MyOffersNftItemProps> = ({
       </div>
       <div
         className='offers-list'
-        style={{ maxHeight: `${reveal ? '1000px' : '22px'}` }}
+        style={{ maxHeight: `${reveal ? '1000px' : '22px'}`, backgroundColor: `${reveal ? '#482688' : ''}` }}
         onClick={() => onReveal(offerKey)}
       >
         <div className='offers-reveal-btn'>
-          <p>Offers for this NFT</p>
-          <img src={'arrowImg'} />
+          <p>{reveal ? 'Active Loan' : 'Offers for this NFT'}</p>
+          <Image src={icons.reveal} />
         </div>
         <div className='offers-items'>
           {offers && offers.length ? (
@@ -96,7 +124,9 @@ export const MyOffersNftItem: React.FC<MyOffersNftItemProps> = ({
               />
             ))
           ) : (
-            <p style={{ height: 400 }}>Nothing to show!</p>
+            <div className={`my-offers-no__offers ${classNames ? classNames : ''}`}>
+              <p>You have no offers yet</p>
+            </div>
           )}
         </div>
       </div>

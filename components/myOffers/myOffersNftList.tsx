@@ -78,6 +78,7 @@ export const MyOffersNftList: React.FC = observer(() => {
           image={offerSanitized.image}
           nftMint={offerSanitized.nftMint}
           offers={offerSubOffers}
+          state={offerSanitized.state}
           reveal={reveal === offerSanitized.offerKey}
           onReveal={onReveal}
           handleCreateSubOffer={handleCreateSubOffer}

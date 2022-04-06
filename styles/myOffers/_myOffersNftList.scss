@@ -58,6 +58,10 @@
     }
   }
 
+  .clipboard-button {
+    cursor: pointer;
+  }
+
   .nft-info-buttons {
     display: flex;
 
@@ -122,6 +126,15 @@
     }
   }
 
+  .my-offers-no__offers {
+    @include theme-aware('background-color', 'color-loan');
+    margin-top: 8px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
   .offers-reveal-btn {
     display: flex;
     justify-content: space-between;
@@ -129,6 +142,7 @@
     cursor: pointer;
     transition: display 1s;
     transition-delay: 1s;
+    height: 16px;
   }
 
   .offers-items {
