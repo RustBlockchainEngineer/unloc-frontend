@@ -1,19 +1,32 @@
 import React, { useEffect } from 'react'
 import { compressAddress } from '../../utils/stringUtils/compressAdress'
-import arrowImg from '../../constants/icons/svg/Triangle.svg'
+import arrowImg from '../../constants/icons/png/Vector.png'
 import Image from 'next/image'
 
 import { MyOffersNftOffer } from './myOffersNftOffers'
 
 interface MyOffersNftItemProps {
+  offerKey: string
   nftMint: string
   name: string
   image: string
   offers?: any
   classNames?: string
+  reveal: boolean
+  onReveal: (key: string) => void
 }
 
-export const MyOffersNftItem: React.FC<MyOffersNftItemProps> = ({ nftMint, name, image, offers, classNames }) => {
+export const MyOffersNftItem: React.FC<MyOffersNftItemProps> = ({
+  nftMint,
+  name,
+  image,
+  offers,
+  classNames,
+  reveal,
+  offerKey,
+  onReveal
+}) => {
+  console.log(offers)
   return (
     <div className='nft-list-item'>
       <div className={`my-offers-nft ${classNames ? classNames : ''}`}>
@@ -26,7 +39,7 @@ export const MyOffersNftItem: React.FC<MyOffersNftItemProps> = ({ nftMint, name,
                   <div className='nft-info-inner-mainData'>
                     <div className='info-description'>
                       <p>Offer ID:</p>
-                      <p>{compressAddress(4, nftMint)}</p>
+                      <p>{compressAddress(4, offerKey)}</p>
                     </div>
                     <img src='' width='18px' height='18px' />
                   </div>
@@ -57,17 +70,32 @@ export const MyOffersNftItem: React.FC<MyOffersNftItemProps> = ({ nftMint, name,
           <>Loading NFT Data</>
         )}
       </div>
-      <div className='offers-list'>
-        {offers && offers.length ? (
-          offers.map((offer: any) => (
-            <MyOffersNftOffer key={offer.subOfferKey.toBase58()} offerAmount={offer.offerAmount} />
-          ))
-        ) : (
-          <div className='offers-reveal-btn'>
-            <p>Offers for this NFT</p>
-            <img src={arrowImg} />
-          </div>
-        )}
+      <div
+        className='offers-list'
+        style={{ maxHeight: `${reveal ? '1000px' : '22px'}` }}
+        onClick={() => onReveal(offerKey)}
+      >
+        <div className='offers-reveal-btn'>
+          <p>Offers for this NFT</p>
+          <img src={'arrowImg'} />
+        </div>
+        <div className='offers-items'>
+          {offers && offers.length ? (
+            offers.map((offer: any) => (
+              <MyOffersNftOffer
+                key={offer.subOfferKey.toBase58()}
+                offerAmount={offer.offerAmount}
+                APR={offer.aprNumerator}
+                status={offer.state}
+                offerID={offer.subOfferKey}
+                duration={offer.loanDuration}
+                repaid={offer.minRepaidNumerator}
+              />
+            ))
+          ) : (
+            <p style={{ height: 400 }}>Nothing to show!</p>
+          )}
+        </div>
       </div>
     </div>
   )

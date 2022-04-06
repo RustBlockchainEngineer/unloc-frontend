@@ -62,12 +62,14 @@
     display: flex;
 
     & button {
+      cursor: pointer;
       border-radius: 6px;
       border: none;
       min-width: 240px;
       text-align: center;
     }
     .btn--disabled {
+      cursor: auto;
       @include theme-aware('background-color', 'color-button-disabled');
       margin-right: 20px;
     }
@@ -90,19 +92,45 @@
 .offers-list {
   width: 100%;
   display: flex;
+  flex-direction: column;
+  overflow-y: hidden;
   @include theme-aware('background-color', 'color-secondary');
   border-radius: 0 0 8px 8px;
-  padding: 4px 16px;
+  padding: 8px 16px 20px 16px;
   color: #ffffff;
   font-size: 14px;
   font-weight: 700;
+  transition: max-height 0.5s;
+
   .my-offers-nft__offer {
-    margin: 20px;
+    @include theme-aware('background-color', 'color-loan');
+    margin-top: 8px;
+    padding: 20px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+
+    .nft__offer-item {
+      border-right: 1px solid;
+      @include theme-aware('border-color', '');
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .nft__offer-item:last-child {
+      border: none;
+    }
   }
 
   .offers-reveal-btn {
     display: flex;
     justify-content: space-between;
     width: 100%;
+    cursor: pointer;
+    transition: display 1s;
+    transition-delay: 1s;
+  }
+
+  .offers-items {
   }
 }

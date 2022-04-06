@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { observer } from 'mobx-react'
 
 import { StoreContext } from '../../pages/_app'
@@ -7,9 +7,15 @@ import { MyOffersNftItem } from './myOffersNftItem'
 export const MyOffersNftList: React.FC = observer(() => {
   const store = useContext(StoreContext)
   const { offers, nftData, subOffers } = store.MyOffers
-  console.log('offers: ', offers)
-  console.log('nftData: ', nftData)
-  console.log('subOffers: ', subOffers)
+  const [reveal, setReveal] = useState<string>('')
+
+  const onReveal = (key: string) => {
+    if (key === reveal) {
+      setReveal('')
+      return
+    }
+    setReveal(key)
+  }
 
   const renderOffers = () => {
     return offers.map((offer) => {
@@ -60,10 +66,13 @@ export const MyOffersNftList: React.FC = observer(() => {
       return (
         <MyOffersNftItem
           key={offerSanitized.offerKey}
+          offerKey={offerSanitized.offerKey}
           name={offerSanitized.name}
           image={offerSanitized.image}
           nftMint={offerSanitized.nftMint}
           offers={offerSubOffers}
+          reveal={reveal === offerSanitized.offerKey}
+          onReveal={onReveal}
         />
       )
     })
