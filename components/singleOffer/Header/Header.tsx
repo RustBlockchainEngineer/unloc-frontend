@@ -1,4 +1,5 @@
 import React from 'react'
+import Image from 'next/image'
 
 type IProps = {
   collectionName: string
@@ -12,7 +13,7 @@ const Header: React.FC<IProps> = ({ collectionName, nftName, nftImage, nftAddres
   return (
     <div className='container'>
       <div className='nft-info'>
-        <img src={nftImage} className='nft-image' />
+        {nftImage ? <Image alt='NFT Image' src={nftImage} width={96} height={96} className='nft-image' /> : <></>}
         <div className='nft-info-name'>
           <p>{collectionName}</p>
           <h1>{nftName}</h1>

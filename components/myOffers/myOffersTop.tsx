@@ -1,12 +1,10 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext } from 'react'
 import { observer } from 'mobx-react'
 
 import { StoreContext } from '../../pages/_app'
-import ChooseNFTCollateral from '../lightboxes/chooseCollateral/chooseNFTCollateral'
 
 export const MyOffersTop: React.FC = observer(() => {
   const store = useContext(StoreContext)
-  const { showLightboxCollateral } = store.Lightbox
   const { wallet, walletKey, connected } = store.Wallet as any
 
   const handleWalletDisconnect = () => {
@@ -38,9 +36,6 @@ export const MyOffersTop: React.FC = observer(() => {
         ) : (
           ''
         )}
-      </div>
-      <div className='lightbox-collateral' style={{ display: `${showLightboxCollateral ? 'flex' : 'none'}` }}>
-        <ChooseNFTCollateral />
       </div>
     </div>
   ) : (

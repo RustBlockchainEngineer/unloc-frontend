@@ -1,7 +1,7 @@
+import React from 'react'
 import { BN } from '@project-serum/anchor'
 import { compressAddress } from '../../utils/stringUtils/compressAdress'
 import { setOfferStatus } from '../../utils/stringUtils/offerStatusEnum'
-import React, { useEffect } from 'react'
 
 interface MyOffersNftOfferProps {
   offerAmount: any

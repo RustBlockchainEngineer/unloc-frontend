@@ -1,4 +1,3 @@
-import { PublicKey } from '@solana/web3.js'
 import React from 'react'
 
 type IProps = {
@@ -12,7 +11,7 @@ type IProps = {
   APR: number
   totalRepay: string
   btnMessage: string
-  handleAcceptOffer: (offerMint: string, offerPublicKey: string) => void
+  handleAcceptOffer: (offerPublicKey: string) => void
   offerPublicKey: string
 }
 
@@ -73,7 +72,7 @@ const Offer: React.FC<IProps> = ({
         </div>
       </div>
       <div className='offer-lend'>
-        <button className='lend-btn' onClick={() => handleAcceptOffer(offerMint, offerPublicKey)}>
+        <button className='lend-btn' onClick={() => handleAcceptOffer(offerPublicKey)}>
           {btnMessage}
         </button>
       </div>

@@ -29,8 +29,6 @@ const SingleNftPage: NextPage = observer(({}) => {
   const router = useRouter()
   const store = useContext(StoreContext)
 
-  const [loaded, setLoaded] = useState(false)
-  const [message, setMessage] = useState<string>('')
   const { connected, wallet } = store.Wallet
   const { nftData, loansData } = store.SingleOffer
 
@@ -46,8 +44,8 @@ const SingleNftPage: NextPage = observer(({}) => {
     }
   }
 
-  const handleAcceptOffer = (offerMint: string, offerPublicKey: string) => {
-    store.Offers.handleAcceptOffer(offerMint, offerPublicKey)
+  const handleAcceptOffer = (offerPublicKey: string) => {
+    store.Offers.handleAcceptOffer(offerPublicKey)
   }
 
   useEffect(() => {

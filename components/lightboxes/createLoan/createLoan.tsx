@@ -1,25 +1,29 @@
-import { observer } from 'mobx-react'
 import React, { useContext } from 'react'
+import { observer } from 'mobx-react'
+
 import { Form, Field } from 'react-final-form'
 import { StoreContext } from '../../../pages/_app'
-import { SubOfferInterface, Ticker } from '../../../stores/LoanActionStore'
+import { SubOfferInterface } from '../../../stores/LoanActionStore'
 
-const CreateLoan: React.FC = observer(() => {
+interface CreateLoanProps {
+  mode: 'new' | 'update'
+}
+
+export const CreateLoan: React.FC<CreateLoanProps> = observer((mode) => {
   const store = useContext(StoreContext)
   const { connected, wallet, walletKey } = store.Wallet
-  const { lightboxLoanData, showLightboxLoan, offerNftMint } = store.Lightbox
 
   const onSubmit = async (values: SubOfferInterface) => {
     if (connected && wallet && walletKey) {
       try {
-        if (showLightboxLoan === 'create' && offerNftMint) {
-          await store.LoanActions.handleNewSubOffer(values, offerNftMint)
-        }
+        // if (showLightboxLoan === 'create' && offerNftMint) {
+        //   await store.LoanActions.handleNewSubOffer(values, offerNftMint)
+        // }
+        console.log('create new loan')
       } catch (e) {
         console.log(e)
       } finally {
-        store.Lightbox.setShowLightboxLoan(null)
-        store.Lightbox.setLightboxLoanData(null)
+        store.Lightbox.setVisible(false)
       }
     }
   }
@@ -97,5 +101,3 @@ const CreateLoan: React.FC = observer(() => {
     />
   )
 })
-
-export default CreateLoan

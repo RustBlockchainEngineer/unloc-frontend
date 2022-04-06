@@ -1,10 +1,10 @@
-import { observer } from 'mobx-react'
 import React, { useContext } from 'react'
+import { observer } from 'mobx-react'
 import { StoreContext } from '../../pages/_app'
 
 interface LightboxProps {
-  classNames?: string
   children: JSX.Element
+  classNames?: string
 }
 
 export const Lightbox: React.FC<LightboxProps> = observer(({ children, classNames }: LightboxProps) => {
@@ -15,7 +15,7 @@ export const Lightbox: React.FC<LightboxProps> = observer(({ children, className
       return
     }
 
-    store.Lightbox.hideAllLightboxes()
+    store.Lightbox.setVisible(false)
   }
 
   return (
@@ -23,14 +23,14 @@ export const Lightbox: React.FC<LightboxProps> = observer(({ children, className
       onClick={(e) => {
         closeWindow(e, true)
       }}
-      className={`lightbox ${classNames}`}
+      className={`lightbox ${classNames ? classNames : ''}`}
     >
       <div
         className='lightbox__container'
         tabIndex={0}
         onKeyDown={(e) => {
           if (e.key == 'Escape') {
-            store.Lightbox.hideAllLightboxes()
+            store.Lightbox.setVisible(false)
           }
         }}
       >

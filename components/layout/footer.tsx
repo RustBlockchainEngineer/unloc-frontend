@@ -1,15 +1,15 @@
 import React from 'react'
 import { localesFooterCommunity, localesFooterCompany, localesFooterLegal } from '../../constants/locales'
 
-const createList = (data: { [x: string]: string }) => {
-  return Object.entries(data).map(([key, value]) => (
-    <li className='list-item' key={key}>
-      <a href={value}>{key}</a>
-    </li>
-  ))
-}
-
 const Footer: React.FC = () => {
+  const createList = (data: { [x: string]: string }) => {
+    return Object.entries(data).map(([key, value]) => (
+      <li className='list-item' key={key}>
+        <a href={value}>{key}</a>
+      </li>
+    ))
+  }
+
   return (
     <div className='footer'>
       {/* <div className='footer-logo'>

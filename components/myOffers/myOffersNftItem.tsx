@@ -1,13 +1,10 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext } from 'react'
 import { compressAddress } from '../../utils/stringUtils/compressAdress'
-import arrowImg from '../../constants/icons/png/Vector.png'
 import icons from '../../constants/icons/icons'
 import Image from 'next/image'
 
 import { MyOffersNftOffer } from './myOffersNftOffers'
 import { StoreContext } from '../../pages/_app'
-import { Lightbox } from '../lightboxes/lightbox'
-import CreateLoan from '../lightboxes/createLoan/createLoan'
 import { observer } from 'mobx-react'
 interface MyOffersNftItemProps {
   offerKey: string
@@ -43,7 +40,6 @@ export const MyOffersNftItem: React.FC<MyOffersNftItemProps> = observer(
     handleRepayLoan
   }) => {
     const store = useContext(StoreContext)
-    const { showLightboxLoan, setShowLightboxLoan } = store.Lightbox
 
     const setNFTActions = (status: number) => {
       if (status === 0) {
@@ -79,6 +75,7 @@ export const MyOffersNftItem: React.FC<MyOffersNftItemProps> = observer(
                       </div>
                       <Image
                         src={icons.copy}
+                        alt='NFT Image'
                         width='18px'
                         height='18px'
                         className='clipboard-button'
@@ -138,12 +135,6 @@ export const MyOffersNftItem: React.FC<MyOffersNftItemProps> = observer(
             )}
           </div>
         </div>
-        {console.log(showLightboxLoan)}
-        {showLightboxLoan !== null ? (
-          <Lightbox classNames='create-loan-lightbox'>
-            <CreateLoan />
-          </Lightbox>
-        ) : null}
       </div>
     )
   }

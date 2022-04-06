@@ -1,10 +1,11 @@
-import { PublicKey } from '@solana/web3.js'
-import LightboxItem from './lightboxItem/lightboxItem'
 import React, { useContext, useEffect, useState } from 'react'
+import { PublicKey } from '@solana/web3.js'
 import { observer } from 'mobx-react'
+
 import { NFTMetadata, setOffer } from '../../../integration/nftLoan'
 import { StoreContext } from '../../../pages/_app'
 import { StoreDataAdapter } from '../../storeDataAdapter'
+import { CollateralItem } from './collateralItem'
 
 export interface INFTCollateral {
   NFTAddress: string
@@ -13,20 +14,29 @@ export interface INFTCollateral {
   NFTImage: string
 }
 
-const createOffer = (mint: string) => {
-  setOffer(new PublicKey(mint))
-}
-
-const ChooseNFTCollateral: React.FC = observer(() => {
+export const CreateCollateral: React.FC = observer(() => {
   const store = useContext(StoreContext)
   const myOffers = store.MyOffers
-  const { setShowLightboxCollateral } = store.Lightbox
   const { wallet, connection, walletKey } = store.Wallet
 
   const [itemMint, setItemMint] = useState<string>('')
   const [address, setAddress] = useState<string>('')
   const [sortOption, setSortOption] = useState<string>('')
   const [data, setData] = useState<NFTMetadata[]>(myOffers.collaterables)
+
+  const chooseNFT = (mint: any) => {
+    setItemMint(mint)
+    setAddress(mint.toString())
+  }
+
+  const sortNFT = (option: string) => {
+    setSortOption(option)
+  }
+
+  const createOffer = (mint: string) => {
+    setOffer(new PublicKey(mint))
+  }
+
   useEffect(() => {
     if (data) {
       if (sortOption === '') {
@@ -52,14 +62,6 @@ const ChooseNFTCollateral: React.FC = observer(() => {
     }
   }, [wallet, connection, walletKey])
 
-  const chooseNFT = (mint: any) => {
-    setItemMint(mint)
-    setAddress(mint.toString())
-  }
-
-  const sortNFT = (option: string) => {
-    setSortOption(option)
-  }
   return (
     <StoreDataAdapter>
       <div className='collateral-lightbox'>
@@ -73,14 +75,19 @@ const ChooseNFTCollateral: React.FC = observer(() => {
         <div className='NFT-lb-collateral-list'>
           {data?.map((item: NFTMetadata) => {
             return (
-              <LightboxItem key={item.mint} data={item} onClick={() => chooseNFT(item.mint)} choosen={address === ''} />
+              <CollateralItem
+                key={item.mint}
+                data={item}
+                onClick={() => chooseNFT(item.mint)}
+                choosen={address === ''}
+              />
             )
           })}
         </div>
         <button
           onClick={() => {
             createOffer(itemMint)
-            // store.Lightbox.setShowLightboxCollateral(false)
+            store.Lightbox.setVisible(false)
           }}
           className='lb-collateral-button'
         >
@@ -90,5 +97,3 @@ const ChooseNFTCollateral: React.FC = observer(() => {
     </StoreDataAdapter>
   )
 })
-
-export default ChooseNFTCollateral

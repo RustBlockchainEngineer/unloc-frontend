@@ -1,5 +1,5 @@
 import React from 'react'
-import { NFTMetadata } from '../../../../integration/nftLoan'
+import { NFTMetadata } from '../../../integration/nftLoan'
 
 interface IProps {
   data: NFTMetadata
@@ -7,7 +7,7 @@ interface IProps {
   choosen: boolean
 }
 
-const LightboxItem: React.FC<IProps> = ({ data, onClick, choosen }) => {
+export const CollateralItem: React.FC<IProps> = ({ data, onClick, choosen }) => {
   return (
     <div onClick={() => onClick(data)} className={`collateral-list-item ${choosen ? 'active' : ''}`}>
       <img src={data.arweaveMetadata.image} className='collateral-image' />
@@ -21,5 +21,3 @@ const LightboxItem: React.FC<IProps> = ({ data, onClick, choosen }) => {
     </div>
   )
 }
-
-export default LightboxItem

@@ -17,6 +17,9 @@ import { clusterApiUrl } from '@solana/web3.js'
 
 import { config } from '../constants/config'
 import { rootStore } from '../stores/Root.store'
+import { Lightbox } from '../components/lightboxes/lightbox'
+import { CreateCollateral } from '../components/lightboxes/chooseCollateral/createCollateral'
+import { CreateLoan } from '../components/lightboxes/createLoan/createLoan'
 import '../styles/main.scss'
 
 export const StoreContext = createContext(rootStore)
@@ -48,6 +51,17 @@ const Unloc: FC<AppProps> = ({ Component, pageProps }) => {
         <WalletModalProvider>
           <StoreContext.Provider value={rootStore}>
             <Component {...pageProps} />
+            {rootStore.Lightbox.visible ? (
+              <Lightbox>
+                <>
+                  {rootStore.Lightbox.content === 'collateral' ? <CreateCollateral /> : <></>}
+                  {rootStore.Lightbox.content === 'loanCreate' ? <CreateLoan mode='new' /> : <></>}
+                  {rootStore.Lightbox.content === 'loanUpdate' ? <CreateLoan mode='update' /> : <></>}
+                </>
+              </Lightbox>
+            ) : (
+              <></>
+            )}
           </StoreContext.Provider>
         </WalletModalProvider>
       </WalletProvider>
