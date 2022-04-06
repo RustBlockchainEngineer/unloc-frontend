@@ -141,7 +141,7 @@ export const MyOffersNftItem: React.FC<MyOffersNftItemProps> = observer(
         {console.log(showLightboxLoan)}
         {showLightboxLoan !== null ? (
           <Lightbox classNames='create-loan-lightbox'>
-            <CreateLoan refresh={() => {}} />
+            <CreateLoan />
           </Lightbox>
         ) : null}
       </div>
