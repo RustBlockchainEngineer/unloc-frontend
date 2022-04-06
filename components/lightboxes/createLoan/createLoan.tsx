@@ -1,31 +1,101 @@
-import React from 'react'
+import { observer } from 'mobx-react'
+import React, { useContext } from 'react'
+import { Form, Field } from 'react-final-form'
+import { StoreContext } from '../../../pages/_app'
+import { SubOfferInterface, Ticker } from '../../../stores/LoanActionStore'
 
-interface IProps {
-  onClick: () => {}
-}
+const CreateLoan: React.FC = observer(() => {
+  const store = useContext(StoreContext)
+  const { connected, wallet, walletKey } = store.Wallet
+  const { lightboxLoanData, showLightboxLoan, offerNftMint } = store.Lightbox
 
-const createLoan: React.FC<IProps> = ({ onClick }) => {
+  const onSubmit = async (values: SubOfferInterface) => {
+    if (connected && wallet && walletKey) {
+      try {
+        if (showLightboxLoan === 'create' && offerNftMint) {
+          await store.LoanActions.handleNewSubOffer(values, offerNftMint)
+        }
+      } catch (e) {
+        console.log(e)
+      } finally {
+        store.Lightbox.setShowLightboxLoan(null)
+        store.Lightbox.setLightboxLoanData(null)
+      }
+    }
+  }
+
   return (
-    <div className='create-offer-container'>
-      <h1>Create Loan Offer</h1>
-      <div className='create-offer-inputs'>
-        <label htmlFor='value'>Loan Value</label>
-        <input name='value' />
-        <label htmlFor='currency'>Currency</label>
-        <select name='currency'>
-          <option value='USDC'>USDC</option>
-          <option value='USDT'>USDT</option>
-          <option value='SOL'>SOL</option>
-        </select>
-        <label htmlFor='duration'>Duration</label>
-        <input type='range' value={1} min={1} max={90} />
-      </div>
-      <div className='total-repay'>
-        <label htmlFor='APR'> APR(%)</label>
-        <input name='APR' />
-        <p>10,493 USDC</p>
-      </div>
-      <button>Create</button>
-    </div>
+    <Form
+      className='create-offer-container'
+      initialValues={{
+        loanValue: 1,
+        currency: 'USDC',
+        duration: 1,
+        apr: 500
+      }}
+      onSubmit={onSubmit}
+      render={() => (
+        <form>
+          <h1>Create Loan Offer</h1>
+          <div className='offer-form'>
+            <div className='form-amount'>
+              <div>
+                <span>Amount</span>
+                <Field name='loanValue' component='input' type='number' placeholder='amount' />
+              </div>
+              <div>
+                <span>Currency</span>
+                <Field name='currency' component='select'>
+                  <option value='USDC' key='USDC'>
+                    USDC
+                  </option>
+                  <option value='USDT' key='USDT'>
+                    USDT
+                  </option>
+                  <option value='SOL' key='SOL'>
+                    SOL
+                  </option>
+                </Field>
+              </div>
+            </div>
+            <div className='form-duration'>
+              <div>
+                <span>Duration</span>
+                <Field
+                  component='input'
+                  className='slider-gradient'
+                  name='duration'
+                  type='range'
+                  initialValue={1}
+                  min={1}
+                  max={90}
+                />
+              </div>
+              <div>
+                <span></span>
+                <Field component='input' name='duration' initialValue={'1'} min={1} max={90} />
+              </div>
+            </div>
+            <div className='form-APR'>
+              <div>
+                <span>APR (%)</span>
+                <Field name='apr' component='input' />
+              </div>
+              <div>
+                <span>Total repay amount</span>
+                <p>10,493 USDC</p>
+              </div>
+            </div>
+            <button>
+              <div className='btn-content'>
+                <p className=''>Create</p>
+              </div>
+            </button>
+          </div>
+        </form>
+      )}
+    />
   )
-}
+})
+
+export default CreateLoan
