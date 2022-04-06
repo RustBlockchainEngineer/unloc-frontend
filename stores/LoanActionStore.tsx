@@ -4,6 +4,7 @@ import { PublicKey } from '@solana/web3.js'
 
 import { config } from '../constants/config'
 import { getDurationForContractData } from '../utils/getDuration'
+import { createSubOffer, updateSubOffer } from '../integration/nftLoan'
 // import { createSubOffer, updateSubOffer } from '../functions/nftLoan' funcka do tworzenia do dodania
 
 export type Ticker = 'USDC' | 'SOL'
