@@ -4,11 +4,7 @@ import { Form, Field } from 'react-final-form'
 import { StoreContext } from '../../../pages/_app'
 import { SubOfferInterface, Ticker } from '../../../stores/LoanActionStore'
 
-interface IProps {
-  refresh: () => Promise<void>
-}
-
-const CreateLoan: React.FC<IProps> = observer(({ refresh }) => {
+const CreateLoan: React.FC = observer(() => {
   const store = useContext(StoreContext)
   const { connected, wallet, walletKey } = store.Wallet
   const { lightboxLoanData, showLightboxLoan, offerNftMint } = store.Lightbox
@@ -26,7 +22,6 @@ const CreateLoan: React.FC<IProps> = observer(({ refresh }) => {
         store.Lightbox.setLightboxLoanData(null)
       }
     }
-    refresh()
   }
 
   return (
