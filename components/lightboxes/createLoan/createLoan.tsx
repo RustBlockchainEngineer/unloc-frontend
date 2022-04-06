@@ -66,7 +66,15 @@ const CreateLoan: React.FC<IProps> = observer(({ refresh }) => {
             <div className='form-duration'>
               <div>
                 <span>Duration</span>
-                <Field component='input' name='duration' type='range' initialValue={1} min={1} max={90} />
+                <Field
+                  component='input'
+                  className='slider-gradient'
+                  name='duration'
+                  type='range'
+                  initialValue={1}
+                  min={1}
+                  max={90}
+                />
               </div>
               <div>
                 <span></span>
