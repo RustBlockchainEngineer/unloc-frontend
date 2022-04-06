@@ -1,9 +1,19 @@
 import { action, makeAutoObservable, runInAction, flow } from 'mobx'
 import { PublicKey } from '@solana/web3.js'
+import { BN } from 'bn.js'
 
 import { getWhitelistedNFTsByWallet } from '../integration/nftIntegration'
-import { getOffersBy, getSubOfferList, MultipleNFT, NFTMetadata } from '../integration/nftLoan'
-
+import {
+  getOffersBy,
+  getSubOfferList,
+  MultipleNFT,
+  NFTMetadata,
+  createSubOffer,
+  repayLoan
+} from '../integration/nftLoan'
+import { currencies } from '../constants/currency'
+import { getDurationForContractData } from '../utils/getDuration'
+import { asBigNumber } from '../utils/asBigNumber'
 export class MyOffersStore {
   rootStore
   offers: any[] = []
@@ -62,11 +72,11 @@ export class MyOffersStore {
       const data = []
       for (const offer of this.offers) {
         if (offer && offer.publicKey) {
+          console.log(offer.publicKey.toBase58())
           const subOfferData = yield getSubOfferList(offer.publicKey)
           data.push(subOfferData)
         }
       }
-
       this.subOffers = data.flat()
     }
   })
@@ -98,4 +108,30 @@ export class MyOffersStore {
       this.nftData = data
     }
   })
+
+  @action.bound handleCreateSubOffer = async (nftMint: string) => {
+    console.log(nftMint)
+    const testData = {
+      //Test purposes only
+      offerAmount: 6,
+      loanDuration: 2,
+      aprNumerator: 100,
+      currency: 'USDC'
+    }
+    const currencyInfo = currencies[testData.currency]
+
+    await createSubOffer(
+      new BN(testData.offerAmount * 10 ** currencyInfo.decimals),
+      new BN(getDurationForContractData(testData.loanDuration, 'days')),
+      new BN(1), // minRepaidNumerator
+      new BN(testData.aprNumerator),
+      new PublicKey(nftMint),
+      new PublicKey(currencyInfo.mint)
+    )
+  }
+
+  @action.bound handleRepayLoan = async (subOfferKey: string) => {
+    console.log('subOfferKey: ', subOfferKey)
+    await repayLoan(new PublicKey(subOfferKey))
+  }
 }

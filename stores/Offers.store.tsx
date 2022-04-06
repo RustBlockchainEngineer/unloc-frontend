@@ -3,7 +3,14 @@ import { PublicKey } from '@solana/web3.js'
 import axios from 'axios'
 import { BigNumber } from 'bignumber.js'
 
-import { getSubOfferList, MultipleNFT, SubOfferState, getSubOfferMultiple } from '../integration/nftLoan'
+import {
+  getSubOfferList,
+  MultipleNFT,
+  SubOfferState,
+  getSubOfferMultiple,
+  checkWalletATA,
+  acceptOffer
+} from '../integration/nftLoan'
 import { getSubOffersKeysByState } from '../integration/offersListing'
 import { getUniqueNFTsByNFTMint } from '../methods/getUniqueNFTsByNFTMint'
 import sortNftsByField from '../methods/sortNftsByField'
@@ -32,10 +39,10 @@ export class OffersStore {
   filterDurationMax = 90
   filtersVisible = true
 
-  //new paginated offers:
   offersKeys: PublicKey[] = []
   offersCount: number = 0
   offersKnown: any[] = []
+  offersEmpty: boolean = true
 
   constructor(rootStore: any) {
     makeAutoObservable(this)
@@ -159,8 +166,18 @@ export class OffersStore {
     const activeOffersKeys = await getSubOffersKeysByState([0]) //add more filters
     const reusedOffersKeys = await getSubOffersKeysByState([6]) //add more filters
 
-    if (activeOffersKeys && activeOffersKeys.length && reusedOffersKeys && reusedOffersKeys.length) {
-      const offersViable = [...activeOffersKeys, ...reusedOffersKeys]
+    let offersViable: any[] = []
+
+    if (activeOffersKeys && activeOffersKeys.length) {
+      offersViable = [...offersViable, ...activeOffersKeys]
+    }
+
+    if (reusedOffersKeys && reusedOffersKeys.length) {
+      offersViable = [...offersViable, ...reusedOffersKeys]
+    }
+
+    if (offersViable && offersViable.length) {
+      this.offersEmpty = false
 
       this.setOffersKeys(offersViable)
       this.setOffersCount(offersViable?.length)
@@ -198,13 +215,27 @@ export class OffersStore {
             (this.currentPage - 1) * this.itemsPerPage,
             this.currentPage * this.itemsPerPage
           )
+
           this.pageNFTData = paginatedNFTData
         }
       }
+    } else {
+      this.pageOfferData = []
+      this.pageNFTData = []
+      this.offersEmpty = true
     }
   }
 
   @action.bound setFiltersVisible = (visible: boolean): void => {
     this.filtersVisible = visible
+  }
+
+  @action.bound setOffersEmpty = (offersEmpty: boolean) => {
+    this.offersEmpty = offersEmpty
+  }
+
+  @action.bound handleAcceptOffer = async (offerMint: string, offerPublicKey: string) => {
+    const walletData = await checkWalletATA(offerMint)
+    await acceptOffer(new PublicKey(offerPublicKey))
   }
 }
