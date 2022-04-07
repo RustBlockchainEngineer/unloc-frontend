@@ -1,11 +1,10 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext } from 'react'
 import { observer } from 'mobx-react'
 
 import { StoreContext } from '../../pages/_app'
 import { OffersGridItem } from './offersGridItem'
 import { currencyMints } from '../../constants/currency'
 import { asBigNumber } from '../../utils/asBigNumber'
-import { removeDuplicatesByPropertyIndex } from '../../utils/removeDuplicatesByPropertyIndex'
 import { BlobLoader } from '../layout/blobLoader'
 
 export const OffersGrid = observer(() => {
