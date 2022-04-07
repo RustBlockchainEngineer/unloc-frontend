@@ -169,33 +169,37 @@ export class OffersStore {
 
     if (activeOffersKeys && activeOffersKeys.length) {
       offersViable = [...offersViable, ...activeOffersKeys]
-    }
 
-    // if (reusedOffersKeys && reusedOffersKeys.length) {
-    //   offersViable = [...offersViable, ...reusedOffersKeys]
-    // }
+      // if (reusedOffersKeys && reusedOffersKeys.length) {
+      //   offersViable = [...offersViable, ...reusedOffersKeys]
+      // }
 
-    if (offersViable && offersViable.length) {
-      this.offersEmpty = false
-      this.setOffersKeys(offersViable)
-      this.setOffersCount(offersViable?.length)
+      if (offersViable && offersViable.length) {
+        this.offersEmpty = false
+        this.setOffersKeys(offersViable)
+        this.setOffersCount(offersViable?.length)
 
-      const offersData = await getSubOfferMultiple(this.offersKeys)
+        const offersData = await getSubOfferMultiple(this.offersKeys)
 
-      this.setMaxPage(Math.ceil(offersData.length / this.itemsPerPage))
+        this.setMaxPage(Math.ceil(offersData.length / this.itemsPerPage))
 
-      if (offersData && offersData.length) {
-        const nftMints = offersData.map((offerData: any) => {
-          return offerData.nftMint
-        })
-        const data = await this.initManyNfts(nftMints)
-        const paginatedNFTData = data.metadatas.slice(
-          (this.currentPage - 1) * this.itemsPerPage,
-          this.currentPage * this.itemsPerPage
-        )
-
-        this.pageOfferData = offersData
-        this.pageNFTData = paginatedNFTData
+        if (offersData && offersData.length) {
+          const nftMints = offersData.map((offerData: any) => {
+            return offerData.nftMint
+          })
+          const data = await this.initManyNfts(nftMints)
+          const paginatedNFTData = data.metadatas.slice(
+            (this.currentPage - 1) * this.itemsPerPage,
+            this.currentPage * this.itemsPerPage
+          )
+          this.pageOfferData = activeOffersKeys?.map((subOfferKey, index) => {
+            return {
+              ...offersData[index],
+              subOfferKey: subOfferKey
+            }
+          })
+          this.pageNFTData = paginatedNFTData
+        }
       }
     } else {
       this.pageOfferData = []

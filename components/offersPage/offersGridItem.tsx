@@ -1,4 +1,5 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import OffersGridItemHover from './offersGridItemHover'
 import Image from 'next/image'
 import Link from 'next/link'
 
@@ -6,6 +7,10 @@ interface OffersGridItemInterface {
   subOfferKey: string
   image: string
   apr: number
+  offerPublicKey: string
+  name: string
+  onLend: (pubkey: string) => Promise<void>
+  totalRepay: any
   amount: number
   duration: number
   currency: string
@@ -16,11 +21,16 @@ export const OffersGridItem = ({
   subOfferKey,
   image,
   apr,
+  offerPublicKey,
+  name,
+  onLend,
+  totalRepay,
   amount,
   duration,
   currency,
   count
 }: OffersGridItemInterface) => {
+  const [hover, setHover] = useState<boolean>(false)
   const rangeSheetsCount = (sheetCount: number) => {
     if (sheetCount > 8) {
       return 'high'
@@ -46,12 +56,29 @@ export const OffersGridItem = ({
     }
     return 'grid-sheet-none'
   }
-
   return (
-    <div className={`offers-grid-item ${getSheets(count !== undefined ? count : 0)}`} key={subOfferKey}>
+    <div
+      className={`offers-grid-item ${getSheets(count !== undefined ? count : 0)}`}
+      key={subOfferKey}
+      onMouseOver={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+    >
+      <OffersGridItemHover
+        visible={hover}
+        apr={apr}
+        name={name}
+        totalRepay={totalRepay}
+        amount={amount}
+        onLend={onLend}
+        offerPublicKey={offerPublicKey}
+        duration={duration}
+        currency={currency}
+        subOfferKey={subOfferKey}
+        count={count}
+      />
       <Link href={`/offers/${subOfferKey}`}>
         <a>
-          <div className='hover-data'>
+          <div className='hover-data' style={{ visibility: `${hover ? 'hidden' : 'visible'}` }}>
             <div className='hover-data-item'>
               <span className='label'>APR</span>
               <span className='content'>{apr} %</span>
