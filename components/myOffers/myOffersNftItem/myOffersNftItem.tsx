@@ -10,6 +10,7 @@ import { ShowOnHover } from '../../layout/showOnHover'
 import { SolscanExplorerIcon } from '../../layout/solscanExplorerIcon'
 import { ClipboardButton } from '../../layout/clipboardButton'
 import { MyOffersNftItemOffers } from './myOffersNftItemOffers'
+import { IsubOfferData } from '../../../stores/Lightbox.store'
 
 interface MyOffersNftItemProps {
   offerKey: string
@@ -68,8 +69,12 @@ export const MyOffersNftItem: React.FC<MyOffersNftItemProps> = observer(
       store.MyOffers.refetchStoreData()
     }
 
-    const handleEditOffer = async (subOfferKey: string) => {
-      console.log('edit', subOfferKey)
+    const handleEditOffer = async (subOfferKey: string, values: IsubOfferData) => {
+      store.Lightbox.setActiveSubOffer(subOfferKey)
+      store.Lightbox.setActiveSubOfferData(values)
+      store.Lightbox.setContent('loanUpdate')
+      store.Lightbox.setCanClose(true)
+      store.Lightbox.setVisible(true)
     }
 
     const getActiveSubOffer = () => {

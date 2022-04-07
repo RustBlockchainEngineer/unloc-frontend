@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react'
+import { IsubOfferData } from '../../../stores/Lightbox.store'
 
 import { MyOffersNftOfferItem } from './myOffersNftOfferItem'
 
 interface myOffersNftItemOffersProps {
-  handleOfferEdit: (subOfferKey: string) => Promise<void>
+  handleOfferEdit: (subOfferKey: string, values: IsubOfferData) => Promise<void>
   handleOfferCancel: (subOfferKey: string) => Promise<void>
   data?: any[]
 }
@@ -53,6 +54,7 @@ export const MyOffersNftItemOffers: React.FC<myOffersNftItemOffersProps> = ({
                   offerID={offer.subOfferKey}
                   duration={offer.loanDuration}
                   repaid={offer.minRepaidNumerator}
+                  offerMint={offer.offerMint}
                   handleOfferEdit={handleOfferEdit}
                   handleOfferCancel={handleOfferCancel}
                 />

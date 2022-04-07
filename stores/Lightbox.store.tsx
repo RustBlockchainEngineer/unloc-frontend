@@ -1,11 +1,27 @@
 import { action, makeAutoObservable } from 'mobx'
 
 type LightboxContent = 'loanCreate' | 'loanUpdate' | 'collateral' | 'processing'
+
+export interface IsubOfferData {
+  offerAmount: number
+  loanDuration: number
+  aprNumerator: number
+  minRepaidNumerator: number
+  offerMint: string
+}
 export class LightboxStore {
   rootStore
   visible: boolean = false
   content: LightboxContent = 'collateral'
   canClose: boolean = true
+  activeSubOffer: string = ''
+  activeSubOfferData: IsubOfferData = {
+    offerAmount: 0,
+    loanDuration: 0,
+    aprNumerator: 0,
+    minRepaidNumerator: 0,
+    offerMint: ''
+  }
 
   constructor(rootStore: any) {
     makeAutoObservable(this)
@@ -22,5 +38,13 @@ export class LightboxStore {
 
   @action.bound setCanClose(canClose: boolean) {
     this.canClose = canClose
+  }
+
+  @action.bound setActiveSubOffer(subOfferKey: string) {
+    this.activeSubOffer = subOfferKey
+  }
+
+  @action.bound setActiveSubOfferData(subOfferData: IsubOfferData) {
+    this.activeSubOfferData = subOfferData
   }
 }
