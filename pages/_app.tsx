@@ -1,5 +1,6 @@
 import { FC, useMemo, createContext, useEffect } from 'react'
 import type { AppProps } from 'next/app'
+import { ToastContainer } from 'react-toastify'
 
 import { WalletAdapterNetwork } from '@solana/wallet-adapter-base'
 import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react'
@@ -17,9 +18,7 @@ import { clusterApiUrl } from '@solana/web3.js'
 
 import { config } from '../constants/config'
 import { rootStore } from '../stores/Root.store'
-import { Lightbox } from '../components/lightboxes/lightbox'
-import { CreateCollateral } from '../components/lightboxes/chooseCollateral/createCollateral'
-import { CreateLoan } from '../components/lightboxes/createLoan/createLoan'
+import 'react-toastify/dist/ReactToastify.css'
 import '../styles/main.scss'
 
 export const StoreContext = createContext(rootStore)
@@ -51,6 +50,17 @@ const Unloc: FC<AppProps> = ({ Component, pageProps }) => {
         <WalletModalProvider>
           <StoreContext.Provider value={rootStore}>
             <Component {...pageProps} />
+            <ToastContainer
+              position='top-center'
+              autoClose={5000}
+              hideProgressBar={false}
+              newestOnTop={false}
+              closeOnClick
+              rtl={false}
+              pauseOnFocusLoss
+              draggable
+              pauseOnHover
+            />
           </StoreContext.Provider>
         </WalletModalProvider>
       </WalletProvider>

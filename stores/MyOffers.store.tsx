@@ -20,6 +20,7 @@ export class MyOffersStore {
   collaterables = []
   subOffers: any[] = []
   nftData: NFTMetadata[] = []
+  activeNftMint: string = ''
 
   constructor(rootStore: any) {
     makeAutoObservable(this)
@@ -109,29 +110,36 @@ export class MyOffersStore {
     }
   })
 
-  @action.bound handleCreateSubOffer = async (nftMint: string) => {
-    console.log(nftMint)
-    const testData = {
-      //Test purposes only
-      offerAmount: 6,
-      loanDuration: 2,
-      aprNumerator: 100,
-      currency: 'USDC'
-    }
-    const currencyInfo = currencies[testData.currency]
+  @action.bound handleCreateSubOffer = async (
+    nftMint: string,
+    offerAmount: number,
+    loanDuration: number,
+    aprNumerator: number,
+    currency: string
+  ) => {
+    const currencyInfo = currencies[currency]
 
     await createSubOffer(
-      new BN(testData.offerAmount * 10 ** currencyInfo.decimals),
-      new BN(getDurationForContractData(testData.loanDuration, 'days')),
+      new BN(offerAmount * 10 ** currencyInfo.decimals),
+      new BN(getDurationForContractData(loanDuration, 'days')),
       new BN(1), // minRepaidNumerator
-      new BN(testData.aprNumerator),
+      new BN(aprNumerator),
       new PublicKey(nftMint),
       new PublicKey(currencyInfo.mint)
     )
   }
 
   @action.bound handleRepayLoan = async (subOfferKey: string) => {
-    console.log('subOfferKey: ', subOfferKey)
     await repayLoan(new PublicKey(subOfferKey))
+  }
+
+  @action.bound setActiveNftMint = (nftMint: string) => {
+    this.activeNftMint = nftMint
+  }
+
+  @action.bound refetchStoreData = async () => {
+    await this.getOffersByWallet(this.rootStore.Wallet.walletKey)
+    await this.getNFTsData()
+    await this.getSubOffersByOffers()
   }
 }

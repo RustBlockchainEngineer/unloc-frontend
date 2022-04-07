@@ -64,6 +64,7 @@
 
   .nft-info-buttons {
     display: flex;
+    position: relative;
 
     & button {
       cursor: pointer;

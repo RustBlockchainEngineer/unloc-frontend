@@ -14,8 +14,9 @@ export const Lightbox: React.FC<LightboxProps> = observer(({ children, className
     if (e.target !== e.currentTarget && check) {
       return
     }
-
-    store.Lightbox.setVisible(false)
+    if (store.Lightbox.canClose) {
+      store.Lightbox.setVisible(false)
+    }
   }
 
   return (
@@ -34,12 +35,16 @@ export const Lightbox: React.FC<LightboxProps> = observer(({ children, className
           }
         }}
       >
-        <i
-          onClick={(e) => {
-            closeWindow(e, false)
-          }}
-          className='icon icon--cross lightbox__close'
-        ></i>
+        {store.Lightbox.canClose ? (
+          <i
+            onClick={(e) => {
+              closeWindow(e, false)
+            }}
+            className='icon icon--cross lightbox__close'
+          ></i>
+        ) : (
+          <></>
+        )}
         {children}
       </div>
     </div>

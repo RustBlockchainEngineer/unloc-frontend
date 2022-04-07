@@ -1,14 +1,14 @@
 import React, { useContext } from 'react'
 import { observer } from 'mobx-react'
 import Image from 'next/image'
+import { usePopperTooltip } from 'react-popper-tooltip'
 
 import { StoreContext } from '../../../pages/_app'
 import { compressAddress } from '../../../utils/stringUtils/compressAdress'
-import icons from '../../../constants/icons/icons'
-import { MyOffersNftOffer } from '../myOffersNftOffers'
 import { ShowOnHover } from '../../layout/showOnHover'
 import { SolscanExplorerIcon } from '../../layout/solscanExplorerIcon'
 import { ClipboardButton } from '../../layout/clipboardButton'
+import { MyOffersNftItemOffers } from './myOffersNftItemOffers'
 
 interface MyOffersNftItemProps {
   offerKey: string
@@ -39,6 +39,7 @@ export const MyOffersNftItem: React.FC<MyOffersNftItemProps> = observer(
     handleRepayLoan
   }) => {
     const store = useContext(StoreContext)
+    const { getArrowProps, getTooltipProps, setTooltipRef, setTriggerRef, visible } = usePopperTooltip()
 
     const setNFTState = (status: number) => {
       if (status === 0) return <p style={{ color: 'red' }}>Proposed</p>
@@ -50,14 +51,21 @@ export const MyOffersNftItem: React.FC<MyOffersNftItemProps> = observer(
         return (
           <div className='nft-info-buttons'>
             <button
+              ref={setTriggerRef}
               className=' btn--md btn--primary'
               onClick={() => {
+                store.MyOffers.setActiveNftMint(nftMint)
                 store.Lightbox.setContent('loanCreate')
                 store.Lightbox.setVisible(true)
               }}
             >
               Create Offer
             </button>
+            {visible && (
+              <div ref={setTooltipRef} {...getTooltipProps({ className: 'tooltip-container' })}>
+                Create a new Loan Offer using this NFT as Collateral
+              </div>
+            )}
           </div>
         )
       }
@@ -105,45 +113,13 @@ export const MyOffersNftItem: React.FC<MyOffersNftItemProps> = observer(
                   <p>collection</p>
                   <p></p>
                 </div>
-                <div className='metadata-item'>
-                  <p>status</p>
-                  {setNFTState(state)}
-                </div>
               </div>
             </div>
           ) : (
             <>Loading NFT Data</>
           )}
         </div>
-        <div
-          className='offers-list'
-          style={{ maxHeight: `${reveal ? '1000px' : '22px'}`, backgroundColor: `${reveal ? '#482688' : ''}` }}
-          onClick={() => onReveal(offerKey)}
-        >
-          <div className='offers-reveal-btn'>
-            <p>{reveal ? 'Active Loan' : 'Offers for this NFT'}</p>
-            <Image src={icons.reveal} />
-          </div>
-          <div className='offers-items'>
-            {offers && offers.length ? (
-              offers.map((offer: any) => (
-                <MyOffersNftOffer
-                  key={offer.subOfferKey.toBase58()}
-                  offerAmount={offer.offerAmount}
-                  APR={offer.aprNumerator}
-                  status={offer.state}
-                  offerID={offer.subOfferKey}
-                  duration={offer.loanDuration}
-                  repaid={offer.minRepaidNumerator}
-                />
-              ))
-            ) : (
-              <div className={`my-offers-no__offers ${classNames ? classNames : ''}`}>
-                <p>You have no offers yet</p>
-              </div>
-            )}
-          </div>
-        </div>
+        <MyOffersNftItemOffers data={offers} handleOfferEdit={() => {}} handleOfferCancel={() => {}} />
       </div>
     )
   }

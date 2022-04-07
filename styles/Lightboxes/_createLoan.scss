@@ -99,17 +99,11 @@
       @include theme-aware('background-color', 'color-primary-dark');
     }
 
-    .btn-content {
+    &.btn-content {
       width: 100%;
-      padding: 0;
-      margin: 0;
-
-      & p {
-        padding: 0;
-        margin: 0;
-        height: auto;
-        @include theme-aware('color', 'color-content');
-      }
+      text-align: center;
+      justify-content: center;
+      @include theme-aware('color', 'color-label');
     }
   }
 
@@ -191,4 +185,11 @@
     border: none;
     background: transparent;
   }
+}
+
+.create-offer-processing {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  padding-bottom: 40px;
 }
