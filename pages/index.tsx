@@ -69,6 +69,13 @@ const Home: NextPage = observer(() => {
           <link rel='icon' type='image/png' sizes='32x32' href='/icons/favicon-32x32.png' />
           <link rel='manifest' href='/site.webmanifest' />
 
+          <link rel='preconnect' href='https://fonts.googleapis.com' />
+          <link rel='preconnect' href='https://fonts.gstatic.com' />
+          <link
+            href='https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&family=Red+Hat+Display:wght@400;700&display=swap'
+            rel='stylesheet'
+          />
+
           <meta name='msapplication.TileColor' content='#e00a7f' />
           <meta name='theme-color' content='#e00a7f' />
 
