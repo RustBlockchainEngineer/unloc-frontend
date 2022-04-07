@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect } from 'react'
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import { observer } from 'mobx-react'
@@ -11,9 +11,6 @@ import { OffersTop } from '../components/offersPage/offersTop'
 import { OffersGrid } from '../components/offersPage/offersGrid'
 import { OffersTable } from '../components/offersPage/offersTable'
 import Footer from '../components/layout/footer'
-import { setGlobalState } from '../integration/nftLoan'
-import { BN } from 'bn.js'
-import { PublicKey } from '@solana/web3.js'
 
 const Home: NextPage = observer(() => {
   const store = useContext(StoreContext)
@@ -30,23 +27,6 @@ const Home: NextPage = observer(() => {
       console.log(e)
     }
   }
-
-  // const createGlobalState = () => {
-  //   const globalStateData = {
-  //     accruedInterestNumerator: 100,
-  //     aprNumerator: 200,
-  //     denominator: 10000,
-  //     expireDurationForLender: 1000,
-  //     treasuryWallet: '8s14NfPBt6DggjGRLNgX2kuFMmrUbSnKCeQGNBTjSFjn'
-  //   }
-  //   setGlobalState(
-  //     new BN(100),
-  //     new BN(10000),
-  //     new BN(200),
-  //     new BN(1000),
-  //     new PublicKey('8s14NfPBt6DggjGRLNgX2kuFMmrUbSnKCeQGNBTjSFjn')
-  //   )
-  // }
 
   useEffect(() => {
     if (wallet && connected) {
@@ -68,13 +48,6 @@ const Home: NextPage = observer(() => {
           <link rel='icon' type='image/png' sizes='16x16' href='/icons/favicon-16x16.png' />
           <link rel='icon' type='image/png' sizes='32x32' href='/icons/favicon-32x32.png' />
           <link rel='manifest' href='/site.webmanifest' />
-
-          <link rel='preconnect' href='https://fonts.googleapis.com' />
-          <link rel='preconnect' href='https://fonts.gstatic.com' />
-          <link
-            href='https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&family=Red+Hat+Display:wght@400;700&display=swap'
-            rel='stylesheet'
-          />
 
           <meta name='msapplication.TileColor' content='#e00a7f' />
           <meta name='theme-color' content='#e00a7f' />
