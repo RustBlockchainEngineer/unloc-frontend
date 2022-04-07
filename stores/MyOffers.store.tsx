@@ -10,7 +10,8 @@ import {
   NFTMetadata,
   createSubOffer,
   repayLoan,
-  setOffer
+  setOffer,
+  cancelSubOffer
 } from '../integration/nftLoan'
 import { currencies } from '../constants/currency'
 import { getDurationForContractData } from '../utils/getDuration'
@@ -145,5 +146,9 @@ export class MyOffersStore {
 
   @action.bound createCollateral = async (mint: string) => {
     await setOffer(new PublicKey(mint))
+  }
+
+  @action.bound handleCancelSubOffer = async (subOfferKey: string) => {
+    await cancelSubOffer(new PublicKey(subOfferKey))
   }
 }

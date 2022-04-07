@@ -2,6 +2,7 @@ import React, { useContext } from 'react'
 import { observer } from 'mobx-react'
 import Image from 'next/image'
 import { usePopperTooltip } from 'react-popper-tooltip'
+import { toast } from 'react-toastify'
 
 import { StoreContext } from '../../../pages/_app'
 import { compressAddress } from '../../../utils/stringUtils/compressAdress'
@@ -15,31 +16,61 @@ interface MyOffersNftItemProps {
   nftMint: string
   name: string
   image: string
-  handleCreateSubOffer: (nftMint: string) => void
-  handleRepayLoan: (subOfferKey: string) => void
   offers?: any
   state: number
   classNames?: string
-  reveal: boolean
-  onReveal: (key: string) => void
 }
 
 export const MyOffersNftItem: React.FC<MyOffersNftItemProps> = observer(
-  ({
-    nftMint,
-    name,
-    image,
-    offers,
-    state,
-    classNames,
-    reveal,
-    offerKey,
-    onReveal,
-    handleCreateSubOffer,
-    handleRepayLoan
-  }) => {
+  ({ nftMint, name, image, offers, state, classNames, offerKey }) => {
     const store = useContext(StoreContext)
     const { getTooltipProps, setTooltipRef, setTriggerRef, visible } = usePopperTooltip()
+
+    const handleRepayLoan = async (subOfferKey: string) => {
+      store.Lightbox.setContent('processing')
+      store.Lightbox.setCanClose(false)
+      store.Lightbox.setVisible(true)
+
+      await store.MyOffers.handleRepayLoan(subOfferKey)
+
+      toast.success(`Loan Repayed, NFT is back in your wallet`, {
+        autoClose: 3000,
+        position: 'top-center',
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined
+      })
+      store.Lightbox.setCanClose(true)
+      store.Lightbox.setVisible(false)
+      store.MyOffers.refetchStoreData()
+    }
+
+    const handleCancelOffer = async (subOfferKey: string) => {
+      store.Lightbox.setContent('processing')
+      store.Lightbox.setCanClose(false)
+      store.Lightbox.setVisible(true)
+
+      await store.MyOffers.handleCancelSubOffer(subOfferKey)
+
+      toast.success(`Offer canceled`, {
+        autoClose: 3000,
+        position: 'top-center',
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined
+      })
+      store.Lightbox.setCanClose(true)
+      store.Lightbox.setVisible(false)
+      store.MyOffers.refetchStoreData()
+    }
+
+    const handleEditOffer = async (subOfferKey: string) => {
+      console.log('edit', subOfferKey)
+    }
 
     const getActiveSubOffer = () => {
       let output = ''
@@ -138,7 +169,7 @@ export const MyOffersNftItem: React.FC<MyOffersNftItemProps> = observer(
             <>Loading NFT Data</>
           )}
         </div>
-        <MyOffersNftItemOffers data={offers} handleOfferEdit={() => {}} handleOfferCancel={() => {}} />
+        <MyOffersNftItemOffers data={offers} handleOfferEdit={handleEditOffer} handleOfferCancel={handleCancelOffer} />
       </div>
     )
   }

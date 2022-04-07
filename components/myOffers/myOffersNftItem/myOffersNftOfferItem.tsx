@@ -1,14 +1,17 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { BN } from '@project-serum/anchor'
 import { compressAddress } from '../../../utils/stringUtils/compressAdress'
+import { PublicKey } from '@solana/web3.js'
 
 interface MyOffersNftOfferItemProps {
   offerAmount: any
-  offerID: string
+  offerID: PublicKey
   status: string
   APR: string
   duration: BN
   repaid: string
+  handleOfferEdit: (subOfferKey: string) => Promise<void>
+  handleOfferCancel: (subOfferKey: string) => Promise<void>
   classNames?: string
 }
 
@@ -19,6 +22,8 @@ export const MyOffersNftOfferItem: React.FC<MyOffersNftOfferItemProps> = ({
   APR,
   duration,
   repaid,
+  handleOfferEdit,
+  handleOfferCancel,
   classNames
 }) => {
   const setStatus = (status: string) => {
@@ -56,6 +61,14 @@ export const MyOffersNftOfferItem: React.FC<MyOffersNftOfferItemProps> = ({
       <div className='nft__offer-item'>
         <h4>Min repaid value: </h4>
         <p>{repaid.toString()}</p>
+      </div>
+      <div className='nft__offer-item'>
+        <button className='btn btn--md btn--primary' onClick={() => handleOfferEdit(offerID.toBase58())}>
+          Edit Offer
+        </button>
+        <button className='btn btn--md btn--bordered' onClick={() => handleOfferCancel(offerID.toBase58())}>
+          Cancel Offer
+        </button>
       </div>
     </div>
   )

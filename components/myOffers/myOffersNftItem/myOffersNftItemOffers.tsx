@@ -1,10 +1,10 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { MyOffersNftOfferItem } from './myOffersNftOfferItem'
 
 interface myOffersNftItemOffersProps {
-  handleOfferEdit: () => any
-  handleOfferCancel: () => any
+  handleOfferEdit: (subOfferKey: string) => Promise<void>
+  handleOfferCancel: (subOfferKey: string) => Promise<void>
   data?: any[]
 }
 
@@ -53,6 +53,8 @@ export const MyOffersNftItemOffers: React.FC<myOffersNftItemOffersProps> = ({
                   offerID={offer.subOfferKey}
                   duration={offer.loanDuration}
                   repaid={offer.minRepaidNumerator}
+                  handleOfferEdit={handleOfferEdit}
+                  handleOfferCancel={handleOfferCancel}
                 />
               )
             }
