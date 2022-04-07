@@ -1,11 +1,13 @@
+import React, { useContext, useEffect } from 'react'
 import { observer } from 'mobx-react-lite'
 import { NextPage } from 'next'
 import { useRouter } from 'next/router'
 import { PublicKey } from '@solana/web3.js'
-import React, { useContext, useEffect, useState } from 'react'
+import { toast } from 'react-toastify'
+
 import { LayoutTop } from '../../components/layout/layoutTop'
-import Header from '../../components/singleOffer/Header/Header'
-import Offer from '../../components/singleOffer/Offer/Offer'
+import { Header } from '../../components/singleOffer/Header/Header'
+import { Offer } from '../../components/singleOffer/Offer/Offer'
 import { StoreDataAdapter } from '../../components/storeDataAdapter'
 import { getQueryParamAsString } from '../../utils/getQueryParamsAsString'
 import { compressAddress } from '../../utils/stringUtils/compressAdress'
@@ -29,8 +31,6 @@ const SingleNftPage: NextPage = observer(({}) => {
   const router = useRouter()
   const store = useContext(StoreContext)
 
-  const [loaded, setLoaded] = useState(false)
-  const [message, setMessage] = useState<string>('')
   const { connected, wallet } = store.Wallet
   const { nftData, loansData } = store.SingleOffer
 
@@ -46,8 +46,22 @@ const SingleNftPage: NextPage = observer(({}) => {
     }
   }
 
-  const handleAcceptOffer = (offerMint: string, offerPublicKey: string) => {
-    store.Offers.handleAcceptOffer(offerMint, offerPublicKey)
+  const handleAcceptOffer = async (offerPublicKey: string) => {
+    store.Lightbox.setContent('processing')
+    store.Lightbox.setCanClose(false)
+    store.Lightbox.setVisible(true)
+    await store.Offers.handleAcceptOffer(offerPublicKey)
+    toast.success(`Loan Accepted`, {
+      autoClose: 3000,
+      position: 'top-center',
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined
+    })
+    store.Lightbox.setCanClose(true)
+    store.Lightbox.setVisible(false)
   }
 
   useEffect(() => {
@@ -85,7 +99,7 @@ const SingleNftPage: NextPage = observer(({}) => {
         {loansData && loansData.length ? (
           <div className='offer-grid'>
             {loansData.map((offer: IOffer) => {
-              if (offer.status === 0 || offer.status === 6) {
+              if (offer.status === 0) {
                 return (
                   <Offer
                     key={offer.id}

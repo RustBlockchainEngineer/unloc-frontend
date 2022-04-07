@@ -268,8 +268,7 @@ export const cancelOffer = async (
   if (!borrowerNftVault) {
     borrowerNftVault = await addTokenAccountInstruction(nftMint, borrower, preInstructions, signer, signers)
   }
-  console.log(borrower.toBase58())
-  console.log(borrowerNftVault.toBase58())
+
   const tx = await program.rpc.cancelOffer({
     accounts: {
       borrower,

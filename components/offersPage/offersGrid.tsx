@@ -20,7 +20,7 @@ export const OffersGrid = observer(() => {
   }
 
   return offersEmpty ? (
-    <div className='offers-grid-empty'>
+    <div className='offers-grid--empty'>
       <h2 className='no-offers'>No Offers Created yet</h2>
     </div>
   ) : pageNFTData.length > 0 && pageOfferData.length > 0 ? (

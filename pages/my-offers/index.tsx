@@ -1,4 +1,4 @@
-import React, { createContext, useEffect, useState, useContext } from 'react'
+import React, { useEffect, useContext } from 'react'
 import type { NextPage } from 'next'
 import { observer } from 'mobx-react'
 import { PublicKey } from '@solana/web3.js'
@@ -12,8 +12,7 @@ import { MyOffersNftList } from '../../components/myOffers/myOffersNftList'
 
 const MyOffers: NextPage = observer(() => {
   const store = useContext(StoreContext)
-  const { wallet, connected, walletKey } = store.Wallet
-  const { offers } = store.MyOffers
+  const { connected, walletKey } = store.Wallet
 
   const refreshSubOffers = async (wallet: { adapter: { publicKey: PublicKey } }) => {
     try {

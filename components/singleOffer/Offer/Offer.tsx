@@ -1,5 +1,9 @@
-import { PublicKey } from '@solana/web3.js'
 import React from 'react'
+import { usePopperTooltip } from 'react-popper-tooltip'
+
+import { ShowOnHover } from '../../layout/showOnHover'
+import { ClipboardButton } from '../../layout/clipboardButton'
+import { SolscanExplorerIcon } from '../../layout/solscanExplorerIcon'
 
 type IProps = {
   offerID: string
@@ -12,11 +16,11 @@ type IProps = {
   APR: number
   totalRepay: string
   btnMessage: string
-  handleAcceptOffer: (offerMint: string, offerPublicKey: string) => void
+  handleAcceptOffer: (offerPublicKey: string) => void
   offerPublicKey: string
 }
 
-const Offer: React.FC<IProps> = ({
+export const Offer: React.FC<IProps> = ({
   offerID,
   offerMint,
   status,
@@ -30,13 +34,18 @@ const Offer: React.FC<IProps> = ({
   handleAcceptOffer,
   offerPublicKey
 }) => {
+  const { getTooltipProps, setTooltipRef, setTriggerRef, visible } = usePopperTooltip()
+
   return (
     <div className='offer-root'>
       <div className='offer-container'>
         <div className='offer-header'>
           <div className='offer-ID'>
             <p>Offer ID</p>
-            <p>{offerID}</p>
+            <ShowOnHover label={`#${offerID}`}>
+              <ClipboardButton data={offerID} />
+              <SolscanExplorerIcon type={'account'} address={offerID} />
+            </ShowOnHover>
           </div>
           <div className='offer-status'>
             <p>Status</p>
@@ -73,12 +82,15 @@ const Offer: React.FC<IProps> = ({
         </div>
       </div>
       <div className='offer-lend'>
-        <button className='lend-btn' onClick={() => handleAcceptOffer(offerMint, offerPublicKey)}>
+        <button ref={setTriggerRef} className='lend-btn' onClick={() => handleAcceptOffer(offerPublicKey)}>
           {btnMessage}
         </button>
+        {visible && (
+          <div ref={setTooltipRef} {...getTooltipProps({ className: 'tooltip-container' })}>
+            Give a Loan based on a NFT Collateral
+          </div>
+        )}
       </div>
     </div>
   )
 }
-
-export default Offer

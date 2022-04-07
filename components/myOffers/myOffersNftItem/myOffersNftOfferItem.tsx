@@ -1,9 +1,8 @@
+import React from 'react'
 import { BN } from '@project-serum/anchor'
-import { compressAddress } from '../../utils/stringUtils/compressAdress'
-import { setOfferStatus } from '../../utils/stringUtils/offerStatusEnum'
-import React, { useEffect } from 'react'
+import { compressAddress } from '../../../utils/stringUtils/compressAdress'
 
-interface MyOffersNftOfferProps {
+interface MyOffersNftOfferItemProps {
   offerAmount: any
   offerID: string
   status: string
@@ -13,16 +12,7 @@ interface MyOffersNftOfferProps {
   classNames?: string
 }
 
-const setStatus = (status: string) => {
-  if (status === '0') {
-    return <p style={{ color: 'orange' }}>Proposed</p>
-  }
-  if (status === '1') {
-    return <p style={{ color: 'green' }}>Active</p>
-  }
-}
-
-export const MyOffersNftOffer: React.FC<MyOffersNftOfferProps> = ({
+export const MyOffersNftOfferItem: React.FC<MyOffersNftOfferItemProps> = ({
   offerAmount,
   offerID,
   status,
@@ -31,6 +21,15 @@ export const MyOffersNftOffer: React.FC<MyOffersNftOfferProps> = ({
   repaid,
   classNames
 }) => {
+  const setStatus = (status: string) => {
+    if (status === '0' || status === '6') {
+      return <p style={{ color: 'green' }}>Proposed</p>
+    }
+    if (status === '1') {
+      return <p style={{ color: 'orange' }}>Active</p>
+    }
+  }
+
   return (
     <div className={`my-offers-nft__offer ${classNames ? classNames : ''}`}>
       <div className='nft__offer-item'>

@@ -49,11 +49,9 @@ export class SingleOfferStore {
 
   @action.bound fetchSubOffers = async (id: string): Promise<void> => {
     try {
-      console.log(id)
       const subOfferKey = new anchor.web3.PublicKey(id)
 
       const data = await getSubOfferList(undefined, subOfferKey, 0)
-      console.log(data)
       const loansArr: Array<LoanInterface> = []
       data.forEach(
         (element: {
