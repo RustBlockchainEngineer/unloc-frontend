@@ -5,12 +5,11 @@ import { StoreContext } from '../../pages/_app'
 import { OffersTableRow } from './offersTableRow'
 import { currencyMints } from '../../constants/currency'
 import { asBigNumber } from '../../utils/asBigNumber'
-import { removeDuplicatesByPropertyIndex } from '../../utils/removeDuplicatesByPropertyIndex'
 import { BlobLoader } from '../layout/blobLoader'
 
 export const OffersTable = observer(() => {
   const store = useContext(StoreContext)
-  const { pageOfferData, pageNFTData, currentPage, maxPage, itemsPerPage } = store.Offers
+  const { pageOfferData, pageNFTData, currentPage, maxPage } = store.Offers
 
   return pageNFTData.length > 0 && pageOfferData.length > 0 ? (
     <>
