@@ -47,21 +47,48 @@ const SingleNftPage: NextPage = observer(({}) => {
   }
 
   const handleAcceptOffer = async (offerPublicKey: string) => {
-    store.Lightbox.setContent('processing')
-    store.Lightbox.setCanClose(false)
-    store.Lightbox.setVisible(true)
-    await store.Offers.handleAcceptOffer(offerPublicKey)
-    toast.success(`Loan Accepted`, {
-      autoClose: 3000,
-      position: 'top-center',
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined
-    })
-    store.Lightbox.setCanClose(true)
-    store.Lightbox.setVisible(false)
+    try {
+      store.Lightbox.setContent('processing')
+      store.Lightbox.setCanClose(false)
+      store.Lightbox.setVisible(true)
+      await store.Offers.handleAcceptOffer(offerPublicKey)
+      toast.success(`Loan Accepted`, {
+        autoClose: 3000,
+        position: 'top-center',
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined
+      })
+    } catch (e: any) {
+      console.log(e)
+
+      if (e.message === 'User rejected the request.') {
+        toast.error(`Transaction rejected`, {
+          autoClose: 3000,
+          position: 'top-center',
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined
+        })
+      } else {
+        toast.error(`Something went wrong`, {
+          autoClose: 3000,
+          position: 'top-center',
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined
+        })
+      }
+    } finally {
+      store.Lightbox.setCanClose(true)
+      store.Lightbox.setVisible(false)
+    }
   }
 
   useEffect(() => {

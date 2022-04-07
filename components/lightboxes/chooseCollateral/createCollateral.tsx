@@ -19,6 +19,7 @@ export const CreateCollateral: React.FC = observer(() => {
   const store = useContext(StoreContext)
   const myOffers = store.MyOffers
   const { wallet, connection, walletKey } = store.Wallet
+  const {} = store.Lightbox
 
   const [itemMint, setItemMint] = useState<string>('')
   const [sortOption, setSortOption] = useState<string>('')
@@ -38,24 +39,39 @@ export const CreateCollateral: React.FC = observer(() => {
   }
 
   const createOffer = async (mint: string) => {
-    store.Lightbox.setCanClose(false)
-    setProcessing(true)
+    try {
+      store.Lightbox.setCanClose(false)
+      setProcessing(true)
 
-    await store.MyOffers.createCollateral(mint)
+      await store.MyOffers.createCollateral(mint)
 
-    store.Lightbox.setVisible(false)
-    setProcessing(false)
-    store.Lightbox.setCanClose(true)
+      store.Lightbox.setVisible(false)
+      setProcessing(false)
+      store.Lightbox.setCanClose(true)
 
-    toast.success(`Collateral Created`, {
-      autoClose: 3000,
-      position: 'top-center',
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined
-    })
+      toast.success(`Collateral Created`, {
+        autoClose: 3000,
+        position: 'top-center',
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined
+      })
+    } catch (e) {
+      setProcessing(false)
+      store.Lightbox.setVisible(false)
+      console.log(e)
+      toast.error(`Transaction rejected`, {
+        autoClose: 3000,
+        position: 'top-center',
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined
+      })
+    }
 
     store.MyOffers.refetchStoreData()
   }
