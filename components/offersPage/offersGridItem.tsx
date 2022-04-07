@@ -1,4 +1,5 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import OffersGridItemHover from './offersGridItemHover'
 import Image from 'next/image'
 import Link from 'next/link'
 
@@ -6,6 +7,7 @@ interface OffersGridItemInterface {
   subOfferKey: string
   image: string
   apr: number
+  name: string
   amount: number
   duration: number
   currency: string
@@ -16,11 +18,16 @@ export const OffersGridItem = ({
   subOfferKey,
   image,
   apr,
+  name,
   amount,
   duration,
   currency,
   count
 }: OffersGridItemInterface) => {
+  const [hover, setHover] = useState<boolean>(false)
+  useEffect(() => {
+    console.log(hover)
+  }, [hover])
   const rangeSheetsCount = (sheetCount: number) => {
     if (sheetCount > 8) {
       return 'high'
@@ -46,12 +53,26 @@ export const OffersGridItem = ({
     }
     return 'grid-sheet-none'
   }
-
   return (
-    <div className={`offers-grid-item ${getSheets(count !== undefined ? count : 0)}`} key={subOfferKey}>
+    <div
+      className={`offers-grid-item ${getSheets(count !== undefined ? count : 0)}`}
+      key={subOfferKey}
+      onMouseOver={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+    >
+      <OffersGridItemHover
+        visible={hover}
+        apr={apr}
+        name={name}
+        amount={amount}
+        duration={duration}
+        currency={currency}
+        subOfferKey={subOfferKey}
+        count={count}
+      />
       <Link href={`/offers/${subOfferKey}`}>
         <a>
-          <div className='hover-data'>
+          <div className='hover-data' style={{ visibility: `${hover ? 'hidden' : 'visible'}` }}>
             <div className='hover-data-item'>
               <span className='label'>APR</span>
               <span className='content'>{apr} %</span>

@@ -10,14 +10,13 @@ import { BlobLoader } from '../layout/blobLoader'
 export const OffersGrid = observer(() => {
   const store = useContext(StoreContext)
   const { pageOfferData, pageNFTData, currentPage, maxPage, itemsPerPage, offersEmpty } = store.Offers
-
+  console.log(pageOfferData)
   const generateEmptyFields = () => {
     const count = (itemsPerPage - pageNFTData.length) as number
     return [...Array(count)].map((page, index) => {
       return <div key={`offers-${index}`} className='offers-empty'></div>
     })
   }
-
   return offersEmpty ? (
     <div className='offers-grid--empty'>
       <h2 className='no-offers'>No Offers Created yet</h2>
@@ -33,6 +32,7 @@ export const OffersGrid = observer(() => {
               image={pageNFTData[index].arweaveMetadata.image}
               amount={pageOfferData[index].offerAmount.toNumber() / 1000000}
               apr={asBigNumber(pageOfferData[index].aprNumerator)}
+              name={nftData.arweaveMetadata.name}
               duration={Math.floor(pageOfferData[index].loanDuration.toNumber() / (3600 * 24))}
               currency={currencyMints[pageOfferData[index].offerMint.toBase58()]}
               count={pageOfferData[index].count}
