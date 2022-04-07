@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { observer } from 'mobx-react'
 
 import { StoreContext } from '../../pages/_app'

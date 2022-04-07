@@ -41,6 +41,18 @@ export const MyOffersNftItem: React.FC<MyOffersNftItemProps> = observer(
     const store = useContext(StoreContext)
     const { getTooltipProps, setTooltipRef, setTriggerRef, visible } = usePopperTooltip()
 
+    const getActiveSubOffer = () => {
+      let output = ''
+      offers.forEach((offer: any) => {
+        if (offer.state === 1) {
+          // is it possible to have more than one active loan? i hope not
+          output = offer.subOfferKey.toBase58()
+        }
+      })
+
+      return output
+    }
+
     const setNFTActions = (status: number) => {
       if (status === 0) {
         return (
@@ -68,6 +80,18 @@ export const MyOffersNftItem: React.FC<MyOffersNftItemProps> = observer(
         return (
           <div className='nft-info-buttons'>
             <button className=' btn--md btn--disabled'>NFT Locked, Loan Offer Taken</button>
+            <button
+              ref={setTriggerRef}
+              className=' btn--md btn--primary'
+              onClick={() => handleRepayLoan(getActiveSubOffer())}
+            >
+              Repay Loan
+            </button>
+            {visible && (
+              <div ref={setTooltipRef} {...getTooltipProps({ className: 'tooltip-container' })}>
+                Repay the Loan and get your NFT back
+              </div>
+            )}
           </div>
         )
       }

@@ -74,7 +74,6 @@ export class MyOffersStore {
       const data = []
       for (const offer of this.offers) {
         if (offer && offer.publicKey) {
-          console.log(offer.publicKey.toBase58())
           const subOfferData = yield getSubOfferList(offer.publicKey)
           data.push(subOfferData)
         }

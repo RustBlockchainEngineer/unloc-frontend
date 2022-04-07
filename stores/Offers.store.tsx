@@ -164,7 +164,6 @@ export class OffersStore {
 
   @action.bound getOffersForListings = async (): Promise<void> => {
     const activeOffersKeys = await getSubOffersKeysByState([0]) //add more filters
-    const reusedOffersKeys = await getSubOffersKeysByState([6]) //add more filters
 
     let offersViable: any[] = []
 
@@ -172,13 +171,12 @@ export class OffersStore {
       offersViable = [...offersViable, ...activeOffersKeys]
     }
 
-    if (reusedOffersKeys && reusedOffersKeys.length) {
-      offersViable = [...offersViable, ...reusedOffersKeys]
-    }
+    // if (reusedOffersKeys && reusedOffersKeys.length) {
+    //   offersViable = [...offersViable, ...reusedOffersKeys]
+    // }
 
     if (offersViable && offersViable.length) {
       this.offersEmpty = false
-
       this.setOffersKeys(offersViable)
       this.setOffersCount(offersViable?.length)
 
@@ -236,5 +234,10 @@ export class OffersStore {
 
   @action.bound handleAcceptOffer = async (offerPublicKey: string) => {
     await acceptOffer(new PublicKey(offerPublicKey))
+  }
+
+  @action.bound refetchOffers = async () => {
+    await this.getOffersForListings()
+    await this.fetchCollectionForNfts()
   }
 }

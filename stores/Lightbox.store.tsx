@@ -1,6 +1,6 @@
 import { action, makeAutoObservable } from 'mobx'
 
-type LightboxContent = 'loanCreate' | 'loanUpdate' | 'collateral'
+type LightboxContent = 'loanCreate' | 'loanUpdate' | 'collateral' | 'processing'
 export class LightboxStore {
   rootStore
   visible: boolean = false
@@ -14,7 +14,6 @@ export class LightboxStore {
 
   @action.bound setVisible(visible: boolean) {
     this.visible = visible
-    console.log(this.visible)
   }
 
   @action.bound setContent(content: LightboxContent) {

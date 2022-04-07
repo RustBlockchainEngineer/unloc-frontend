@@ -15,11 +15,21 @@ export const MyOffersNftItemOffers: React.FC<myOffersNftItemOffersProps> = ({
 }) => {
   const [contentVisible, setContentVisible] = useState(false)
 
+  const getOffersCount = () => {
+    let counter = 0
+    data?.forEach((offer) => {
+      if (offer.state === 0) {
+        counter++
+      }
+    })
+    return counter
+  }
+
   const renderHeadBar = () => {
-    if (data && data.length) {
+    if (data && data.length && getOffersCount() > 0) {
       return (
         <div className='offers-list-headbar' onClick={() => setContentVisible(!contentVisible)}>
-          Offers ({data.length})
+          Offers ({getOffersCount()})
         </div>
       )
     }
@@ -32,17 +42,21 @@ export const MyOffersNftItemOffers: React.FC<myOffersNftItemOffersProps> = ({
       {renderHeadBar()}
       {data && data.length && contentVisible ? (
         <div className='offers-list-content'>
-          {data.map((offer) => (
-            <MyOffersNftOfferItem
-              key={offer.subOfferKey.toBase58()}
-              offerAmount={offer.offerAmount}
-              APR={offer.aprNumerator}
-              status={offer.state}
-              offerID={offer.subOfferKey}
-              duration={offer.loanDuration}
-              repaid={offer.minRepaidNumerator}
-            />
-          ))}
+          {data.map((offer) => {
+            if (offer.state === 0) {
+              return (
+                <MyOffersNftOfferItem
+                  key={offer.subOfferKey.toBase58()}
+                  offerAmount={offer.offerAmount}
+                  APR={offer.aprNumerator}
+                  status={offer.state}
+                  offerID={offer.subOfferKey}
+                  duration={offer.loanDuration}
+                  repaid={offer.minRepaidNumerator}
+                />
+              )
+            }
+          })}
         </div>
       ) : (
         <></>

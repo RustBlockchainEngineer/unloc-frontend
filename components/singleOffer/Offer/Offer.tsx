@@ -1,4 +1,5 @@
 import React from 'react'
+import { usePopperTooltip } from 'react-popper-tooltip'
 
 import { ShowOnHover } from '../../layout/showOnHover'
 import { ClipboardButton } from '../../layout/clipboardButton'
@@ -33,6 +34,8 @@ export const Offer: React.FC<IProps> = ({
   handleAcceptOffer,
   offerPublicKey
 }) => {
+  const { getTooltipProps, setTooltipRef, setTriggerRef, visible } = usePopperTooltip()
+
   return (
     <div className='offer-root'>
       <div className='offer-container'>
@@ -79,9 +82,14 @@ export const Offer: React.FC<IProps> = ({
         </div>
       </div>
       <div className='offer-lend'>
-        <button className='lend-btn' onClick={() => handleAcceptOffer(offerPublicKey)}>
+        <button ref={setTriggerRef} className='lend-btn' onClick={() => handleAcceptOffer(offerPublicKey)}>
           {btnMessage}
         </button>
+        {visible && (
+          <div ref={setTooltipRef} {...getTooltipProps({ className: 'tooltip-container' })}>
+            Give a Loan based on a NFT Collateral
+          </div>
+        )}
       </div>
     </div>
   )

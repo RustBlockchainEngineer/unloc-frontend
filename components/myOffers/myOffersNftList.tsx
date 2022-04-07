@@ -1,5 +1,6 @@
 import React, { useContext, useState } from 'react'
 import { observer } from 'mobx-react'
+import { toast } from 'react-toastify'
 
 import { StoreContext } from '../../pages/_app'
 import { MyOffersNftItem } from './myOffersNftItem/myOffersNftItem'
@@ -20,8 +21,25 @@ export const MyOffersNftList: React.FC = observer(() => {
     // store.MyOffers.handleCreateSubOffer(nftMint) // needed for editing Loan
   }
 
-  const handleRepayLoan = (subOfferKey: string) => {
-    store.MyOffers.handleRepayLoan(subOfferKey)
+  const handleRepayLoan = async (subOfferKey: string) => {
+    store.Lightbox.setContent('processing')
+    store.Lightbox.setCanClose(false)
+    store.Lightbox.setVisible(true)
+
+    await store.MyOffers.handleRepayLoan(subOfferKey)
+
+    toast.success(`Loan Repayed, NFT is back in your wallet`, {
+      autoClose: 3000,
+      position: 'top-center',
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined
+    })
+    store.Lightbox.setCanClose(true)
+    store.Lightbox.setVisible(false)
+    store.MyOffers.refetchStoreData()
   }
 
   const renderOffers = () => {

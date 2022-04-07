@@ -37,3 +37,11 @@
     }
   }
 }
+
+.lightbox-processing {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  justify-items: center;
+  @include theme-aware('color', 'color-label');
+}

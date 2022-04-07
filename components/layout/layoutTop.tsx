@@ -8,6 +8,7 @@ import { UserToolbox } from './userToolbox'
 import { Lightbox } from '../lightboxes/lightbox'
 import { CreateCollateral } from '../lightboxes/chooseCollateral/createCollateral'
 import { CreateLoan } from '../lightboxes/createLoan/createLoan'
+import { Processing } from '../lightboxes/processing'
 
 export const LayoutTop = observer(() => {
   const store = useContext(StoreContext)
@@ -26,6 +27,7 @@ export const LayoutTop = observer(() => {
             {content === 'collateral' ? <CreateCollateral /> : <></>}
             {content === 'loanCreate' ? <CreateLoan mode='new' /> : <></>}
             {content === 'loanUpdate' ? <CreateLoan mode='update' /> : <></>}
+            {content === 'processing' ? <Processing /> : <></>}
           </>
         </Lightbox>
       ) : (
