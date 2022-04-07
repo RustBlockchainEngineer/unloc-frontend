@@ -147,7 +147,13 @@
         padding: 12px 0;
         @include theme-aware('color', 'color-label');
         font-weight: 700;
+        align-self: center;
+        width: 75%;
         cursor: pointer;
+
+        &:hover {
+          @include theme-aware('background-color', 'color-primary-dark');
+        }
       }
     }
   }

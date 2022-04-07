@@ -8,6 +8,7 @@ interface OffersGridItemInterface {
   image: string
   apr: number
   name: string
+  totalRepay: any
   amount: number
   duration: number
   currency: string
@@ -19,6 +20,7 @@ export const OffersGridItem = ({
   image,
   apr,
   name,
+  totalRepay,
   amount,
   duration,
   currency,
@@ -64,6 +66,7 @@ export const OffersGridItem = ({
         visible={hover}
         apr={apr}
         name={name}
+        totalRepay={totalRepay}
         amount={amount}
         duration={duration}
         currency={currency}

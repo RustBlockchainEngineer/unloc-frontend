@@ -8,6 +8,7 @@ interface IProps {
   visible: boolean
   apr: number
   name: string
+  totalRepay: any
   amount: number
   duration: number
   currency: string
@@ -16,7 +17,7 @@ interface IProps {
 }
 
 const OffersGridItemHover: React.FC<IProps> = observer(
-  ({ visible, apr, name, amount, duration, currency, subOfferKey, count }) => {
+  ({ visible, apr, name, totalRepay, amount, duration, currency, subOfferKey, count }) => {
     const store = useContext(StoreContext)
 
     return (
@@ -46,6 +47,10 @@ const OffersGridItemHover: React.FC<IProps> = observer(
         <div className='data-item'>
           <span className='label'>Duration</span>
           <span className='content'>{duration} Days</span>
+        </div>
+        <div className='data-item'>
+          <span className='label'>total repay amount</span>
+          <span className='content'>{totalRepay}</span>
         </div>
         <Link href={`/offers/${subOfferKey}`}>
           <button>Lend</button>

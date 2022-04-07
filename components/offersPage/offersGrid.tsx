@@ -33,6 +33,7 @@ export const OffersGrid = observer(() => {
               amount={pageOfferData[index].offerAmount.toNumber() / 1000000}
               apr={asBigNumber(pageOfferData[index].aprNumerator)}
               name={nftData.arweaveMetadata.name}
+              totalRepay={pageOfferData[index].repaidAmount.toString()}
               duration={Math.floor(pageOfferData[index].loanDuration.toNumber() / (3600 * 24))}
               currency={currencyMints[pageOfferData[index].offerMint.toBase58()]}
               count={pageOfferData[index].count}
