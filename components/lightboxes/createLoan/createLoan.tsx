@@ -50,12 +50,34 @@ export const CreateLoan: React.FC<CreateLoanProps> = observer(({ mode }) => {
               draggable: true,
               progress: undefined
             })
-            await store.MyOffers.refetchStoreData()
-          } else {
-            // add error toaster here
           }
-        } catch (e) {
+        } catch (e: any) {
+          if (e.message === 'User rejected the request.') {
+            toast.error(`Transaction rejected`, {
+              autoClose: 3000,
+              position: 'top-center',
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined
+            })
+          } else {
+            toast.error(`Something went wrong`, {
+              autoClose: 3000,
+              position: 'top-center',
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined
+            })
+          }
           console.log(e)
+        } finally {
+          store.Lightbox.setVisible(false)
+          store.Lightbox.setCanClose(true)
+          await store.MyOffers.refetchStoreData()
         }
       } else if (mode === 'update') {
         const { loanvalue, duration, apr } = values
