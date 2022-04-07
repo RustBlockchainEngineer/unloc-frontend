@@ -26,10 +26,10 @@ export const OffersGrid = observer(() => {
   ) : pageNFTData.length > 0 && pageOfferData.length > 0 ? (
     <>
       <div className='offers-grid'>
-        {removeDuplicatesByPropertyIndex(pageNFTData, 'mint').map((nftData, index) => {
+        {pageNFTData.map((nftData, index) => {
           return (
             <OffersGridItem
-              key={`offer-${nftData.arweaveMetadata.name}`}
+              key={`offer-${nftData.arweaveMetadata.name}-${index}`}
               subOfferKey={pageNFTData[index].mint}
               image={pageNFTData[index].arweaveMetadata.image}
               amount={pageOfferData[index].offerAmount.toNumber() / 1000000}

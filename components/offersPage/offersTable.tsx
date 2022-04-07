@@ -22,10 +22,10 @@ export const OffersTable = observer(() => {
           <div className='row-cell'>Duration</div>
           <div className='row-cell'>Offers</div>
         </div>
-        {removeDuplicatesByPropertyIndex(pageNFTData, 'mint').map((nftData, index) => {
+        {pageNFTData.map((nftData, index) => {
           return (
             <OffersTableRow
-              key={`offer-${nftData.arweaveMetadata.name}`}
+              key={`offer-${nftData.arweaveMetadata.name}-${index}`}
               subOfferKey={pageNFTData[index].mint}
               image={nftData.arweaveMetadata.image}
               nftName={nftData.arweaveMetadata.name}

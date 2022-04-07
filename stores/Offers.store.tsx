@@ -181,41 +181,21 @@ export class OffersStore {
       this.setOffersCount(offersViable?.length)
 
       const offersData = await getSubOfferMultiple(this.offersKeys)
-      const offersCountedOnNft = countDuplicatesToProperty(offersData, 'nftMint', 'count')
-      this.setMaxPage(Math.ceil(offersCountedOnNft.length / this.itemsPerPage))
 
-      const nftMintKeys = removeDuplicatesByPropertyIncludes(offersCountedOnNft, 'nftMint')
-      const nftHandled: any[] = []
+      this.setMaxPage(Math.ceil(offersData.length / this.itemsPerPage))
 
-      nftMintKeys.forEach((key) => {
-        const mint = key.toBase58()
-        if (!nftHandled.includes(mint)) {
-          nftHandled.push(mint)
-        }
-      })
-      const keysTrimmed = nftHandled.map((key) => new PublicKey(key))
-      if (offersData && offersData) {
-        const offersByNFT = offersCountedOnNft.map((resultItem: any) => {
-          const element = offersCountedOnNft.find((item: any) => item.nftMint === resultItem.nftMint.toBase58)
-          return element ? element : resultItem
+      if (offersData && offersData.length) {
+        const nftMints = offersData.map((offerData: any) => {
+          return offerData.nftMint
         })
-
-        const paginatedOffersData = offersByNFT.slice(
+        const data = await this.initManyNfts(nftMints)
+        const paginatedNFTData = data.metadatas.slice(
           (this.currentPage - 1) * this.itemsPerPage,
           this.currentPage * this.itemsPerPage
         )
 
-        this.pageOfferData = paginatedOffersData
-
-        if (keysTrimmed && keysTrimmed.length) {
-          const data = await this.initManyNfts(keysTrimmed)
-          const paginatedNFTData = data.metadatas.slice(
-            (this.currentPage - 1) * this.itemsPerPage,
-            this.currentPage * this.itemsPerPage
-          )
-
-          this.pageNFTData = paginatedNFTData
-        }
+        this.pageOfferData = offersData
+        this.pageNFTData = paginatedNFTData
       }
     } else {
       this.pageOfferData = []
