@@ -33,7 +33,6 @@ const SingleNftPage: NextPage = observer(({}) => {
 
   const { connected, wallet } = store.Wallet
   const { nftData, loansData } = store.SingleOffer
-  console.log('loans data: ', loansData)
 
   const handleData = async () => {
     try {
@@ -101,7 +100,6 @@ const SingleNftPage: NextPage = observer(({}) => {
           <div className='offer-grid'>
             {loansData.map((offer: IOffer) => {
               if (offer.status === 0) {
-                console.log(offer.publicKey.toString())
                 return (
                   <Offer
                     key={offer.id}

@@ -67,7 +67,7 @@ const OffersGridItemHover: React.FC<IProps> = ({
           </div>
         </div>
       </Link>
-      <button onClick={() => onLend(offerPublicKey)}>Lend</button>
+      <button onClick={() => onLend(offerPublicKey)}>Lend Tokens</button>
     </div>
   )
 }

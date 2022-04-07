@@ -192,7 +192,6 @@ export class OffersStore {
             (this.currentPage - 1) * this.itemsPerPage,
             this.currentPage * this.itemsPerPage
           )
-
           this.pageOfferData = activeOffersKeys?.map((subOfferKey, index) => {
             return {
               ...offersData[index],
