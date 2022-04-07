@@ -32,8 +32,8 @@
 @import './myOffers/myOffersNftList';
 
 @import './lightboxBase';
-@import './lightboxes/NFTCollateral';
-@import './lightboxes/createLoan';
+@import './NFTCollateral';
+@import './createLoan';
 
 body {
   @include theme-aware('background-color', 'color-background');
