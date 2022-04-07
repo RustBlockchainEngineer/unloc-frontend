@@ -125,6 +125,10 @@
       font-size: 14px;
       transition: opacity 0.5s;
 
+      .onHover-link {
+        cursor: pointer;
+      }
+
       & span:nth-child(2) {
         font-weight: 700;
         padding-top: 4px;

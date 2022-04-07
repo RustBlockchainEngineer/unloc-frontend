@@ -7,7 +7,9 @@ interface OffersGridItemInterface {
   subOfferKey: string
   image: string
   apr: number
+  offerPublicKey: string
   name: string
+  onLend: (pubkey: string) => Promise<void>
   totalRepay: any
   amount: number
   duration: number
@@ -19,7 +21,9 @@ export const OffersGridItem = ({
   subOfferKey,
   image,
   apr,
+  offerPublicKey,
   name,
+  onLend,
   totalRepay,
   amount,
   duration,
@@ -27,9 +31,6 @@ export const OffersGridItem = ({
   count
 }: OffersGridItemInterface) => {
   const [hover, setHover] = useState<boolean>(false)
-  useEffect(() => {
-    console.log(hover)
-  }, [hover])
   const rangeSheetsCount = (sheetCount: number) => {
     if (sheetCount > 8) {
       return 'high'
@@ -68,6 +69,8 @@ export const OffersGridItem = ({
         name={name}
         totalRepay={totalRepay}
         amount={amount}
+        onLend={onLend}
+        offerPublicKey={offerPublicKey}
         duration={duration}
         currency={currency}
         subOfferKey={subOfferKey}
