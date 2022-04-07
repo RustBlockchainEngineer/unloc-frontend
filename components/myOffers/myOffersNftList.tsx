@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react'
 import { observer } from 'mobx-react'
 
 import { StoreContext } from '../../pages/_app'
-import { MyOffersNftItem } from './myOffersNftItem'
+import { MyOffersNftItem } from './myOffersNftItem/myOffersNftItem'
 
 export const MyOffersNftList: React.FC = observer(() => {
   const store = useContext(StoreContext)

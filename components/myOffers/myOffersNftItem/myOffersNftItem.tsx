@@ -2,13 +2,13 @@ import React, { useContext } from 'react'
 import { observer } from 'mobx-react'
 import Image from 'next/image'
 
-import { StoreContext } from '../../pages/_app'
-import { compressAddress } from '../../utils/stringUtils/compressAdress'
-import icons from '../../constants/icons/icons'
-import { MyOffersNftOffer } from './myOffersNftOffers'
-import { ShowOnHover } from '../layout/showOnHover'
-import { SolscanExplorerIcon } from '../layout/solscanExplorerIcon'
-import { ClipboardButton } from '../layout/clipboardButton'
+import { StoreContext } from '../../../pages/_app'
+import { compressAddress } from '../../../utils/stringUtils/compressAdress'
+import icons from '../../../constants/icons/icons'
+import { MyOffersNftOffer } from '../myOffersNftOffers'
+import { ShowOnHover } from '../../layout/showOnHover'
+import { SolscanExplorerIcon } from '../../layout/solscanExplorerIcon'
+import { ClipboardButton } from '../../layout/clipboardButton'
 
 interface MyOffersNftItemProps {
   offerKey: string
@@ -22,11 +22,6 @@ interface MyOffersNftItemProps {
   classNames?: string
   reveal: boolean
   onReveal: (key: string) => void
-}
-
-const setNFTState = (status: number) => {
-  if (status === 0) return <p style={{ color: 'red' }}>Proposed</p>
-  if (status === 1) return <p style={{ color: 'green' }}>Accepted</p>
 }
 
 export const MyOffersNftItem: React.FC<MyOffersNftItemProps> = observer(
@@ -44,6 +39,11 @@ export const MyOffersNftItem: React.FC<MyOffersNftItemProps> = observer(
     handleRepayLoan
   }) => {
     const store = useContext(StoreContext)
+
+    const setNFTState = (status: number) => {
+      if (status === 0) return <p style={{ color: 'red' }}>Proposed</p>
+      if (status === 1) return <p style={{ color: 'green' }}>Accepted</p>
+    }
 
     const setNFTActions = (status: number) => {
       if (status === 0) {

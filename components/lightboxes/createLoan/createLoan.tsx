@@ -39,13 +39,13 @@ export const CreateLoan: React.FC<CreateLoanProps> = observer((mode) => {
       }}
       onSubmit={onSubmit}
       render={() => (
-        <form>
+        <form className='create-offer'>
           <h1>Create Loan Offer</h1>
           <div className='offer-form'>
-            <div className='form-amount'>
+            <div className='form-line form-amount'>
               <div>
                 <span>Amount</span>
-                <Field name='loanValue' component='input' type='number' placeholder='amount' />
+                <Field name='loanValue' component='input' type='number' placeholder='amount' className='input-text' />
               </div>
               <div>
                 <span>Currency</span>
@@ -62,28 +62,20 @@ export const CreateLoan: React.FC<CreateLoanProps> = observer((mode) => {
                 </Field>
               </div>
             </div>
-            <div className='form-duration'>
+            <div className='form-line form-duration'>
               <div>
                 <span>Duration</span>
-                <Field
-                  component='input'
-                  className='slider-gradient'
-                  name='duration'
-                  type='range'
-                  initialValue={1}
-                  min={1}
-                  max={90}
-                />
+                <Field component='input' name='duration' type='range' initialValue={1} min={1} max={90} />
               </div>
               <div>
                 <span></span>
-                <Field component='input' name='duration' initialValue={'1'} min={1} max={90} />
+                <Field component='input' name='duration' initialValue={'1'} min={1} max={90} className='input-text' />
               </div>
             </div>
-            <div className='form-APR'>
+            <div className='form-line form-APR'>
               <div>
                 <span>APR (%)</span>
-                <Field name='apr' component='input' />
+                <Field name='apr' component='input' className='input-text' />
               </div>
               <div>
                 <span>Total repay amount</span>
