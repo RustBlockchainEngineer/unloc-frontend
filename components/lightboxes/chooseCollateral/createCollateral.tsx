@@ -1,11 +1,12 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { PublicKey } from '@solana/web3.js'
 import { observer } from 'mobx-react'
+import { toast } from 'react-toastify'
 
-import { NFTMetadata, setOffer } from '../../../integration/nftLoan'
+import { NFTMetadata } from '../../../integration/nftLoan'
 import { StoreContext } from '../../../pages/_app'
 import { StoreDataAdapter } from '../../storeDataAdapter'
 import { CollateralItem } from './collateralItem'
+import { BlobLoader } from '../../layout/blobLoader'
 
 export interface INFTCollateral {
   NFTAddress: string
@@ -22,6 +23,7 @@ export const CreateCollateral: React.FC = observer(() => {
   const [itemMint, setItemMint] = useState<string>('')
   const [sortOption, setSortOption] = useState<string>('')
   const [data, setData] = useState<NFTMetadata[]>(myOffers.collaterables)
+  const [processing, setProcessing] = useState(false)
 
   const chooseNFT = (mint: any) => {
     if (mint === itemMint) {
@@ -35,8 +37,27 @@ export const CreateCollateral: React.FC = observer(() => {
     setSortOption(option)
   }
 
-  const createOffer = (mint: string) => {
-    setOffer(new PublicKey(mint))
+  const createOffer = async (mint: string) => {
+    store.Lightbox.setCanClose(false)
+    setProcessing(true)
+
+    await store.MyOffers.createCollateral(mint)
+
+    store.Lightbox.setVisible(false)
+    setProcessing(false)
+    store.Lightbox.setCanClose(true)
+
+    toast.success(`Collateral Created`, {
+      autoClose: 3000,
+      position: 'top-center',
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined
+    })
+
+    store.MyOffers.refetchStoreData()
   }
 
   useEffect(() => {
@@ -64,7 +85,12 @@ export const CreateCollateral: React.FC = observer(() => {
     }
   }, [wallet, connection, walletKey])
 
-  return (
+  return processing ? (
+    <div className='create-offer-processing'>
+      <BlobLoader />
+      <span>Processing Transaction</span>
+    </div>
+  ) : (
     <StoreDataAdapter>
       <div className='collateral-lightbox'>
         {data && data.length ? (
@@ -91,7 +117,6 @@ export const CreateCollateral: React.FC = observer(() => {
             <button
               onClick={() => {
                 createOffer(itemMint)
-                store.Lightbox.setVisible(false)
               }}
               className='lb-collateral-button'
             >

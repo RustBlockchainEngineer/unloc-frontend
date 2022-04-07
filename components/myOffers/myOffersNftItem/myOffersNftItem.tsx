@@ -39,12 +39,7 @@ export const MyOffersNftItem: React.FC<MyOffersNftItemProps> = observer(
     handleRepayLoan
   }) => {
     const store = useContext(StoreContext)
-    const { getArrowProps, getTooltipProps, setTooltipRef, setTriggerRef, visible } = usePopperTooltip()
-
-    const setNFTState = (status: number) => {
-      if (status === 0) return <p style={{ color: 'red' }}>Proposed</p>
-      if (status === 1) return <p style={{ color: 'green' }}>Accepted</p>
-    }
+    const { getTooltipProps, setTooltipRef, setTriggerRef, visible } = usePopperTooltip()
 
     const setNFTActions = (status: number) => {
       if (status === 0) {

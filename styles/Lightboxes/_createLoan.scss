@@ -192,4 +192,5 @@
   flex-direction: column;
   text-align: center;
   padding-bottom: 40px;
+  @include theme-aware('color', 'color-label');
 }

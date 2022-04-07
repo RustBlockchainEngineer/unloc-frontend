@@ -9,11 +9,12 @@ import {
   MultipleNFT,
   NFTMetadata,
   createSubOffer,
-  repayLoan
+  repayLoan,
+  setOffer
 } from '../integration/nftLoan'
 import { currencies } from '../constants/currency'
 import { getDurationForContractData } from '../utils/getDuration'
-import { asBigNumber } from '../utils/asBigNumber'
+
 export class MyOffersStore {
   rootStore
   offers: any[] = []
@@ -141,5 +142,9 @@ export class MyOffersStore {
     await this.getOffersByWallet(this.rootStore.Wallet.walletKey)
     await this.getNFTsData()
     await this.getSubOffersByOffers()
+  }
+
+  @action.bound createCollateral = async (mint: string) => {
+    await setOffer(new PublicKey(mint))
   }
 }

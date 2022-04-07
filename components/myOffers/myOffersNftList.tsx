@@ -17,7 +17,7 @@ export const MyOffersNftList: React.FC = observer(() => {
     setReveal(key)
   }
   const handleCreateSubOffer = (nftMint: string): void => {
-    store.MyOffers.handleCreateSubOffer(nftMint)
+    // store.MyOffers.handleCreateSubOffer(nftMint) // needed for editing Loan
   }
 
   const handleRepayLoan = (subOfferKey: string) => {

@@ -1,5 +1,6 @@
 import React, { useContext } from 'react'
 import { observer } from 'mobx-react'
+import { usePopperTooltip } from 'react-popper-tooltip'
 
 import { StoreContext } from '../../pages/_app'
 import { ShowOnHover } from '../layout/showOnHover'
@@ -9,6 +10,8 @@ import { SolscanExplorerIcon } from '../layout/solscanExplorerIcon'
 export const MyOffersTop: React.FC = observer(() => {
   const store = useContext(StoreContext)
   const { wallet, walletKey, connected } = store.Wallet as any
+
+  const { getTooltipProps, setTooltipRef, setTriggerRef, visible } = usePopperTooltip()
 
   const handleWalletDisconnect = () => {
     if (wallet && wallet.adapter) {
@@ -35,6 +38,7 @@ export const MyOffersTop: React.FC = observer(() => {
       </div>
       <div className='my-offers-top__toolbox'>
         <button
+          ref={setTriggerRef}
           className='btn btn--md btn--primary'
           onClick={() => {
             store.Lightbox.setContent('collateral')
@@ -43,6 +47,11 @@ export const MyOffersTop: React.FC = observer(() => {
         >
           Deposit NFT
         </button>
+        {visible && (
+          <div ref={setTooltipRef} {...getTooltipProps({ className: 'tooltip-container' })}>
+            Create a new Collateral from a NFT
+          </div>
+        )}
         {wallet && wallet.adapter ? (
           <button className='btn btn--md btn--bordered' onClick={() => handleWalletDisconnect()}>
             Disconnect
