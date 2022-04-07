@@ -38,7 +38,7 @@ export const Lightbox: React.FC<LightboxProps> = observer(({ children, className
           onClick={(e) => {
             closeWindow(e, false)
           }}
-          className='icon icon--cross--primary lightbox__close'
+          className='icon icon--cross lightbox__close'
         ></i>
         {children}
       </div>

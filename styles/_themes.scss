@@ -21,7 +21,8 @@ $themes: (
     single-offer-meta-bg: #b4ace2,
     single-offer-meta-label: #ffffff,
     single-offer-offer-bg: linear-gradient(180deg, #d6c0ff 0%, #b4ace2 100%),
-    single-offer-offer-bg-hover: linear-gradient(180deg, #d6c0ff 80%, #b4ace2 100%)
+    single-offer-offer-bg-hover: linear-gradient(180deg, #d6c0ff 80%, #b4ace2 100%),
+    icon-cross: url('/icons/cross-icon-secondary.svg')
   ),
   dark: (
     color-background: #210d48,
@@ -48,6 +49,7 @@ $themes: (
     single-offer-meta-bg: #482688,
     single-offer-meta-label: #8c70bf,
     single-offer-offer-bg: linear-gradient(180deg, #402a6b 0%, #4e2798 100%),
-    single-offer-offer-bg-hover: linear-gradient(180deg, #402a6b 0%, #4e2798 30%)
+    single-offer-offer-bg-hover: linear-gradient(180deg, #402a6b 0%, #4e2798 30%),
+    icon-cross: url('/icons/cross-icon-primary.svg')
   )
 );

@@ -20,13 +20,15 @@ export const CreateCollateral: React.FC = observer(() => {
   const { wallet, connection, walletKey } = store.Wallet
 
   const [itemMint, setItemMint] = useState<string>('')
-  const [address, setAddress] = useState<string>('')
   const [sortOption, setSortOption] = useState<string>('')
   const [data, setData] = useState<NFTMetadata[]>(myOffers.collaterables)
 
   const chooseNFT = (mint: any) => {
-    setItemMint(mint)
-    setAddress(mint.toString())
+    if (mint === itemMint) {
+      setItemMint('')
+    } else {
+      setItemMint(mint)
+    }
   }
 
   const sortNFT = (option: string) => {
@@ -65,34 +67,42 @@ export const CreateCollateral: React.FC = observer(() => {
   return (
     <StoreDataAdapter>
       <div className='collateral-lightbox'>
-        <div className='NFT-lb-header'>
-          <h1>Choose a NFT for collateral</h1>
-          <select onChange={(e) => sortNFT(e.target.value)} className='sort-select'>
-            <option value=''>Sort by</option>
-            <option value='name'>Sort by name</option>
-          </select>
-        </div>
-        <div className='NFT-lb-collateral-list'>
-          {data?.map((item: NFTMetadata) => {
-            return (
-              <CollateralItem
-                key={item.mint}
-                data={item}
-                onClick={() => chooseNFT(item.mint)}
-                choosen={address === ''}
-              />
-            )
-          })}
-        </div>
-        <button
-          onClick={() => {
-            createOffer(itemMint)
-            store.Lightbox.setVisible(false)
-          }}
-          className='lb-collateral-button'
-        >
-          Use as Collateral
-        </button>
+        {data && data.length ? (
+          <>
+            <div className='NFT-lb-header'>
+              <h1>Choose a NFT for collateral</h1>
+              <select onChange={(e) => sortNFT(e.target.value)} className='sort-select'>
+                <option value=''>Sort by</option>
+                <option value='name'>Sort by name</option>
+              </select>
+            </div>
+            <div className='NFT-lb-collateral-list'>
+              {data?.map((item: NFTMetadata) => {
+                return (
+                  <CollateralItem
+                    key={item.mint}
+                    data={item}
+                    onClick={() => chooseNFT(item.mint)}
+                    choosen={item.mint === itemMint}
+                  />
+                )
+              })}
+            </div>
+            <button
+              onClick={() => {
+                createOffer(itemMint)
+                store.Lightbox.setVisible(false)
+              }}
+              className='lb-collateral-button'
+            >
+              Use as Collateral
+            </button>
+          </>
+        ) : (
+          <div className='collateral-empty'>
+            <h2>No whitelisted NFTs in your wallet</h2>
+          </div>
+        )}
       </div>
     </StoreDataAdapter>
   )
