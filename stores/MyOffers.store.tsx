@@ -10,9 +10,11 @@ import {
   NFTMetadata,
   createSubOffer,
   repayLoan,
-  setOffer
+  setOffer,
+  cancelSubOffer,
+  updateSubOffer
 } from '../integration/nftLoan'
-import { currencies } from '../constants/currency'
+import { currencies, currencyMints } from '../constants/currency'
 import { getDurationForContractData } from '../utils/getDuration'
 
 export class MyOffersStore {
@@ -145,5 +147,27 @@ export class MyOffersStore {
 
   @action.bound createCollateral = async (mint: string) => {
     await setOffer(new PublicKey(mint))
+  }
+
+  @action.bound handleCancelSubOffer = async (subOfferKey: string) => {
+    await cancelSubOffer(new PublicKey(subOfferKey))
+  }
+
+  @action.bound handleEditSubOffer = async (
+    offerAmount: number,
+    loanDuration: number,
+    aprNumerator: number,
+    minRepaidNumerator: number,
+    subOffer: string
+  ) => {
+    const currencyInfo = currencies[currencyMints[this.rootStore.Lightbox.activeSubOfferData.offerMint]]
+
+    await updateSubOffer(
+      new BN(offerAmount * 10 ** currencyInfo.decimals),
+      new BN(getDurationForContractData(loanDuration, 'days')),
+      new BN(minRepaidNumerator),
+      new BN(aprNumerator),
+      new PublicKey(subOffer)
+    )
   }
 }

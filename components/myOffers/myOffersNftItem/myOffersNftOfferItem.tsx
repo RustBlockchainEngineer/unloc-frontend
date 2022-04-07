@@ -1,14 +1,19 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { BN } from '@project-serum/anchor'
 import { compressAddress } from '../../../utils/stringUtils/compressAdress'
+import { PublicKey } from '@solana/web3.js'
+import { IsubOfferData } from '../../../stores/Lightbox.store'
 
 interface MyOffersNftOfferItemProps {
   offerAmount: any
-  offerID: string
+  offerID: PublicKey
   status: string
   APR: string
   duration: BN
   repaid: string
+  offerMint: PublicKey
+  handleOfferEdit: (subOfferKey: string, values: IsubOfferData) => Promise<void>
+  handleOfferCancel: (subOfferKey: string) => Promise<void>
   classNames?: string
 }
 
@@ -19,6 +24,9 @@ export const MyOffersNftOfferItem: React.FC<MyOffersNftOfferItemProps> = ({
   APR,
   duration,
   repaid,
+  offerMint,
+  handleOfferEdit,
+  handleOfferCancel,
   classNames
 }) => {
   const setStatus = (status: string) => {
@@ -51,11 +59,30 @@ export const MyOffersNftOfferItem: React.FC<MyOffersNftOfferItemProps> = ({
       </div>
       <div className='nft__offer-item'>
         <h4>Duration: </h4>
-        <p>{Number(duration.toString()) / 60 / 60 / 24} DAYS</p>
+        <p>{Number(duration.toString()) / 60 / 60 / 24} Days</p>
       </div>
       <div className='nft__offer-item'>
         <h4>Min repaid value: </h4>
         <p>{repaid.toString()}</p>
+      </div>
+      <div className='nft__offer-item'>
+        <button
+          className='btn btn--md btn--primary'
+          onClick={() =>
+            handleOfferEdit(offerID.toBase58(), {
+              offerAmount: Number(offerAmount),
+              loanDuration: Number(duration),
+              aprNumerator: Number(APR),
+              minRepaidNumerator: Number(repaid),
+              offerMint: offerMint.toBase58()
+            })
+          }
+        >
+          Edit Offer
+        </button>
+        <button className='btn btn--md btn--bordered' onClick={() => handleOfferCancel(offerID.toBase58())}>
+          Cancel Offer
+        </button>
       </div>
     </div>
   )
