@@ -32,41 +32,94 @@ export const MyOffersNftItem: React.FC<MyOffersNftItemProps> = observer(
       store.Lightbox.setCanClose(false)
       store.Lightbox.setVisible(true)
 
-      await store.MyOffers.handleRepayLoan(subOfferKey)
+      try {
+        await store.MyOffers.handleRepayLoan(subOfferKey)
 
-      toast.success(`Loan Repayed, NFT is back in your wallet`, {
-        autoClose: 3000,
-        position: 'top-center',
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined
-      })
-      store.Lightbox.setCanClose(true)
-      store.Lightbox.setVisible(false)
-      store.MyOffers.refetchStoreData()
+        toast.success(`Loan Repayed, NFT is back in your wallet`, {
+          autoClose: 3000,
+          position: 'top-center',
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined
+        })
+      } catch (e: any) {
+        console.log(e)
+        if (e.message === 'User rejected the request.') {
+          toast.error(`Transaction rejected`, {
+            autoClose: 3000,
+            position: 'top-center',
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined
+          })
+        } else {
+          toast.error(`Something went wrong`, {
+            autoClose: 3000,
+            position: 'top-center',
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined
+          })
+        }
+      } finally {
+        store.Lightbox.setCanClose(true)
+        store.Lightbox.setVisible(false)
+        store.MyOffers.refetchStoreData()
+      }
     }
 
     const handleCancelOffer = async (subOfferKey: string) => {
       store.Lightbox.setContent('processing')
       store.Lightbox.setCanClose(false)
       store.Lightbox.setVisible(true)
+      try {
+        await store.MyOffers.handleCancelSubOffer(subOfferKey)
 
-      await store.MyOffers.handleCancelSubOffer(subOfferKey)
-
-      toast.success(`Offer canceled`, {
-        autoClose: 3000,
-        position: 'top-center',
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined
-      })
-      store.Lightbox.setCanClose(true)
-      store.Lightbox.setVisible(false)
-      store.MyOffers.refetchStoreData()
+        toast.success(`Offer canceled`, {
+          autoClose: 3000,
+          position: 'top-center',
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined
+        })
+        store.Lightbox.setCanClose(true)
+        store.Lightbox.setVisible(false)
+      } catch (e: any) {
+        console.log(e)
+        if (e.message === 'User rejected the request.') {
+          toast.error(`Transaction rejected`, {
+            autoClose: 3000,
+            position: 'top-center',
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined
+          })
+        } else {
+          toast.error(`Something went wrong`, {
+            autoClose: 3000,
+            position: 'top-center',
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined
+          })
+        }
+      } finally {
+        store.MyOffers.refetchStoreData()
+        store.Lightbox.setCanClose(true)
+        store.Lightbox.setVisible(false)
+      }
     }
 
     const handleEditOffer = async (subOfferKey: string, values: IsubOfferData) => {
