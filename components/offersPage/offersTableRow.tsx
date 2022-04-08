@@ -28,8 +28,6 @@ export const OffersTableRow = ({
   count
 }: OffersTableItemInterface) => {
   let btnRef = useRef<HTMLButtonElement>(null)
-  console.log(btnRef)
-  const handleAcceptOffer = async (offerPublicKey: string) => {}
   const handlePrevent = useCallback((e: React.FormEvent<HTMLButtonElement>) => {
     e.stopPropagation()
     e.preventDefault()
