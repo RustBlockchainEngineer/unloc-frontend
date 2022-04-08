@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback, useRef } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 
@@ -10,6 +10,8 @@ interface OffersTableItemInterface {
   amount: number
   duration: number
   currency: string
+  onLend: (pubkey: string) => Promise<void>
+  offerPublicKey: string
   count?: number
 }
 
@@ -18,11 +20,19 @@ export const OffersTableRow = ({
   image,
   nftName,
   apr,
+  onLend,
+  offerPublicKey,
   amount,
   duration,
   currency,
   count
 }: OffersTableItemInterface) => {
+  let btnRef = useRef<HTMLButtonElement>(null)
+  console.log(btnRef)
+  const handlePrevent = useCallback((e: React.FormEvent<HTMLButtonElement>) => {
+    e.stopPropagation()
+    e.preventDefault()
+  }, [])
   return (
     <div className='offers-table-row' key={subOfferKey}>
       <Link href={`/offers/${subOfferKey}`}>
@@ -30,6 +40,9 @@ export const OffersTableRow = ({
           <div className='row-cell'>
             {image ? <Image src={image} alt='NFT Picture' width={36} height={36} /> : ''}
             <span className='text-content'>{nftName}</span>
+          </div>
+          <div className='row-cell'>
+            <button onClick={handlePrevent}>Lend tokens</button>
           </div>
           <div className='row-cell'>
             <span className='text-content'>{apr} %</span>
