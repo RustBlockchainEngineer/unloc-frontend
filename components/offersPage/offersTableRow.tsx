@@ -29,9 +29,11 @@ export const OffersTableRow = ({
 }: OffersTableItemInterface) => {
   let btnRef = useRef<HTMLButtonElement>(null)
   console.log(btnRef)
+  const handleAcceptOffer = async (offerPublicKey: string) => {}
   const handlePrevent = useCallback((e: React.FormEvent<HTMLButtonElement>) => {
     e.stopPropagation()
     e.preventDefault()
+    onLend(offerPublicKey)
   }, [])
   return (
     <div className='offers-table-row' key={subOfferKey}>
