@@ -6,6 +6,7 @@ import { OffersGridItem } from './offersGridItem'
 import { currencyMints } from '../../constants/currency'
 import { asBigNumber } from '../../utils/asBigNumber'
 import { BlobLoader } from '../layout/blobLoader'
+import { toast } from 'react-toastify'
 
 export const OffersGrid = observer(() => {
   const store = useContext(StoreContext)
@@ -15,6 +16,51 @@ export const OffersGrid = observer(() => {
     return [...Array(count)].map((page, index) => {
       return <div key={`offers-${index}`} className='offers-empty'></div>
     })
+  }
+  const handleAcceptOffer = async (offerPublicKey: string) => {
+    try {
+      store.Lightbox.setContent('processing')
+      store.Lightbox.setCanClose(false)
+      store.Lightbox.setVisible(true)
+      await store.Offers.handleAcceptOffer(offerPublicKey)
+      toast.success(`Loan Accepted`, {
+        autoClose: 3000,
+        position: 'top-center',
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined
+      })
+    } catch (e: any) {
+      console.log(e)
+
+      if (e.message === 'User rejected the request.') {
+        toast.error(`Transaction rejected`, {
+          autoClose: 3000,
+          position: 'top-center',
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined
+        })
+      } else {
+        toast.error(`Something went wrong`, {
+          autoClose: 3000,
+          position: 'top-center',
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined
+        })
+      }
+    } finally {
+      await store.MyOffers.refetchStoreData()
+      store.Lightbox.setCanClose(true)
+      store.Lightbox.setVisible(false)
+    }
   }
   return offersEmpty ? (
     <div className='offers-grid--empty'>
@@ -33,7 +79,7 @@ export const OffersGrid = observer(() => {
               apr={asBigNumber(pageOfferData[index].aprNumerator)}
               offerPublicKey={pageOfferData[index].subOfferKey.toString()}
               name={nftData.arweaveMetadata.name}
-              onLend={store.Offers.handleAcceptOffer}
+              onLend={handleAcceptOffer}
               totalRepay={pageOfferData[index].repaidAmount.toString()}
               duration={Math.floor(pageOfferData[index].loanDuration.toNumber() / (3600 * 24))}
               currency={currencyMints[pageOfferData[index].offerMint.toBase58()]}
