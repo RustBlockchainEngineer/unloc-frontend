@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { observer } from 'mobx-react'
 
 import { StoreContext } from '../../pages/_app'
@@ -62,28 +62,29 @@ export const OffersGrid = observer(() => {
       store.Lightbox.setVisible(false)
     }
   }
+
   return offersEmpty ? (
     <div className='offers-grid--empty'>
       <h2 className='no-offers'>No Offers Created yet</h2>
     </div>
-  ) : pageNFTData.length > 0 && pageOfferData.length > 0 ? (
+  ) : pageOfferData.length > 0 ? (
     <>
       <div className='offers-grid'>
-        {pageNFTData.map((nftData, index) => {
+        {pageOfferData.map((offerData, index) => {
           return (
             <OffersGridItem
-              key={`offer-${nftData.arweaveMetadata.name}-${index}`}
-              subOfferKey={pageNFTData[index].mint}
-              image={pageNFTData[index].arweaveMetadata.image}
-              amount={pageOfferData[index].offerAmount.toNumber() / 1000000}
-              apr={asBigNumber(pageOfferData[index].aprNumerator)}
-              offerPublicKey={pageOfferData[index].subOfferKey.toString()}
-              name={nftData.arweaveMetadata.name}
+              key={`offer-${offerData.nftData.arweaveMetadata.name}-${index}`}
+              subOfferKey={offerData.nftData.mint}
+              image={offerData.nftData.arweaveMetadata.image}
+              amount={offerData.offerAmount.toNumber() / 1000000}
+              apr={asBigNumber(offerData.aprNumerator)}
+              offerPublicKey={offerData.subOfferKey.toString()}
+              name={offerData.nftData.arweaveMetadata.name}
               onLend={handleAcceptOffer}
-              totalRepay={pageOfferData[index].repaidAmount.toString()}
-              duration={Math.floor(pageOfferData[index].loanDuration.toNumber() / (3600 * 24))}
-              currency={currencyMints[pageOfferData[index].offerMint.toBase58()]}
-              count={pageOfferData[index].count}
+              totalRepay={offerData.repaidAmount.toString()}
+              duration={Math.floor(offerData.loanDuration.toNumber() / (3600 * 24))}
+              currency={currencyMints[offerData.offerMint.toBase58()]}
+              count={offerData.count}
             />
           )
         })}

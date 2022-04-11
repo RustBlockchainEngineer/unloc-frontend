@@ -22,6 +22,7 @@ const Home: NextPage = observer(() => {
       if (connected && wallet) {
         await store.Offers.refetchOffers()
         store.Offers.buildFilters(store.Offers.pageOfferData)
+        store.Offers.buildFilterCollection()
       }
     } catch (e) {
       console.log(e)
