@@ -23,7 +23,7 @@
   font-weight: $wg-bd;
   border-radius: $brd-rds-sm $brd-rds-sm 0 0;
   display: grid;
-  grid-template-columns: 4fr 2fr 2fr 1fr 1fr;
+  grid-template-columns: 2fr 1fr 2fr 1fr 1fr 1fr;
 
   .row-cell {
     text-align: left;
@@ -35,7 +35,8 @@
 
   a {
     display: grid;
-    grid-template-columns: 4fr 2fr 2fr 1fr 1fr;
+    grid-template-columns: 2fr 1fr 2fr 1fr 1fr 1fr;
+    align-content: center;
     width: 100%;
     @include theme-aware('background-color', 'bg-table');
     @include theme-aware('color', 'color-label');
@@ -45,10 +46,25 @@
     &:hover {
       @include theme-aware('background-color', 'bg-table-hover');
     }
+    & button {
+      @include theme-aware('background-color', 'color-primary');
+      border: none;
+      border-radius: 6px;
+      padding: 8px 0;
+      @include theme-aware('color', 'color-label');
+      font-weight: 700;
+      width: 75%;
+      cursor: pointer;
+
+      &:hover {
+        @include theme-aware('background-color', 'color-primary-dark');
+      }
+    }
 
     .row-cell {
       display: flex;
       text-align: left;
+      align-items: flex-end;
       padding: 10px;
       height: 58px;
       line-height: 40px;

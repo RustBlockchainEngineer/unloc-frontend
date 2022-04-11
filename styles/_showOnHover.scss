@@ -1,0 +1,34 @@
+.show-on-hover {
+  cursor: pointer;
+  display: flex;
+  padding: 0;
+  transition: box-shadow ease-in-out 0.3s, padding ease-in-out 0.3s, border-radius ease-in-out 0.3s;
+
+  &:hover {
+    padding: 4px 8px;
+    border-radius: $brd-rds-sm;
+    -moz-box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.75);
+    box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.75);
+  }
+
+  &__label {
+    overflow-wrap: anywhere;
+  }
+
+  &__elements {
+    display: hidden;
+    opacity: 0;
+    transition: opacity ease-in-out 0.3s;
+
+    &__wrap {
+      display: flex;
+    }
+  }
+
+  &__elements.active {
+    display: inline-block;
+    opacity: 1;
+  }
+}
+
+// TODO: show by default on mobile without hover

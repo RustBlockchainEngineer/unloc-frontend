@@ -13,19 +13,27 @@
 @import './layout';
 @import './layoutTop';
 @import './userToolbox';
+@import './filter';
+@import './blobLoader';
+@import './footer/footer';
+@import './showOnHover';
+@import './solscanExplorer';
+
 @import './singleOffer/header';
 @import './singleOffer/offer';
 @import './singleOffer/page';
-@import './filter';
+
 @import './offersPage/offersTop';
 @import './offersPage/offersGrid';
 @import './offersPage/offersTable';
 @import './offersPage/offersPagination';
-@import './blobLoader';
-@import './footer/footer';
-@import './Lightboxes/NFTCollateral';
+
 @import './myOffers/_myOffersTop';
 @import './myOffers/myOffersNftList';
+
+@import './lightboxBase';
+@import './NFTCollateral';
+@import './createLoan';
 
 body {
   @include theme-aware('background-color', 'color-background');
@@ -39,6 +47,10 @@ body {
   margin: 0px;
   width: 100%;
   transition: background 0.8s ease-in-out;
+}
+
+* {
+  box-sizing: border-box;
 }
 
 .home-bg-bottom {
@@ -86,7 +98,7 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: 'Red Hat Display';
+  font-family: 'Red Hat Display', sans-serif;
   @include theme-aware('color', 'color-content');
 }
 

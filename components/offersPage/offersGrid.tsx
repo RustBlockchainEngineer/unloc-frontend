@@ -1,35 +1,40 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext } from 'react'
 import { observer } from 'mobx-react'
 
 import { StoreContext } from '../../pages/_app'
 import { OffersGridItem } from './offersGridItem'
 import { currencyMints } from '../../constants/currency'
 import { asBigNumber } from '../../utils/asBigNumber'
-import { removeDuplicatesByPropertyIndex } from '../../utils/removeDuplicatesByPropertyIndex'
 import { BlobLoader } from '../layout/blobLoader'
 
 export const OffersGrid = observer(() => {
   const store = useContext(StoreContext)
-  const { pageOfferData, pageNFTData, currentPage, maxPage, itemsPerPage } = store.Offers
-
+  const { pageOfferData, pageNFTData, currentPage, maxPage, itemsPerPage, offersEmpty } = store.Offers
   const generateEmptyFields = () => {
     const count = (itemsPerPage - pageNFTData.length) as number
     return [...Array(count)].map((page, index) => {
       return <div key={`offers-${index}`} className='offers-empty'></div>
     })
   }
-
-  return pageNFTData.length > 0 && pageOfferData.length > 0 ? (
+  return offersEmpty ? (
+    <div className='offers-grid--empty'>
+      <h2 className='no-offers'>No Offers Created yet</h2>
+    </div>
+  ) : pageNFTData.length > 0 && pageOfferData.length > 0 ? (
     <>
       <div className='offers-grid'>
-        {removeDuplicatesByPropertyIndex(pageNFTData, 'mint').map((nftData, index) => {
+        {pageNFTData.map((nftData, index) => {
           return (
             <OffersGridItem
-              key={`offer-${nftData.arweaveMetadata.name}`}
+              key={`offer-${nftData.arweaveMetadata.name}-${index}`}
               subOfferKey={pageNFTData[index].mint}
               image={pageNFTData[index].arweaveMetadata.image}
               amount={pageOfferData[index].offerAmount.toNumber() / 1000000}
               apr={asBigNumber(pageOfferData[index].aprNumerator)}
+              offerPublicKey={pageOfferData[index].subOfferKey.toString()}
+              name={nftData.arweaveMetadata.name}
+              onLend={store.Offers.handleAcceptOffer}
+              totalRepay={pageOfferData[index].repaidAmount.toString()}
               duration={Math.floor(pageOfferData[index].loanDuration.toNumber() / (3600 * 24))}
               currency={currencyMints[pageOfferData[index].offerMint.toBase58()]}
               count={pageOfferData[index].count}

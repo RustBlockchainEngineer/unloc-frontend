@@ -29,11 +29,11 @@
 }
 
 .icon--copy {
-  background-image: url('/icons/copy-icon.svg');
+  background-image: url('../constants/icons/svg/copy.svg');
 }
 
 .icon--cross {
-  background-image: url('/icons/cross-icon.svg');
+  @include theme-aware('background-image', 'icon-cross');
 }
 .icon--cross--black {
   background-image: url('/icons/cross-icon-black.svg');

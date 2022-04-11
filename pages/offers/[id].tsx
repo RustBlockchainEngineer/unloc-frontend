@@ -1,11 +1,13 @@
+import React, { useContext, useEffect } from 'react'
 import { observer } from 'mobx-react-lite'
 import { NextPage } from 'next'
 import { useRouter } from 'next/router'
 import { PublicKey } from '@solana/web3.js'
-import React, { useContext, useEffect, useState } from 'react'
+import { toast } from 'react-toastify'
+
 import { LayoutTop } from '../../components/layout/layoutTop'
-import Header from '../../components/singleOffer/Header/Header'
-import Offer from '../../components/singleOffer/Offer/Offer'
+import { Header } from '../../components/singleOffer/Header/Header'
+import { Offer } from '../../components/singleOffer/Offer/Offer'
 import { StoreDataAdapter } from '../../components/storeDataAdapter'
 import { getQueryParamAsString } from '../../utils/getQueryParamsAsString'
 import { compressAddress } from '../../utils/stringUtils/compressAdress'
@@ -29,8 +31,6 @@ const SingleNftPage: NextPage = observer(({}) => {
   const router = useRouter()
   const store = useContext(StoreContext)
 
-  const [loaded, setLoaded] = useState(false)
-  const [message, setMessage] = useState<string>('')
   const { connected, wallet } = store.Wallet
   const { nftData, loansData } = store.SingleOffer
 
@@ -43,6 +43,51 @@ const SingleNftPage: NextPage = observer(({}) => {
     } catch (e) {
       // eslint-disable-next-line no-console
       console.log(e)
+    }
+  }
+
+  const handleAcceptOffer = async (offerPublicKey: string) => {
+    try {
+      store.Lightbox.setContent('processing')
+      store.Lightbox.setCanClose(false)
+      store.Lightbox.setVisible(true)
+      await store.Offers.handleAcceptOffer(offerPublicKey)
+      toast.success(`Loan Accepted`, {
+        autoClose: 3000,
+        position: 'top-center',
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined
+      })
+    } catch (e: any) {
+      console.log(e)
+
+      if (e.message === 'User rejected the request.') {
+        toast.error(`Transaction rejected`, {
+          autoClose: 3000,
+          position: 'top-center',
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined
+        })
+      } else {
+        toast.error(`Something went wrong`, {
+          autoClose: 3000,
+          position: 'top-center',
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined
+        })
+      }
+    } finally {
+      store.Lightbox.setCanClose(true)
+      store.Lightbox.setVisible(false)
     }
   }
 
@@ -81,11 +126,13 @@ const SingleNftPage: NextPage = observer(({}) => {
         {loansData && loansData.length ? (
           <div className='offer-grid'>
             {loansData.map((offer: IOffer) => {
-              if (offer.status === 0 || offer.status === 6) {
+              if (offer.status === 0) {
                 return (
                   <Offer
                     key={offer.id}
                     offerID={compressAddress(4, offer.id)}
+                    offerMint={offer.offerMint}
+                    offerPublicKey={offer.publicKey.toBase58()}
                     status={offer.status.toString()}
                     amount={offer.amount}
                     token='USDC'
@@ -94,6 +141,7 @@ const SingleNftPage: NextPage = observer(({}) => {
                     APR={offer.apr}
                     totalRepay={offer.totalRepay}
                     btnMessage={'Lend Tokens'}
+                    handleAcceptOffer={handleAcceptOffer}
                   />
                 )
               } else {

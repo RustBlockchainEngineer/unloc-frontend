@@ -29,7 +29,6 @@ export class SingleOfferStore {
   nftData = {} as IOfferData
   loansData: any[] = []
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   constructor(rootStore: any) {
     makeAutoObservable(this)
     this.rootStore = rootStore
@@ -53,7 +52,6 @@ export class SingleOfferStore {
       const subOfferKey = new anchor.web3.PublicKey(id)
 
       const data = await getSubOfferList(undefined, subOfferKey, 0)
-
       const loansArr: Array<LoanInterface> = []
       data.forEach(
         (element: {

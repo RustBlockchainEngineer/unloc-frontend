@@ -1,6 +1,6 @@
 import React, { useContext } from 'react'
 import { usePopperTooltip } from 'react-popper-tooltip'
-import { WalletDisconnectButton, WalletMultiButton } from '@solana/wallet-adapter-react-ui'
+import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
 import { observer } from 'mobx-react'
 
 import { StoreContext } from '../../pages/_app'

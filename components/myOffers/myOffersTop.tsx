@@ -1,13 +1,17 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext } from 'react'
 import { observer } from 'mobx-react'
+import { usePopperTooltip } from 'react-popper-tooltip'
 
 import { StoreContext } from '../../pages/_app'
-import ChooseNFTCollateral from '../lightboxes/chooseCollateral/chooseNFTCollateral'
+import { ShowOnHover } from '../layout/showOnHover'
+import { ClipboardButton } from '../layout/clipboardButton'
+import { SolscanExplorerIcon } from '../layout/solscanExplorerIcon'
 
 export const MyOffersTop: React.FC = observer(() => {
   const store = useContext(StoreContext)
-  const { showLightboxCollateral } = store.Lightbox
   const { wallet, walletKey, connected } = store.Wallet as any
+
+  const { getTooltipProps, setTooltipRef, setTriggerRef, visible } = usePopperTooltip()
 
   const handleWalletDisconnect = () => {
     if (wallet && wallet.adapter) {
@@ -21,16 +25,33 @@ export const MyOffersTop: React.FC = observer(() => {
         {walletKey ? (
           <>
             <span className='wallet-label'>Your wallet address:</span>
-            <h2>{walletKey.toBase58()}</h2>
+            <h2>
+              <ShowOnHover label={`#${walletKey.toBase58()}`}>
+                <ClipboardButton data={walletKey.toBase58()} />
+                <SolscanExplorerIcon type={'account'} address={walletKey.toBase58()} />
+              </ShowOnHover>
+            </h2>
           </>
         ) : (
           ''
         )}
       </div>
       <div className='my-offers-top__toolbox'>
-        <button className='btn btn--md btn--primary' onClick={() => store.Lightbox.setShowLightboxCollateral(true)}>
+        <button
+          ref={setTriggerRef}
+          className='btn btn--md btn--primary'
+          onClick={() => {
+            store.Lightbox.setContent('collateral')
+            store.Lightbox.setVisible(true)
+          }}
+        >
           Deposit NFT
         </button>
+        {visible && (
+          <div ref={setTooltipRef} {...getTooltipProps({ className: 'tooltip-container' })}>
+            Create a new Collateral from a NFT
+          </div>
+        )}
         {wallet && wallet.adapter ? (
           <button className='btn btn--md btn--bordered' onClick={() => handleWalletDisconnect()}>
             Disconnect
@@ -38,9 +59,6 @@ export const MyOffersTop: React.FC = observer(() => {
         ) : (
           ''
         )}
-      </div>
-      <div className='lightbox-collateral' style={{ display: `${showLightboxCollateral ? 'flex' : 'none'}` }}>
-        <ChooseNFTCollateral />
       </div>
     </div>
   ) : (

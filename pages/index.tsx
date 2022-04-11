@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect } from 'react'
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import { observer } from 'mobx-react'

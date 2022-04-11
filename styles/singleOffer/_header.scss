@@ -48,6 +48,10 @@
   animation-iteration-count: 1;
   animation-fill-mode: forwards;
 
+  img {
+    border-radius: calc($brd-rds-lg - 8px);
+  }
+
   @media (max-width: $bp-tablet) {
     margin: 0 0 30px 0;
   }
@@ -57,21 +61,22 @@
   height: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  padding-top: 10px;
 
   p {
     font-size: 18px;
     font-weight: 400;
-    @include theme-aware('color', 'color-content');
+    @include theme-aware('color', 'color-secondary');
+    margin: 0;
+    padding: 0;
   }
 
   h1 {
-    @include theme-aware('color', 'color-primary');
-    font-size: 72px;
+    @include theme-aware('color', 'single-offer-heading');
+    font-size: $tp-1xl;
     font-weight: 700;
     margin: 0;
     line-height: 65px;
-    text-shadow: 0px 2px 8px #13072b;
   }
 
   @media (max-width: $bp-tablet) {
@@ -90,19 +95,22 @@
 }
 
 .nft-info-metadata {
-  @include theme-aware('background-color', 'color-primary');
+  @include theme-aware('background-color', 'single-offer-meta-bg');
   @include theme-aware('color', 'color-content');
   border-radius: 9px;
   padding: 17px 20px;
-  p {
-    font-size: 10px;
+
+  .metadata-line {
+    display: flex;
+    flex-direction: column;
     font-weight: 400;
-    line-height: 13px;
     margin: 0 0 12px 0;
-    span {
-      font-size: 12px;
-      font-weight: 700;
-      line-height: 16px;
+    font-size: $tp-md;
+
+    label {
+      font-size: $tp-sm;
+      @include theme-aware('color', 'single-offer-meta-label');
+      margin-bottom: 4px;
     }
 
     &:last-child {
@@ -111,6 +119,7 @@
   }
 
   @media (max-width: $bp-tablet) {
-    margin: 0 20px;
+    width: 90vw;
+    margin: 0 5vw;
   }
 }

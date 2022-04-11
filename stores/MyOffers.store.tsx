@@ -1,8 +1,21 @@
 import { action, makeAutoObservable, runInAction, flow } from 'mobx'
 import { PublicKey } from '@solana/web3.js'
+import { BN } from 'bn.js'
 
 import { getWhitelistedNFTsByWallet } from '../integration/nftIntegration'
-import { getOffersBy, getSubOfferList, MultipleNFT, NFTMetadata } from '../integration/nftLoan'
+import {
+  getOffersBy,
+  getSubOfferList,
+  MultipleNFT,
+  NFTMetadata,
+  createSubOffer,
+  repayLoan,
+  setOffer,
+  cancelSubOffer,
+  updateSubOffer
+} from '../integration/nftLoan'
+import { currencies, currencyMints } from '../constants/currency'
+import { getDurationForContractData } from '../utils/getDuration'
 
 export class MyOffersStore {
   rootStore
@@ -10,6 +23,7 @@ export class MyOffersStore {
   collaterables = []
   subOffers: any[] = []
   nftData: NFTMetadata[] = []
+  activeNftMint: string = ''
 
   constructor(rootStore: any) {
     makeAutoObservable(this)
@@ -66,7 +80,6 @@ export class MyOffersStore {
           data.push(subOfferData)
         }
       }
-
       this.subOffers = data.flat()
     }
   })
@@ -98,4 +111,63 @@ export class MyOffersStore {
       this.nftData = data
     }
   })
+
+  @action.bound handleCreateSubOffer = async (
+    nftMint: string,
+    offerAmount: number,
+    loanDuration: number,
+    aprNumerator: number,
+    currency: string
+  ) => {
+    const currencyInfo = currencies[currency]
+
+    await createSubOffer(
+      new BN(offerAmount * 10 ** currencyInfo.decimals),
+      new BN(getDurationForContractData(loanDuration, 'days')),
+      new BN(1), // minRepaidNumerator
+      new BN(aprNumerator),
+      new PublicKey(nftMint),
+      new PublicKey(currencyInfo.mint)
+    )
+  }
+
+  @action.bound handleRepayLoan = async (subOfferKey: string) => {
+    await repayLoan(new PublicKey(subOfferKey))
+  }
+
+  @action.bound setActiveNftMint = (nftMint: string) => {
+    this.activeNftMint = nftMint
+  }
+
+  @action.bound refetchStoreData = async () => {
+    await this.getOffersByWallet(this.rootStore.Wallet.walletKey)
+    await this.getNFTsData()
+    await this.getSubOffersByOffers()
+  }
+
+  @action.bound createCollateral = async (mint: string) => {
+    await setOffer(new PublicKey(mint))
+  }
+
+  @action.bound handleCancelSubOffer = async (subOfferKey: string) => {
+    await cancelSubOffer(new PublicKey(subOfferKey))
+  }
+
+  @action.bound handleEditSubOffer = async (
+    offerAmount: number,
+    loanDuration: number,
+    aprNumerator: number,
+    minRepaidNumerator: number,
+    subOffer: string
+  ) => {
+    const currencyInfo = currencies[currencyMints[this.rootStore.Lightbox.activeSubOfferData.offerMint]]
+
+    await updateSubOffer(
+      new BN(offerAmount * 10 ** currencyInfo.decimals),
+      new BN(getDurationForContractData(loanDuration, 'days')),
+      new BN(minRepaidNumerator),
+      new BN(aprNumerator),
+      new PublicKey(subOffer)
+    )
+  }
 }
