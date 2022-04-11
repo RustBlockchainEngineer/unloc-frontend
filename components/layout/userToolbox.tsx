@@ -18,7 +18,6 @@ export const UserToolbox = observer(() => {
   return (
     <div className='user-toolbox'>
       <WalletMultiButton />
-
       <button
         ref={setTriggerRef}
         className={`theme-switcher theme-switcher--${store.Interface.theme}`}

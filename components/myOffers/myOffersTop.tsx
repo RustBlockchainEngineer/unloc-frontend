@@ -1,11 +1,11 @@
 import React, { useContext } from 'react'
 import { observer } from 'mobx-react'
 import { usePopperTooltip } from 'react-popper-tooltip'
-
 import { StoreContext } from '../../pages/_app'
 import { ShowOnHover } from '../layout/showOnHover'
 import { ClipboardButton } from '../layout/clipboardButton'
 import { SolscanExplorerIcon } from '../layout/solscanExplorerIcon'
+import ConnectWallet from '../connectWallet/ConnectWallet'
 
 export const MyOffersTop: React.FC = observer(() => {
   const store = useContext(StoreContext)
@@ -62,6 +62,8 @@ export const MyOffersTop: React.FC = observer(() => {
       </div>
     </div>
   ) : (
-    <div>Please connect your wallet first</div>
+    <div className='connect-wallet-modal-root'>
+      <ConnectWallet />
+    </div>
   )
 })

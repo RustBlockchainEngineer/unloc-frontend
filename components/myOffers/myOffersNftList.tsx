@@ -7,6 +7,7 @@ import { MyOffersNftItem } from './myOffersNftItem/myOffersNftItem'
 export const MyOffersNftList: React.FC = observer(() => {
   const store = useContext(StoreContext)
   const { offers, nftData, subOffers } = store.MyOffers
+  const { wallet, connection } = store.Wallet
 
   const renderOffers = () => {
     return offers.map((offer) => {
