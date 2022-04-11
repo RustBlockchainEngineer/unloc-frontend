@@ -164,6 +164,7 @@
   -webkit-transform: scale(0);
   -ms-transform: scale(0);
   transform: scale(0);
+  pointer-events: none;
 }
 
 .checkbox-label input:checked ~ .checkbox-custom::before {
@@ -182,4 +183,5 @@
   -moz-transition: all 0.3s ease-out;
   -ms-transition: all 0.3s ease-out;
   -o-transition: all 0.3s ease-out;
+  pointer-events: none;
 }

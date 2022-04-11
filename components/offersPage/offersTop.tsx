@@ -51,13 +51,13 @@ export const OffersTop = observer(() => {
         </div>
       </div>
       <div className={`offers-filters ${filtersVisible ? 'active' : ''}`}>
-        <Filter
+        {/* <Filter
           title='Collections'
           type='multi'
           items={filterCollection}
           action={store.Offers.setFilterCollection}
           values={filterCollectionSelected}
-        />
+        /> */}
         <Filter
           title='Loan Amount'
           type='minmax'
