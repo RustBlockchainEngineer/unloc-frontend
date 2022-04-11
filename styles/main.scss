@@ -36,6 +36,7 @@
 @import './lightboxBase';
 @import './NFTCollateral';
 @import './createLoan';
+@import './myOffers/connectWallet';
 
 body {
   @include theme-aware('background-color', 'color-background');

@@ -3,7 +3,7 @@ import React from 'react'
 interface FilterOffersInterface {
   title: string
   type: 'single' | 'multi' | 'minmax'
-  action?: (value: string[]) => void
+  action?: (value: string) => void
   actionMin?: (value: number) => void
   actionMax?: (value: number) => void
   values?: string[]
@@ -33,9 +33,14 @@ export const Filter = ({
     const data =
       items && items.length && action ? (
         items.map((item) => (
-          <li key={item.value} onClick={() => action([item.value])}>
+          <li key={`filter-item--${item.value}`}>
             <label className='checkbox-label'>
-              <input type='checkbox' defaultChecked={handleCheckedItem(item.value)} />
+              <input
+                type='checkbox'
+                name={item.value}
+                defaultChecked={handleCheckedItem(item.value)}
+                onChange={() => action(item.value)}
+              />
               <span className='checkbox-custom rectangular'></span>
             </label>
             <div className='input-title'>{item.label}</div>

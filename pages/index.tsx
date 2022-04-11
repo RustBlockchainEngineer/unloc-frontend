@@ -21,8 +21,9 @@ const Home: NextPage = observer(() => {
   const handleOffers = async () => {
     try {
       if (connected && wallet) {
-        await store.Offers.getOffersForListings()
-        await store.Offers.fetchCollectionForNfts()
+        await store.Offers.refetchOffers()
+        store.Offers.buildFilters(store.Offers.pageOfferData)
+        store.Offers.buildFilterCollection()
       }
     } catch (e) {
       console.log(e)
