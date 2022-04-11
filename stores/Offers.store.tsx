@@ -17,6 +17,7 @@ import sortNftsByField from '../methods/sortNftsByField'
 import { removeDuplicatesByPropertyIncludes } from '../utils/removeDuplicatesByPropertyIncludes'
 import { countDuplicatesToProperty } from '../utils/countDuplicatesToProperty'
 import { asBigNumber } from '../utils/asBigNumber'
+import { removeDuplicatesByPropertyIndex } from '../utils/removeDuplicatesByPropertyIndex'
 
 export class OffersStore {
   rootStore
@@ -57,10 +58,8 @@ export class OffersStore {
   }
 
   @action.bound fetchCollectionForNfts = flow(function* (this: OffersStore) {
-    this.filterCollection = []
-
     try {
-      const requests = this.pageOfferData.map((item, index) => {
+      const requests = this.offers.map((item, index) => {
         return {
           request: axios.post('/api/collections/nft', { id: item.nftMint.toBase58() }),
           index
@@ -69,11 +68,9 @@ export class OffersStore {
       const responses = yield axios.all(requests.map((request) => request.request))
 
       for (const el of requests) {
-        this.pageOfferData[el.index].collection = responses[el.index].data
+        this.offers[el.index].collection = responses[el.index].data
         this.addCollectionToNFTCollections(responses[el.index].data)
       }
-
-      this.buildFilterCollection()
     } catch (e) {
       // eslint-disable-next-line no-console
       console.log(e)
@@ -84,16 +81,14 @@ export class OffersStore {
     this.nftCollections = []
   }
 
-  @action.bound setFilterCollection = (value: string[]): void => {
-    value.forEach((item) => {
-      const hasValue = this.filterCollection.map((e) => e.value).indexOf(item)
-
-      if (hasValue === -1) {
-        this.filterCollectionSelected.push(item)
-      } else {
-        this.filterCollectionSelected.splice(hasValue, 1)
-      }
-    })
+  @action.bound setFilterCollection = (value: string): void => {
+    const hasValue = this.filterCollectionSelected.map((e) => e).indexOf(value)
+    if (hasValue === -1) {
+      this.filterCollectionSelected = [...this.filterCollectionSelected, value]
+    } else {
+      this.filterCollectionSelected.splice(hasValue, 1)
+    }
+    this.currentPage = 1
     this.refetchOffers()
   }
 
@@ -128,31 +123,37 @@ export class OffersStore {
 
   @action.bound setFilterAprMin = (value: number): void => {
     this.filterAprMin = value
+    this.currentPage = 1
     this.refetchOffers()
   }
 
   @action.bound setFilterAprMax = (value: number): void => {
     this.filterAprMax = value
+    this.currentPage = 1
     this.refetchOffers()
   }
 
   @action.bound setFilterAmountMin = (value: number): void => {
     this.filterAmountMin = value
+    this.currentPage = 1
     this.refetchOffers()
   }
 
   @action.bound setFilterAmountMax = (value: number): void => {
     this.filterAmountMax = value
+    this.currentPage = 1
     this.refetchOffers()
   }
 
   @action.bound setFilterDurationMin = (value: number): void => {
     this.filterDurationMin = value
+    this.currentPage = 1
     this.refetchOffers()
   }
 
   @action.bound setFilterDurationMax = (value: number): void => {
     this.filterDurationMax = value
+    this.currentPage = 1
     this.refetchOffers()
   }
 
@@ -205,7 +206,6 @@ export class OffersStore {
 
   private handleFilters = (data: any) => {
     const output: any[] = []
-
     data.forEach((offer: any) => {
       const amountCheck = this.inRange(
         offer.offerAmount.toNumber() / 1000000,
@@ -227,6 +227,22 @@ export class OffersStore {
     return output
   }
 
+  private handleCollectionFilter = () => {
+    const output: any[] = []
+    if (this.filterCollectionSelected && this.filterCollectionSelected.length) {
+      this.filterCollectionSelected.forEach((collection) => {
+        this.offers.forEach((offer) => {
+          if (offer.collection === collection) {
+            output.push(offer)
+          }
+        })
+      })
+      return output
+    } else {
+      return this.offers
+    }
+  }
+
   @action.bound buildFilters = (offers: any[]) => {
     const filterDef = this.getFiltersMinMaxValues(offers)
     this.filterAprMin = filterDef.aprMin
@@ -237,14 +253,32 @@ export class OffersStore {
     this.filterDurationMax = filterDef.durationsMax
   }
 
+  private mangleNftData = () => {
+    const output: any[] = []
+    if (this.pageNFTData && this.pageNFTData.length) {
+      this.offers.forEach((offer) => {
+        removeDuplicatesByPropertyIndex(this.pageNFTData, 'mint').forEach((nftData) => {
+          if (offer.nftMint.toBase58() === nftData.mint) {
+            if (output.findIndex((item) => item.subOfferKey.toBase58() === offer.subOfferKey.toBase58()) === -1) {
+              output.push({ ...offer, nftData: nftData })
+            }
+          }
+        })
+      })
+
+      return output
+    } else {
+      return this.offers
+    }
+  }
+
   @action.bound getOffersForListings = async (): Promise<void> => {
-    // IMPORTANT - Add check for active suboffers as right now even if Colletarable has an active subOffer
-    // we're still showing rest of its offers on the page and they should be hidden in this case
-    const activeOffersKeys = await getSubOffersKeysByState([0])
+    const proposedOffersKeys = await getSubOffersKeysByState([0])
+
     let offersViable: any[] = []
 
-    if (activeOffersKeys && activeOffersKeys.length) {
-      offersViable = [...offersViable, ...activeOffersKeys]
+    if (proposedOffersKeys && proposedOffersKeys.length) {
+      offersViable = [...offersViable, ...proposedOffersKeys]
 
       if (offersViable && offersViable.length) {
         this.offersEmpty = false
@@ -252,19 +286,15 @@ export class OffersStore {
         this.setOffersCount(offersViable?.length)
 
         const offersData = await getSubOfferMultiple(this.offersKeys)
-        const offersWithKeys = activeOffersKeys.map((subOfferKey, index) => {
+        const offersWithKeys = proposedOffersKeys.map((subOfferKey, index) => {
           return {
             ...offersData[index],
             subOfferKey: subOfferKey
           }
         })
 
-        this.filteredOffers = this.handleFilters(offersWithKeys)
-        // this needs to be affected by filters
-        this.setMaxPage(Math.ceil(this.filteredOffers.length / this.itemsPerPage))
-
-        if (this.filteredOffers && this.filteredOffers.length) {
-          const nftMints = this.filteredOffers.map((offerData: any) => {
+        if (offersWithKeys && offersWithKeys.length) {
+          const nftMints = offersData.map((offerData: any) => {
             return offerData.nftMint
           })
           const data = await this.initManyNfts(nftMints)
@@ -272,8 +302,25 @@ export class OffersStore {
             (this.currentPage - 1) * this.itemsPerPage,
             this.currentPage * this.itemsPerPage
           )
-          this.pageOfferData = this.filteredOffers
+
           this.pageNFTData = paginatedNFTData
+          this.offers = this.handleFilters(offersWithKeys)
+
+          await this.fetchCollectionForNfts()
+
+          this.offers = this.handleCollectionFilter()
+
+          const finalData = this.mangleNftData()
+          if (finalData && finalData.length > 16) {
+            this.pageOfferData = finalData.slice(
+              (this.currentPage - 1) * this.itemsPerPage,
+              this.currentPage * this.itemsPerPage
+            )
+          } else {
+            this.pageOfferData = finalData
+          }
+
+          this.setMaxPage(Math.ceil(this.offers.length / this.itemsPerPage))
         }
       }
     } else {
@@ -299,6 +346,5 @@ export class OffersStore {
     this.pageNFTData = []
     this.pageOfferData = []
     await this.getOffersForListings()
-    await this.fetchCollectionForNfts()
   }
 }
