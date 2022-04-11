@@ -1,0 +1,49 @@
+.menu-show-button{
+    @media (min-width: calc($bp-phone + 1px)) {
+        display: none;
+    }
+    position: fixed;
+    top: 4px;
+    right: 0px;
+    &-hamburger{
+        width: 35px;
+        height: 35px;
+    }
+}
+
+.menu-show-button-hamburger {
+    width: 35px;
+    height: 35px;
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 5px;
+    transition: all .5s ease;
+    margin: 1em;
+}
+.menu-show-button-hamburger-strip {
+    transition: all .5s ease;
+}
+.strip div {
+    height: 3px;
+    border-radius: 2px;
+    background: white;
+    margin: 10px;
+    transition: all .55s cubic-bezier(0.075, 0.82, 0.165, 1);
+    width: 40px;
+}
+.menu-show-button-hamburger.clicked .strip div {
+    background: white;
+}
+
+.menu-show-button-hamburger.clicked .burger-strip-2 div:first-child {
+    transform: translateY(13px) rotate(45deg);
+}
+.menu-show-button-hamburger.clicked .burger-strip-2 div:nth-child(2) {
+    opacity: 0;
+}
+.menu-show-button-hamburger.clicked .burger-strip-2 div:last-child {
+    transform: translateY(-13px) rotate(-45deg);
+}

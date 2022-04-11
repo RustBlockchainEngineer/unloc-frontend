@@ -1,7 +1,38 @@
-.layout-top-mobile {
 
+
+.layout-top-mobile {
+    @media (min-width: calc($bp-phone + 1px)) {
+        display: none;
+    }
+    position: fixed;
+    width: 100vw;
+    top: 0;
+    background: rgba(72, 38, 136, 0.6);
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    backdrop-filter: blur(7px);
+    border-radius: 0px 0px 8px 8px;
+    transition: top 0.25s ease;
+    &.hidden {
+       top: -200px;
+    }
 }
 
 .top-menu {
+    @media (max-width: calc($bp-phone)) {
+        flex-direction: column;
+        width: 100vw;
+        margin: 30px 0 0 0;
 
+        li a {
+            &.active {
+              @include theme-aware('background-color', 'bg-table-hover');
+              @include theme-aware('color', 'color-label');
+            }
+            height: 50px;
+            width: 100%;
+            border-radius: 0;
+            text-align: center;
+            line-height: 30px;
+          }
+    }
 }

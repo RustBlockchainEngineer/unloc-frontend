@@ -7,6 +7,7 @@ import { StoreContext } from './_app'
 import { localesHome } from '../constants/locales'
 import { StoreDataAdapter } from '../components/storeDataAdapter'
 import { LayoutTop } from '../components/layout/layoutTop'
+import { LayoutTopMobile } from '../components/layout/layoutTopMobile'
 import { OffersTop } from '../components/offersPage/offersTop'
 import { OffersGrid } from '../components/offersPage/offersGrid'
 import { OffersTable } from '../components/offersPage/offersTable'
@@ -69,6 +70,7 @@ const Home: NextPage = observer(() => {
         </main>
         <div className='home-bg-bottom' />
         <Footer />
+        <LayoutTopMobile />
       </div>
     </StoreDataAdapter>
   )
