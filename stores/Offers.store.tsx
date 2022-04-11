@@ -60,8 +60,6 @@ export class OffersStore {
     this.filterCollection = []
 
     try {
-      console.log(this.pageOfferData, this.pageOfferData.length)
-      console.log(this.pageOfferData.forEach((offer) => console.log(offer, offer.nftMint)))
       const requests = this.pageOfferData.map((item, index) => {
         return {
           request: axios.post('/api/collections/nft', { id: item.nftMint.toBase58() }),
