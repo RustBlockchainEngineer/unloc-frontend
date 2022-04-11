@@ -16,6 +16,7 @@ import { getUniqueNFTsByNFTMint } from '../methods/getUniqueNFTsByNFTMint'
 import sortNftsByField from '../methods/sortNftsByField'
 import { removeDuplicatesByPropertyIncludes } from '../utils/removeDuplicatesByPropertyIncludes'
 import { countDuplicatesToProperty } from '../utils/countDuplicatesToProperty'
+import { asBigNumber } from '../utils/asBigNumber'
 
 export class OffersStore {
   rootStore
@@ -32,9 +33,9 @@ export class OffersStore {
   refresh = false // not sure if this is really needed
   viewType: 'grid' | 'table' = 'grid'
   filterAprMin = 1
-  filterAprMax = 2000 //take this value dynamically from offers
+  filterAprMax = 10000 //take this value dynamically from offers
   filterAmountMin = 1
-  filterAmountMax = 1000 //take this value dynamically from offers
+  filterAmountMax = 10000 //take this value dynamically from offers
   filterDurationMin = 1
   filterDurationMax = 90
   filtersVisible = true
@@ -59,10 +60,12 @@ export class OffersStore {
     this.filterCollection = []
 
     try {
-      const requests = this.pageOfferData.map((item, index) => ({
-        request: axios.post('/api/collections/nft', { id: item.nftMint.toBase58() }),
-        index
-      }))
+      const requests = this.pageOfferData.map((item, index) => {
+        return {
+          request: axios.post('/api/collections/nft', { id: item.nftMint.toBase58() }),
+          index
+        }
+      })
       const responses = yield axios.all(requests.map((request) => request.request))
 
       for (const el of requests) {
@@ -91,6 +94,7 @@ export class OffersStore {
         this.filterCollectionSelected.splice(hasValue, 1)
       }
     })
+    this.refetchOffers()
   }
 
   @action.bound buildFilterCollection = () => {
@@ -124,26 +128,32 @@ export class OffersStore {
 
   @action.bound setFilterAprMin = (value: number): void => {
     this.filterAprMin = value
+    this.refetchOffers()
   }
 
   @action.bound setFilterAprMax = (value: number): void => {
     this.filterAprMax = value
+    this.refetchOffers()
   }
 
   @action.bound setFilterAmountMin = (value: number): void => {
     this.filterAmountMin = value
+    this.refetchOffers()
   }
 
   @action.bound setFilterAmountMax = (value: number): void => {
     this.filterAmountMax = value
+    this.refetchOffers()
   }
 
   @action.bound setFilterDurationMin = (value: number): void => {
     this.filterDurationMin = value
+    this.refetchOffers()
   }
 
   @action.bound setFilterDurationMax = (value: number): void => {
     this.filterDurationMax = value
+    this.refetchOffers()
   }
 
   @action.bound setOffersKeys = (values: PublicKey[]): void => {
@@ -162,17 +172,79 @@ export class OffersStore {
     return multipleNft
   }
 
-  @action.bound getOffersForListings = async (): Promise<void> => {
-    const activeOffersKeys = await getSubOffersKeysByState([0]) //add more filters
+  private getFiltersMinMaxValues = (data: any) => {
+    const amounts: number[] = []
+    const durations: number[] = []
+    const aprs: number[] = []
 
+    data.forEach(
+      (offer: {
+        offerAmount: { toNumber: () => number }
+        aprNumerator: BigNumber.Value
+        loanDuration: { toNumber: () => number }
+      }) => {
+        amounts.push(offer.offerAmount.toNumber() / 1000000)
+        aprs.push(asBigNumber(offer.aprNumerator))
+        durations.push(Math.floor(offer.loanDuration.toNumber() / (3600 * 24)))
+      }
+    )
+
+    return {
+      amountMin: Math.min(...amounts),
+      amountMax: Math.max(...amounts),
+      durationsMin: Math.min(...durations),
+      durationsMax: Math.max(...durations),
+      aprMin: Math.min(...aprs),
+      aprMax: Math.max(...aprs)
+    }
+  }
+
+  private inRange(x: number, min: number, max: number) {
+    return (x - min) * (x - max) <= 0
+  }
+
+  private handleFilters = (data: any) => {
+    const output: any[] = []
+
+    data.forEach((offer: any) => {
+      const amountCheck = this.inRange(
+        offer.offerAmount.toNumber() / 1000000,
+        this.filterAmountMin,
+        this.filterAmountMax
+      )
+      const durationCheck = this.inRange(
+        offer.loanDuration.toNumber() / (3600 * 24),
+        this.filterDurationMin,
+        this.filterDurationMax
+      )
+      const aprCheck = this.inRange(asBigNumber(offer.aprNumerator), this.filterAprMin, this.filterAprMax)
+
+      if (aprCheck && amountCheck && durationCheck) {
+        output.push(offer)
+      }
+    })
+
+    return output
+  }
+
+  @action.bound buildFilters = (offers: any[]) => {
+    const filterDef = this.getFiltersMinMaxValues(offers)
+    this.filterAprMin = filterDef.aprMin
+    this.filterAprMax = filterDef.aprMax
+    this.filterAmountMin = filterDef.amountMin
+    this.filterAmountMax = filterDef.amountMax
+    this.filterDurationMin = filterDef.durationsMin
+    this.filterDurationMax = filterDef.durationsMax
+  }
+
+  @action.bound getOffersForListings = async (): Promise<void> => {
+    // IMPORTANT - Add check for active suboffers as right now even if Colletarable has an active subOffer
+    // we're still showing rest of its offers on the page and they should be hidden in this case
+    const activeOffersKeys = await getSubOffersKeysByState([0])
     let offersViable: any[] = []
 
     if (activeOffersKeys && activeOffersKeys.length) {
       offersViable = [...offersViable, ...activeOffersKeys]
-
-      // if (reusedOffersKeys && reusedOffersKeys.length) {
-      //   offersViable = [...offersViable, ...reusedOffersKeys]
-      // }
 
       if (offersViable && offersViable.length) {
         this.offersEmpty = false
@@ -180,11 +252,19 @@ export class OffersStore {
         this.setOffersCount(offersViable?.length)
 
         const offersData = await getSubOfferMultiple(this.offersKeys)
+        const offersWithKeys = activeOffersKeys.map((subOfferKey, index) => {
+          return {
+            ...offersData[index],
+            subOfferKey: subOfferKey
+          }
+        })
 
-        this.setMaxPage(Math.ceil(offersData.length / this.itemsPerPage))
+        this.filteredOffers = this.handleFilters(offersWithKeys)
+        // this needs to be affected by filters
+        this.setMaxPage(Math.ceil(this.filteredOffers.length / this.itemsPerPage))
 
-        if (offersData && offersData.length) {
-          const nftMints = offersData.map((offerData: any) => {
+        if (this.filteredOffers && this.filteredOffers.length) {
+          const nftMints = this.filteredOffers.map((offerData: any) => {
             return offerData.nftMint
           })
           const data = await this.initManyNfts(nftMints)
@@ -192,12 +272,7 @@ export class OffersStore {
             (this.currentPage - 1) * this.itemsPerPage,
             this.currentPage * this.itemsPerPage
           )
-          this.pageOfferData = activeOffersKeys?.map((subOfferKey, index) => {
-            return {
-              ...offersData[index],
-              subOfferKey: subOfferKey
-            }
-          })
+          this.pageOfferData = this.filteredOffers
           this.pageNFTData = paginatedNFTData
         }
       }
@@ -221,6 +296,8 @@ export class OffersStore {
   }
 
   @action.bound refetchOffers = async () => {
+    this.pageNFTData = []
+    this.pageOfferData = []
     await this.getOffersForListings()
     await this.fetchCollectionForNfts()
   }
