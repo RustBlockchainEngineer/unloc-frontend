@@ -57,7 +57,7 @@ export const OffersGrid = observer(() => {
         })
       }
     } finally {
-      store.MyOffers.refetchStoreData()
+      await store.MyOffers.refetchStoreData()
       store.Lightbox.setCanClose(true)
       store.Lightbox.setVisible(false)
     }
