@@ -1,9 +1,4 @@
-
-
 .layout-top-mobile {
-    @media (min-width: calc($bp-phone + 1px)) {
-        display: none;
-    }
     position: fixed;
     width: 100vw;
     top: 0;
@@ -12,8 +7,13 @@
     backdrop-filter: blur(7px);
     border-radius: 0px 0px 8px 8px;
     transition: top 0.25s ease;
+
     &.hidden {
-       top: -200px;
+        top: -200px;
+    }
+
+    @media (min-width: calc($bp-phone + 1px)) {
+        display: none;
     }
 }
 
@@ -24,15 +24,57 @@
         margin: 30px 0 0 0;
 
         li a {
-            &.active {
-              @include theme-aware('background-color', 'bg-table-hover');
-              @include theme-aware('color', 'color-label');
-            }
             height: 50px;
             width: 100%;
             border-radius: 0;
             text-align: center;
             line-height: 30px;
-          }
+
+            &.active {
+                @include theme-aware("background-color", "bg-table-hover");
+                @include theme-aware("color", "color-label");
+            }
+        }
+    }
+}
+
+.user-toolbox {
+    @media (max-width: $bp-phone) {
+        width: calc(50vw + 85px) !important;
+        justify-content: space-between !important;
+        display: flex;
+        flex-direction: row-reverse;
+        padding: 0 0 0 20px !important;
+    }
+}
+
+.wallet-adapter-button-trigger {
+    @media (max-width: $bp-phone) {
+        width: 150px;
+        height: 41px;
+        background-color: rgba(0, 0, 0, 0);
+        box-sizing: border-box;
+        box-shadow: 0px 0px 4px #e00a7f;
+        border: 1px solid #e00a7f;
+        border-radius: 8px;
+        font-weight: 400;
+        font-size: 15px;
+        text-align: center;
+        padding: 16px !important;
+        justify-content: center;
+    }
+}
+
+.wallet-adapter-button-trigger:not([disabled]):hover {
+    @media (max-width: $bp-phone) {
+    background: #e00a7f;
+    border: 1px solid #e00a7f;
+    box-shadow: 0px 0px 4px #e00a7f;
+    }
+}
+
+.theme-switcher{
+    @media (max-width: $bp-phone) {
+        margin-top: 8px !important;
     }
 }

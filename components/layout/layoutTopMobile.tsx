@@ -2,7 +2,6 @@ import React, {useState} from 'react'
 
 import { TopMenu } from './topMenu'
 import { UserToolbox } from './userToolbox'
-import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
 import { MenuShowButton } from './menuShowButton'
 
 export const LayoutTopMobile = () => {
@@ -14,7 +13,7 @@ export const LayoutTopMobile = () => {
       <UserToolbox />
       <TopMenu />
     </div>
-    <MenuShowButton showState={menuShow} changeShow={setMenuShow}/>
+    <MenuShowButton menuShowState={menuShow} changeMenuShow={setMenuShow}/>
     </>
   )
 }
