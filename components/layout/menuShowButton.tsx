@@ -1,17 +1,17 @@
 import React from 'react'
 
 interface MenuShowButtonProps {
-  menuShowState: boolean
-  changeMenuShow: React.Dispatch<React.SetStateAction<boolean>>
+  menuVisibleState: boolean
+  changeMenuVisibility: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 export const MenuShowButton: React.FC<MenuShowButtonProps> = ({
-  menuShowState,
-  changeMenuShow
+  menuVisibleState,
+  changeMenuVisibility
 }: MenuShowButtonProps) => {
   return (
-    <div className='menu-show-button' onClick={() => changeMenuShow(!menuShowState)}>
-      <div className={menuShowState ? 'menu-show-button-hamburger clicked' : 'menu-show-button-hamburger'} >
+    <div className='menu-show-button' onClick={() => changeMenuVisibility(!menuVisibleState)}>
+      <div className={menuVisibleState ? 'menu-show-button-hamburger cross' : 'menu-show-button-hamburger strips'} >
           <div className="menu-show-button-hamburger_strips">
             <div className="strip" />
             <div className="strip" />

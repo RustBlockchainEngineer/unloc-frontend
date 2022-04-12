@@ -5,15 +5,15 @@ import { UserToolbox } from './userToolbox'
 import { MenuShowButton } from './menuShowButton'
 
 export const LayoutTopMobile = () => {
-  const [menuShow, setMenuShow] = useState(false)
+  const [menuVisible, setMenuVisibility] = useState(false)
 
   return (
     <>
-    <div className={menuShow ? 'layout-top-mobile' : 'layout-top-mobile hidden'}>
+    <div className={menuVisible ? 'layout-top-mobile shown' : 'layout-top-mobile hidden'}>
       <UserToolbox />
       <TopMenu />
     </div>
-    <MenuShowButton menuShowState={menuShow} changeMenuShow={setMenuShow}/>
+    <MenuShowButton menuVisibleState={menuVisible} changeMenuVisibility={setMenuVisibility}/>
     </>
   )
 }
