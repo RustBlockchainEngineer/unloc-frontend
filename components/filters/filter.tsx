@@ -67,7 +67,7 @@ export const Filter = ({
                 type='checkbox'
                 name={item.value}
                 defaultChecked={handleCheckedItem(item.value)}
-                onChange={() => handleActionAction(Number(item.value))}
+                onChange={() => handleActionAction(item.value)}
               />
               <span className='checkbox-custom rectangular'></span>
             </label>
