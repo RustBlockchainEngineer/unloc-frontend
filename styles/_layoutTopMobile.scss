@@ -6,11 +6,8 @@
         backdrop-filter: blur(7px);
         border-radius: 0px 0px 8px 8px;   
         transition: top 0.25s ease;
-
-        &.shown {
-            width: 100vw;
-            top: 0;
-        }
+        width: 100vw;
+        top: 0;
 
         &.hidden {
             top: -200px;

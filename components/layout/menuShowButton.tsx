@@ -11,12 +11,12 @@ export const MenuShowButton: React.FC<MenuShowButtonProps> = ({
 }: MenuShowButtonProps) => {
   return (
     <div className='menu-show-button' onClick={() => changeMenuVisibility(!menuVisibleState)}>
-      <div className={menuVisibleState ? 'menu-show-button-hamburger cross' : 'menu-show-button-hamburger strips'} >
-          <div className="menu-show-button-hamburger_strips">
-            <div className="strip" />
-            <div className="strip" />
-            <div className="strip" />
-          </div>
+      <div className={`menu-show-button-hamburger ${menuVisibleState ? 'clicked' : ''}`} >
+        <div className="menu-show-button-hamburger_strips">
+          <div className="strip" />
+          <div className="strip" />
+          <div className="strip" />
+        </div>
       </div>
     </div>
   )
