@@ -54,12 +54,16 @@ export const Filter = ({
   const handleActionActionMin = (inputValue: number) => {
     if (inputValue && actionValidatorMin && validateFilterInputMin(inputValue, actionValidatorMin) && actionMin) {
       actionMin(inputValue)
+    }else if(actionValidatorMin && actionMax){
+      actionMax(actionValidatorMin)
     }
   }
   
   const handleActionActionMax = (inputValue: number) => {
     if (inputValue && actionValidatorMax && validateFilterInputMax(inputValue, actionValidatorMax) && actionMax) {
       actionMax(inputValue)
+    }else if(actionValidatorMax && actionMax){
+      actionMax(actionValidatorMax)
     }
   }
 
