@@ -16,6 +16,7 @@
         margin-bottom: 5px;
       }
     }
+
     h2 {
       margin: 0;
       padding: 0;
@@ -35,6 +36,7 @@
 
       .show-on-hover__elements__wrap {
         @media (max-width: $bp-tablet) {
+          display: block;
           width: 100%;
           text-align: center;
           justify-items: center;

@@ -31,4 +31,13 @@
   }
 }
 
-// TODO: show by default on mobile without hover
+@media (max-width: $bp-tablet) {
+  .show-on-hover {
+    padding: 4px 8px;
+    border-radius: $brd-rds-sm;
+    -moz-box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.75);
+    box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.75);
+    display: inline-block;
+    opacity: 1;
+  }
+}
