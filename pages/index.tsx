@@ -32,6 +32,7 @@ const Home: NextPage = observer(() => {
   useEffect(() => {
     if (wallet && connected) {
       handleOffers()
+      console.log('handleOffers')
     }
   }, [wallet, connected])
 

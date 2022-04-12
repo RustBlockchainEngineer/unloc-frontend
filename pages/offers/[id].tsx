@@ -106,6 +106,7 @@ const SingleNftPage: NextPage = observer(({}) => {
         external_url: ''
       })
       store.SingleOffer.setLoansData([])
+      store.Offers.clearFilters()
     })
   }, [router.events, store.SingleOffer])
 
