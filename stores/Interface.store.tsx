@@ -1,4 +1,5 @@
 import { action, makeAutoObservable } from 'mobx'
+import localStorage from 'mobx-localstorage'
 
 export class InterfaceStore {
   rootStore
