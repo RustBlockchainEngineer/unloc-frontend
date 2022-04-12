@@ -26,7 +26,7 @@
     border-radius: $brd-rds-sm;
     -moz-box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.75);
     box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.75);
-    @include theme-aware('background-color', 'bg-table-hover');
+    @include theme-aware("background-color", "bg-table-hover");
   }
 
   .offers-grid-item {
@@ -71,8 +71,8 @@
       width: 100%;
       bottom: 0;
       left: 0;
-      @include theme-aware('background-color', 'bg-overlay-bright');
-      @include theme-aware('color', 'color-label');
+      @include theme-aware("background-color", "bg-overlay-bright");
+      @include theme-aware("color", "color-label");
       z-index: 1;
       padding: 20px;
       justify-content: space-evenly;
@@ -120,8 +120,8 @@
       z-index: 1;
       width: 100%;
       height: 100%;
-      @include theme-aware('color', 'color-label');
-      @include theme-aware('background-color', 'bg-overlay-bright');
+      @include theme-aware("color", "color-label");
+      @include theme-aware("background-color", "bg-overlay-bright");
       font-size: 14px;
       transition: opacity 0.5s;
 
@@ -145,18 +145,18 @@
         }
       }
       & button {
-        @include theme-aware('background-color', 'color-primary');
+        @include theme-aware("background-color", "color-primary");
         border: none;
         border-radius: 6px;
         padding: 12px 0;
-        @include theme-aware('color', 'color-label');
+        @include theme-aware("color", "color-label");
         font-weight: 700;
         align-self: center;
         width: 75%;
         cursor: pointer;
 
         &:hover {
-          @include theme-aware('background-color', 'color-primary-dark');
+          @include theme-aware("background-color", "color-primary-dark");
         }
       }
     }
@@ -187,6 +187,44 @@
 
     &--empty {
       width: 100vw;
+    }
+  }
+}
+
+@media (max-width: $bp-tablet) {
+  .offers-grid {
+    .offers-grid-item {
+      .onHover-data {
+        opacity: 1 !important;
+        padding: 12px;
+
+        .data-item {
+          padding-bottom: 1vw;
+
+          .item-name {
+            font-size: 2.4vw;
+
+            @media (max-width: 400px) {
+              font-size: 2.2vw;
+            }
+          }
+
+          .label {
+            font-size: 2vw;
+          }
+
+          .content {
+            font-size: 2vw;
+          }
+        }
+
+        button {
+          width: 25vw;
+          height: 6vw;
+          padding: 1vw;
+          font-size: 2.5vw;
+        }
+      }
     }
   }
 }
