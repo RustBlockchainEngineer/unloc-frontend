@@ -22,6 +22,7 @@ import { removeDuplicatesByPropertyIndex } from '../utils/removeDuplicatesByProp
 export class OffersStore {
   rootStore
   offers: any[] = []
+  offersRef: any[] = []
   filteredOffers: any[] = []
   currentPage = 1
   maxPage = 1
@@ -68,8 +69,10 @@ export class OffersStore {
       const responses = yield axios.all(requests.map((request) => request.request))
 
       for (const el of requests) {
-        this.offers[el.index].collection = responses[el.index].data
-        this.addCollectionToNFTCollections(responses[el.index].data)
+        if (this.offers[el.index] && !this.offers[el.index].hasOwnProperty('collection')) {
+          this.offers[el.index].collection = responses[el.index].data
+          this.addCollectionToNFTCollections(responses[el.index].data)
+        }
       }
     } catch (e) {
       // eslint-disable-next-line no-console
@@ -309,6 +312,7 @@ export class OffersStore {
           await this.fetchCollectionForNfts()
 
           this.offers = this.handleCollectionFilter()
+          this.offersRef = this.offers
 
           const finalData = this.mangleNftData()
           if (finalData && finalData.length > 16) {
@@ -320,7 +324,7 @@ export class OffersStore {
             this.pageOfferData = finalData
           }
 
-          this.setMaxPage(Math.ceil(this.offers.length / this.itemsPerPage))
+          this.setMaxPage(Math.ceil(this.offersRef.length / this.itemsPerPage))
         }
       }
     } else {
@@ -343,8 +347,14 @@ export class OffersStore {
   }
 
   @action.bound refetchOffers = async () => {
+    this.offers = []
     this.pageNFTData = []
     this.pageOfferData = []
     await this.getOffersForListings()
+  }
+
+  @action.bound clearFilters = () => {
+    this.filterCollectionSelected = []
+    this.filterCollection = []
   }
 }
