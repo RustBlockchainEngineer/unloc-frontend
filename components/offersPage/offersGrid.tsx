@@ -1,11 +1,10 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext } from 'react'
 import { observer } from 'mobx-react'
-
-import { StoreContext } from '../../pages/_app'
+import { StoreContext } from '@pages/_app'
 import { OffersGridItem } from './offersGridItem'
-import { currencyMints } from '../../constants/currency'
-import { asBigNumber } from '../../utils/asBigNumber'
-import { BlobLoader } from '../layout/blobLoader'
+import { currencyMints } from '@constants/currency'
+import { asBigNumber } from '@utils/asBigNumber'
+import { BlobLoader } from '@components/layout/blobLoader'
 import { toast } from 'react-toastify'
 
 export const OffersGrid = observer(() => {
@@ -13,7 +12,7 @@ export const OffersGrid = observer(() => {
   const { pageOfferData, pageNFTData, currentPage, maxPage, itemsPerPage, offersEmpty } = store.Offers
   const generateEmptyFields = () => {
     const count = (itemsPerPage - pageNFTData.length) as number
-    return [...Array(count)].map((page, index) => {
+    return [...Array(count)].map((_page, index) => {
       return <div key={`offers-${index}`} className='offers-empty'></div>
     })
   }

@@ -2,7 +2,7 @@ import { action, makeAutoObservable, runInAction, flow } from 'mobx'
 import { PublicKey } from '@solana/web3.js'
 import { BN } from 'bn.js'
 
-import { getWhitelistedNFTsByWallet } from '../integration/nftIntegration'
+import { getWhitelistedNFTsByWallet } from '@integration/nftIntegration'
 import {
   getOffersBy,
   getSubOfferList,
@@ -13,9 +13,9 @@ import {
   setOffer,
   cancelSubOffer,
   updateSubOffer
-} from '../integration/nftLoan'
-import { currencies, currencyMints } from '../constants/currency'
-import { getDurationForContractData } from '../utils/getDuration'
+} from '@integration/nftLoan'
+import { currencies, currencyMints } from '@constants/currency'
+import { getDurationForContractData } from '@utils/getDuration'
 
 export class MyOffersStore {
   rootStore

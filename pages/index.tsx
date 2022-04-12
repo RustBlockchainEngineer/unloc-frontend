@@ -2,15 +2,14 @@ import { useContext, useEffect } from 'react'
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import { observer } from 'mobx-react'
-
-import { StoreContext } from './_app'
-import { localesHome } from '../constants/locales'
-import { StoreDataAdapter } from '../components/storeDataAdapter'
-import { LayoutTop } from '../components/layout/layoutTop'
-import { OffersTop } from '../components/offersPage/offersTop'
-import { OffersGrid } from '../components/offersPage/offersGrid'
-import { OffersTable } from '../components/offersPage/offersTable'
-import Footer from '../components/layout/footer'
+import { StoreContext } from '@pages/_app'
+import { localesHome } from '@constants/locales'
+import { StoreDataAdapter } from '@components/storeDataAdapter'
+import { LayoutTop } from '@components/layout/layoutTop'
+import { OffersTop } from '@components/offersPage/offersTop'
+import { OffersGrid } from '@components/offersPage/offersGrid'
+import { OffersTable } from '@components/offersPage/offersTable'
+import Footer from '@components/layout/footer'
 
 const Home: NextPage = observer(() => {
   const store = useContext(StoreContext)

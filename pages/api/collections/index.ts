@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { getCollections } from '../../../integration/db'
+import { getCollections } from '@integration/db'
 
 const handler = async (req: NextApiRequest, res: NextApiResponse<string[]>) => {
   if (req.method === 'POST') {

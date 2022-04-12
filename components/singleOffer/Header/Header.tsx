@@ -1,9 +1,8 @@
 import React from 'react'
 import Image from 'next/image'
-
-import { ShowOnHover } from '../../layout/showOnHover'
-import { ClipboardButton } from '../../layout/clipboardButton'
-import { SolscanExplorerIcon } from '../../layout/solscanExplorerIcon'
+import { ShowOnHover } from '@components/layout/showOnHover'
+import { ClipboardButton } from '@components/layout/clipboardButton'
+import { SolscanExplorerIcon } from '@components/layout/solscanExplorerIcon'
 
 type IProps = {
   collectionName: string

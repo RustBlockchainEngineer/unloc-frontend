@@ -2,8 +2,7 @@ import React, { useContext } from 'react'
 import { usePopperTooltip } from 'react-popper-tooltip'
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
 import { observer } from 'mobx-react'
-
-import { StoreContext } from '../../pages/_app'
+import { StoreContext } from '@pages/_app'
 
 export const UserToolbox = observer(() => {
   const { getArrowProps, getTooltipProps, setTooltipRef, setTriggerRef, visible } = usePopperTooltip()

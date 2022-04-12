@@ -1,11 +1,10 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext } from 'react'
 import { observer } from 'mobx-react'
-
-import { StoreContext } from '../../pages/_app'
+import { StoreContext } from '@pages/_app'
 import { OffersTableRow } from './offersTableRow'
-import { currencyMints } from '../../constants/currency'
-import { asBigNumber } from '../../utils/asBigNumber'
-import { BlobLoader } from '../layout/blobLoader'
+import { currencyMints } from '@constants/currency'
+import { asBigNumber } from '@utils/asBigNumber'
+import { BlobLoader } from '@components/layout/blobLoader'
 import { toast } from 'react-toastify'
 
 export const OffersTable = observer(() => {

@@ -1,4 +1,4 @@
-import { getWhitelisted } from '../../../integration/db'
+import { getWhitelisted } from '@integration/db'
 
 import type { NextApiRequest, NextApiResponse } from 'next'
 

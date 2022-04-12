@@ -1,15 +1,13 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { observer } from 'mobx-react'
 import { toast } from 'react-toastify'
-
 import { Form, Field } from 'react-final-form'
-import { StoreContext } from '../../../pages/_app'
-import { SubOfferInterface } from '../../../stores/LoanActionStore'
-import { calculateRepayValue } from '../../../methods/calculateRepayValue'
-import { BlobLoader } from '../../layout/blobLoader'
-import getDecimalsForLoanAmount from '../../../integration/getDecimalForLoanAmount'
-import { currencyMints } from '../../../constants/currency'
-import { getDurationFromContractData } from '../../../utils/getDuration'
+import { StoreContext } from '@pages/_app'
+import { SubOfferInterface } from '@stores/LoanActionStore'
+import { calculateRepayValue } from '@methods/calculateRepayValue'
+import { BlobLoader } from '@components/layout/blobLoader'
+import getDecimalsForLoanAmount from '@integration/getDecimalForLoanAmount'
+import { currencyMints } from '@constants/currency'
 
 interface CreateLoanProps {
   mode: 'new' | 'update'

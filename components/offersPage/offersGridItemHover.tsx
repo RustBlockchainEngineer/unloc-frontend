@@ -1,8 +1,5 @@
-import { observer } from 'mobx-react'
 import Link from 'next/link'
-import React, { useContext } from 'react'
-import { toast } from 'react-toastify'
-import { StoreContext } from '../../pages/_app'
+import React from 'react'
 
 interface IProps {
   visible: boolean

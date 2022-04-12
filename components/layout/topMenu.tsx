@@ -1,8 +1,7 @@
 import React from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-
-import { localesTop } from '../../constants/locales'
+import { localesTop } from '@constants/locales'
 
 export const TopMenu = () => {
   const router = useRouter()

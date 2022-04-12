@@ -1,17 +1,9 @@
 import * as anchor from '@project-serum/anchor'
 import { bool, publicKey, struct, u32, u64, u8 } from '@project-serum/borsh'
 import { NATIVE_MINT, Token, TOKEN_PROGRAM_ID } from '@solana/spl-token'
-import { IDL as idl, UnlocNftLoan } from '../integration/unloc_nft_loan'
-import { NFT_LOAN_PID, RPC_ENDPOINT } from '../constants/config'
-import {
-  Connection,
-  Keypair,
-  MemcmpFilter,
-  PublicKey,
-  SystemInstruction,
-  SystemProgram,
-  TransactionInstruction
-} from '@solana/web3.js'
+import { IDL as idl, UnlocNftLoan } from '@integration/unloc_nft_loan'
+import { NFT_LOAN_PID, RPC_ENDPOINT } from '@constants/config'
+import { Connection, Keypair, MemcmpFilter, PublicKey, SystemProgram, TransactionInstruction } from '@solana/web3.js'
 import { bs58 } from '@project-serum/anchor/dist/cjs/utils/bytes'
 import { Edition, MasterEdition, Metadata, MetadataData, MetadataKey } from '@metaplex-foundation/mpl-token-metadata'
 import axios from 'axios'

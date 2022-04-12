@@ -2,13 +2,12 @@ import React, { useEffect, useContext } from 'react'
 import type { NextPage } from 'next'
 import { observer } from 'mobx-react'
 import { PublicKey } from '@solana/web3.js'
-
-import { StoreContext } from '../_app'
-import { StoreDataAdapter } from '../../components/storeDataAdapter'
-import { LayoutTop } from '../../components/layout/layoutTop'
-import Footer from '../../components/layout/footer'
-import { MyOffersTop } from '../../components/myOffers/myOffersTop'
-import { MyOffersNftList } from '../../components/myOffers/myOffersNftList'
+import { StoreContext } from '@pages/_app'
+import { StoreDataAdapter } from '@components/storeDataAdapter'
+import { LayoutTop } from '@components/layout/layoutTop'
+import Footer from '@components/layout/footer'
+import { MyOffersTop } from '@components/myOffers/myOffersTop'
+import { MyOffersNftList } from '@components/myOffers/myOffersNftList'
 
 const MyOffers: NextPage = observer(() => {
   const store = useContext(StoreContext)
