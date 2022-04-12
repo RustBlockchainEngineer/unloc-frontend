@@ -30,6 +30,12 @@ export class OffersStore {
   filterDurationMin = 1
   filterDurationMax = 90
   filtersVisible = true
+  filterAprValidatorMin = 1
+  filterAprValidatorMax = 10000
+  filterAmountValidatorMin = 1
+  filterAmountValidatorMax = 10000
+  filterDurationValidatorMin = 1
+  filterDurationValidatorMax = 90
 
   offersKeys: PublicKey[] = []
   offersCount: number = 0
@@ -243,6 +249,15 @@ export class OffersStore {
     this.filterAmountMax = filterDef.amountMax
     this.filterDurationMin = filterDef.durationsMin
     this.filterDurationMax = filterDef.durationsMax
+
+    this.filterAprValidatorMin = filterDef.aprMin
+    this.filterAprValidatorMax = filterDef.aprMax
+    this.filterAmountValidatorMin = filterDef.amountMin
+    this.filterAmountValidatorMax = filterDef.amountMax
+    this.filterDurationValidatorMin = filterDef.durationsMin
+    this.filterDurationValidatorMax = filterDef.durationsMax
+    console.log("filter update");
+    
   }
 
   private mangleNftData = () => {

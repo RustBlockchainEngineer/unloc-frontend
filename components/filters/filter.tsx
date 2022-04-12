@@ -39,6 +39,32 @@ export const Filter = ({
     }
   }
 
+  const validateInput = (value: number | string): boolean => {
+    if (value != undefined) {
+      return true
+    } else {
+      return false
+    }
+  }
+
+  const validateAndRunAction = (inputValue: string) => {
+    if (inputValue && validateInput(inputValue) && action) {
+      action(inputValue)
+    }
+  }
+
+  const validateAndRunActionMin = (inputValue: number) => {
+    if (inputValue && validateInput(inputValue) && actionMin) {
+      actionMin(inputValue)
+    }
+  }
+  
+  const validateAndRunActionMax = (inputValue: number) => {
+    if (inputValue && validateInput(inputValue) && actionMax) {
+      actionMax(inputValue)
+    }
+  }
+
   const renderList = () => {
     const data =
       items && items.length && action ? (
@@ -49,7 +75,7 @@ export const Filter = ({
                 type='checkbox'
                 name={item.value}
                 defaultChecked={handleCheckedItem(item.value)}
-                onChange={() => action(item.value)}
+                onChange={() => validateAndRunAction(Number(item.value))}
               />
               <span className='checkbox-custom rectangular'></span>
             </label>
@@ -83,7 +109,7 @@ export const Filter = ({
               className='min'
               type='number'
               value={valuesRange.min}
-              onChange={(e) => actionMin(Number(e.target.value))}
+              onChange={(e) => validateAndRunActionMin(Number(e.target.value))}
             />
           </div>
           <div className='filter-line'>
@@ -92,7 +118,7 @@ export const Filter = ({
               className='max'
               type='number'
               value={valuesRange.max}
-              onChange={(e) => actionMax(Number(e.target.value))}
+              onChange={(e) => validateAndRunActionMax(Number(e.target.value))}
             />
           </div>
         </div>
