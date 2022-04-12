@@ -4,7 +4,7 @@ import { Metadata } from '@metaplex-foundation/mpl-token-metadata'
 import axios from 'axios'
 
 import { IMetadata, IOfferData } from '../@types/IOfferData'
-import { RPC_ENDPOINT } from '../constants/config'
+import { RPC_ENDPOINT } from '@constants/config'
 import { MultipleNFT, NFTMetadata } from './nftLoan'
 
 // Uncomment next line if using Solana cluster

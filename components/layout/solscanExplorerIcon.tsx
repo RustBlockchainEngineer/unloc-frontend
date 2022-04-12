@@ -1,5 +1,5 @@
 import React from 'react'
-import { config } from '../../constants/config'
+import { config } from '@constants/config'
 
 interface SolscanExplorerIconProps {
   type: 'account' | 'block' | 'tx' | 'token'

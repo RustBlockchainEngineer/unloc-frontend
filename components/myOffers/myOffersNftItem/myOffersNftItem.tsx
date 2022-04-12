@@ -3,14 +3,13 @@ import { observer } from 'mobx-react'
 import Image from 'next/image'
 import { usePopperTooltip } from 'react-popper-tooltip'
 import { toast } from 'react-toastify'
-
-import { StoreContext } from '../../../pages/_app'
-import { compressAddress } from '../../../utils/stringUtils/compressAdress'
-import { ShowOnHover } from '../../layout/showOnHover'
-import { SolscanExplorerIcon } from '../../layout/solscanExplorerIcon'
-import { ClipboardButton } from '../../layout/clipboardButton'
+import { StoreContext } from '@pages/_app'
+import { compressAddress } from '@utils/stringUtils/compressAdress'
+import { ShowOnHover } from '@components/layout/showOnHover'
+import { SolscanExplorerIcon } from '@components/layout/solscanExplorerIcon'
+import { ClipboardButton } from '@components/layout/clipboardButton'
 import { MyOffersNftItemOffers } from './myOffersNftItemOffers'
-import { IsubOfferData } from '../../../stores/Lightbox.store'
+import { IsubOfferData } from '@stores/Lightbox.store'
 
 interface MyOffersNftItemProps {
   offerKey: string

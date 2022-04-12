@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { getCollectionFromNft } from '../../../integration/db'
+import { getCollectionFromNft } from '@integration/db'
 
 const handler = async (req: NextApiRequest, res: NextApiResponse<string | null>) => {
   if (req.method === 'POST') {

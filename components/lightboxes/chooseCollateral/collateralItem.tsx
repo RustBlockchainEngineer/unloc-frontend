@@ -1,5 +1,5 @@
 import React from 'react'
-import { NFTMetadata } from '../../../integration/nftLoan'
+import { NFTMetadata } from '@integration/nftLoan'
 
 interface IProps {
   data: NFTMetadata

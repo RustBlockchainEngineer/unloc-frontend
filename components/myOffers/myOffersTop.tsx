@@ -1,11 +1,11 @@
 import React, { useContext } from 'react'
 import { observer } from 'mobx-react'
 import { usePopperTooltip } from 'react-popper-tooltip'
-import { StoreContext } from '../../pages/_app'
-import { ShowOnHover } from '../layout/showOnHover'
-import { ClipboardButton } from '../layout/clipboardButton'
-import { SolscanExplorerIcon } from '../layout/solscanExplorerIcon'
-import ConnectWallet from '../connectWallet/ConnectWallet'
+import { StoreContext } from '@pages/_app'
+import { ShowOnHover } from '@components/layout/showOnHover'
+import { ClipboardButton } from '@components/layout/clipboardButton'
+import { SolscanExplorerIcon } from '@components/layout/solscanExplorerIcon'
+import ConnectWallet from '@components/connectWallet/ConnectWallet'
 
 export const MyOffersTop: React.FC = observer(() => {
   const store = useContext(StoreContext)

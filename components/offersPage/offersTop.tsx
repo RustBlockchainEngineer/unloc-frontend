@@ -1,8 +1,7 @@
 import React, { useContext, useState } from 'react'
 import { observer } from 'mobx-react'
-
-import { StoreContext } from '../../pages/_app'
-import { Filter } from '../filters/filter'
+import { StoreContext } from '@pages/_app'
+import { Filter } from '@components/filters/filter'
 
 export const OffersTop = observer(() => {
   const store = useContext(StoreContext)
