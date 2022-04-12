@@ -1,27 +1,17 @@
-import { action, flow, makeAutoObservable, reaction, values } from 'mobx'
+import { action, flow, makeAutoObservable } from 'mobx'
 import { PublicKey } from '@solana/web3.js'
 import axios from 'axios'
 import { BigNumber } from 'bignumber.js'
 
-import {
-  getSubOfferList,
-  MultipleNFT,
-  SubOfferState,
-  getSubOfferMultiple,
-  checkWalletATA,
-  acceptOffer
-} from '../integration/nftLoan'
-import { getSubOffersKeysByState } from '../integration/offersListing'
-import { getUniqueNFTsByNFTMint } from '../methods/getUniqueNFTsByNFTMint'
-import sortNftsByField from '../methods/sortNftsByField'
-import { removeDuplicatesByPropertyIncludes } from '../utils/removeDuplicatesByPropertyIncludes'
-import { countDuplicatesToProperty } from '../utils/countDuplicatesToProperty'
-import { asBigNumber } from '../utils/asBigNumber'
-import { removeDuplicatesByPropertyIndex } from '../utils/removeDuplicatesByPropertyIndex'
+import { MultipleNFT, getSubOfferMultiple, acceptOffer } from '@integration/nftLoan'
+import { getSubOffersKeysByState } from '@integration/offersListing'
+import { asBigNumber } from '@utils/asBigNumber'
+import { removeDuplicatesByPropertyIndex } from '@utils/removeDuplicatesByPropertyIndex'
 
 export class OffersStore {
   rootStore
   offers: any[] = []
+  offersRef: any[] = []
   filteredOffers: any[] = []
   currentPage = 1
   maxPage = 1
@@ -68,8 +58,10 @@ export class OffersStore {
       const responses = yield axios.all(requests.map((request) => request.request))
 
       for (const el of requests) {
-        this.offers[el.index].collection = responses[el.index].data
-        this.addCollectionToNFTCollections(responses[el.index].data)
+        if (this.offers[el.index] && !this.offers[el.index].hasOwnProperty('collection')) {
+          this.offers[el.index].collection = responses[el.index].data
+          this.addCollectionToNFTCollections(responses[el.index].data)
+        }
       }
     } catch (e) {
       // eslint-disable-next-line no-console
@@ -309,6 +301,7 @@ export class OffersStore {
           await this.fetchCollectionForNfts()
 
           this.offers = this.handleCollectionFilter()
+          this.offersRef = this.offers
 
           const finalData = this.mangleNftData()
           if (finalData && finalData.length > 16) {
@@ -320,7 +313,7 @@ export class OffersStore {
             this.pageOfferData = finalData
           }
 
-          this.setMaxPage(Math.ceil(this.offers.length / this.itemsPerPage))
+          this.setMaxPage(Math.ceil(this.offersRef.length / this.itemsPerPage))
         }
       }
     } else {
@@ -343,8 +336,14 @@ export class OffersStore {
   }
 
   @action.bound refetchOffers = async () => {
+    this.offers = []
     this.pageNFTData = []
     this.pageOfferData = []
     await this.getOffersForListings()
+  }
+
+  @action.bound clearFilters = () => {
+    this.filterCollectionSelected = []
+    this.filterCollection = []
   }
 }

@@ -1,5 +1,5 @@
 import React from 'react'
-import { localesFooterCommunity, localesFooterCompany, localesFooterLegal } from '../../constants/locales'
+import { localesFooterCommunity, localesFooterCompany, localesFooterLegal } from '@constants/locales'
 
 const Footer: React.FC = () => {
   const createList = (data: { [x: string]: string }) => {

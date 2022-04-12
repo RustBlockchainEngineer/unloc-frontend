@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { BN } from '@project-serum/anchor'
-import { compressAddress } from '../../../utils/stringUtils/compressAdress'
+import { compressAddress } from '@utils/stringUtils/compressAdress'
 import { PublicKey } from '@solana/web3.js'
-import { IsubOfferData } from '../../../stores/Lightbox.store'
+import { IsubOfferData } from '@stores/Lightbox.store'
 
 interface MyOffersNftOfferItemProps {
   offerAmount: any

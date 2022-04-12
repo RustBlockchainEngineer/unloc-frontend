@@ -1,7 +1,6 @@
 import * as anchor from '@project-serum/anchor'
 import { programId, program, SubOfferState } from './nftLoan'
 import { bs58 } from '@project-serum/anchor/dist/cjs/utils/bytes'
-import { PublicKey } from '@solana/web3.js'
 
 export const getSubOffersKeysByState = async (state: SubOfferState[]) => {
   try {

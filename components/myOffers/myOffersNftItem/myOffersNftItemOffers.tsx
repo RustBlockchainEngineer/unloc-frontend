@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import { IsubOfferData } from '../../../stores/Lightbox.store'
+import React, { useState } from 'react'
+import { IsubOfferData } from '@stores/Lightbox.store'
 
 import { MyOffersNftOfferItem } from './myOffersNftOfferItem'
 

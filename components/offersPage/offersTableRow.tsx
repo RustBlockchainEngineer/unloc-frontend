@@ -27,7 +27,6 @@ export const OffersTableRow = ({
   currency,
   count
 }: OffersTableItemInterface) => {
-  let btnRef = useRef<HTMLButtonElement>(null)
   const handlePrevent = useCallback((e: React.FormEvent<HTMLButtonElement>) => {
     e.stopPropagation()
     e.preventDefault()

@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { getWhitelisted } from '../../../integration/db'
+import { getWhitelisted } from '@integration/db'
 
 const handler = async (req: NextApiRequest, res: NextApiResponse<string[]>) => {
   if (req.method === 'POST') {

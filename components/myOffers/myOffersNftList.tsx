@@ -1,13 +1,11 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext } from 'react'
 import { observer } from 'mobx-react'
-
-import { StoreContext } from '../../pages/_app'
+import { StoreContext } from '@pages/_app'
 import { MyOffersNftItem } from './myOffersNftItem/myOffersNftItem'
 
 export const MyOffersNftList: React.FC = observer(() => {
   const store = useContext(StoreContext)
   const { offers, nftData, subOffers } = store.MyOffers
-  const { wallet, connection } = store.Wallet
 
   const renderOffers = () => {
     return offers.map((offer) => {

@@ -1,9 +1,8 @@
 import { useContext, useEffect } from 'react'
 import { observer } from 'mobx-react'
 import { useWallet } from '@solana/wallet-adapter-react'
-
-import { StoreContext } from '../pages/_app'
-import { initLoanProgram } from '../integration/nftLoan'
+import { StoreContext } from '@pages/_app'
+import { initLoanProgram } from '@integration/nftLoan'
 import { PublicKey } from '@solana/web3.js'
 
 type Props = {

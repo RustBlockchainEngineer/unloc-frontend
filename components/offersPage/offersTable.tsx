@@ -1,11 +1,10 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext } from 'react'
 import { observer } from 'mobx-react'
-
-import { StoreContext } from '../../pages/_app'
+import { StoreContext } from '@pages/_app'
 import { OffersTableRow } from './offersTableRow'
-import { currencyMints } from '../../constants/currency'
-import { asBigNumber } from '../../utils/asBigNumber'
-import { BlobLoader } from '../layout/blobLoader'
+import { currencyMints } from '@constants/currency'
+import { asBigNumber } from '@utils/asBigNumber'
+import { BlobLoader } from '@components/layout/blobLoader'
 import { toast } from 'react-toastify'
 
 export const OffersTable = observer(() => {
@@ -67,20 +66,20 @@ export const OffersTable = observer(() => {
           <div className='row-cell'>Duration</div>
           <div className='row-cell'>Offers</div>
         </div>
-        {pageNFTData.map((nftData, index) => {
+        {pageOfferData.map((offerData, index) => {
           return (
             <OffersTableRow
-              key={`offer-${nftData.arweaveMetadata.name}-${index}`}
-              subOfferKey={pageNFTData[index].mint}
-              image={nftData.arweaveMetadata.image}
-              nftName={nftData.arweaveMetadata.name}
-              amount={pageOfferData[index].offerAmount.toNumber() / 1000000}
+              key={`offer-${offerData.nftData.arweaveMetadata.name}-${index}`}
+              subOfferKey={offerData.nftData.mint}
+              image={offerData.nftData.arweaveMetadata.image}
+              nftName={offerData.nftData.arweaveMetadata.name}
+              amount={offerData.offerAmount.toNumber() / 1000000}
               onLend={handleAcceptOffer}
-              offerPublicKey={pageOfferData[index].subOfferKey.toString()}
-              apr={asBigNumber(pageOfferData[index].aprNumerator)}
-              duration={Math.floor(pageOfferData[index].loanDuration.toNumber() / (3600 * 24))}
-              currency={currencyMints[pageOfferData[index].offerMint.toBase58()]}
-              count={pageOfferData[index].count}
+              offerPublicKey={offerData.subOfferKey.toString()}
+              apr={asBigNumber(offerData.aprNumerator)}
+              duration={Math.floor(offerData.loanDuration.toNumber() / (3600 * 24))}
+              currency={currencyMints[offerData.offerMint.toBase58()]}
+              count={offerData.count}
             />
           )
         })}

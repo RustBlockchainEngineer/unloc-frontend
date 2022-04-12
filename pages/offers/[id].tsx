@@ -1,19 +1,18 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { observer } from 'mobx-react-lite'
 import { NextPage } from 'next'
 import { useRouter } from 'next/router'
 import { PublicKey } from '@solana/web3.js'
 import { toast } from 'react-toastify'
-
-import { LayoutTop } from '../../components/layout/layoutTop'
-import { Header } from '../../components/singleOffer/Header/Header'
-import { Offer } from '../../components/singleOffer/Offer/Offer'
-import { StoreDataAdapter } from '../../components/storeDataAdapter'
-import { getQueryParamAsString } from '../../utils/getQueryParamsAsString'
-import { compressAddress } from '../../utils/stringUtils/compressAdress'
-import { StoreContext } from '../_app'
-import { BlobLoader } from '../../components/layout/blobLoader'
-import Footer from '../../components/layout/footer'
+import { LayoutTop } from '@components/layout/layoutTop'
+import { Header } from '@components/singleOffer/Header/Header'
+import { Offer } from '@components/singleOffer/Offer/Offer'
+import { StoreDataAdapter } from '@components/storeDataAdapter'
+import { getQueryParamAsString } from '@utils/getQueryParamsAsString'
+import { compressAddress } from '@utils/stringUtils/compressAdress'
+import { StoreContext } from '@pages/_app'
+import { BlobLoader } from '@components/layout/blobLoader'
+import Footer from '@components/layout/footer'
 
 interface IOffer {
   amount: string
@@ -33,6 +32,7 @@ const SingleNftPage: NextPage = observer(({}) => {
 
   const { connected, wallet } = store.Wallet
   const { nftData, loansData } = store.SingleOffer
+  const [hasActive, setHasActive] = useState(false)
 
   const handleData = async () => {
     try {
@@ -105,8 +105,19 @@ const SingleNftPage: NextPage = observer(({}) => {
         external_url: ''
       })
       store.SingleOffer.setLoansData([])
+      store.Offers.clearFilters()
     })
   }, [router.events, store.SingleOffer])
+
+  useEffect(() => {
+    if (loansData && loansData.length) {
+      loansData.forEach((loan) => {
+        if (loan.status === 1) {
+          setHasActive(true)
+        }
+      })
+    }
+  }, [loansData])
 
   return (
     <StoreDataAdapter>
@@ -123,7 +134,9 @@ const SingleNftPage: NextPage = observer(({}) => {
         ) : (
           <></>
         )}
-        {loansData && loansData.length ? (
+        {hasActive ? (
+          <h2 className='single-offer-active'>Loan Active, can&apos;t claim any offers right now</h2>
+        ) : loansData && loansData.length ? (
           <div className='offer-grid'>
             {loansData.map((offer: IOffer) => {
               if (offer.status === 0) {

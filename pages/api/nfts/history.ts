@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { ConfirmedSignatureInfo, PublicKey } from '@solana/web3.js'
 
-import { getHistory } from '../../../integration/nftIntegration'
+import { getHistory } from '@integration/nftIntegration'
 
 const handler = async (req: NextApiRequest, res: NextApiResponse<ConfirmedSignatureInfo[]>) => {
   if (req.method === 'POST') {

@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { useClipboard } from '../../hooks/useClipboard'
+import { useClipboard } from '@hooks/useClipboard'
 
 interface ClipboardButtonProps {
   data: string

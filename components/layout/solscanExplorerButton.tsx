@@ -1,6 +1,6 @@
 import React from 'react'
 import Image from 'next/image'
-import { config } from '../../constants/config'
+import { config } from '@constants/config'
 
 interface SolscanExplorerButtonProps {
   type: 'account' | 'block' | 'tx' | 'token'

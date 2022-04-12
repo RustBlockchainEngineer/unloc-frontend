@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { BlobLoader } from '../layout/blobLoader'
+import { BlobLoader } from '@components/layout/blobLoader'
 
 export const Processing = () => {
   return (

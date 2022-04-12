@@ -1,16 +1,14 @@
 import { action, makeAutoObservable, flow } from 'mobx'
 import axios from 'axios'
 import * as anchor from '@project-serum/anchor'
-
-import { getSubOffer, getSubOfferList } from '../integration/nftLoan'
-import { currencies, currencyMints } from '../constants/currency'
+import { getSubOfferList } from '@integration/nftLoan'
 import { IOfferData } from '../@types/IOfferData'
 import { PublicKey } from '@solana/web3.js'
-import { getMetadata } from '../integration/nftIntegration'
-import getDecimalsForLoanAmount from '../integration/getDecimalForLoanAmount'
-import { getSubOffersKeysByState } from '../integration/offersListing'
-import { calculateRepayValue } from '../utils/calculateRepayValue'
-import { asBigNumber } from '../utils/asBigNumber'
+import { getMetadata } from '@integration/nftIntegration'
+import getDecimalsForLoanAmount from '@integration/getDecimalForLoanAmount'
+import { getSubOffersKeysByState } from '@integration/offersListing'
+import { calculateRepayValue } from '@utils/calculateRepayValue'
+import { asBigNumber } from '@utils/asBigNumber'
 
 interface LoanInterface {
   id: string

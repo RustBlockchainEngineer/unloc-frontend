@@ -1,12 +1,11 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { observer } from 'mobx-react'
 import { toast } from 'react-toastify'
-
-import { NFTMetadata } from '../../../integration/nftLoan'
-import { StoreContext } from '../../../pages/_app'
-import { StoreDataAdapter } from '../../storeDataAdapter'
+import { NFTMetadata } from '@integration/nftLoan'
+import { StoreContext } from '@pages/_app'
+import { StoreDataAdapter } from '@components/storeDataAdapter'
 import { CollateralItem } from './collateralItem'
-import { BlobLoader } from '../../layout/blobLoader'
+import { BlobLoader } from '@components/layout/blobLoader'
 
 export interface INFTCollateral {
   NFTAddress: string
@@ -19,7 +18,6 @@ export const CreateCollateral: React.FC = observer(() => {
   const store = useContext(StoreContext)
   const myOffers = store.MyOffers
   const { wallet, connection, walletKey } = store.Wallet
-  const {} = store.Lightbox
 
   const [itemMint, setItemMint] = useState<string>('')
   const [sortOption, setSortOption] = useState<string>('')

@@ -16,10 +16,10 @@ import {
 } from '@solana/wallet-adapter-wallets'
 import { clusterApiUrl } from '@solana/web3.js'
 
-import { config } from '../constants/config'
-import { rootStore } from '../stores/Root.store'
+import { config } from '@constants/config'
+import { rootStore } from '@stores/Root.store'
 import 'react-toastify/dist/ReactToastify.css'
-import '../styles/main.scss'
+import '@styles/main.scss'
 
 export const StoreContext = createContext(rootStore)
 
