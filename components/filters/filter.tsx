@@ -1,5 +1,5 @@
 import React from 'react'
-
+import { validateFilterInput } from '../../methods/validators/filterValidator'
 interface FilterOffersInterface {
   title: string
   type: 'single' | 'multi' | 'minmax'
@@ -39,28 +39,20 @@ export const Filter = ({
     }
   }
 
-  const validateInput = (value: number | string): boolean => {
-    if (value != undefined) {
-      return true
-    } else {
-      return false
-    }
-  }
-
-  const validateAndRunAction = (inputValue: string) => {
-    if (inputValue && validateInput(inputValue) && action) {
+  const handleActionAction = (inputValue: string) => {
+    if (inputValue && validateFilterInput(inputValue) && action) {
       action(inputValue)
     }
   }
 
-  const validateAndRunActionMin = (inputValue: number) => {
-    if (inputValue && validateInput(inputValue) && actionMin) {
+  const handleActionActionMin = (inputValue: number) => {
+    if (inputValue && validateFilterInput(inputValue) && actionMin) {
       actionMin(inputValue)
     }
   }
   
-  const validateAndRunActionMax = (inputValue: number) => {
-    if (inputValue && validateInput(inputValue) && actionMax) {
+  const handleActionActionMax = (inputValue: number) => {
+    if (inputValue && validateFilterInput(inputValue) && actionMax) {
       actionMax(inputValue)
     }
   }
@@ -75,7 +67,7 @@ export const Filter = ({
                 type='checkbox'
                 name={item.value}
                 defaultChecked={handleCheckedItem(item.value)}
-                onChange={() => validateAndRunAction(Number(item.value))}
+                onChange={() => handleActionAction(Number(item.value))}
               />
               <span className='checkbox-custom rectangular'></span>
             </label>
@@ -109,7 +101,7 @@ export const Filter = ({
               className='min'
               type='number'
               value={valuesRange.min}
-              onChange={(e) => validateAndRunActionMin(Number(e.target.value))}
+              onChange={(e) => handleActionActionMin(Number(e.target.value))}
             />
           </div>
           <div className='filter-line'>
@@ -118,7 +110,7 @@ export const Filter = ({
               className='max'
               type='number'
               value={valuesRange.max}
-              onChange={(e) => validateAndRunActionMax(Number(e.target.value))}
+              onChange={(e) => handleActionActionMax(Number(e.target.value))}
             />
           </div>
         </div>
