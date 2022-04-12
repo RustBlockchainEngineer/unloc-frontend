@@ -1,11 +1,14 @@
 import React from 'react'
-import { validateFilterInput } from '../../methods/validators/filterValidator'
+import { validateFilterInput, validateFilterInputMin, validateFilterInputMax } from '../../methods/validators/filterValidator'
 interface FilterOffersInterface {
   title: string
   type: 'single' | 'multi' | 'minmax'
   action?: (value: string) => void
   actionMin?: (value: number) => void
   actionMax?: (value: number) => void
+  actionValidator?: number
+  actionValidatorMin?: number
+  actionValidatorMax?: number
   values?: string[]
   valuesRange?: { min: number; max: number }
   items?: { label: string; value: string }[]
@@ -18,6 +21,9 @@ export const Filter = ({
   action,
   actionMin,
   actionMax,
+  actionValidator,
+  actionValidatorMin,
+  actionValidatorMax,
   values,
   valuesRange
 }: FilterOffersInterface) => {
@@ -40,19 +46,19 @@ export const Filter = ({
   }
 
   const handleActionAction = (inputValue: string) => {
-    if (inputValue && validateFilterInput(inputValue) && action) {
+    if (inputValue && validateFilterInput(inputValue, '') && action) {
       action(inputValue)
     }
   }
 
   const handleActionActionMin = (inputValue: number) => {
-    if (inputValue && validateFilterInput(inputValue) && actionMin) {
+    if (inputValue && actionValidatorMin && validateFilterInputMin(inputValue, actionValidatorMin) && actionMin) {
       actionMin(inputValue)
     }
   }
   
   const handleActionActionMax = (inputValue: number) => {
-    if (inputValue && validateFilterInput(inputValue) && actionMax) {
+    if (inputValue && actionValidatorMax && validateFilterInputMax(inputValue, actionValidatorMax) && actionMax) {
       actionMax(inputValue)
     }
   }
