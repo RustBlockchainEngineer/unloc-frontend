@@ -1,6 +1,7 @@
 import type { NextPage } from 'next'
 import { StoreDataAdapter } from '@components/storeDataAdapter'
 import { LayoutTop } from '@components/layout/layoutTop'
+import { LayoutTopMobile } from '@components/layout/layoutTopMobile'
 import { Header } from '@components/singleOffer/Header/Header'
 import { observer } from 'mobx-react'
 import { StoreContext } from '@pages/_app'
@@ -22,6 +23,7 @@ const MyOffers: NextPage = observer(() => {
       </div>
       <div className='home-bg-bottom' />
       <Footer />
+      <LayoutTopMobile />
     </StoreDataAdapter>
   )
 })
