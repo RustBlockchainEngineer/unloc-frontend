@@ -43,11 +43,11 @@
 
     .wallet-adapter-button-trigger {
         @include theme-aware("border-color", "color-primary");
+        @include theme-aware("box-shadow", "wallet-button-box-shadow");
         width: 150px;
         height: 41px;
         background-color: rgba(0, 0, 0, 0);
         box-sizing: border-box;
-        box-shadow: 0px 0px 4px #e00a7f;
         border: 1px solid;
         border-radius: 8px;
         font-weight: 400;
@@ -60,8 +60,8 @@
     .wallet-adapter-button-trigger:not([disabled]):hover {
         @include theme-aware("background-color", "color-primary");
         @include theme-aware("border-color", "color-primary");
+        @include theme-aware("box-shadow", "wallet-button-box-shadow");
         border: 1px solid;
-        box-shadow: 0px 0px 4px #e00a7f;
     }
 
     .theme-switcher {
