@@ -29,6 +29,16 @@ export const Filter = ({
     return false
   }
 
+  const handleDevCollectionsLabels = (label: string) => {
+    if (label === 'Dave test collection 2') {
+      return 'Dev Only 1'
+    } else if (label === 'Youtube') {
+      return 'Dev Only 2'
+    } else {
+      return label
+    }
+  }
+
   const renderList = () => {
     const data =
       items && items.length && action ? (
@@ -43,7 +53,7 @@ export const Filter = ({
               />
               <span className='checkbox-custom rectangular'></span>
             </label>
-            <div className='input-title'>{item.label}</div>
+            <div className='input-title'>{handleDevCollectionsLabels(item.label)}</div>
           </li>
         ))
       ) : (
