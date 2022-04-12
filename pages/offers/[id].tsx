@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { observer } from 'mobx-react-lite'
 import { NextPage } from 'next'
 import { useRouter } from 'next/router'
@@ -33,6 +33,7 @@ const SingleNftPage: NextPage = observer(({}) => {
 
   const { connected, wallet } = store.Wallet
   const { nftData, loansData } = store.SingleOffer
+  const [hasActive, setHasActive] = useState(false)
 
   const handleData = async () => {
     try {
@@ -108,6 +109,16 @@ const SingleNftPage: NextPage = observer(({}) => {
     })
   }, [router.events, store.SingleOffer])
 
+  useEffect(() => {
+    if (loansData && loansData.length) {
+      loansData.forEach((loan) => {
+        if (loan.status === 1) {
+          setHasActive(true)
+        }
+      })
+    }
+  }, [loansData])
+
   return (
     <StoreDataAdapter>
       <div className='page my-offers'>
@@ -123,7 +134,9 @@ const SingleNftPage: NextPage = observer(({}) => {
         ) : (
           <></>
         )}
-        {loansData && loansData.length ? (
+        {hasActive ? (
+          <h2 className='single-offer-active'>Loan Active, can&apos;t claim any offers right now</h2>
+        ) : loansData && loansData.length ? (
           <div className='offer-grid'>
             {loansData.map((offer: IOffer) => {
               if (offer.status === 0) {
