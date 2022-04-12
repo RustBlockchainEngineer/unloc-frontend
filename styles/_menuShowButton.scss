@@ -1,4 +1,4 @@
-.menu-show-button{
+.menu-show-button {
     position: fixed;
     top: 0px;
     right: 0px;
@@ -17,11 +17,11 @@
     justify-content: center;
     align-items: center;
     padding: 5px;
-    transition: all .5s ease;
-    margin: 1em;
+    transition: all 0.5s ease;
+    margin: 16px;
 
     &_strips {
-        transition: all .5s ease;
+        transition: all 0.5s ease;
     }
 
     &.clicked .strip:first-child {
@@ -37,11 +37,11 @@
     }
 }
 
-.strip{
+.strip {
     height: 3px;
     border-radius: 2px;
     background: white;
     margin: 10px;
-    transition: all .55s cubic-bezier(0.075, 0.82, 0.165, 1);
+    transition: all 0.55s cubic-bezier(0.075, 0.82, 0.165, 1);
     width: 40px;
 }

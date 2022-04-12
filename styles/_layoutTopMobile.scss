@@ -3,7 +3,7 @@
         position: fixed;
         width: 100vw;
         top: 0;
-        background: rgba(72, 38, 136, 0.6);
+        @include theme-aware("background-color", "bg-table-hover");
         box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
         backdrop-filter: blur(7px);
         border-radius: 0px 0px 8px 8px;
@@ -34,7 +34,7 @@
     }
 
     .user-toolbox {
-        width: calc(50vw + 85px);
+        width: calc(50vw + 75px);
         justify-content: space-between;
         display: flex;
         flex-direction: row-reverse;
@@ -42,12 +42,13 @@
     }
 
     .wallet-adapter-button-trigger {
+        @include theme-aware("border-color", "color-primary");
         width: 150px;
         height: 41px;
         background-color: rgba(0, 0, 0, 0);
         box-sizing: border-box;
         box-shadow: 0px 0px 4px #e00a7f;
-        border: 1px solid #e00a7f;
+        border: 1px solid;
         border-radius: 8px;
         font-weight: 400;
         font-size: 15px;
@@ -57,8 +58,9 @@
     }
 
     .wallet-adapter-button-trigger:not([disabled]):hover {
-        background: #e00a7f;
-        border: 1px solid #e00a7f;
+        @include theme-aware("background-color", "color-primary");
+        @include theme-aware("border-color", "color-primary");
+        border: 1px solid;
         box-shadow: 0px 0px 4px #e00a7f;
     }
 
@@ -66,6 +68,7 @@
         margin: 8px 0 0 10px;
     }
 }
+
 @media (min-width: calc($bp-phone + 1px)) {
     .layout-top-mobile {
         display: none;
