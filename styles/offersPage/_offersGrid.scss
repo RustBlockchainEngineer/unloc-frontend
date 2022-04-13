@@ -109,7 +109,13 @@
       display: flex;
       text-decoration: none;
     }
+
+    .onHover-data.hide {
+      opacity: 0;
+    }
+
     .onHover-data {
+      opacity: 1;
       position: absolute;
       top: 0;
       left: 0;
@@ -194,27 +200,32 @@
 @media (max-width: $bp-tablet) {
   .offers-grid {
     .offers-grid-item {
+      .onHover-data.hide {
+        opacity: 1;
+      }
+
       .onHover-data {
-        opacity: 1 !important;
-        padding: 12px;
+        opacity: 1;
+        padding: 24px;
 
         .data-item {
-          padding-bottom: 1vw;
+          padding-bottom: 8px;
 
           .item-name {
-            font-size: 2.4vw;
-
-            @media (max-width: 400px) {
-              font-size: 2.2vw;
-            }
+            font-size: 18px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            word-wrap: break-word;
+            display: inline-block;
+            height: 24px;
           }
 
           .label {
-            font-size: 2vw;
+            font-size: 14px;
           }
 
           .content {
-            font-size: 2vw;
+            font-size: 14px;
           }
         }
 
@@ -222,9 +233,103 @@
           width: 25vw;
           height: 6vw;
           padding: 1vw;
-          font-size: 2.5vw;
+          font-size: 18px;
         }
       }
     }
   }
 }
+
+@media (max-width: 800px) {
+  .offers-grid {
+    .offers-grid-item {
+      .onHover-data {
+        padding: 8px 20px;
+
+        .data-item {
+          padding-bottom: 6px;
+
+          .item-name {
+            font-size: 16px;
+            height: 16px;
+          }
+
+          .label {
+            font-size: 11px;
+          }
+
+          .content {
+            font-size: 11px;
+          }
+        }
+
+        button {
+          font-size: 20px;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 600px) {
+  .offers-grid {
+    .offers-grid-item {
+      .onHover-data {
+        padding: 8px;
+
+        .data-item {
+          padding-bottom: 4px;
+
+          .item-name {
+            font-size: 14px;
+            height: 14px;
+          }
+
+          .label {
+            font-size: 10px;
+          }
+
+          .content {
+            font-size: 10px;
+          }
+        }
+
+        button {
+          font-size: 14px;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 500px) {
+  .offers-grid {
+    .offers-grid-item {
+      .onHover-data {
+        padding: 8px;
+
+        .data-item {
+          padding-bottom: 2px;
+
+          .item-name {
+            font-size: 12px;
+            height: 12px;
+          }
+
+          .label {
+            font-size: 9px;
+          }
+
+          .content {
+            font-size: 9px;
+          }
+        }
+
+        button {
+          font-size: 10px;
+        }
+      }
+    }
+  }
+}
+
