@@ -45,13 +45,13 @@ export const Filter = ({
     }
   }
 
-  const handleActionAction = (inputValue: string) => {
+  const handleAction = (inputValue: string) => {
     if (inputValue && validateFilterInput(inputValue, '') && action) {
       action(inputValue)
     }
   }
 
-  const handleActionActionMin = (inputValue: number) => {
+  const handleActionMin = (inputValue: number) => {
     if (inputValue && actionValidatorMin && validateFilterInputMin(inputValue, actionValidatorMin) && actionMin) {
       actionMin(inputValue)
     }else if(actionValidatorMin && actionMax){
@@ -59,7 +59,7 @@ export const Filter = ({
     }
   }
   
-  const handleActionActionMax = (inputValue: number) => {
+  const handleActionMax = (inputValue: number) => {
     if (inputValue && actionValidatorMax && validateFilterInputMax(inputValue, actionValidatorMax) && actionMax) {
       actionMax(inputValue)
     }else if(actionValidatorMax && actionMax){
@@ -77,7 +77,7 @@ export const Filter = ({
                 type='checkbox'
                 name={item.value}
                 defaultChecked={handleCheckedItem(item.value)}
-                onChange={() => handleActionAction(item.value)}
+                onChange={() => handleAction(item.value)}
               />
               <span className='checkbox-custom rectangular'></span>
             </label>
@@ -111,7 +111,7 @@ export const Filter = ({
               className='min'
               type='number'
               value={valuesRange.min}
-              onChange={(e) => handleActionActionMin(Number(e.target.value))}
+              onChange={(e) => handleActionMin(Number(e.target.value))}
             />
           </div>
           <div className='filter-line'>
@@ -120,7 +120,7 @@ export const Filter = ({
               className='max'
               type='number'
               value={valuesRange.max}
-              onChange={(e) => handleActionActionMax(Number(e.target.value))}
+              onChange={(e) => handleActionMax(Number(e.target.value))}
             />
           </div>
         </div>
