@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { usePopperTooltip } from 'react-popper-tooltip'
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
 import { observer } from 'mobx-react'
@@ -12,7 +12,15 @@ export const UserToolbox = observer(() => {
 
   const handleThemeSet = () => {
     store.Interface.setTheme(theme === 'dark' ? 'light' : 'dark')
+    localStorage.setItem('unloc-theme', theme === 'dark' ? 'light' : 'dark')
   }
+
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('unloc-theme')
+    if (savedTheme && savedTheme.length && (savedTheme === 'dark' || savedTheme === 'light')) {
+      store.Interface.setTheme(savedTheme)
+    }
+  })
 
   return (
     <div className='user-toolbox'>

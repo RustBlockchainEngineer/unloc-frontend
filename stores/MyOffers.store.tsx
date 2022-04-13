@@ -12,10 +12,13 @@ import {
   repayLoan,
   setOffer,
   cancelSubOffer,
-  updateSubOffer
+  updateSubOffer,
+  cancelOffer,
+  getSubOfferMultiple
 } from '@integration/nftLoan'
 import { currencies, currencyMints } from '@constants/currency'
 import { getDurationForContractData } from '@utils/getDuration'
+import { getSubOffersKeysByState } from '@integration/offersListing'
 
 export class MyOffersStore {
   rootStore
@@ -24,6 +27,7 @@ export class MyOffersStore {
   subOffers: any[] = []
   nftData: NFTMetadata[] = []
   activeNftMint: string = ''
+  lendingList: any[] = []
 
   constructor(rootStore: any) {
     makeAutoObservable(this)
@@ -149,6 +153,10 @@ export class MyOffersStore {
     await setOffer(new PublicKey(mint))
   }
 
+  @action.bound handleCancelCollateral = async (mint: string) => {
+    await cancelOffer(new PublicKey(mint))
+  }
+
   @action.bound handleCancelSubOffer = async (subOfferKey: string) => {
     await cancelSubOffer(new PublicKey(subOfferKey))
   }
@@ -169,5 +177,39 @@ export class MyOffersStore {
       new BN(aprNumerator),
       new PublicKey(subOffer)
     )
+  }
+
+  private initManyNfts = async (nftMintKeys: PublicKey[]) => {
+    const multipleNft = new MultipleNFT(nftMintKeys)
+    await multipleNft.initialize()
+    await multipleNft.initArweavedata()
+
+    return multipleNft
+  }
+
+  @action.bound fetchUserLendedOffers = async () => {
+    const activeOffersKeys = await getSubOffersKeysByState([1])
+    if (activeOffersKeys && activeOffersKeys.length) {
+      const offersData = await getSubOfferMultiple(activeOffersKeys)
+
+      const lendedLoans: any[] = []
+
+      offersData.forEach((offer: any) => {
+        if (offer.lender.toBase58() === this.rootStore.Wallet.walletKey.toBase58()) {
+          lendedLoans.push(offer)
+        }
+      })
+
+      const nftMints = lendedLoans.map((offerData: any) => {
+        return offerData.nftMint
+      })
+      const nftsData = await this.initManyNfts(nftMints)
+
+      nftsData.metadatas.forEach((nft, index) => {
+        lendedLoans[index].nftData = nft
+      })
+
+      this.lendingList = lendedLoans
+    }
   }
 }

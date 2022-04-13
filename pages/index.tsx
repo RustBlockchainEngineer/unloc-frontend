@@ -12,7 +12,6 @@ import { OffersGrid } from '@components/offersPage/offersGrid'
 import { OffersTable } from '@components/offersPage/offersTable'
 import Footer from '@components/layout/footer'
 
-
 const Home: NextPage = observer(() => {
   const store = useContext(StoreContext)
   const { wallet, connected } = store.Wallet
@@ -33,7 +32,6 @@ const Home: NextPage = observer(() => {
   useEffect(() => {
     if (wallet && connected) {
       handleOffers()
-      console.log('handleOffers')
     }
   }, [wallet, connected])
 
