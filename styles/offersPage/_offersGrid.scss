@@ -128,7 +128,7 @@
       height: 100%;
       @include theme-aware("color", "color-label");
       @include theme-aware("background-color", "bg-overlay-bright");
-      font-size: 14px;
+      font-size: $tp-md;
       transition: opacity 0.5s;
 
       .onHover-link {
@@ -146,7 +146,7 @@
         padding-bottom: 9px;
 
         .item-name {
-          font-size: 18px;
+          font-size: $tp-lg;
           font-weight: 700;
         }
       }
@@ -212,7 +212,7 @@
           padding-bottom: 8px;
 
           .item-name {
-            font-size: 18px;
+            font-size: $tp-lg;
             overflow: hidden;
             text-overflow: ellipsis;
             word-wrap: break-word;
@@ -221,11 +221,11 @@
           }
 
           .label {
-            font-size: 14px;
+            font-size: $tp-md;
           }
 
           .content {
-            font-size: 14px;
+            font-size: $tp-md;
           }
         }
 
@@ -233,7 +233,7 @@
           width: 25vw;
           height: 6vw;
           padding: 1vw;
-          font-size: 18px;
+          font-size: $tp-lg;
         }
       }
     }
@@ -250,21 +250,21 @@
           padding-bottom: 6px;
 
           .item-name {
-            font-size: 16px;
+            font-size: $tp-2md;
             height: 16px;
           }
 
           .label {
-            font-size: 11px;
+            font-size: $tp-1tn;
           }
 
           .content {
-            font-size: 11px;
+            font-size: $tp-1tn;
           }
         }
 
         button {
-          font-size: 20px;
+          font-size: $tp-lg;
         }
       }
     }
@@ -281,21 +281,21 @@
           padding-bottom: 4px;
 
           .item-name {
-            font-size: 14px;
+            font-size: $tp-md;
             height: 14px;
           }
 
           .label {
-            font-size: 10px;
+            font-size: $tp-tn;
           }
 
           .content {
-            font-size: 10px;
+            font-size: $tp-tn;
           }
         }
 
         button {
-          font-size: 14px;
+          font-size: $tp-md;
         }
       }
     }
@@ -312,21 +312,21 @@
           padding-bottom: 2px;
 
           .item-name {
-            font-size: 12px;
+            font-size: $tp-sm;
             height: 12px;
           }
 
           .label {
-            font-size: 9px;
+            font-size: $tp-xtn;
           }
 
           .content {
-            font-size: 9px;
+            font-size: $tp-xtn;
           }
         }
 
         button {
-          font-size: 10px;
+          font-size: $tp-tn;
         }
       }
     }
