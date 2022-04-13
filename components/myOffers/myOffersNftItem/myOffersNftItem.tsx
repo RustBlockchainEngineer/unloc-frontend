@@ -141,13 +141,61 @@ export const MyOffersNftItem: React.FC<MyOffersNftItemProps> = observer(
       return output
     }
 
+    const handleCancelCollateral = async () => {
+      store.Lightbox.setContent('processing')
+      store.Lightbox.setCanClose(false)
+      store.Lightbox.setVisible(true)
+
+      try {
+        await store.MyOffers.handleCancelCollateral(nftMint)
+        toast.success(`Collateral canceled`, {
+          autoClose: 3000,
+          position: 'top-center',
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined
+        })
+        store.Lightbox.setCanClose(true)
+        store.Lightbox.setVisible(false)
+      } catch (e: any) {
+        console.log(e)
+        if (e.message === 'User rejected the request.') {
+          toast.error(`Transaction rejected`, {
+            autoClose: 3000,
+            position: 'top-center',
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined
+          })
+        } else {
+          toast.error(`Something went wrong`, {
+            autoClose: 3000,
+            position: 'top-center',
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined
+          })
+        }
+      } finally {
+        store.MyOffers.refetchStoreData()
+        store.Lightbox.setCanClose(true)
+        store.Lightbox.setVisible(false)
+      }
+    }
+
     const setNFTActions = (status: number) => {
       if (status === 0) {
         return (
           <div className='nft-info-buttons'>
             <button
               ref={setTriggerRef}
-              className=' btn--md btn--primary'
+              className='btn--md btn--primary'
               onClick={() => {
                 store.MyOffers.setActiveNftMint(nftMint)
                 store.Lightbox.setContent('loanCreate')
@@ -161,6 +209,9 @@ export const MyOffersNftItem: React.FC<MyOffersNftItemProps> = observer(
                 Create a new Loan Offer using this NFT as Collateral
               </div>
             )}
+            <button className='btn--md btn--bordered' onClick={() => handleCancelCollateral()}>
+              Cancel Collateral
+            </button>
           </div>
         )
       }
