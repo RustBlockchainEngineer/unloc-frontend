@@ -84,6 +84,7 @@ export const OffersGrid = observer(() => {
               duration={Math.floor(offerData.loanDuration.toNumber() / (3600 * 24))}
               currency={currencyMints[offerData.offerMint.toBase58()]}
               count={offerData.count}
+              collection={offerData.collection}
             />
           )
         })}
