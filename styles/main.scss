@@ -37,6 +37,7 @@
 @import './NFTCollateral';
 @import './createLoan';
 @import './myOffers/connectWallet';
+@import './myOffers/myLendingList';
 
 body {
   @include theme-aware('background-color', 'color-background');

@@ -8,9 +8,10 @@ export const localesTop = {
 }
 
 export const localesFooterCommunity: { [x: string]: string } = {
-  discord: '',
-  telegram: '',
-  twitter: ''
+  discord: 'https://discord.gg/UnlocNFT',
+  telegram: 'https://t.me/UnlocNFT',
+  twitter: 'https://twitter.com/UnlocNFT',
+  medium: 'https://unlocnft.medium.com/'
 }
 
 export const localesFooterLegal: { [x: string]: string } = {

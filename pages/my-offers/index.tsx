@@ -9,6 +9,7 @@ import { LayoutTopMobile } from '@components/layout/layoutTopMobile'
 import Footer from '@components/layout/footer'
 import { MyOffersTop } from '@components/myOffers/myOffersTop'
 import { MyOffersNftList } from '@components/myOffers/myOffersNftList'
+import { MyLendingList } from '@components/myOffers/myLendingList'
 
 const MyOffers: NextPage = observer(() => {
   const store = useContext(StoreContext)
@@ -38,6 +39,7 @@ const MyOffers: NextPage = observer(() => {
       <div className='page my-offers'>
         <LayoutTop />
         <MyOffersTop />
+        {connected ? <MyLendingList /> : ''}
         {connected ? <MyOffersNftList /> : ''}
       </div>
       <div className='home-bg-bottom' />

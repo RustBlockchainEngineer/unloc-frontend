@@ -13,6 +13,7 @@ interface IProps {
   currency: string
   subOfferKey: string
   count?: number
+  collection: string
 }
 
 const OffersGridItemHover: React.FC<IProps> = ({
@@ -26,7 +27,8 @@ const OffersGridItemHover: React.FC<IProps> = ({
   offerPublicKey,
   currency,
   subOfferKey,
-  count
+  count,
+  collection
 }) => {
   return (
     <div style={{ opacity: `${visible ? 1 : 0}` }} className='onHover-data'>
@@ -61,6 +63,10 @@ const OffersGridItemHover: React.FC<IProps> = ({
           <div className='data-item'>
             <span className='label'>total repay amount</span>
             <span className='content'>{totalRepay}</span>
+          </div>
+          <div className='data-item'>
+            <span className='label'>Collection</span>
+            <span className='content'>{collection}</span>
           </div>
         </div>
       </Link>
