@@ -15,6 +15,7 @@ interface OffersGridItemInterface {
   duration: number
   currency: string
   count?: number
+  collection: string
 }
 
 export const OffersGridItem = ({
@@ -28,7 +29,8 @@ export const OffersGridItem = ({
   amount,
   duration,
   currency,
-  count
+  count,
+  collection
 }: OffersGridItemInterface) => {
   const [hover, setHover] = useState<boolean>(false)
   const rangeSheetsCount = (sheetCount: number) => {
@@ -75,6 +77,7 @@ export const OffersGridItem = ({
         currency={currency}
         subOfferKey={subOfferKey}
         count={count}
+        collection={collection}
       />
       <Link href={`/offers/${subOfferKey}`}>
         <a>
