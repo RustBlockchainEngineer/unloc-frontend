@@ -63,6 +63,8 @@ export const OffersTop = observer(() => {
           valuesRange={{ min: filterAmountMin, max: filterAmountMax }}
           actionMin={store.Offers.setFilterAmountMin}
           actionMax={store.Offers.setFilterAmountMax}
+          actionValidatorMin={store.Offers.filterAmountValidatorMin}
+          actionValidatorMax={store.Offers.filterAmountValidatorMax}
         />
         <Filter
           title='APR'
@@ -70,6 +72,8 @@ export const OffersTop = observer(() => {
           valuesRange={{ min: filterAprMin, max: filterAprMax }}
           actionMin={store.Offers.setFilterAprMin}
           actionMax={store.Offers.setFilterAprMax}
+          actionValidatorMin={store.Offers.filterAprValidatorMin}
+          actionValidatorMax={store.Offers.filterAprValidatorMax}
         />
         <Filter
           title='Duration'
@@ -77,6 +81,8 @@ export const OffersTop = observer(() => {
           valuesRange={{ min: filterDurationMin, max: filterDurationMax }}
           actionMin={store.Offers.setFilterDurationMin}
           actionMax={store.Offers.setFilterDurationMax}
+          actionValidatorMin={store.Offers.filterDurationValidatorMin}
+          actionValidatorMax={store.Offers.filterDurationValidatorMax}
         />
       </div>
     </div>
