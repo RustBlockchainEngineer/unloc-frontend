@@ -56,7 +56,6 @@ export const OffersTop = observer(() => {
           items={filterCollection}
           action={store.Offers.setFilterCollection}
           values={filterCollectionSelected}
-          // actionValidator={store.Offers.filter?}
         />
         <Filter
           title='Loan Amount'

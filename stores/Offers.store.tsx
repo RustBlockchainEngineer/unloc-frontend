@@ -256,8 +256,6 @@ export class OffersStore {
     this.filterAmountValidatorMax = filterDef.amountMax
     this.filterDurationValidatorMin = filterDef.durationsMin
     this.filterDurationValidatorMax = filterDef.durationsMax
-    console.log("filter update");
-    
   }
 
   private mangleNftData = () => {
