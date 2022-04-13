@@ -81,7 +81,7 @@
   transition: transform 0.3s ease-in-out, padding 0.3s ease-in-out, margin 0.3s ease-in-out;
   @include theme-aware('background-color', 'color-accent');
   padding: 0;
-  height: 1px;
+  height: auto;
   border-radius: $brd-rds-lg;
 
   &.active {
