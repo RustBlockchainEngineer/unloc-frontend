@@ -92,6 +92,7 @@ export class MyOffersStore {
     if (this.offers && this.offers.length > 0) {
       const data: NFTMetadata[] = []
       const nftMintKeys: PublicKey[] = []
+      console.log('test')
 
       for (const offer of this.offers) {
         const nftMint = offer.account.nftMint
