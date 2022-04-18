@@ -277,7 +277,12 @@ export const MyOffersNftItem: React.FC<MyOffersNftItemProps> = observer(
             <>Loading NFT Data</>
           )}
         </div>
-        <MyOffersNftItemOffers data={offers} handleOfferEdit={handleEditOffer} handleOfferCancel={handleCancelOffer} />
+        <MyOffersNftItemOffers
+          data={offers}
+          handleOfferEdit={handleEditOffer}
+          status={state}
+          handleOfferCancel={handleCancelOffer}
+        />
       </div>
     )
   }

@@ -143,7 +143,7 @@ const SingleNftPage: NextPage = observer(({}) => {
                 return (
                   <Offer
                     key={offer.id}
-                    offerID={compressAddress(4, offer.id)}
+                    offerID={offer.id}
                     offerMint={offer.offerMint}
                     offerPublicKey={offer.publicKey.toBase58()}
                     status={offer.status.toString()}

@@ -25,7 +25,7 @@
 }
 
 .icon--eye {
-  background-image: url('/icons/eye-icon.svg');
+  @include theme-aware('background-image', 'icon-eye');
 }
 
 .icon--copy {
