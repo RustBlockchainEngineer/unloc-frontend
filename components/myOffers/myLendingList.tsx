@@ -6,6 +6,8 @@ import { currencyMints } from '@constants/currency'
 import { ShowOnHover } from '@components/layout/showOnHover'
 import { ClipboardButton } from '@components/layout/clipboardButton'
 import { SolscanExplorerIcon } from '@components/layout/solscanExplorerIcon'
+import { PublicKey } from '@solana/web3.js'
+import { toast } from 'react-toastify'
 
 export const MyLendingList = observer(() => {
   const store = useContext(StoreContext)
@@ -28,6 +30,73 @@ export const MyLendingList = observer(() => {
     }
 
     return output
+  }
+
+  const canClaim = (duration: number, startTime: number) => {
+    let output = false
+
+    const currentDate = new Date()
+    const startDate = new Date(startTime)
+
+    const numberOfDays = Math.ceil(((startDate as any) - (currentDate as any)) / 8.64e7)
+
+    const daysLeft = duration - numberOfDays * -1
+
+    if (daysLeft > 0) {
+      output = false
+    } else {
+      output = true
+    }
+
+    return output
+  }
+
+  const handleClaimCollateral = async (offerKey: PublicKey) => {
+    store.Lightbox.setContent('processing')
+    store.Lightbox.setCanClose(false)
+    store.Lightbox.setVisible(true)
+
+    try {
+      await store.MyOffers.handleClaimCollateral(offerKey)
+      toast.success(`NFT Claimed`, {
+        autoClose: 3000,
+        position: 'top-center',
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined
+      })
+      store.Lightbox.setCanClose(true)
+      store.Lightbox.setVisible(false)
+    } catch (e: any) {
+      console.log(e)
+      if (e.message === 'User rejected the request.') {
+        toast.error(`Transaction rejected`, {
+          autoClose: 3000,
+          position: 'top-center',
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined
+        })
+      } else {
+        toast.error(`Something went wrong`, {
+          autoClose: 3000,
+          position: 'top-center',
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined
+        })
+      }
+    } finally {
+      store.MyOffers.refetchStoreData()
+      store.Lightbox.setCanClose(true)
+      store.Lightbox.setVisible(false)
+    }
   }
 
   const renderLoansGiven = () => {
@@ -60,6 +129,15 @@ export const MyLendingList = observer(() => {
               {handleTimeLeft(offer.loanDuration.toNumber() / 60 / 60 / 24, offer.loanStartedTime.toNumber() * 1000)}
             </div>
           </div>
+          {canClaim(offer.loanDuration.toNumber() / 60 / 60 / 24, offer.loanStartedTime.toNumber() * 1000) ? (
+            <div className='lined-info'>
+              <button className='btn btn--md btn--primary' onClick={() => handleClaimCollateral(offer.offer)}>
+                Claim NFT
+              </button>
+            </div>
+          ) : (
+            <></>
+          )}
         </div>
       )
     })

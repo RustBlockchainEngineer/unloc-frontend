@@ -14,7 +14,8 @@ import {
   cancelSubOffer,
   updateSubOffer,
   cancelOffer,
-  getSubOfferMultiple
+  getSubOfferMultiple,
+  claimCollateral
 } from '@integration/nftLoan'
 import { currencies, currencyMints } from '@constants/currency'
 import { getDurationForContractData } from '@utils/getDuration'
@@ -212,5 +213,9 @@ export class MyOffersStore {
 
       this.lendingList = lendedLoans
     }
+  }
+
+  @action.bound handleClaimCollateral = async (subOffer: PublicKey) => {
+    await claimCollateral(subOffer)
   }
 }

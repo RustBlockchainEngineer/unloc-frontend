@@ -268,7 +268,7 @@ export const MyOffersNftItem: React.FC<MyOffersNftItemProps> = observer(
                   </ShowOnHover>
                 </div>
                 <div className='metadata-item'>
-                  <p>collection</p>
+                  <p>Collection</p>
                   <p></p>
                 </div>
               </div>
