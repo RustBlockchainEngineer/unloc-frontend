@@ -4,6 +4,8 @@ import { usePopperTooltip } from 'react-popper-tooltip'
 import { ShowOnHover } from '@components/layout/showOnHover'
 import { ClipboardButton } from '@components/layout/clipboardButton'
 import { SolscanExplorerIcon } from '@components/layout/solscanExplorerIcon'
+import { compressAddress } from '@utils/stringUtils/compressAdress'
+import { currencyMints } from '@constants/currency'
 
 type IProps = {
   offerID: string
@@ -16,7 +18,7 @@ type IProps = {
   APR: number
   totalRepay: string
   btnMessage: string
-  handleAcceptOffer: (offerPublicKey: string) => void
+  handleConfirmOffer: (offer: any) => void
   offerPublicKey: string
 }
 
@@ -31,10 +33,12 @@ export const Offer: React.FC<IProps> = ({
   APR,
   totalRepay,
   btnMessage,
-  handleAcceptOffer,
+  handleConfirmOffer,
   offerPublicKey
 }) => {
   const { getTooltipProps, setTooltipRef, setTriggerRef, visible } = usePopperTooltip()
+
+  const currency = currencyMints[offerMint]
 
   return (
     <div className='offer-root'>
@@ -42,7 +46,7 @@ export const Offer: React.FC<IProps> = ({
         <div className='offer-header'>
           <div className='offer-ID'>
             <p>Offer ID</p>
-            <ShowOnHover label={`#${offerID}`}>
+            <ShowOnHover label={`#${compressAddress(4, offerID)}`}>
               <ClipboardButton data={offerID} />
               <SolscanExplorerIcon type={'account'} address={offerID} />
             </ShowOnHover>
@@ -56,9 +60,7 @@ export const Offer: React.FC<IProps> = ({
           <div className='info-item'>
             <div className='item-box'>
               <p>Amount</p>
-              <p>
-                {amount} {token}
-              </p>
+              <p>{`${amount} ${currency}`}</p>
             </div>
             <div className='item-box'>
               <p>APR</p>
@@ -82,7 +84,20 @@ export const Offer: React.FC<IProps> = ({
         </div>
       </div>
       <div className='offer-lend'>
-        <button ref={setTriggerRef} className='lend-btn' onClick={() => handleAcceptOffer(offerPublicKey)}>
+        <button
+          ref={setTriggerRef}
+          className='lend-btn'
+          onClick={() =>
+            handleConfirmOffer({
+              offerPublicKey,
+              amount,
+              APR,
+              duration,
+              totalRepay,
+              currency
+            })
+          }
+        >
           {btnMessage}
         </button>
         {visible && (

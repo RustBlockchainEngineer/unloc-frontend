@@ -371,6 +371,72 @@ export type UnlocNftLoan = {
         }
       ]
       args: []
+    },
+    {
+      name: 'claimCollateral'
+      accounts: [
+        {
+          name: 'lender'
+          isMut: true
+          isSigner: true
+        },
+        {
+          name: 'globalState'
+          isMut: false
+          isSigner: false
+        },
+        {
+          name: 'treasuryWallet'
+          isMut: true
+          isSigner: false
+        },
+        {
+          name: 'offer'
+          isMut: true
+          isSigner: false
+        },
+        {
+          name: 'subOffer'
+          isMut: true
+          isSigner: false
+        },
+        {
+          name: 'lenderNftVault'
+          isMut: true
+          isSigner: false
+        },
+        {
+          name: 'nftVault'
+          isMut: true
+          isSigner: false
+        },
+        {
+          name: 'lenderOfferVault'
+          isMut: true
+          isSigner: false
+        },
+        {
+          name: 'treasuryVault'
+          isMut: true
+          isSigner: false
+        },
+        {
+          name: 'systemProgram'
+          isMut: false
+          isSigner: false
+        },
+        {
+          name: 'tokenProgram'
+          isMut: false
+          isSigner: false
+        },
+        {
+          name: 'clock'
+          isMut: false
+          isSigner: false
+        }
+      ]
+      args: []
     }
   ]
   accounts: [
@@ -1005,6 +1071,72 @@ export const IDL: UnlocNftLoan = {
         },
         {
           name: 'borrowerOfferVault',
+          isMut: true,
+          isSigner: false
+        },
+        {
+          name: 'treasuryVault',
+          isMut: true,
+          isSigner: false
+        },
+        {
+          name: 'systemProgram',
+          isMut: false,
+          isSigner: false
+        },
+        {
+          name: 'tokenProgram',
+          isMut: false,
+          isSigner: false
+        },
+        {
+          name: 'clock',
+          isMut: false,
+          isSigner: false
+        }
+      ],
+      args: []
+    },
+    {
+      name: 'claimCollateral',
+      accounts: [
+        {
+          name: 'lender',
+          isMut: true,
+          isSigner: true
+        },
+        {
+          name: 'globalState',
+          isMut: false,
+          isSigner: false
+        },
+        {
+          name: 'treasuryWallet',
+          isMut: true,
+          isSigner: false
+        },
+        {
+          name: 'offer',
+          isMut: true,
+          isSigner: false
+        },
+        {
+          name: 'subOffer',
+          isMut: true,
+          isSigner: false
+        },
+        {
+          name: 'lenderNftVault',
+          isMut: true,
+          isSigner: false
+        },
+        {
+          name: 'nftVault',
+          isMut: true,
+          isSigner: false
+        },
+        {
+          name: 'lenderOfferVault',
           isMut: true,
           isSigner: false
         },

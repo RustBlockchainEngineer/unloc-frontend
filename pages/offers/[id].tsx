@@ -46,13 +46,15 @@ const SingleNftPage: NextPage = observer(({}) => {
     }
   }
 
-  const handleAcceptOffer = async (offerPublicKey: string) => {
+  const handleConfirmOffer = async (offer: any) => {
     try {
-      store.Lightbox.setContent('processing')
-      store.Lightbox.setCanClose(false)
+      store.Lightbox.setLendConfirmationData(offer)
+      store.Lightbox.setContent('lendConfirmation')
+      store.Lightbox.setCanClose(true)
       store.Lightbox.setVisible(true)
-      await store.Offers.handleAcceptOffer(offerPublicKey)
-      toast.success(`Loan Accepted`, {
+    } catch (e) {
+      console.log(e)
+      toast.error(`Something went wrong`, {
         autoClose: 3000,
         position: 'top-center',
         hideProgressBar: false,
@@ -61,33 +63,6 @@ const SingleNftPage: NextPage = observer(({}) => {
         draggable: true,
         progress: undefined
       })
-    } catch (e: any) {
-      console.log(e)
-
-      if (e.message === 'User rejected the request.') {
-        toast.error(`Transaction rejected`, {
-          autoClose: 3000,
-          position: 'top-center',
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined
-        })
-      } else {
-        toast.error(`Something went wrong`, {
-          autoClose: 3000,
-          position: 'top-center',
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined
-        })
-      }
-    } finally {
-      store.Lightbox.setCanClose(true)
-      store.Lightbox.setVisible(false)
     }
   }
 
@@ -143,7 +118,7 @@ const SingleNftPage: NextPage = observer(({}) => {
                 return (
                   <Offer
                     key={offer.id}
-                    offerID={compressAddress(4, offer.id)}
+                    offerID={offer.id}
                     offerMint={offer.offerMint}
                     offerPublicKey={offer.publicKey.toBase58()}
                     status={offer.status.toString()}
@@ -154,7 +129,7 @@ const SingleNftPage: NextPage = observer(({}) => {
                     APR={offer.apr}
                     totalRepay={offer.totalRepay}
                     btnMessage={'Lend Tokens'}
-                    handleAcceptOffer={handleAcceptOffer}
+                    handleConfirmOffer={handleConfirmOffer}
                   />
                 )
               } else {

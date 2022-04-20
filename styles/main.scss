@@ -20,6 +20,7 @@
 @import './footer/footer';
 @import './showOnHover';
 @import './solscanExplorer';
+@import './popups';
 
 @import './singleOffer/header';
 @import './singleOffer/offer';
@@ -38,6 +39,7 @@
 @import './createLoan';
 @import './myOffers/connectWallet';
 @import './myOffers/myLendingList';
+@import './singleOffer/lendConfirmation';
 
 body {
   @include theme-aware('background-color', 'color-background');

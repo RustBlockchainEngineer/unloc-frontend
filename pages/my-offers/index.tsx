@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from 'react'
+import React, { useEffect, useContext, useState } from 'react'
 import type { NextPage } from 'next'
 import { observer } from 'mobx-react'
 import { PublicKey } from '@solana/web3.js'
@@ -12,6 +12,8 @@ import { MyOffersNftList } from '@components/myOffers/myOffersNftList'
 import { MyLendingList } from '@components/myOffers/myLendingList'
 
 const MyOffers: NextPage = observer(() => {
+  const [tabVisible, setTabVisible] = useState('offers')
+
   const store = useContext(StoreContext)
   const { connected, walletKey } = store.Wallet
 
@@ -39,8 +41,26 @@ const MyOffers: NextPage = observer(() => {
       <div className='page my-offers'>
         <LayoutTop />
         <MyOffersTop />
-        {connected ? <MyLendingList /> : ''}
-        {connected ? <MyOffersNftList /> : ''}
+        <div className='container-tabbed'>
+          <div className='container-tabbed-tabs'>
+            <button
+              className={`btn btn--md btn--bordered ${tabVisible === 'offers' ? 'active' : ''}`}
+              onClick={() => setTabVisible('offers')}
+            >
+              Offers
+            </button>
+            <button
+              className={`btn btn--md btn--bordered ${tabVisible === 'loans' ? 'active' : ''}`}
+              onClick={() => setTabVisible('loans')}
+            >
+              Loans Given
+            </button>
+          </div>
+          <div className='container-tabbed-content'>
+            {connected && tabVisible === 'loans' ? <MyLendingList /> : ''}
+            {connected && tabVisible === 'offers' ? <MyOffersNftList /> : ''}
+          </div>
+        </div>
       </div>
       <div className='home-bg-bottom' />
 
