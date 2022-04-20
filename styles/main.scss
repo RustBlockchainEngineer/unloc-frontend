@@ -39,6 +39,7 @@
 @import './createLoan';
 @import './myOffers/connectWallet';
 @import './myOffers/myLendingList';
+@import './singleOffer/lendConfirmation';
 
 body {
   @include theme-aware('background-color', 'color-background');

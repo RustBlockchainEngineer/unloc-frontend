@@ -3,6 +3,7 @@ import { BN } from '@project-serum/anchor'
 import { compressAddress } from '@utils/stringUtils/compressAdress'
 import { PublicKey } from '@solana/web3.js'
 import { IsubOfferData } from '@stores/Lightbox.store'
+import { currencyMints } from '@constants/currency'
 
 interface MyOffersNftOfferItemProps {
   offerAmount: any
@@ -50,7 +51,7 @@ export const MyOffersNftOfferItem: React.FC<MyOffersNftOfferItemProps> = ({
       </div>
       <div className='nft__offer-item'>
         <h4>Amount: </h4>
-        <p>{offerAmount.toNumber() / 1000000} USDC</p>
+        <p>{`${offerAmount.toNumber() / 1000000} ${currencyMints[offerMint.toBase58()]}`}</p>
       </div>
 
       <div className='nft__offer-item'>

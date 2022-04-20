@@ -205,20 +205,22 @@ export class OffersStore {
   private handleFilters = (data: any) => {
     const output: any[] = []
     data.forEach((offer: any) => {
-      const amountCheck = this.inRange(
-        offer.offerAmount.toNumber() / 1000000,
-        this.filterAmountMin,
-        this.filterAmountMax
-      )
-      const durationCheck = this.inRange(
-        offer.loanDuration.toNumber() / (3600 * 24),
-        this.filterDurationMin,
-        this.filterDurationMax
-      )
-      const aprCheck = this.inRange(asBigNumber(offer.aprNumerator), this.filterAprMin, this.filterAprMax)
+      if (offer.offerAmount) {
+        const amountCheck = this.inRange(
+          offer.offerAmount.toNumber() / 1000000,
+          this.filterAmountMin,
+          this.filterAmountMax
+        )
+        const durationCheck = this.inRange(
+          offer.loanDuration.toNumber() / (3600 * 24),
+          this.filterDurationMin,
+          this.filterDurationMax
+        )
+        const aprCheck = this.inRange(asBigNumber(offer.aprNumerator), this.filterAprMin, this.filterAprMax)
 
-      if (aprCheck && amountCheck && durationCheck) {
-        output.push(offer)
+        if (aprCheck && amountCheck && durationCheck) {
+          output.push(offer)
+        }
       }
     })
 
