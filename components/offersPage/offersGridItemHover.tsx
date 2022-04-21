@@ -31,7 +31,7 @@ const OffersGridItemHover: React.FC<IProps> = ({
   collection
 }) => {
   return (
-    <div style={{ opacity: `${visible ? 1 : 0}` }} className='onHover-data'>
+    <div className={`onHover-data ${visible ? '' : 'hide'}`}>
       <Link href={`/offers/${subOfferKey}`}>
         <div className='onHover-link'>
           <div className='data-item'>

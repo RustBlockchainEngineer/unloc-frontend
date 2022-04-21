@@ -1,0 +1,89 @@
+.lend-confirmation {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+
+  h2 {
+    width: 100%;
+    font-size: $tp-lg;
+    text-align: center;
+    margin-bottom: 30px;
+  }
+
+  .collateral {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+
+    .label {
+      width: 100%;
+      text-align: center;
+      font-size: $tp-md;
+      margin-bottom: 10px;
+      @include theme-aware('color', 'color-secondary');
+    }
+
+    .nft-pill {
+      @include theme-aware('background-color', 'nft-pill-bg');
+      border-radius: $brd-rds-lg;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+
+      .nft-image-circled img {
+        border-radius: $brd-rds-lg;
+      }
+
+      .nft-name {
+        margin-top: 5px;
+        @include theme-aware('color', 'color-label');
+      }
+    }
+  }
+
+  .offer-data {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 20px 0;
+
+    .offer-data-top {
+      width: 100%;
+      text-align: center;
+      font-size: $tp-md;
+      @include theme-aware('color', 'color-secondary');
+      border-bottom: 1px solid;
+      @include theme-aware('border-color', 'color-secondary');
+      padding: 0 0 10px;
+      margin: 10px 0;
+    }
+
+    .offer-data-liner {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      @include theme-aware('color', 'color-label');
+      margin: 10px 0;
+
+      .title {
+        font-size: $tp-md;
+      }
+
+      .data {
+        font-size: $tp-xl-mb;
+        font-weight: $wg-bd;
+      }
+    }
+  }
+
+  .btn {
+    width: 100%;
+    justify-content: center;
+  }
+}

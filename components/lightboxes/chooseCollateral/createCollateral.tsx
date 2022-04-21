@@ -110,7 +110,7 @@ export const CreateCollateral: React.FC = observer(() => {
         {data && data.length ? (
           <>
             <div className='NFT-lb-header'>
-              <h1>Choose a NFT for collateral</h1>
+              <h1>Choose an NFT for collateral</h1>
               <select onChange={(e) => sortNFT(e.target.value)} className='sort-select'>
                 <option value=''>Sort by</option>
                 <option value='name'>Sort by name</option>

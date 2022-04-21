@@ -14,7 +14,8 @@ import {
   cancelSubOffer,
   updateSubOffer,
   cancelOffer,
-  getSubOfferMultiple
+  getSubOfferMultiple,
+  claimCollateral
 } from '@integration/nftLoan'
 import { currencies, currencyMints } from '@constants/currency'
 import { getDurationForContractData } from '@utils/getDuration'
@@ -92,6 +93,7 @@ export class MyOffersStore {
     if (this.offers && this.offers.length > 0) {
       const data: NFTMetadata[] = []
       const nftMintKeys: PublicKey[] = []
+      console.log('test')
 
       for (const offer of this.offers) {
         const nftMint = offer.account.nftMint
@@ -211,5 +213,9 @@ export class MyOffersStore {
 
       this.lendingList = lendedLoans
     }
+  }
+
+  @action.bound handleClaimCollateral = async (subOffer: PublicKey) => {
+    await claimCollateral(subOffer)
   }
 }

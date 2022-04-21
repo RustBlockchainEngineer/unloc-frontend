@@ -35,7 +35,8 @@ export const MyOffersNftList: React.FC = observer(() => {
             offerMint,
             offerVault,
             state,
-            subOfferNumber
+            subOfferNumber,
+            loanStartedTime
           } = subOffer.account
           offerSubOffers.push({
             subOfferKey: subOffer.publicKey,
@@ -48,7 +49,8 @@ export const MyOffersNftList: React.FC = observer(() => {
             offerMint,
             offerVault,
             state,
-            subOfferNumber
+            subOfferNumber,
+            loanStartedTime
           })
         }
       })

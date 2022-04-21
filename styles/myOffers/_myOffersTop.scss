@@ -16,6 +16,7 @@
         margin-bottom: 5px;
       }
     }
+
     h2 {
       margin: 0;
       padding: 0;
@@ -35,6 +36,7 @@
 
       .show-on-hover__elements__wrap {
         @media (max-width: $bp-tablet) {
+          display: block;
           width: 100%;
           text-align: center;
           justify-items: center;
@@ -87,4 +89,28 @@
   align-items: center;
   justify-content: center;
   background-color: rgba(0, 0, 0, 0.5);
+}
+
+.container-tabbed {
+  .container-tabbed-tabs {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin-top: 40px;
+
+    button {
+      height: auto;
+      padding: 6px 20px;
+      margin-right: 10px;
+
+      &:last-child {
+        margin-right: 0;
+      }
+
+      &.active {
+        @include theme-aware('background-color', 'color-primary');
+        @include theme-aware('color', 'color-label');
+      }
+    }
+  }
 }

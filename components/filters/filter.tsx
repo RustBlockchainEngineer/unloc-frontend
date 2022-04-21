@@ -1,11 +1,14 @@
 import React from 'react'
-
+import { validateFilterInput, validateFilterInputMin, validateFilterInputMax } from '../../methods/validators/filterValidator'
 interface FilterOffersInterface {
   title: string
   type: 'single' | 'multi' | 'minmax'
   action?: (value: string) => void
   actionMin?: (value: number) => void
   actionMax?: (value: number) => void
+  actionValidator?: number
+  actionValidatorMin?: number
+  actionValidatorMax?: number
   values?: string[]
   valuesRange?: { min: number; max: number }
   items?: { label: string; value: string }[]
@@ -18,6 +21,9 @@ export const Filter = ({
   action,
   actionMin,
   actionMax,
+  actionValidator,
+  actionValidatorMin,
+  actionValidatorMax,
   values,
   valuesRange
 }: FilterOffersInterface) => {
@@ -39,6 +45,28 @@ export const Filter = ({
     }
   }
 
+  const handleAction = (inputValue: string) => {
+    if (inputValue && validateFilterInput(inputValue, '') && action) {
+      action(inputValue)
+    }
+  }
+
+  const handleActionMin = (inputValue: number) => {
+    if (inputValue && actionValidatorMin && validateFilterInputMin(inputValue, actionValidatorMin) && actionMin) {
+      actionMin(inputValue)
+    } else if (actionValidatorMin && actionMax) {
+      actionMax(actionValidatorMin)
+    }
+  }
+
+  const handleActionMax = (inputValue: number) => {
+    if (inputValue && actionValidatorMax && validateFilterInputMax(inputValue, actionValidatorMax) && actionMax) {
+      actionMax(inputValue)
+    } else if (actionValidatorMax && actionMax) {
+      actionMax(actionValidatorMax)
+    }
+  }
+
   const renderList = () => {
     const data =
       items && items.length && action ? (
@@ -49,7 +77,7 @@ export const Filter = ({
                 type='checkbox'
                 name={item.value}
                 defaultChecked={handleCheckedItem(item.value)}
-                onChange={() => action(item.value)}
+                onChange={() => handleAction(item.value)}
               />
               <span className='checkbox-custom rectangular'></span>
             </label>
@@ -83,7 +111,7 @@ export const Filter = ({
               className='min'
               type='number'
               value={valuesRange.min}
-              onChange={(e) => actionMin(Number(e.target.value))}
+              onChange={(e) => handleActionMin(Number(e.target.value))}
             />
           </div>
           <div className='filter-line'>
@@ -92,7 +120,7 @@ export const Filter = ({
               className='max'
               type='number'
               value={valuesRange.max}
-              onChange={(e) => actionMax(Number(e.target.value))}
+              onChange={(e) => handleActionMax(Number(e.target.value))}
             />
           </div>
         </div>

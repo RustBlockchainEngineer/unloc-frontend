@@ -31,6 +31,11 @@
       .info-content {
         @include theme-aware('color', 'color-label');
       }
+
+      button {
+        width: 100%;
+        justify-content: center;
+      }
     }
   }
 }

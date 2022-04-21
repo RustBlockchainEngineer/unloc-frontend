@@ -1,0 +1,62 @@
+.clipboard-icon {
+  position: relative;
+  margin-left: $mr-tn;
+  cursor: pointer;
+}
+
+.popup {
+  z-index: 999;
+  position: absolute;
+  border-radius: $brd-rds-sm;
+  display: inline-flex;
+  font-size: $tp-sm;
+  text-align: center;
+
+  &::before {
+    @include theme-aware('border-bottom-color', 'color-primary-dark');
+    content: '';
+    position: absolute;
+    border-width: 4px;
+    border-style: solid;
+    border-color: transparent;
+    right: 50%;
+  }
+
+  &.hidden {
+    visibility: hidden;
+  }
+}
+
+.popup--clipboard {
+  @include theme-aware('background-color', 'color-primary-dark');
+  @include theme-aware('color', 'color-white');
+  top: $mr-lg;
+  padding: 4px;
+  left: -15px;
+
+  &::before {
+    margin-top: -$mr-sm;
+  }
+}
+
+.popup--share {
+  @include theme-aware('background-color', 'color-primary-dark');
+  top: calc(100% + $mr-sm);
+
+  &::before {
+    margin-top: -8px;
+  }
+}
+
+.popup--clipboard--history {
+  @include theme-aware('background-color', 'color-primary-dark');
+  @include theme-aware('color', 'color-white');
+  position: relative;
+  top: $mr-lg;
+  padding: 4px;
+  margin-left: -$mr-3xl;
+
+  &::before {
+    margin-top: -$mr-sm;
+  }
+}
