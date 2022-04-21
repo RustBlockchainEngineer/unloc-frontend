@@ -84,6 +84,15 @@
   }
 }
 
+.icon--rnd--triangle {
+  &--down {
+    background-image: url('/icons/round-triangle-icon-down.svg');
+  }
+  &--up {
+    background-image: url('/icons/round-triangle-icon-up.svg');
+  }
+}
+
 .icon--fb {
   background-image: url('/icons/facebook-light.svg');
 }

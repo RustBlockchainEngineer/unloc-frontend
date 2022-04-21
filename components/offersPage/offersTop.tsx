@@ -29,7 +29,9 @@ export const OffersTop = observer(() => {
             store.Offers.setFiltersVisible(!filtersVisible)
           }}
         >
-          Filters
+          <i className='icon icon--vs filter--icon'></i>
+          <span>FILTERS</span>
+          <i className={`icon icon--vs filter--icon icon--caret${filtersVisible ? '--down' : '--up'}`}></i>
         </button>
 
         <div className='offers-view'>

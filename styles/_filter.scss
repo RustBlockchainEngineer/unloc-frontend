@@ -8,7 +8,7 @@
 
     h5 {
       font-size: $tp-lg;
-      @include theme-aware('color', 'color-label');
+      @include theme-aware('color', 'input-number-color');
       margin: 0;
       text-transform: capitalize;
     }
@@ -41,22 +41,23 @@
       justify-content: space-between;
       width: 100%;
       line-height: 30px;
-      @include theme-aware('color', 'color-content');
+      @include theme-aware('color', 'input-number-color');
     }
 
     span {
-      @include theme-aware('color', 'color-label');
+      @include theme-aware('color', 'input-number-color');
     }
 
     input[type='number'] {
+      height: 28px;
       width: 80%;
-      border-radius: $brd-rds-sm;
-      border: 2px solid;
+      border-radius: $brd-rds-tn;
+      border: 0px;
       @include theme-aware('border-color', 'color-secondary');
       margin-bottom: 10px;
       padding: 4px 8px;
-      @include theme-aware('background-color', 'color-label');
-      @include theme-aware('color', 'color-input-text');
+      @include theme-aware('background-color', 'input-number-bg');
+      @include theme-aware('color', 'input-number-color');
       transition: border 0.3s ease-in-out, outline 0.3s ease-in-out;
 
       &:focus {
@@ -65,6 +66,12 @@
         @include theme-aware('border-color', 'color-primary');
       }
     }
+
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+      opacity: 0;
+    }
+
   }
 }
 
@@ -101,7 +108,7 @@
   @include theme-aware('border-color', 'color-label');
 }
 
-.checkbox-label input:checked ~ .checkbox-custom {
+.checkbox-label input:checked~.checkbox-custom {
   @include theme-aware('background-color', 'color-label');
   border-radius: 5px;
   -webkit-transform: rotate(0deg) scale(1);
@@ -134,7 +141,7 @@
   -o-transition: all 0.3s ease-out;
 }
 
-.checkbox-label input:checked ~ .checkbox-custom::after {
+.checkbox-label input:checked~.checkbox-custom::after {
   -webkit-transform: rotate(45deg) scale(1);
   -ms-transform: rotate(45deg) scale(1);
   transform: rotate(45deg) scale(1);
@@ -167,7 +174,7 @@
   pointer-events: none;
 }
 
-.checkbox-label input:checked ~ .checkbox-custom::before {
+.checkbox-label input:checked~.checkbox-custom::before {
   left: -3px;
   top: -3px;
   width: 24px;

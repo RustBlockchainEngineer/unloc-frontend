@@ -3,6 +3,7 @@
   display: flex;
   justify-content: space-between;
   margin-top: 50px;
+  margin-bottom: 50px;
 
   h1 {
     font-size: $tp-1xl;
@@ -11,11 +12,24 @@
 
   .btn--filters {
     margin-top: 40px;
+    display: flex;
+    align-items: center;
+    @include theme-aware('color', 'input-number-color');
+    
+    span {
+      margin: 0px 40px;
+    }
+
+    .filter--icon {
+      margin: 0px -15px;
+    }
 
     &.active {
       @include theme-aware('background-color', 'color-accent');
-      border-radius: 24px 24px 0 0;
-      margin-top: 50px;
+      margin-top: 100px;
+      margin-bottom: -100px;
+      box-shadow: 0px 3px 0px rgba(33, 13, 72, 0.25);
+      z-index: 1;
     }
   }
 
@@ -32,6 +46,7 @@
       position: absolute;
       bottom: 20px;
       right: 20px;
+
       &.active {
         border-radius: $brd-rds-lg;
         margin-top: 40px;
@@ -86,7 +101,7 @@
 
   &.active {
     width: 100%;
-    margin-top: 0px;
+    margin-top: -20px;
     transform: scaleY(1);
     height: auto;
     padding: 30px;
