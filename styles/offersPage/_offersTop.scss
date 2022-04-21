@@ -14,7 +14,7 @@
     margin-top: 40px;
     display: flex;
     align-items: center;
-    @include theme-aware('color', 'input-number-color');
+    @include theme-aware('color', 'color-label');
 
     span {
       margin: 0px 40px;
@@ -30,6 +30,10 @@
       margin-bottom: -100px;
       box-shadow: 0px 3px 0px rgba(33, 13, 72, 0.25);
       z-index: 1;
+    }
+
+    &:hover{
+      @include theme-aware('background-color', 'filter-btn-hover');
     }
   }
 

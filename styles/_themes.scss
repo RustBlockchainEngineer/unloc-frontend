@@ -33,7 +33,9 @@ $themes: (
     input-number-bg: #FFFFFF,
     input-number-color: #210D48,
     input-number-button-bg: #E2D9F6,
-    checkbox-checked-bg: #DF0B7F
+    checkbox-checked-bg: #DF0B7F,
+    switch-knob: #2e13d2,
+    filter-btn-hover: #705CEB
   ),
   dark: (
     color-background: #210d48,
@@ -70,6 +72,8 @@ $themes: (
     input-number-bg: #210D48,
     input-number-color: #FFFFFF,
     input-number-button-bg: #331C62,
-    checkbox-checked-bg: #DF0B7F
+    checkbox-checked-bg: #DF0B7F,
+    switch-knob: #e00a7f,
+    filter-btn-hover: #5D38A2
   )
 );

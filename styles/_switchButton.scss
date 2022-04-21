@@ -8,7 +8,7 @@
 }
 
 .switch--button--knob{
-    @include theme-aware('background-color', 'input-number-color');
+    @include theme-aware('background-color', 'switch-knob');
     height: 13px;
     width: 13px;
     border-radius: 50%;

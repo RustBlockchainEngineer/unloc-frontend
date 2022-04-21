@@ -8,9 +8,10 @@
     
     i{
         margin: 0px 5px;
+        filter: invert(47%) sepia(56%) saturate(480%) hue-rotate(219deg) brightness(93%) contrast(111%);
     }
 
     i.active{
-        filter: invert(47%) sepia(56%) saturate(480%) hue-rotate(219deg) brightness(93%) contrast(111%);
+        filter: none;
     }
 }
