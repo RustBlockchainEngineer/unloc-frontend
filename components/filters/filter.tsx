@@ -3,7 +3,7 @@ import { validateFilterInput, validateFilterInputMin, validateFilterInputMax } f
 import { InputNumberArrows } from './inputNumberArrows'
 interface FilterOffersInterface {
   title: string
-  titleComponent?: ReactElement<any, any>
+  titleComponent?: React.ReactElement<any, any>
   type: 'single' | 'multi' | 'minmax'
   action?: (value: string) => void
   actionMin?: (value: number) => void
