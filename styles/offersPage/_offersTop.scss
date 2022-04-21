@@ -15,7 +15,7 @@
     display: flex;
     align-items: center;
     @include theme-aware('color', 'input-number-color');
-    
+
     span {
       margin: 0px 40px;
     }
@@ -91,13 +91,14 @@
 .offers-filters {
   display: flex;
   justify-items: center;
+  align-items: center;
   width: 100%;
   transform: scaleY(0);
   transition: transform 0.3s ease-in-out, padding 0.3s ease-in-out, margin 0.3s ease-in-out;
   @include theme-aware('background-color', 'color-accent');
   padding: 0;
   height: auto;
-  border-radius: $brd-rds-lg;
+  border-radius: $brd-rds-md;
 
   &.active {
     width: 100%;
@@ -111,7 +112,6 @@
   .filter-generic {
     padding-right: 20px;
     margin-left: 20px;
-    border-right: 1px dotted;
     @include theme-aware('border-color', 'color-secondary');
 
     &:first-child {

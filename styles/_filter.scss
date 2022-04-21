@@ -11,6 +11,8 @@
       @include theme-aware('color', 'input-number-color');
       margin: 0;
       text-transform: capitalize;
+      display: flex;
+      align-items: center;
     }
   }
 
@@ -53,17 +55,15 @@
       width: 80%;
       border-radius: $brd-rds-tn;
       border: 0px;
-      @include theme-aware('border-color', 'color-secondary');
       margin-bottom: 10px;
       padding: 4px 8px;
       @include theme-aware('background-color', 'input-number-bg');
       @include theme-aware('color', 'input-number-color');
-      transition: border 0.3s ease-in-out, outline 0.3s ease-in-out;
+      transition: outline 0.3s ease-in-out;
 
       &:focus {
-        outline-width: 2px;
-        @include theme-aware('outline-color', 'color-primary');
-        @include theme-aware('border-color', 'color-primary');
+        outline-width: 1px;
+        @include theme-aware('outline-color', 'color-label');
       }
     }
 
@@ -97,26 +97,25 @@
   left: 0px;
   height: 24px;
   width: 24px;
-  background-color: transparent;
-  border-radius: 5px;
+  @include theme-aware('background-color', 'input-number-bg');
+  border-radius: $brd-rds-tn;
   transition: all 0.3s ease-out;
   -webkit-transition: all 0.3s ease-out;
   -moz-transition: all 0.3s ease-out;
   -ms-transition: all 0.3s ease-out;
   -o-transition: all 0.3s ease-out;
-  border: 2px solid;
   @include theme-aware('border-color', 'color-label');
 }
 
 .checkbox-label input:checked~.checkbox-custom {
-  @include theme-aware('background-color', 'color-label');
-  border-radius: 5px;
+  @include theme-aware('background-color', 'checkbox-checked-bg');
+  border-radius: $brd-rds-tn;
   -webkit-transform: rotate(0deg) scale(1);
   -ms-transform: rotate(0deg) scale(1);
   transform: rotate(0deg) scale(1);
   opacity: 1;
   border: 2px solid;
-  @include theme-aware('border-color', 'color-label');
+  border-color: transparent;
 }
 
 .checkbox-label .checkbox-custom::after {
@@ -151,7 +150,7 @@
   width: 6px;
   height: 12px;
   border: solid;
-  @include theme-aware('border-color', 'color-primary');
+  @include theme-aware('border-color', 'color-label');
   border-width: 0 4px 4px 0;
   background-color: transparent;
   border-radius: 0;

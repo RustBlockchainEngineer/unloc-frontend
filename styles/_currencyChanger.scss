@@ -1,0 +1,16 @@
+.currency--changer{
+    margin-left: 10px;
+    display: inline-block;
+}
+.currency--changer--wrapper{
+    display: flex;
+    align-items: center;
+    
+    i{
+        margin: 0px 5px;
+    }
+
+    i.active{
+        filter: invert(47%) sepia(56%) saturate(480%) hue-rotate(219deg) brightness(93%) contrast(111%);
+    }
+}
