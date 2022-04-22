@@ -99,6 +99,8 @@
 }
 
 .offers-filters {
+  margin-top: -20px;
+  margin-bottom: -200px;
   display: flex;
   justify-items: center;
   align-items: center;
@@ -113,6 +115,7 @@
   &.active {
     width: 100%;
     margin-top: -20px;
+    margin-bottom: 0;
     transform: scaleY(1);
     height: auto;
     padding: 30px;
