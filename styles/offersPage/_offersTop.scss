@@ -79,11 +79,22 @@
   }
 
   button.active {
-    @include theme-aware('background-color', 'color-accent');
+    @include theme-aware('background-color', 'grid-table-button-bg');
+    @include theme-aware('color', 'switch-color');
   }
 
   button {
-    @include theme-aware('color', 'color-content');
+    @include theme-aware('color', 'grid-table-button-bg');
+    @include theme-aware('border-color', 'grid-table-button-bg');
+
+    &:hover:not(.active){
+    @include theme-aware('background-color', 'color-accent');
+    }
+
+    :last-child{
+      display: block;
+      margin-left: 20px;
+    }
   }
 
   @media (max-width: $bp-tablet) {
