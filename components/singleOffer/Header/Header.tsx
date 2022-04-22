@@ -29,25 +29,31 @@ export const Header: React.FC<IProps> = ({ collectionName, nftName, nftImage, nf
         </div>
       </div>
       <div className='nft-info-metadata'>
-        {nftAddress ? (
-          <div className='metadata-line'>
-            <label>Address</label>
-            <ShowOnHover label={`#${nftAddress}`}>
-              <ClipboardButton data={nftAddress} />
-              <SolscanExplorerIcon type={'token'} address={nftAddress} />
-            </ShowOnHover>
-          </div>
-        ) : (
-          <></>
-        )}
-        {website ? (
-          <div className='metadata-line'>
-            <label>Website</label>
-            <span>{website}</span>
-          </div>
-        ) : (
-          <></>
-        )}
+        <div className='nft-info-metadata__icons'>
+          <i className='icon icon--md icon--place' />
+          <i className='icon icon--md icon--globe' />
+        </div>
+        <div>
+          {nftAddress ? (
+            <div className='metadata-line'>
+              <label>Address</label>
+              <ShowOnHover label={`${nftAddress}`}>
+                <ClipboardButton data={nftAddress} />
+                <SolscanExplorerIcon type={'token'} address={nftAddress} />
+              </ShowOnHover>
+            </div>
+          ) : (
+            <></>
+          )}
+          {website ? (
+            <div className='metadata-line'>
+              <label>Website</label>
+              <span>{website}</span>
+            </div>
+          ) : (
+            <></>
+          )}
+        </div>
       </div>
     </div>
   )

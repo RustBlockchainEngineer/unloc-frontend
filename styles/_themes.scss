@@ -63,6 +63,9 @@ $themes: (
     lightbox-range-bg: #8e1a59,
     lightbox-currency-color: #e0097e,
     lightbox-label-color: #210d48,
+
+    icon-globe: url('/icons/globe-icon-light.svg'),
+    icon-place: url('/icons/place-icon-light.svg'),
   ),
   dark: (
     color-background: #210d48,
@@ -129,5 +132,8 @@ $themes: (
     lightbox-range-bg: #8e1a59,
     lightbox-currency-color: #e0097e,
     lightbox-label-color: #ffffff,
+
+    icon-globe: url('/icons/globe-icon-dark.svg'),
+    icon-place: url('/icons/place-icon-dark.svg'),
   ),
 );
