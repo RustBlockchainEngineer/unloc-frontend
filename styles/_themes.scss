@@ -24,7 +24,7 @@ $themes: (
     single-offer-meta-label: #ffffff,
     single-offer-offer-bg: linear-gradient(180deg, #d6c0ff 0%, #b4ace2 100%),
     single-offer-offer-bg-hover: linear-gradient(180deg, #d6c0ff 80%, #b4ace2 100%),
-    icon-cross: url('/icons/cross-icon-secondary.svg'),
+    icon-cross: url('/icons/cross-icon-primary.svg'),
     wallet-button-box-shadow: 0px 0px 4px #e00a7f,
     info-red: #b82626,
     info-green: #7fbe20,
@@ -54,6 +54,18 @@ $themes: (
     icon-paginator-left: url('/icons/page-left-icon-light.svg'),
     icon-paginator-right: url('/icons/page-right-icon-light.svg'),
     pagination-color: white,
+
+    lightbox-collection-border: #2e13d2,
+    lightbox-collection-color: #210d48,
+    lightbox-collection-select-bg: #ffffff,
+    lightbox-collection-select-color: #210d48,
+    lightbox-collection-select-hover: #d1c1f3,
+    lightbox-range-bg: #8e1a59,
+    lightbox-currency-color: #e0097e,
+    lightbox-label-color: #210d48,
+
+    icon-globe: url('/icons/globe-icon-light.svg'),
+    icon-place: url('/icons/place-icon-light.svg'),
   ),
   dark: (
     color-background: #210d48,
@@ -111,5 +123,17 @@ $themes: (
     icon-paginator-left: url('/icons/page-left-icon-dark.svg'),
     icon-paginator-right: url('/icons/page-right-icon-dark.svg'),
     pagination-color: white,
+
+    lightbox-collection-border: #e00a7f,
+    lightbox-collection-color: #9e6cff,
+    lightbox-collection-select-bg: #210d48,
+    lightbox-collection-select-color: #ffffff,
+    lightbox-collection-select-hover: #3e1f78,
+    lightbox-range-bg: #8e1a59,
+    lightbox-currency-color: #e0097e,
+    lightbox-label-color: #ffffff,
+
+    icon-globe: url('/icons/globe-icon-dark.svg'),
+    icon-place: url('/icons/place-icon-dark.svg'),
   ),
 );

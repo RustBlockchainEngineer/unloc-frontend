@@ -162,6 +162,14 @@
   }
 }
 
+.icon--globe {
+  @include theme-aware('background-image', 'icon-globe');
+}
+
+.icon--place {
+  @include theme-aware('background-image', 'icon-place');
+}
+
 .icon--tn {
   width: 12px;
   height: 12px;
