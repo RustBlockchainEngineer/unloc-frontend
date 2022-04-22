@@ -19,7 +19,6 @@
   @media (max-width: calc($bp-phone)) {
     display: none;
   }
-  
 }
 
 .top-menu {
@@ -50,7 +49,7 @@
 
     &.active {
       @include theme-aware('background-color', 'color-primary');
-      @include theme-aware('color', 'color-label');
+      @include theme-aware('color', 'lend-offer-button');
     }
   }
 
