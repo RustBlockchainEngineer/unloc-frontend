@@ -2,9 +2,11 @@ import React, { useContext, useState } from 'react'
 import { observer } from 'mobx-react'
 import { StoreContext } from '@pages/_app'
 import { Filter } from '@components/filters/filter'
+import { CurrencyChanger } from '@components/layout/currencyChanger'
 
 export const OffersTop = observer(() => {
   const store = useContext(StoreContext)
+  const [currency, setCurrency] = useState(true)
   const {
     filterCollection,
     filterCollectionSelected,
@@ -29,7 +31,9 @@ export const OffersTop = observer(() => {
             store.Offers.setFiltersVisible(!filtersVisible)
           }}
         >
-          Filters
+          <i className='icon icon--vs filter--icon'></i>
+          <span>FILTERS</span>
+          <i className={`icon icon--vs filter--icon icon--filter${filtersVisible ? '--down' : '--striped'}`}></i>
         </button>
 
         <div className='offers-view'>
@@ -51,14 +55,15 @@ export const OffersTop = observer(() => {
       </div>
       <div className={`offers-filters ${filtersVisible ? 'active' : ''}`}>
         <Filter
-          title='Collections'
+          title='COLLECTIONS'
           type='multi'
           items={filterCollection}
           action={store.Offers.setFilterCollection}
           values={filterCollectionSelected}
         />
         <Filter
-          title='Loan Amount'
+          title='LOAN AMOUNT'
+          titleComponent={<CurrencyChanger state={currency} onClick={setCurrency} />}
           type='minmax'
           valuesRange={{ min: filterAmountMin, max: filterAmountMax }}
           actionMin={store.Offers.setFilterAmountMin}
@@ -76,7 +81,7 @@ export const OffersTop = observer(() => {
           actionValidatorMax={store.Offers.filterAprValidatorMax}
         />
         <Filter
-          title='Duration'
+          title='DURATION (DAYS)'
           type='minmax'
           valuesRange={{ min: filterDurationMin, max: filterDurationMax }}
           actionMin={store.Offers.setFilterDurationMin}

@@ -84,6 +84,35 @@
   }
 }
 
+.icon--filter {
+  &--down {
+    background-image: url('/icons/filter-arrow-down.svg');
+  }
+
+  &--striped {
+    background-image: url('/icons/filter-arrow-striped.svg');
+  }
+}
+
+.icon--rnd--triangle {
+  &--down {
+    background-image: url('/icons/round-triangle-icon-down.svg');
+  }
+  &--up {
+    background-image: url('/icons/round-triangle-icon-up.svg');
+  }
+}
+
+.icon--currency {
+  &--SOL{
+    background-image: url('/icons/SOL-icon.svg');
+  }
+  &--USDC{
+    background-image: url('/icons/USDC-icon.svg');
+  }
+}
+
+
 .icon--fb {
   background-image: url('/icons/facebook-light.svg');
 }
