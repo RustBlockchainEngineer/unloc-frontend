@@ -81,9 +81,9 @@
 
 .collateral-list-item {
   border: 1px solid;
-  @include theme-aware('border-color', 'color-primary');
+  @include theme-aware('border-color', 'lightbox-collection-border');
   border-radius: 6px;
-  padding: 15px;
+  padding: 8px;
   display: flex;
   align-items: center;
   justify-content: flex-start;
@@ -126,6 +126,7 @@
 
     & p:nth-child(1) {
       font-weight: 400;
+      @include theme-aware('color', 'lightbox-collection-color');
     }
 
     & p:nth-child(2) {
@@ -157,14 +158,13 @@
 }
 
 .sort-select {
-  border: 1px solid;
-  @include theme-aware('border-color', 'color-border');
-  @include theme-aware('background-color', 'color-accent');
-  color: #ffffff;
+  border: 0;
+  @include theme-aware('background-color', 'lightbox-collection-select-bg');
+  @include theme-aware('color', 'lightbox-collection-select-color');
   border-radius: 2px;
-  width: 188px;
+  width: 200px;
   font-size: 18px;
-  padding: 10px;
+  padding: 8px;
   appearance: none;
   -moz-appearance: none;
   -webkit-appearance: none;
