@@ -48,15 +48,16 @@ export const OffersTableRow = ({
           </div>
           <div className='row-cell'>
             <span className='text-content'>
-              {amount} {currency}
+              {amount}
+            </span>
+          </div>
+          <div className='row-cell'>
+            <span className='text-content'>
+              <i className={`icon icon--sm icon--currency--${currency}`}></i>
             </span>
           </div>
           <div className='row-cell'>
             <span className='text-content'>{duration} Days</span>
-          </div>
-
-          <div className='row-cell'>
-            <span className='text-content'>{count ? `${count}` : ``}</span>
           </div>
         </a>
       </Link>
