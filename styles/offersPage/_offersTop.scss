@@ -26,6 +26,23 @@
     &:hover{
       @include theme-aware('background-color', 'filter-btn-hover');
     }
+
+  }
+
+  @media (max-width: $bp-tablet) {
+    margin-top: 100px;
+
+    .btn--filters {
+      margin-top: 0;
+      margin-bottom: -160px;
+      z-index: 0;
+      
+        &.active {
+          border-radius: $brd-rds-lg;
+          margin-top: 40px;
+          margin-bottom: -18px;
+        }
+    }
   }
 }
 
@@ -50,17 +67,6 @@
     h1 {
       text-align: center;
     }
-
-    .btn--filters {
-      position: absolute;
-      bottom: 20px;
-      right: 20px;
-
-      &.active {
-        border-radius: $brd-rds-lg;
-        margin-top: 40px;
-      }
-    }
   }
 }
 
@@ -81,15 +87,10 @@
   }
 
   @media (max-width: $bp-tablet) {
+    display: none;
     margin: 30px 10px 20px;
-
     button {
       font-size: $tp-tn;
-
-      &:last-child {
-        margin-left: 13px;
-      }
-
       &.btn--table {
         display: none;
       }
@@ -137,6 +138,7 @@
   }
 
   @media (max-width: $bp-tablet) {
+    margin-bottom: 0;
     &.active {
       width: 95vw;
       flex-direction: column;

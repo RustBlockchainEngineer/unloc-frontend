@@ -24,3 +24,10 @@
         @include theme-aware('background-color', 'input-number-button-bg');
     }
 }
+
+
+@media (max-width: $bp-tablet) {
+    .input--number--buttons{
+        display: none;
+    }
+}
