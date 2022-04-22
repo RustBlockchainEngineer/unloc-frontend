@@ -55,22 +55,18 @@
 }
 
 .icon--grid {
-  &--light {
-    background-image: url('/icons/display-grid-light.svg');
-  }
+  @include theme-aware('background-image', 'icon-grid');
 
-  &--dark {
-    background-image: url('/icons/display-grid-dark.svg');
+  &.active {
+    background-image: url('/icons/display-grid-white.svg');
   }
 }
 
 .icon--table {
-  &--light {
-    background-image: url('/icons/display-table-light.svg');
-  }
+  @include theme-aware('background-image', 'icon--table');
 
-  &--dark {
-    background-image: url('/icons/display-table-dark.svg');
+  &.active {
+    background-image: url('/icons/display-table-white.svg');
   }
 }
 
@@ -86,11 +82,11 @@
 
 .icon--filter {
   &--down {
-    background-image: url('/icons/filter-arrow-down.svg');
+    @include theme-aware('background-image', 'filter-arrow-down');
   }
 
   &--striped {
-    background-image: url('/icons/filter-arrow-striped.svg');
+    @include theme-aware('background-image', 'filter-stripe');
   }
 }
 
@@ -104,14 +100,13 @@
 }
 
 .icon--currency {
-  &--SOL{
-    background-image: url('/icons/SOL-icon.svg');
+  &--SOL {
+    @include theme-aware('background-image', 'icon-SOL');
   }
-  &--USDC{
-    background-image: url('/icons/USDC-icon.svg');
+  &--USDC {
+    @include theme-aware('background-image', 'icon-USDC');
   }
 }
-
 
 .icon--fb {
   background-image: url('/icons/facebook-light.svg');
@@ -156,6 +151,15 @@
   background-image: url('/icons/twitter-icon.svg');
   background-size: contain;
   background-repeat: no-repeat;
+}
+
+.icon--paginator {
+  &--left {
+    @include theme-aware('background-image', 'icon-paginator-left');
+  }
+  &--right {
+    @include theme-aware('background-image', 'icon-paginator-right');
+  }
 }
 
 .icon--tn {

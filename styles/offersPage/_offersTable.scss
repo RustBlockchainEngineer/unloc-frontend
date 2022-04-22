@@ -12,7 +12,7 @@
     justify-content: center;
   }
 
-  :last-child a{
+  :last-child a {
     border-radius: 0px 0px $brd-rds-sm $brd-rds-sm;
   }
 }
@@ -28,6 +28,7 @@
   border-radius: $brd-rds-sm $brd-rds-sm 0 0;
   display: grid;
   grid-template-columns: 2fr 1.5fr 1fr 1fr 1fr 1fr;
+  backdrop-filter: blur(21px);
 
   .row-cell {
     text-align: left;
@@ -45,11 +46,13 @@
     @include theme-aware('color', 'color-label');
     text-decoration: none;
     transition: background-color 0.3s ease-in-out;
+    backdrop-filter: blur(21px);
 
     &:hover {
       @include theme-aware('background-color', 'bg-table-hover');
       & button {
         opacity: 1;
+        @include theme-aware('color', 'lend-offer-button');
       }
     }
     & button {
