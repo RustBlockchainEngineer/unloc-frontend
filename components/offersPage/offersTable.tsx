@@ -87,7 +87,7 @@ export const OffersTable = observer(() => {
       <div className='offers-pagination'>
         <div>
           <button disabled={currentPage === 1} onClick={() => store.Offers.setCurrentPage(currentPage - 1)}>
-            Previous
+            <i className='icon icon--sm icon--paginator--left' />
           </button>
         </div>
         <div className='offers-pagination__pages'>
@@ -103,7 +103,7 @@ export const OffersTable = observer(() => {
         </div>
         <div>
           <button disabled={currentPage === maxPage} onClick={() => store.Offers.setCurrentPage(currentPage + 1)}>
-            Next
+            <i className='icon icon--sm icon--paginator--right' />
           </button>
         </div>
       </div>
