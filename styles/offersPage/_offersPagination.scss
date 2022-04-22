@@ -1,24 +1,45 @@
 .offers-pagination {
   display: flex;
+  justify-content: center;
   width: 100%;
   margin-bottom: 100px;
 
   button {
     @include theme-aware('background-color', 'color-accent');
-    @include theme-aware('color', 'color-label');
+    @include theme-aware('color', 'pagination-color');
     font-weight: $wg-lt;
     border: none;
-    padding: 8px 20px;
     margin: 0 10px;
-    border-radius: $brd-rds-lg;
+    border-radius: $brd-rds-1tn;
     cursor: pointer;
-    -moz-box-shadow: 2px 3px 10px -1px rgba(36, 17, 154, 1);
-    box-shadow: 2px 3px 10px -1px rgba(36, 17, 154, 1);
     transition: background 0.3s ease-in-out;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 40px;
+    height: 40px;
 
     &:hover,
     &.active {
       @include theme-aware('background-color', 'color-secondary');
+      box-shadow: 0px 0px 15px rgba(158, 108, 255, 0.4);
+    }
+
+    &.active {
+      -moz-box-shadow: 2px 3px 10px -1px rgba(36, 17, 154, 1);
+      box-shadow: 2px 3px 10px -1px rgba(36, 17, 154, 1);
+    }
+  }
+
+  div:last-child,
+  div:first-child {
+    button {
+      background-color: rgba(0, 0, 0, 0);
+      box-shadow: none;
+
+      &:hover {
+        background-color: rgba(0, 0, 0, 0);
+      }
     }
   }
 
