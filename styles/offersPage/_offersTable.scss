@@ -11,6 +11,10 @@
     display: flex;
     justify-content: center;
   }
+
+  :last-child a{
+    border-radius: 0px 0px $brd-rds-sm $brd-rds-sm;
+  }
 }
 
 .offers-table-heading {
@@ -32,7 +36,6 @@
 
 .offers-table-row {
   width: 100%;
-
   a {
     display: grid;
     grid-template-columns: 2fr 1.5fr 1fr 1fr 1fr 1fr;
@@ -64,6 +67,10 @@
       &:hover {
         @include theme-aware('background-color', 'color-primary-dark');
       }
+    }
+
+    img {
+      border-radius: 50%;
     }
 
     .row-cell {
