@@ -2,8 +2,13 @@ import React, { useContext } from 'react'
 import { observer } from 'mobx-react'
 import { StoreContext } from '@pages/_app'
 import { MyOffersNftItem } from './myOffersNftItem/myOffersNftItem'
+import { MyOffersNftDeposited } from './myOffersNftItem/myOffersNftDeposited'
 
-export const MyOffersNftList: React.FC = observer(() => {
+type MyOffersNftListProps = {
+  type: 'active' | 'deposited'
+}
+
+export const MyOffersNftList: React.FC<MyOffersNftListProps> = observer(({ type }) => {
   const store = useContext(StoreContext)
   const { offers, nftData, subOffers } = store.MyOffers
 
@@ -55,19 +60,36 @@ export const MyOffersNftList: React.FC = observer(() => {
         }
       })
 
-      return (
-        <MyOffersNftItem
-          key={offerSanitized.offerKey}
-          offerKey={offerSanitized.offerKey}
-          name={offerSanitized.name}
-          image={offerSanitized.image}
-          nftMint={offerSanitized.nftMint}
-          offers={offerSubOffers}
-          state={offerSanitized.state}
-        />
-      )
+      if (type == 'active' && offerSubOffers.length > 0) {
+        return (
+          <MyOffersNftItem
+            key={offerSanitized.offerKey}
+            offerKey={offerSanitized.offerKey}
+            name={offerSanitized.name}
+            image={offerSanitized.image}
+            nftMint={offerSanitized.nftMint}
+            offers={offerSubOffers}
+            state={offerSanitized.state}
+          />
+        )
+      }
+
+      if (type == 'deposited' && offerSubOffers.length <= 0) {
+        return (
+          <MyOffersNftDeposited
+            key={offerSanitized.offerKey}
+            offerKey={offerSanitized.offerKey}
+            name={offerSanitized.name}
+            image={offerSanitized.image}
+            nftMint={offerSanitized.nftMint}
+            offers={offerSubOffers}
+            state={offerSanitized.state}
+          />
+        )
+      }
+
     })
   }
 
-  return <div className='my-offers-nft-list'>{renderOffers()}</div>
+  return <div className={type == 'active' ? 'my-offers-nft-list' : 'nft-deposited'}>{renderOffers()}</div>
 })

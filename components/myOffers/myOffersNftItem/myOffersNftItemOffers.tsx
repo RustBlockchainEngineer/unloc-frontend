@@ -109,37 +109,39 @@ export const MyOffersNftItemOffers: React.FC<myOffersNftItemOffersProps> = ({
       )
     }
 
-    return <div className='offers-list-headbar'>No offers created for this collateral</div>
+    // return <div className='offers-list-headbar'>No offers created for this collateral</div>
+    return <></>
   }
 
   return (
-    <div className='offers-list' onClick={() => { if (data && data.length && getOffersCount() > 0) { setContentVisible(!contentVisible) } }}>
-      {renderHeadBar()}
-      {data && data.length && contentVisible ? (
-        <div className='offers-list-content'>
-          {data.map((offer) => {
-            if (offer.state === 0) {
-              return (
-                <MyOffersNftOfferItem
-                  key={offer.subOfferKey.toBase58()}
-                  offerAmount={offer.offerAmount}
-                  APR={offer.aprNumerator}
-                  status={offer.state}
-                  offerID={offer.subOfferKey}
-                  duration={offer.loanDuration}
-                  repaid={offer.minRepaidNumerator}
-                  offerMint={offer.offerMint}
-                  handleOfferEdit={handleOfferEdit}
-                  handleOfferCancel={handleOfferCancel}
-                  nftMint={nftMint}
-                />
-              )
-            }
-          })}
-        </div>
-      ) : (
-        <></>
-      )}
-    </div>
+    (data && data.length <= 0) ? <></> :
+      <div className='offers-list' onClick={() => { if (data && data.length && getOffersCount() > 0) { setContentVisible(!contentVisible) } }}>
+        {renderHeadBar()}
+        {data && data.length && contentVisible ? (
+          <div className='offers-list-content'>
+            {data.map((offer) => {
+              if (offer.state === 0) {
+                return (
+                  <MyOffersNftOfferItem
+                    key={offer.subOfferKey.toBase58()}
+                    offerAmount={offer.offerAmount}
+                    APR={offer.aprNumerator}
+                    status={offer.state}
+                    offerID={offer.subOfferKey}
+                    duration={offer.loanDuration}
+                    repaid={offer.minRepaidNumerator}
+                    offerMint={offer.offerMint}
+                    handleOfferEdit={handleOfferEdit}
+                    handleOfferCancel={handleOfferCancel}
+                    nftMint={nftMint}
+                  />
+                )
+              }
+            })}
+          </div>
+        ) : (
+          <></>
+        )}
+      </div>
   )
 }

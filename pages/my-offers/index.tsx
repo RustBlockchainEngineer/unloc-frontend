@@ -13,6 +13,8 @@ import { MyLendingList } from '@components/myOffers/myLendingList'
 
 const MyOffers: NextPage = observer(() => {
   const [tabVisible, setTabVisible] = useState('offers')
+  const [activeVisible, setActiveVisible] = useState(false)
+  const [depositedVisible, setDepositedVisible] = useState(false)
 
   const store = useContext(StoreContext)
   const { connected, walletKey } = store.Wallet
@@ -58,7 +60,23 @@ const MyOffers: NextPage = observer(() => {
           </div>
           <div className='container-tabbed-content'>
             {connected && tabVisible === 'loans' ? <MyLendingList /> : ''}
-            {connected && tabVisible === 'offers' ? <MyOffersNftList /> : ''}
+            {connected && tabVisible === 'offers' ? <div>
+              <div className='active-offers--scrolldown'>
+                <h1 onClick={() => { setActiveVisible(!activeVisible) }}>
+                  Active Offers
+                  <i className={`icon icon--sm icon--filter--${activeVisible ? 'down' : 'striped'}`} />
+                </h1>
+                {activeVisible ? <MyOffersNftList type='active' /> : <></>}
+              </div>
+              <div className='active-offers--scrolldown'>
+                <h1 onClick={() => { setDepositedVisible(!depositedVisible) }}>
+                  Deposited NFTs
+                  <i className={`icon icon--sm icon--filter--${depositedVisible ? 'down' : 'striped'}`} />
+                </h1>
+                {depositedVisible ? <MyOffersNftList type='deposited' /> : <></>}
+              </div>
+            </div>
+              : ''}
           </div>
         </div>
       </div>
