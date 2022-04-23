@@ -10,7 +10,7 @@ type IProps = {
   nftImage: string
   nftAddress: string
   website: string
-  isYours: boolean
+  isYours?: boolean
 }
 
 export const Header: React.FC<IProps> = ({ collectionName, nftName, nftImage, nftAddress, website, isYours }) => {
