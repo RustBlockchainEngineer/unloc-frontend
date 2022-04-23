@@ -59,7 +59,7 @@ export const MyOffersNftOfferItem: React.FC<MyOffersNftOfferItemProps> = ({
         <p>{APR.toString()}%</p>
       </div>
       <div className='nft__offer-item'>
-        <h4>Duration: </h4>
+        <h4>{status.toString() == '1' ? 'Time left:' : 'Duration:'}  </h4>
         <p>{Number(duration.toString()) / 60 / 60 / 24} Days</p>
       </div>
       <div className='nft__offer-item'>
