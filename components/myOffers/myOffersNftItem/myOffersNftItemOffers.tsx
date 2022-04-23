@@ -9,13 +9,15 @@ interface myOffersNftItemOffersProps {
   handleOfferCancel: (subOfferKey: string) => Promise<void>
   status: number
   data?: any[]
+  nftMint: string
 }
 
 export const MyOffersNftItemOffers: React.FC<myOffersNftItemOffersProps> = ({
   handleOfferEdit,
   handleOfferCancel,
   status,
-  data
+  data,
+  nftMint
 }) => {
   const [contentVisible, setContentVisible] = useState(false)
 
@@ -101,8 +103,8 @@ export const MyOffersNftItemOffers: React.FC<myOffersNftItemOffersProps> = ({
     }
     if (data && data.length && getOffersCount() > 0) {
       return (
-        <div className='offers-list-headbar' onClick={() => setContentVisible(!contentVisible)}>
-          Offers ({getOffersCount()})
+        <div className='offers-list-headbar' onClick={() => setContentVisible(!contentVisible)} >
+          {/* Offers ({getOffersCount()}) */}
         </div>
       )
     }
@@ -111,7 +113,7 @@ export const MyOffersNftItemOffers: React.FC<myOffersNftItemOffersProps> = ({
   }
 
   return (
-    <div className='offers-list'>
+    <div className='offers-list' onClick={() => { if (data && data.length && getOffersCount() > 0) { setContentVisible(!contentVisible) } }}>
       {renderHeadBar()}
       {data && data.length && contentVisible ? (
         <div className='offers-list-content'>
@@ -129,6 +131,7 @@ export const MyOffersNftItemOffers: React.FC<myOffersNftItemOffersProps> = ({
                   offerMint={offer.offerMint}
                   handleOfferEdit={handleOfferEdit}
                   handleOfferCancel={handleOfferCancel}
+                  nftMint={nftMint}
                 />
               )
             }

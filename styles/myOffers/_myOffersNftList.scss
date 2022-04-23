@@ -1,4 +1,8 @@
 .nft-list-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   padding-bottom: 32px;
 }
 
@@ -8,51 +12,56 @@
   flex-direction: column;
   margin: 40px 0 60px 0;
 
-  @media (max-width: $bp-tablet) {
-    margin-bottom: 80px;
-  }
+  // @media (max-width: $bp-tablet) {
+  //   margin-bottom: 80px;
+  // }
 }
 
 .my-offers-nft {
-  width: 100%;
+  z-index: 100;
+  width: 450px;
   display: flex;
   flex-direction: column;
-  padding: 16px;
-  @include theme-aware('background-color', 'color-accent');
-  border-radius: 8px 8px 0 0;
+  border-radius: 50px;
+  height: 80px;
+  @include theme-aware('background-color', 'myOffers-nftName-bg');
 
-  @media (max-width: $bp-tablet) {
-    width: 90vw;
-    margin: 0 5vw;
-  }
+  // @media (max-width: $bp-tablet) {
+  //   width: 90vw;
+  //   margin: 0 5vw;
+  // }
 
   .nft-item {
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    width: 100%;
+    width: 450px;
 
-    @media (max-width: $bp-tablet) {
-      flex-direction: column;
-    }
+    // @media (max-width: $bp-tablet) {
+    //   flex-direction: column;
+    // }
   }
 
   .nft-wrapper {
     display: flex;
     align-items: center;
+    width: 450px;
 
-    @media (max-width: $bp-tablet) {
-      flex-direction: column;
-    }
+    // @media (max-width: $bp-tablet) {
+    //   flex-direction: column;
+    // }
   }
 
   .nft-info {
+    width: 100%;
     height: 100%;
-    padding-right: 36px;
-
+    padding-right: 10px;
+    display: flex;
+    justify-content: space-between;
     @media (max-width: $bp-tablet) {
-      padding: 0 5vh;
+      flex-direction: row;
+      //   padding: 0 5vh;
     }
 
     .nft-img {
@@ -65,58 +74,39 @@
       margin-left: 15px;
       color: #ffffff;
 
-      @media (max-width: $bp-tablet) {
-        width: 100%;
-        text-align: center;
-        justify-items: center;
-        margin-left: 0;
-      }
+      // @media (max-width: $bp-tablet) {
+      //   width: 100%;
+      //   text-align: center;
+      //   justify-items: center;
+      //   margin-left: 0;
+      // }
 
-      .nft-info-inner-mainData {
-        display: flex;
-        align-items: center;
-
-        @media (max-width: $bp-tablet) {
-          width: 100%;
-          text-align: center;
-          justify-items: center;
-        }
-
-        .info-description {
-          padding-right: 12px;
-
-          @media (max-width: $bp-tablet) {
-            width: 100%;
-            text-align: center;
-            justify-items: center;
-            padding-right: 0;
-            margin-top: 25px;
-          }
-
-          .show-on-hover {
-            @media (max-width: $bp-tablet) {
-              flex-direction: column;
-              width: 100%;
-              text-align: center;
-              justify-items: center;
-            }
-
-            .show-on-hover__label {
-              @media (max-width: $bp-tablet) {
-                width: 100%;
-                text-align: center;
-                justify-items: center;
-              }
-            }
-          }
-        }
-      }
       .info-name {
-        font-size: 24px;
-        @include theme-aware('color', 'color-primary');
+        font-size: 18px;
+        @include theme-aware('color', 'myOffers-nftName-color');
 
-        @media (max-width: $bp-tablet) {
-          margin-bottom: 25px;
+        width: 260px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+
+        // @media (max-width: $bp-tablet) {
+        //   margin-bottom: 25px;
+        // }
+      }
+
+      .nft-metadata {
+        display: flex;
+        font-size: 12px;
+        color: #ffffff;
+
+        :first-child {
+          @include theme-aware('color', 'myOffers-nftName-color');
+        }
+        :last-child {
+          margin-left: 4px;
+          font-weight: 700;
+          @include theme-aware('color', 'myOffers-collectionName-color');
         }
       }
     }
@@ -128,27 +118,23 @@
 
   .nft-info-buttons {
     display: flex;
-    position: relative;
-
-    @media (max-width: $bp-tablet) {
-      flex-direction: column;
-    }
 
     button {
       cursor: pointer;
       border-radius: 6px;
       border: none;
-      min-width: 240px;
       text-align: center;
       margin-left: 20px;
+      height: 30px;
+      width: 30px;
+      padding: 0;
+      line-height: 10px;
+      font-size: 20px;
+      font-weight: 700;
 
       &:first-child {
         margin-left: 0;
-      }
-
-      @media (max-width: $bp-tablet) {
-        margin-bottom: 10px;
-        width: 100%;
+        @include theme-aware('color', 'lend-offer-button');
       }
     }
 
@@ -158,33 +144,30 @@
       @include theme-aware('color', 'color-label');
     }
   }
-
-  .nft-metadata {
-    display: flex;
-    font-size: 14px;
-    color: #ffffff;
-    & p:nth-child(2) {
-      font-weight: 700;
-    }
-
-    .metadata-item {
-      padding: 15px;
-    }
-  }
 }
 
 .offers-list {
   width: 100%;
+  margin-top: -40px;
   display: flex;
   flex-direction: column;
   overflow-y: hidden;
-  @include theme-aware('background-color', 'color-secondary');
+  @include theme-aware('background', 'myOffers-multipleSubOffers-bg');
+  backdrop-filter: blur(21px);
   border-radius: 0 0 8px 8px;
   padding: 8px 16px 20px 16px;
   color: #ffffff;
   font-size: 14px;
   font-weight: 700;
   transition: max-height 0.5s;
+  border-radius: $brd-rds-1md;
+
+  .offers-list-headbar {
+    @media (max-width: $bp-tablet) {
+      text-align: center;
+      margin-top: 45px;
+    }
+  }
 
   .offers-list-headbar--active {
     text-align: center;
@@ -214,57 +197,136 @@
     }
   }
 
+  .offers-list-content {
+    padding-top: 50px;
+    display: flex;
+    flex-wrap: wrap;
+
+    :nth-child(2n) {
+      margin-left: 2%;
+    }
+
+    @media (max-width: $bp-tablet) {
+      flex-direction: column;
+      align-items: center;
+      :nth-child(2n) {
+        margin-left: 0;
+      }
+    }
+  }
+
   @media (max-width: $bp-tablet) {
     width: 90vw;
-    margin: 0 2.5vh;
+    margin: -40px 2.5vh 20px 2.5vh;
+    padding: 0px;
+    min-height: 60px;
   }
 
   .my-offers-nft__offer {
-    @include theme-aware('background-color', 'color-loan');
+    width: 49%;
+    margin-bottom: 10px;
+    @include theme-aware('background', 'myOffers-subOffer-bg');
+    backdrop-filter: blur(4px);
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
     margin-top: 8px;
     padding: 20px;
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    border-radius: $brd-rds-2tn;
 
     @media (max-width: $bp-tablet) {
-      display: flex;
-      flex-direction: column;
+      width: 95%;
     }
 
-    .nft__offer-item {
-      border-right: 1px solid;
-      @include theme-aware('border-color', '');
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
+    .offer__row:first-child {
+      margin-bottom: 20px;
+    }
 
-      .btn {
-        width: 100%;
+    .offer__row:last-child {
+      margin-top: 20px;
+    }
+
+    .offer__row {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+
+      &--item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        :first-child {
+          margin-bottom: 5px;
+        }
+      }
+
+      &.details {
+        @include theme-aware('background', 'myOffers-subOffer-info-bg');
+        @include theme-aware('color', 'myOffers-nftName-color');
+        box-shadow: inset 0px 2px 2px rgba(0, 0, 0, 0.25);
+        border-radius: $brd-rds-2tn;
+        justify-content: space-around;
+        align-items: center;
+
+        .offer__row--item {
+          min-width: 12%;
+          h4 {
+            font-weight: 400;
+          }
+        }
+      }
+
+      button {
+        border-radius: $brd-rds-2tn;
+        width: 48%;
+        display: flex;
         justify-content: center;
-        margin-left: 20px;
-        margin-bottom: 15px;
-
-        @media (max-width: $bp-tablet) {
-          margin-left: 0;
-        }
-
-        &:last-child {
-          margin-bottom: 0;
-        }
       }
 
-      @media (max-width: $bp-tablet) {
-        margin: 10px 0 10px 0;
-        padding: 0 0 20px 0;
-        border-bottom: 1px solid;
-        border-right: none;
+      button:first-child {
+        background: rgba(0, 0, 0, 0);
+      }
+
+      button:last-child {
+        @include theme-aware('color', 'lend-offer-button');
       }
     }
 
-    .nft__offer-item:last-child {
-      border: none;
-    }
+    // .nft__offer-item {
+    //   @include theme-aware('border-color', '');
+    //   display: flex;
+    //   flex-direction: column;
+    //   align-items: center;
+    //   justify-content: center;
+
+    //   .btn {
+    //     width: 100%;
+    //     justify-content: center;
+    //     margin-left: 20px;
+    //     margin-bottom: 15px;
+
+    //     @media (max-width: $bp-tablet) {
+    //       margin-left: 0;
+    //     }
+
+    //     &:last-child {
+    //       margin-bottom: 0;
+    //     }
+    //   }
+
+    //   @media (max-width: $bp-tablet) {
+    //     margin: 10px 0 10px 0;
+    //     padding: 0 0 20px 0;
+    //     border-bottom: 1px solid;
+    //     border-right: none;
+    //   }
+    // }
+
+    // .nft__offer-item:last-child {
+    //   border: none;
+    // }
   }
 
   .my-offers-no__offers {
@@ -285,7 +347,25 @@
     transition-delay: 1s;
     height: 16px;
   }
+}
 
-  .offers-items {
+.suboffer-containers {
+  &__mint,
+  &__id,
+  &__status {
+    width: 160px;
+    height: 30px;
+    text-align: center;
+    line-height: 30px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    border-radius: $brd-rds-sm;
+  }
+  &__mint {
+    @include theme-aware('background', 'myOffers-mint-bg');
+  }
+
+  &__id {
+    @include theme-aware('background', 'myOffers-id-bg');
   }
 }

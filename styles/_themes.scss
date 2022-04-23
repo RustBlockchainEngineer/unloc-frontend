@@ -66,6 +66,14 @@ $themes: (
 
     icon-globe: url('/icons/globe-icon-light.svg'),
     icon-place: url('/icons/place-icon-light.svg'),
+    myOffers-nftName-bg: #d5bffe,
+    myOffers-nftName-color: #210d48,
+    myOffers-collectionName-color: #210d48,
+    myOffers-multipleSubOffers-bg: linear-gradient(180deg, rgba(126, 78, 219, 0.145) 0%, rgba(66, 34, 128, 0.1) 100%),
+    myOffers-subOffer-bg: linear-gradient(180deg, #d6c0ff 0%, #b4ace2 100%),
+    myOffers-subOffer-info-bg: #a189cd,
+    myOffers-id-bg: rgba(224, 9, 126, 0.7),
+    myOffers-mint-bg: #aa96d4,
   ),
   dark: (
     color-background: #210d48,
@@ -135,5 +143,13 @@ $themes: (
 
     icon-globe: url('/icons/globe-icon-dark.svg'),
     icon-place: url('/icons/place-icon-dark.svg'),
+    myOffers-nftName-bg: #3c1b7a,
+    myOffers-nftName-color: #ffffff,
+    myOffers-collectionName-color: #ffffff,
+    myOffers-multipleSubOffers-bg: linear-gradient(180deg, rgba(113, 73, 191, 0.145) 0%, rgba(66, 34, 128, 0.1) 100%),
+    myOffers-subOffer-bg: linear-gradient(180deg, #442482 0%, #2d1360 100%),
+    myOffers-subOffer-info-bg: #2f175e,
+    myOffers-id-bg: rgba(224, 9, 126, 0.7),
+    myOffers-mint-bg: #532ba0,
   ),
 );

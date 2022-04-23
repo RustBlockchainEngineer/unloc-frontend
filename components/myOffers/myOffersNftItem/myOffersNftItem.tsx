@@ -202,7 +202,7 @@ export const MyOffersNftItem: React.FC<MyOffersNftItemProps> = observer(
                 store.Lightbox.setVisible(true)
               }}
             >
-              Create Offer
+              +
             </button>
             {visible && (
               <div ref={setTooltipRef} {...getTooltipProps({ className: 'tooltip-container' })}>
@@ -210,7 +210,7 @@ export const MyOffersNftItem: React.FC<MyOffersNftItemProps> = observer(
               </div>
             )}
             <button className='btn--md btn--bordered' onClick={() => handleCancelCollateral()}>
-              Cancel Collateral
+              -
             </button>
           </div>
         )
@@ -243,33 +243,21 @@ export const MyOffersNftItem: React.FC<MyOffersNftItemProps> = observer(
             <div className='nft-item'>
               <div className='nft-wrapper'>
                 <div className='nft-info'>
-                  <Image src={image} alt='NFT Image' width='50px' height='50px' className='nft-img' />
+                  <Image src={image} alt='NFT Image' width='80px' height='80px' className='nft-img' />
                   <div className='nft-info-inner'>
-                    <div className='nft-info-inner-mainData'>
-                      <div className='info-description'>
-                        <p>Offer ID:</p>
-                        <ShowOnHover label={`#${compressAddress(4, offerKey)}`}>
-                          <ClipboardButton data={offerKey} />
-                          <SolscanExplorerIcon type={'account'} address={offerKey} />
-                        </ShowOnHover>
-                      </div>
-                    </div>
                     <p className='info-name'>{name}</p>
-                  </div>
-                </div>
-                {setNFTActions(state)}
-              </div>
-              <div className='nft-metadata'>
-                <div className='metadata-item'>
-                  <p>NFT mint</p>
+                    <div className='nft-metadata'>
+                      {/*
                   <ShowOnHover label={`#${compressAddress(4, nftMint)}`}>
                     <ClipboardButton data={nftMint} />
                     <SolscanExplorerIcon type={'token'} address={nftMint} />
                   </ShowOnHover>
-                </div>
-                <div className='metadata-item'>
-                  <p>Collection</p>
-                  <p></p>
+                  */}
+                      <p>Collection:</p>
+                      <p>Example</p>
+                    </div>
+                  </div>
+                  {setNFTActions(state)}
                 </div>
               </div>
             </div>
@@ -282,6 +270,7 @@ export const MyOffersNftItem: React.FC<MyOffersNftItemProps> = observer(
           handleOfferEdit={handleEditOffer}
           status={state}
           handleOfferCancel={handleCancelOffer}
+          nftMint={offerKey}
         />
       </div>
     )

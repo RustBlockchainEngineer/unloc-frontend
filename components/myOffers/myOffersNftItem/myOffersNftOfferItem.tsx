@@ -16,6 +16,7 @@ interface MyOffersNftOfferItemProps {
   handleOfferEdit: (subOfferKey: string, values: IsubOfferData) => Promise<void>
   handleOfferCancel: (subOfferKey: string) => Promise<void>
   classNames?: string
+  nftMint: string
 }
 
 export const MyOffersNftOfferItem: React.FC<MyOffersNftOfferItemProps> = ({
@@ -28,7 +29,8 @@ export const MyOffersNftOfferItem: React.FC<MyOffersNftOfferItemProps> = ({
   offerMint,
   handleOfferEdit,
   handleOfferCancel,
-  classNames
+  classNames,
+  nftMint
 }) => {
   const setStatus = (status: string) => {
     if (status === '0' || status === '6') {
@@ -41,32 +43,46 @@ export const MyOffersNftOfferItem: React.FC<MyOffersNftOfferItemProps> = ({
 
   return (
     <div className={`my-offers-nft__offer ${classNames ? classNames : ''}`}>
-      <div className='nft__offer-item'>
-        <h4>Offer ID: </h4>
-        <p>{compressAddress(4, offerID.toString())}</p>
-      </div>
-      <div className='nft__offer-item'>
-        <h4>Status: </h4>
-        {setStatus(status.toString())}
-      </div>
-      <div className='nft__offer-item'>
-        <h4>Amount: </h4>
-        <p>{`${offerAmount.toNumber() / 1000000} ${currencyMints[offerMint.toBase58()]}`}</p>
+
+      <div className='offer__row'>
+        <div className='offer__row--item'>
+          <h4>Offer ID</h4>
+          <div className='suboffer-containers__id'>{compressAddress(4, offerID.toString())}</div>
+        </div>
+        <div className='offer__row--item'>
+          <h4>Status</h4>
+          {setStatus(status.toString())}
+        </div>
+        <div className='offer__row--item'>
+          <h4>MFT Mint</h4>
+          <div className='suboffer-containers__mint'>{compressAddress(4, nftMint)}</div>
+        </div>
       </div>
 
-      <div className='nft__offer-item'>
-        <h4>APR: </h4>
-        <p>{APR.toString()}%</p>
+      <div className='offer__row details'>
+        <div className='offer__row--item'>
+          <h4>Amount</h4>
+          <p>{`${offerAmount.toNumber() / 1000000} ${currencyMints[offerMint.toBase58()]}`}</p>
+        </div>
+
+        <div className='offer__row--item'>
+          <h4>APR</h4>
+          <p>{APR.toString()}%</p>
+        </div>
+        <div className='offer__row--item'>
+          <h4>{status.toString() == '1' ? 'Time left' : 'Duration'}  </h4>
+          <p>{Number(duration.toString()) / 60 / 60 / 24} Days</p>
+        </div>
+        <div className='offer__row--item'>
+          <h4>Min repaid value</h4>
+          <p>{repaid.toString()}</p>
+        </div>
       </div>
-      <div className='nft__offer-item'>
-        <h4>{status.toString() == '1' ? 'Time left:' : 'Duration:'}  </h4>
-        <p>{Number(duration.toString()) / 60 / 60 / 24} Days</p>
-      </div>
-      <div className='nft__offer-item'>
-        <h4>Min repaid value: </h4>
-        <p>{repaid.toString()}</p>
-      </div>
-      <div className='nft__offer-item'>
+
+      <div className='offer__row'>
+        <button className='btn btn--md btn--bordered' onClick={() => handleOfferCancel(offerID.toBase58())}>
+          Cancel Offer
+        </button>
         <button
           className='btn btn--md btn--primary'
           onClick={() =>
@@ -81,10 +97,8 @@ export const MyOffersNftOfferItem: React.FC<MyOffersNftOfferItemProps> = ({
         >
           Edit Offer
         </button>
-        <button className='btn btn--md btn--bordered' onClick={() => handleOfferCancel(offerID.toBase58())}>
-          Cancel Offer
-        </button>
       </div>
+
     </div>
   )
 }
