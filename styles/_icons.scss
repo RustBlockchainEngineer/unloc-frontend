@@ -170,6 +170,10 @@
   @include theme-aware('background-image', 'icon-place');
 }
 
+.icon--owner {
+  background-image: url('/icons/owner-icon.svg');
+}
+
 .icon--tn {
   width: 12px;
   height: 12px;

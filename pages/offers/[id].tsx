@@ -26,19 +26,21 @@ interface IOffer {
   totalRepay?: any
 }
 
-const SingleNftPage: NextPage = observer(({}) => {
+const SingleNftPage: NextPage = observer(({ }) => {
   const router = useRouter()
   const store = useContext(StoreContext)
 
   const { connected, wallet } = store.Wallet
-  const { nftData, loansData } = store.SingleOffer
+  const { nftData, loansData, isYours } = store.SingleOffer
   const [hasActive, setHasActive] = useState(false)
 
+  console.log(nftData)
   const handleData = async () => {
     try {
       if (connected && wallet && router.query.id) {
         await store.SingleOffer.fetchNft(getQueryParamAsString(router.query.id))
         await store.SingleOffer.fetchSubOffers(getQueryParamAsString(router.query.id))
+        await store.SingleOffer.getOffersByWallet()
       }
     } catch (e) {
       // eslint-disable-next-line no-console
@@ -105,6 +107,7 @@ const SingleNftPage: NextPage = observer(({}) => {
             nftImage={nftData.image}
             nftName={nftData.name}
             website={nftData.external_url}
+            isYours={isYours}
           />
         ) : (
           <></>
@@ -130,6 +133,7 @@ const SingleNftPage: NextPage = observer(({}) => {
                     totalRepay={offer.totalRepay}
                     btnMessage={'Lend Tokens'}
                     handleConfirmOffer={handleConfirmOffer}
+                    isYours={isYours}
                   />
                 )
               } else {

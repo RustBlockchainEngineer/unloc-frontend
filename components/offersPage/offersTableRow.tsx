@@ -13,6 +13,7 @@ interface OffersTableItemInterface {
   onLend: (pubkey: string) => Promise<void>
   offerPublicKey: string
   count?: number
+  isYours: boolean
 }
 
 export const OffersTableRow = ({
@@ -25,7 +26,8 @@ export const OffersTableRow = ({
   amount,
   duration,
   currency,
-  count
+  count,
+  isYours
 }: OffersTableItemInterface) => {
   const handlePrevent = useCallback((e: React.FormEvent<HTMLButtonElement>) => {
     e.stopPropagation()
@@ -37,11 +39,12 @@ export const OffersTableRow = ({
       <Link href={`/offers/${subOfferKey}`}>
         <a>
           <div className='row-cell'>
+            {isYours ? (<div className='owner-indicator'><i className='icon icon--owner' /></div>) : ''}
             {image ? <Image src={image} alt='NFT Picture' width={36} height={36} /> : ''}
             <span className='text-content'>{nftName}</span>
           </div>
           <div className='row-cell'>
-            <button onClick={handlePrevent}>Lend tokens</button>
+            <button className={isYours ? 'disabled' : ''} onClick={(e) => { if (!isYours) { handlePrevent(e) } }}>Lend tokens</button>
           </div>
           <div className='row-cell'>
             <span className='text-content'>{apr} %</span>

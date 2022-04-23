@@ -52,6 +52,24 @@
     border-radius: calc($brd-rds-lg - 8px);
   }
 
+  .owner-indicator {
+    margin: -15px 0 0 -15px;
+    position: absolute;
+    width: 32px;
+    height: 32px;
+    @include theme-aware('background-color', 'color-primary');
+    border-radius: 50%;
+    z-index: 10000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    i {
+      width: 25px;
+      height: 25px;
+    }
+  }
+
   @media (max-width: $bp-tablet) {
     margin: 0 0 30px 0;
   }

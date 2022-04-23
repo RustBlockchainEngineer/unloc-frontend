@@ -1,7 +1,7 @@
 import { action, makeAutoObservable, flow } from 'mobx'
 import axios from 'axios'
 import * as anchor from '@project-serum/anchor'
-import { getSubOfferList } from '@integration/nftLoan'
+import { getSubOfferList, getOffersBy } from '@integration/nftLoan'
 import { IOfferData } from '../@types/IOfferData'
 import { PublicKey } from '@solana/web3.js'
 import { getMetadata } from '@integration/nftIntegration'
@@ -9,7 +9,6 @@ import getDecimalsForLoanAmount from '@integration/getDecimalForLoanAmount'
 import { getSubOffersKeysByState } from '@integration/offersListing'
 import { calculateRepayValue } from '@utils/calculateRepayValue'
 import { asBigNumber } from '@utils/asBigNumber'
-
 interface LoanInterface {
   id: string
   status: number
@@ -26,6 +25,7 @@ export class SingleOfferStore {
   rootStore
   nftData = {} as IOfferData
   loansData: any[] = []
+  isYours: boolean = false
 
   constructor(rootStore: any) {
     makeAutoObservable(this)
@@ -99,5 +99,14 @@ export class SingleOfferStore {
 
   @action.bound getSubOffersByNft = async (): Promise<void> => {
     const activeOffers = await getSubOffersKeysByState([0])
+  }
+
+  @action.bound async getOffersByWallet(): Promise<void> {
+    const offersData = await getOffersBy(this.rootStore.Wallet.walletKey, undefined, undefined)
+    for (let offer in offersData) {
+      if (offersData[offer].account.nftMint.toBase58() == this.nftData.mint) {
+        this.isYours = true
+      }
+    }
   }
 }
