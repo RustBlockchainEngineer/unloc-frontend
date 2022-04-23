@@ -21,6 +21,7 @@ type IProps = {
   btnMessage: string
   handleConfirmOffer: (offer: any) => void
   offerPublicKey: string
+  isYours: boolean
 }
 
 export const Offer: React.FC<IProps> = ({
@@ -35,7 +36,8 @@ export const Offer: React.FC<IProps> = ({
   totalRepay,
   btnMessage,
   handleConfirmOffer,
-  offerPublicKey
+  offerPublicKey,
+  isYours
 }) => {
   const { getTooltipProps, setTooltipRef, setTriggerRef, visible } = usePopperTooltip()
 
@@ -84,17 +86,21 @@ export const Offer: React.FC<IProps> = ({
       <div className='offer-lend'>
         <button
           ref={setTriggerRef}
-          className='lend-btn'
-          onClick={() =>
-            handleConfirmOffer({
-              offerPublicKey,
-              amount,
-              APR,
-              duration,
-              totalRepay,
-              currency
-            })
+          className={`lend-btn ${isYours ? 'deactivated' : ''}`}
+          onClick={() => {
+            if (!isYours) {
+              handleConfirmOffer({
+                offerPublicKey,
+                amount,
+                APR,
+                duration,
+                totalRepay,
+                currency
+              })
+            }
           }
+          }
+
         >
           {btnMessage}
         </button>

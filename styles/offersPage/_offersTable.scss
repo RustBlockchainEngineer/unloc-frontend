@@ -70,6 +70,30 @@
       &:hover {
         @include theme-aware('background-color', 'color-primary-dark');
       }
+
+      &.disabled {
+        pointer-events: none;
+        cursor: not-allowed;
+      }
+    }
+
+    .owner-indicator {
+      transform: scale(0.5);
+      margin: -25px 0 0 -15px;
+      position: absolute;
+      width: 32px;
+      height: 32px;
+      @include theme-aware('background-color', 'color-primary');
+      border-radius: 50%;
+      z-index: 10000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      i {
+        width: 25px;
+        height: 25px;
+      }
     }
 
     img {

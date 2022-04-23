@@ -9,7 +9,10 @@ import { toast } from 'react-toastify'
 
 export const OffersTable = observer(() => {
   const store = useContext(StoreContext)
+  const { connected, walletKey } = store.Wallet
   const { pageOfferData, pageNFTData, currentPage, maxPage } = store.Offers
+  console.log(pageOfferData);
+
   const handleAcceptOffer = async (offerPublicKey: string) => {
     try {
       store.Lightbox.setContent('processing')
@@ -80,6 +83,7 @@ export const OffersTable = observer(() => {
               duration={Math.floor(offerData.loanDuration.toNumber() / (3600 * 24))}
               currency={currencyMints[offerData.offerMint.toBase58()]}
               count={offerData.count}
+              isYours={offerData.borrower.toBase58() == walletKey?.toBase58()}
             />
           )
         })}

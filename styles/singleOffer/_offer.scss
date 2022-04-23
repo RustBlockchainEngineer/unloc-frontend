@@ -108,4 +108,9 @@
   &:hover {
     @include theme-aware('background-color', 'color-primary-dark');
   }
+
+  &.deactivated {
+    pointer-events: none;
+    cursor: not-allowed;
+  }
 }

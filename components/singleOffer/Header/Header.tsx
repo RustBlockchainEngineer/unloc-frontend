@@ -10,14 +10,16 @@ type IProps = {
   nftImage: string
   nftAddress: string
   website: string
+  isYours?: boolean
 }
 
-export const Header: React.FC<IProps> = ({ collectionName, nftName, nftImage, nftAddress, website }) => {
+export const Header: React.FC<IProps> = ({ collectionName, nftName, nftImage, nftAddress, website, isYours }) => {
   return (
     <div className='container'>
       <div className='nft-info'>
         {nftImage ? (
           <div className='nft-image'>
+            {isYours ? (<div className='owner-indicator'><i className='icon icon--owner' /></div>) : ''}
             <Image alt='NFT Image' src={nftImage} width={96} height={96} />
           </div>
         ) : (

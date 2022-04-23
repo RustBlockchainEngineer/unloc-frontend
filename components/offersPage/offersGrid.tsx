@@ -9,6 +9,7 @@ import { toast } from 'react-toastify'
 
 export const OffersGrid = observer(() => {
   const store = useContext(StoreContext)
+  const { connected, walletKey } = store.Wallet
   const { pageOfferData, pageNFTData, currentPage, maxPage, itemsPerPage, offersEmpty } = store.Offers
   const generateEmptyFields = () => {
     const count = (itemsPerPage - pageNFTData.length) as number
@@ -85,6 +86,7 @@ export const OffersGrid = observer(() => {
               currency={currencyMints[offerData.offerMint.toBase58()]}
               count={offerData.count}
               collection={offerData.collection}
+              isYours={offerData.borrower.toBase58() == walletKey?.toBase58()}
             />
           )
         })}
