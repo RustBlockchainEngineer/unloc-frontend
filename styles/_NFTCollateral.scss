@@ -176,6 +176,18 @@
   }
 }
 
-.collateral-empty h2 {
-  @include theme-aware('color', 'color-primary');
+.collateral-empty {
+  h2 {
+    @include theme-aware('color', 'color-primary');
+  }
+
+  div {
+    width: 100%;
+    height: 120px;
+    background-image: url('/icons/warning-icon.svg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: 50%;
+    margin-bottom: 40px;
+  }
 }
