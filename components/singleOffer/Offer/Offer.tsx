@@ -63,7 +63,7 @@ export const Offer: React.FC<IProps> = ({
             <p>{`${amount} ${currency}`}</p>
           </div>
           <div className='item-box'>
-            <p>Duration</p>
+            <p>{statuses[status] == 'Accepted' ? 'Time left' : 'Duration'}</p>
             <p>
               {duration} days {durationRemaning ? `${durationRemaning} days left` : ''}
             </p>
