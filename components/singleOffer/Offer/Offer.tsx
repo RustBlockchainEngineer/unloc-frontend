@@ -102,7 +102,7 @@ export const Offer: React.FC<IProps> = ({
           }
 
         >
-          {btnMessage}
+          {isYours ? 'Can\'t lend' : btnMessage}
         </button>
         {visible && (
           <div ref={setTooltipRef} {...getTooltipProps({ className: 'tooltip-container' })}>

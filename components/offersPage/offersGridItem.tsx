@@ -81,6 +81,7 @@ export const OffersGridItem = ({
         subOfferKey={subOfferKey}
         count={count}
         collection={collection}
+        isYours={isYours}
       />
       <Link href={`/offers/${subOfferKey}`}>
         <a>

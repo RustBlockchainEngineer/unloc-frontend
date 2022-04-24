@@ -22,6 +22,11 @@ export const TopMenu = () => {
           <a className={handleCurrent('/my-offers')}>{localesTop.myOffers}</a>
         </Link>
       </li>
+      <li>
+        <Link href='/loans-given'>
+          <a className={handleCurrent('/loans-given')}>{localesTop.loansGiven}</a>
+        </Link>
+      </li>
     </ul>
   )
 }
