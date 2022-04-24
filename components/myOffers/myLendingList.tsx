@@ -108,8 +108,9 @@ export const MyLendingList = observer(() => {
 
   const renderLoansGiven = () => {
     return lendingList.map((offer) => {
-      const timeClassNames = 'green'
       const daysDuration = offer.loanDuration.toNumber() / 60 / 60 / 24
+      //const daysDuration = 0 //css testing
+      const timeClassNames = `${daysDuration <= 0 ? 'red' : ''}${daysDuration > 0 && daysDuration <= 3 ? 'yellow' : ''}${daysDuration > 3 ? 'green' : ''}`
 
       return (
         <div className={`loan-given ${timeClassNames}`}>
