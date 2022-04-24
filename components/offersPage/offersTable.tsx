@@ -11,7 +11,6 @@ export const OffersTable = observer(() => {
   const store = useContext(StoreContext)
   const { connected, walletKey } = store.Wallet
   const { pageOfferData, pageNFTData, currentPage, maxPage } = store.Offers
-  console.log(pageOfferData);
 
   const handleAcceptOffer = async (offerPublicKey: string) => {
     try {
