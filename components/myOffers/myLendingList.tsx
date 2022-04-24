@@ -8,28 +8,29 @@ import { ClipboardButton } from '@components/layout/clipboardButton'
 import { SolscanExplorerIcon } from '@components/layout/solscanExplorerIcon'
 import { PublicKey } from '@solana/web3.js'
 import { toast } from 'react-toastify'
+import Image from 'next/image'
+import { compressAddress } from '@utils/stringUtils/compressAdress'
 
 export const MyLendingList = observer(() => {
   const store = useContext(StoreContext)
   const { lendingList } = store.MyOffers
 
-  const handleTimeLeft = (duration: number, startTime: number) => {
-    let output = ''
 
+
+  const handleTimeLeft = (duration: number, startTime: number, formated: boolean) => {
+    let output: string | number
     const currentDate = new Date()
     const startDate = new Date(startTime)
-
     const numberOfDays = Math.ceil(((startDate as any) - (currentDate as any)) / 8.64e7)
-
     const daysLeft = duration - numberOfDays * -1
 
-    if (daysLeft > 0) {
-      output = `${daysLeft} Day(s)`
-    } else {
-      output = `${daysLeft * -1} Day(s) late!`
+    if (daysLeft > 0 && formated) {
+      return `${daysLeft} Day(s)`
+    } else if (formated) {
+      return `${daysLeft * -1} Day(s) late!`
     }
 
-    return output
+    return daysLeft
   }
 
   const canClaim = (duration: number, startTime: number) => {
@@ -99,44 +100,81 @@ export const MyLendingList = observer(() => {
     }
   }
 
+  const setStatus = (status: string) => {
+    if (status === '1') {
+      return <p className={'loan-containers__status'}>Loan Offer Given</p>
+    }
+  }
+
   const renderLoansGiven = () => {
     return lendingList.map((offer) => {
+      const daysDuration = offer.loanDuration.toNumber() / 60 / 60 / 24
+      //const daysDuration = 0 //css testing
+      const timeClassNames = `${daysDuration <= 0 ? 'red' : ''}${daysDuration > 0 && daysDuration <= 3 ? 'yellow' : ''}${daysDuration > 3 ? 'green' : ''}`
+
       return (
-        <div key={offer.offer.toBase58()} className='loan-given'>
-          <div className='lined-info'>
-            <div className='info-title'>Borrower</div>
-            <div className='info-content'>
-              <ShowOnHover label={`#${offer.borrower.toBase58()}`}>
-                <ClipboardButton data={offer.borrower.toBase58()} />
-                <SolscanExplorerIcon type={'account'} address={offer.borrower.toBase58()} />
-              </ShowOnHover>
+        <div key={offer.nftData.arweaveMetadata.name} className={`loan-given ${timeClassNames}`}>
+
+          <div className='loan__row'>
+            <div className={`loan__row--item header`} >
+              <Image src={offer.nftData.arweaveMetadata.image} alt='NFT Picture' width={50} height={50} />
+              <div className={`item__title`}>
+                <div className='name'> {offer.nftData.arweaveMetadata.name}</div>
+                <div className='collection'> Collection: <b>{offer.nftData.arweaveMetadata.description}</b></div>
+              </div>
+            </div>
+
+            <div className={`loan__row--item loan-time ${timeClassNames}`} >
+              <span>  Time left  </span>
+              <p className='loan-time--left'>{handleTimeLeft(daysDuration, offer.loanStartedTime.toNumber() * 1000, true)}</p>
+            </div>
+
+          </div>
+
+          <div className='loan__row'>
+            <div className='loan__row--item'>
+              <h4>Borrower ID</h4>
+              <div className='loan-containers__id'>{compressAddress(4, offer.borrower.toBase58())}</div>
+            </div>
+            <div className={`loan__row--item ${timeClassNames} status`}>
+              <h4>Status</h4>
+              {setStatus(offer.state.toString())}
+            </div>
+            <div className='loan__row--item'>
+              <h4>MFT Mint</h4>
+              <div className='loan-containers__mint'>{compressAddress(4, offer.nftMint.toBase58())}</div>
             </div>
           </div>
-          <div className='lined-info'>
-            <div className='info-title'>Amount</div>
-            <div className='info-content'>
-              {offer.offerAmount.toNumber() / 1000000}
-              {currencyMints[offer.offerMint.toBase58()]}
+
+          <div className='loan__row details'>
+            <div className='loan__row--item'>
+              <h4>Amount</h4>
+              <p>{`${offer.offerAmount.toNumber() / 1000000} ${currencyMints[offer.offerMint.toBase58()]}`}</p>
+            </div>
+
+            <div className='loan__row--item'>
+              <h4>APR</h4>
+              <p>{offer.aprNumerator.toString()}%</p>
+            </div>
+
+            <div className='loan__row--item'>
+              <h4>Min repaid value</h4>
+              <p>{offer.minRepaidNumerator.toString()}</p>
             </div>
           </div>
-          <div className='lined-info'>
-            <div className='info-title'>Duration</div>
-            <div className='info-content'>{offer.loanDuration.toNumber() / 60 / 60 / 24} Day(s)</div>
-          </div>
-          <div className='lined-info'>
-            <div className='info-title'>Time left</div>
-            <div className='info-content'>
-              {handleTimeLeft(offer.loanDuration.toNumber() / 60 / 60 / 24, offer.loanStartedTime.toNumber() * 1000)}
-            </div>
-          </div>
+
           {canClaim(offer.loanDuration.toNumber() / 60 / 60 / 24, offer.loanStartedTime.toNumber() * 1000) ? (
             <div className='lined-info'>
-              <button className='btn btn--md btn--primary' onClick={() => handleClaimCollateral(offer.offer)}>
+              <button className='btn btn--md btn--primary claim-nft--button' onClick={() => handleClaimCollateral(offer.offer)}>
                 Claim NFT
               </button>
             </div>
           ) : (
-            <></>
+            <div className='loan__row'>
+              <button className='btn btn--md btn--primary disabled loan-not-repaid-button'>
+                Loan not Repaid yet
+              </button>
+            </div>
           )}
         </div>
       )
@@ -155,6 +193,11 @@ export const MyLendingList = observer(() => {
       <div className='my-lending-nft-list__inner'>{lendingList && lendingList.length ? renderLoansGiven() : <></>}</div>
     </div>
   ) : (
-    <></>
+    <div className='my-lending-nft-list empty'>
+      <h1>No loans given yet</h1>
+    </div>
   )
 })
+
+
+
