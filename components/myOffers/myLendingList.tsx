@@ -113,7 +113,7 @@ export const MyLendingList = observer(() => {
       const timeClassNames = `${daysDuration <= 0 ? 'red' : ''}${daysDuration > 0 && daysDuration <= 3 ? 'yellow' : ''}${daysDuration > 3 ? 'green' : ''}`
 
       return (
-        <div className={`loan-given ${timeClassNames}`}>
+        <div key={offer.nftData.arweaveMetadata.name} className={`loan-given ${timeClassNames}`}>
 
           <div className='loan__row'>
             <div className={`loan__row--item header`} >
