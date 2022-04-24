@@ -66,6 +66,26 @@ $themes: (
 
     icon-globe: url('/icons/globe-icon-light.svg'),
     icon-place: url('/icons/place-icon-light.svg'),
+    myOffers-nftName-bg: #d5bffe,
+    myOffers-nftName-color: #210d48,
+    myOffers-collectionName-color: #210d48,
+    myOffers-multipleSubOffers-bg: linear-gradient(180deg, rgba(126, 78, 219, 0.145) 0%, rgba(66, 34, 128, 0.1) 100%),
+    myOffers-subOffer-bg: linear-gradient(180deg, #d6c0ff 0%, #b4ace2 100%),
+    myOffers-subOffer-info-bg: #a189cd,
+    myOffers-id-bg: rgba(224, 9, 126, 0.7),
+    myOffers-mint-bg: #aa96d4,
+
+    disabled-color: #806baa,
+    disabled-bg: #a189cd,
+
+    time-green: #2c9c59,
+    time-yellow: #c23100,
+    time-yellow-btn: rgba(246, 161, 131, 0.78),
+    time-red: #fc005b,
+    time-red-btn: rgba(200, 66, 114, 0.25),
+    time-offer-green: linear-gradient(180deg, #80d3a1 0%, #b4ace2 100%),
+    time-offer-yellow: linear-gradient(180deg, #ed9678 0%, #b4ace2 100%),
+    time-offer-red: linear-gradient(180deg, #fc679c 0%, #b4ace2 100%),
   ),
   dark: (
     color-background: #210d48,
@@ -135,5 +155,25 @@ $themes: (
 
     icon-globe: url('/icons/globe-icon-dark.svg'),
     icon-place: url('/icons/place-icon-dark.svg'),
+    myOffers-nftName-bg: #3c1b7a,
+    myOffers-nftName-color: #ffffff,
+    myOffers-collectionName-color: #ffffff,
+    myOffers-multipleSubOffers-bg: linear-gradient(180deg, rgba(113, 73, 191, 0.145) 0%, rgba(66, 34, 128, 0.1) 100%),
+    myOffers-subOffer-bg: linear-gradient(180deg, #442482 0%, #2d1360 100%),
+    myOffers-subOffer-info-bg: #2f175e,
+    myOffers-id-bg: rgba(224, 9, 126, 0.7),
+    myOffers-mint-bg: #532ba0,
+
+    disabled-color: #6944b4,
+    disabled-bg: #2f175d,
+
+    time-green: #00d756,
+    time-yellow: #eb683c,
+    time-yellow-btn: #b43105,
+    time-red: #ff005c,
+    time-red-btn: rgba(112, 0, 40, 0.25),
+    time-offer-green: linear-gradient(180deg, #166c38 0%, #2d1360 100%),
+    time-offer-yellow: linear-gradient(180deg, #ed693c 0%, #2d1360 100%),
+    time-offer-red: linear-gradient(180deg, #ff005c 0%, #2d1360 100%),
   ),
 );
