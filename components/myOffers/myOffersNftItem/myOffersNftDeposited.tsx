@@ -26,6 +26,54 @@ export const MyOffersNftDeposited: React.FC<MyOffersNftDepositedProps> = observe
         const { getTooltipProps, setTooltipRef, setTriggerRef, visible } = usePopperTooltip()
         const store = useContext(StoreContext)
 
+        const handleCancelCollateral = async () => {
+            store.Lightbox.setContent('processing')
+            store.Lightbox.setCanClose(false)
+            store.Lightbox.setVisible(true)
+
+            try {
+                await store.MyOffers.handleCancelCollateral(nftMint)
+                toast.success(`Collateral canceled`, {
+                    autoClose: 3000,
+                    position: 'top-center',
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined
+                })
+                store.Lightbox.setCanClose(true)
+                store.Lightbox.setVisible(false)
+            } catch (e: any) {
+                console.log(e)
+                if (e.message === 'User rejected the request.') {
+                    toast.error(`Transaction rejected`, {
+                        autoClose: 3000,
+                        position: 'top-center',
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined
+                    })
+                } else {
+                    toast.error(`Something went wrong`, {
+                        autoClose: 3000,
+                        position: 'top-center',
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined
+                    })
+                }
+            } finally {
+                store.MyOffers.refetchStoreData()
+                store.Lightbox.setCanClose(true)
+                store.Lightbox.setVisible(false)
+            }
+        }
+
         return (
             <div className='nft-deposited-item'>
                 <div className='nft-deposited-item__row'>
@@ -79,39 +127,3 @@ export const MyOffersNftDeposited: React.FC<MyOffersNftDepositedProps> = observe
         )
     }
 )
-
-
-// <div className={`my-offers-nft ${classNames ? classNames : ''}`}>
-// {name && image ? (
-//   <div className='nft-item'>
-//     <div className='nft-wrapper'>
-//       <div className='nft-info'>
-//         <Image src={image} alt='NFT Image' width='80px' height='80px' className='nft-img' />
-//         <div className='nft-info-inner'>
-//           <p className='info-name'>{name}</p>
-//           <div className='nft-metadata'>
-//             {/*
-//         <ShowOnHover label={`#${compressAddress(4, nftMint)}`}>
-//           <ClipboardButton data={nftMint} />
-//           <SolscanExplorerIcon type={'token'} address={nftMint} />
-//         </ShowOnHover>
-//         */}
-//             <p>Collection:</p>
-//             <p>Example</p>
-//           </div>
-//         </div>
-//         {setNFTActions(state)}
-//       </div>
-//     </div>
-//   </div>
-// ) : (
-//   <>Loading NFT Data</>
-// )}
-// </div>
-// <MyOffersNftItemOffers
-// data={offers}
-// handleOfferEdit={handleEditOffer}
-// status={state}
-// handleOfferCancel={handleCancelOffer}
-// nftMint={offerKey}
-// />
