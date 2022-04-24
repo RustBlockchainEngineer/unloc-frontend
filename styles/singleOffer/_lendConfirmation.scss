@@ -39,7 +39,7 @@
       }
 
       .nft-name {
-        @include theme-aware('color', 'color-white');
+        @include theme-aware('color', 'color-label');
         margin-top: 5px;
       }
     }
