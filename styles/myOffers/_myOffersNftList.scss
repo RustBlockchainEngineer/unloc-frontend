@@ -11,10 +11,6 @@
   display: flex;
   flex-direction: column;
   margin: 40px 0 60px 0;
-
-  // @media (max-width: $bp-tablet) {
-  //   margin-bottom: 80px;
-  // }
 }
 
 .my-offers-nft {
@@ -26,31 +22,18 @@
   height: 80px;
   @include theme-aware('background-color', 'myOffers-nftName-bg');
 
-  // @media (max-width: $bp-tablet) {
-  //   width: 90vw;
-  //   margin: 0 5vw;
-  // }
-
   .nft-item {
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
     width: 450px;
-
-    // @media (max-width: $bp-tablet) {
-    //   flex-direction: column;
-    // }
   }
 
   .nft-wrapper {
     display: flex;
     align-items: center;
     width: 450px;
-
-    // @media (max-width: $bp-tablet) {
-    //   flex-direction: column;
-    // }
   }
 
   .nft-info {
@@ -59,9 +42,9 @@
     padding-right: 10px;
     display: flex;
     justify-content: space-between;
+
     @media (max-width: $bp-tablet) {
       flex-direction: row;
-      //   padding: 0 5vh;
     }
 
     .nft-img {
@@ -74,25 +57,13 @@
       margin-left: 15px;
       color: #ffffff;
 
-      // @media (max-width: $bp-tablet) {
-      //   width: 100%;
-      //   text-align: center;
-      //   justify-items: center;
-      //   margin-left: 0;
-      // }
-
       .info-name {
         font-size: 18px;
         @include theme-aware('color', 'myOffers-nftName-color');
-
         width: 260px;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
-
-        // @media (max-width: $bp-tablet) {
-        //   margin-bottom: 25px;
-        // }
       }
 
       .nft-metadata {
@@ -103,6 +74,7 @@
         :first-child {
           @include theme-aware('color', 'myOffers-nftName-color');
         }
+
         :last-child {
           margin-left: 4px;
           font-weight: 700;
@@ -175,6 +147,7 @@
 
   .offers-list-headbar--active {
     text-align: center;
+
     h4 {
       margin: 10px 0 5px 0;
     }
@@ -308,6 +281,7 @@
 
         .offer__row--item {
           min-width: 12%;
+
           h4 {
             font-weight: 400;
           }
@@ -394,6 +368,7 @@
     text-overflow: ellipsis;
     border-radius: $brd-rds-sm;
   }
+
   &__mint {
     @include theme-aware('background', 'myOffers-mint-bg');
   }
@@ -466,6 +441,7 @@
 
   &__row:first-child {
     justify-content: flex-start;
+
     p {
       margin-left: 15px;
     }
@@ -500,6 +476,7 @@
       border-radius: $brd-rds-sm;
       @include theme-aware('color', 'lend-offer-button');
     }
+
     .mint,
     .collection {
       @include theme-aware('background', 'myOffers-mint-bg');
