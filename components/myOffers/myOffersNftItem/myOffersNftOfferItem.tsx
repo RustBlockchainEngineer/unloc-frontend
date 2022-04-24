@@ -17,6 +17,7 @@ interface MyOffersNftOfferItemProps {
   handleOfferCancel: (subOfferKey: string) => Promise<void>
   classNames?: string
   nftMint: string
+  disabled: boolean
 }
 
 export const MyOffersNftOfferItem: React.FC<MyOffersNftOfferItemProps> = ({
@@ -30,19 +31,19 @@ export const MyOffersNftOfferItem: React.FC<MyOffersNftOfferItemProps> = ({
   handleOfferEdit,
   handleOfferCancel,
   classNames,
-  nftMint
+  nftMint,
+  disabled
 }) => {
   const setStatus = (status: string) => {
     if (status === '0' || status === '6') {
-      return <p style={{ color: 'green' }}>Proposed</p>
-    }
-    if (status === '1') {
-      return <p style={{ color: 'orange' }}>Active</p>
+      return <p className={'suboffer-containers__status'}>Proposed</p>
     }
   }
 
+  let offerClassNames = (classNames ? classNames : '') + ' ' + (disabled ? 'disabled' : '')
+
   return (
-    <div className={`my-offers-nft__offer ${classNames ? classNames : ''}`}>
+    <div className={`my-offers-nft__offer ${offerClassNames}`}>
 
       <div className='offer__row'>
         <div className='offer__row--item'>

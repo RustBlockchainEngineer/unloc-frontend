@@ -26,53 +26,6 @@ export const MyOffersNftItem: React.FC<MyOffersNftItemProps> = observer(
     const store = useContext(StoreContext)
     const { getTooltipProps, setTooltipRef, setTriggerRef, visible } = usePopperTooltip()
 
-    const handleRepayLoan = async (subOfferKey: string) => {
-      store.Lightbox.setContent('processing')
-      store.Lightbox.setCanClose(false)
-      store.Lightbox.setVisible(true)
-
-      try {
-        await store.MyOffers.handleRepayLoan(subOfferKey)
-
-        toast.success(`Loan Repayed, NFT is back in your wallet`, {
-          autoClose: 3000,
-          position: 'top-center',
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined
-        })
-      } catch (e: any) {
-        console.log(e)
-        if (e.message === 'User rejected the request.') {
-          toast.error(`Transaction rejected`, {
-            autoClose: 3000,
-            position: 'top-center',
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined
-          })
-        } else {
-          toast.error(`Something went wrong`, {
-            autoClose: 3000,
-            position: 'top-center',
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined
-          })
-        }
-      } finally {
-        store.Lightbox.setCanClose(true)
-        store.Lightbox.setVisible(false)
-        store.MyOffers.refetchStoreData()
-      }
-    }
-
     const handleCancelOffer = async (subOfferKey: string) => {
       store.Lightbox.setContent('processing')
       store.Lightbox.setCanClose(false)
@@ -127,18 +80,6 @@ export const MyOffersNftItem: React.FC<MyOffersNftItemProps> = observer(
       store.Lightbox.setContent('loanUpdate')
       store.Lightbox.setCanClose(true)
       store.Lightbox.setVisible(true)
-    }
-
-    const getActiveSubOffer = () => {
-      let output = ''
-      offers.forEach((offer: any) => {
-        if (offer.state === 1) {
-          // is it possible to have more than one active loan? i hope not
-          output = offer.subOfferKey.toBase58()
-        }
-      })
-
-      return output
     }
 
     const handleCancelCollateral = async () => {
@@ -215,23 +156,10 @@ export const MyOffersNftItem: React.FC<MyOffersNftItemProps> = observer(
           </div>
         )
       }
+
       if (status === 1) {
         return (
-          <div className='nft-info-buttons'>
-            <button className=' btn--md btn--disabled'>NFT Locked, Loan Offer Taken</button>
-            <button
-              ref={setTriggerRef}
-              className=' btn--md btn--primary'
-              onClick={() => handleRepayLoan(getActiveSubOffer())}
-            >
-              Repay Loan
-            </button>
-            {visible && (
-              <div ref={setTooltipRef} {...getTooltipProps({ className: 'tooltip-container' })}>
-                Repay the Loan and get your NFT back
-              </div>
-            )}
-          </div>
+          <div className={'nft-info-space'} />
         )
       }
     }

@@ -144,6 +144,10 @@
       @include theme-aware('color', 'color-label');
     }
   }
+
+  .nft-info-space {
+    width: 80px;
+  }
 }
 
 .offers-list {
@@ -235,6 +239,18 @@
     grid-template-rows: 1fr 1fr 1fr;
     border-radius: $brd-rds-2tn;
 
+    &.green {
+      @include theme-aware('background', 'time-offer-green');
+    }
+
+    &.yellow {
+      @include theme-aware('background', 'time-offer-yellow');
+    }
+
+    &.red {
+      @include theme-aware('background', 'time-offer-red');
+    }
+
     @media (max-width: $bp-tablet) {
       width: 95%;
     }
@@ -259,6 +275,26 @@
 
         :first-child {
           margin-bottom: 5px;
+        }
+
+        &.green p {
+          @include theme-aware('color', 'time-green');
+        }
+
+        &.yellow p {
+          @include theme-aware('color', 'time-yellow');
+        }
+
+        &.red p {
+          @include theme-aware('color', 'time-red');
+        }
+
+        &.yellow.status p {
+          @include theme-aware('background', 'time-yellow-btn');
+        }
+
+        &.red.status p {
+          @include theme-aware('background', 'time-red-btn');
         }
       }
 
@@ -285,12 +321,43 @@
         justify-content: center;
       }
 
-      button:first-child {
+      button:first-child:not(.repay-loan--button, .loan-expired--button) {
         background: rgba(0, 0, 0, 0);
+      }
+
+      .repay-loan--button {
+        margin: 0 auto;
+        border: 0px;
       }
 
       button:last-child {
         @include theme-aware('color', 'lend-offer-button');
+      }
+
+      .loan-expired--button {
+        margin: 0 auto;
+        border: 0px;
+        @include theme-aware('background', 'myOffers-subOffer-info-bg');
+        color: #cdc5e4 !important;
+      }
+    }
+
+    &.disabled {
+      .offer__row--item div,
+      .offer__row--item p,
+      .offer__row button {
+        @include theme-aware('color', 'disabled-color');
+        @include theme-aware('background', 'disabled-bg');
+      }
+
+      .offer__row--item h4 {
+        @include theme-aware('color', 'disabled-color');
+      }
+
+      .offer__row button {
+        pointer-events: none;
+        cursor: not-allowed;
+        border: 0px;
       }
     }
   }
@@ -333,6 +400,11 @@
 
   &__id {
     @include theme-aware('background', 'myOffers-id-bg');
+  }
+
+  &__status {
+    background: rgba(0, 215, 86, 0.25);
+    color: #00d756;
   }
 }
 
