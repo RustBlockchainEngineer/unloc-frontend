@@ -71,9 +71,11 @@
         @include theme-aware('background-color', 'color-primary-dark');
       }
 
-      &.disabled {
+      &.deactivated {
         pointer-events: none;
         cursor: not-allowed;
+        @include theme-aware('background-color', 'disabled-bg');
+        @include theme-aware('color', 'disabled-color');
       }
     }
 

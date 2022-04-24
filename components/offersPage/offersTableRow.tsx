@@ -44,7 +44,7 @@ export const OffersTableRow = ({
             <span className='text-content'>{nftName}</span>
           </div>
           <div className='row-cell'>
-            <button className={isYours ? 'disabled' : ''} onClick={(e) => { if (!isYours) { handlePrevent(e) } }}>Lend tokens</button>
+            <button className={isYours ? 'deactivated' : ''} onClick={(e) => { if (!isYours) { handlePrevent(e) } }}>{isYours ? 'Can\'t lend' : 'Lend tokens'}</button>
           </div>
           <div className='row-cell'>
             <span className='text-content'>{apr} %</span>

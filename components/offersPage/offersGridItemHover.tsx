@@ -14,6 +14,7 @@ interface IProps {
   subOfferKey: string
   count?: number
   collection: string
+  isYours: boolean
 }
 
 const OffersGridItemHover: React.FC<IProps> = ({
@@ -28,7 +29,8 @@ const OffersGridItemHover: React.FC<IProps> = ({
   currency,
   subOfferKey,
   count,
-  collection
+  collection,
+  isYours
 }) => {
   return (
     <div className={`onHover-data ${visible ? '' : 'hide'}`}>
@@ -70,7 +72,7 @@ const OffersGridItemHover: React.FC<IProps> = ({
           </div>
         </div>
       </Link>
-      <button onClick={() => onLend(offerPublicKey)}>Lend Token</button>
+      <button className={isYours ? 'deactivated' : ''} onClick={() => { if (!isYours) { onLend(offerPublicKey) } }}>{isYours ? 'Can\'t Lend' : 'Lend Token'}</button>
     </div>
   )
 }
