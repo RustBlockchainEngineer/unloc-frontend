@@ -8,36 +8,12 @@
     width: 100%;
     flex-wrap: wrap;
     justify-content: space-between;
+
+    @media (max-width: $bp-tablet) {
+      flex-direction: column;
+      align-items: center;
+    }
   }
-
-  // .loan-given {
-  //   display: flex;
-  //   flex-direction: column;
-  //   width: 100%;
-  //   @include theme-aware('background-color', 'color-accent');
-  //   border-radius: $brd-rds-lg;
-  //   padding: 15px;
-
-  //   .lined-info {
-  //     width: 100%;
-  //     display: flex;
-  //     flex-direction: column;
-  //     margin-bottom: 15px;
-
-  //     .info-title {
-  //       @include theme-aware('color', 'color-primary');
-  //     }
-
-  //     .info-content {
-  //       @include theme-aware('color', 'color-label');
-  //     }
-
-  //     button {
-  //       width: 100%;
-  //       justify-content: center;
-  //     }
-  //   }
-  // }
 }
 
 .my-lending-nft-list.empty h1 {
