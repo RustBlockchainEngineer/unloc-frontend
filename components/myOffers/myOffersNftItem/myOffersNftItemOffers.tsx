@@ -20,7 +20,7 @@ export const MyOffersNftItemOffers: React.FC<myOffersNftItemOffersProps> = ({
   data,
   nftMint
 }) => {
-  const [contentVisible, setContentVisible] = useState(false)
+  const [contentVisible, setContentVisible] = useState(true)
 
   const getOffersCount = () => {
     let counter = 0
@@ -34,9 +34,8 @@ export const MyOffersNftItemOffers: React.FC<myOffersNftItemOffersProps> = ({
 
   const renderHeadBar = () => {
     if (status === 1) {
-      console.log(data)
       return (
-        <div className='offers-list-headbar offers-list-headbar--active'>
+        <div className='offers-list-headbar offers-list-headbar--active' onClick={() => setContentVisible(!contentVisible)}>
         </div>
       )
     }
@@ -51,7 +50,7 @@ export const MyOffersNftItemOffers: React.FC<myOffersNftItemOffersProps> = ({
 
   return (
     (data && data.length <= 0) ? <></> :
-      <div className='offers-list' onClick={() => { if (data && data.length && getOffersCount() > 0) { setContentVisible(!contentVisible) } }}>
+      <div className='offers-list' onClick={() => { if (data && data.length) { setContentVisible(!contentVisible) } }}>
         {renderHeadBar()}
         {data && data.length && contentVisible ? (
           <div className='offers-list-content'>
