@@ -4,6 +4,11 @@
 @import './mixins';
 @import './variables';
 @import './themes';
+@import './toasters';
+
+@import './_inputNumberArrows';
+@import './switchButton';
+@import './currencyChanger';
 
 @import './animations';
 @import './icons';
@@ -37,8 +42,8 @@
 @import './lightboxBase';
 @import './NFTCollateral';
 @import './createLoan';
-@import './myOffers/connectWallet';
-@import './myOffers/myLendingList';
+@import './connectWallet';
+@import './loansGiven/myLendingList';
 @import './singleOffer/lendConfirmation';
 
 body {

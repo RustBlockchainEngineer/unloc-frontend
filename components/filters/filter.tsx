@@ -1,7 +1,9 @@
 import React from 'react'
 import { validateFilterInput, validateFilterInputMin, validateFilterInputMax } from '../../methods/validators/filterValidator'
+import { InputNumberArrows } from './inputNumberArrows'
 interface FilterOffersInterface {
   title: string
+  titleComponent?: React.ReactElement<any, any>
   type: 'single' | 'multi' | 'minmax'
   action?: (value: string) => void
   actionMin?: (value: number) => void
@@ -16,6 +18,7 @@ interface FilterOffersInterface {
 
 export const Filter = ({
   title,
+  titleComponent,
   type,
   items,
   action,
@@ -102,7 +105,7 @@ export const Filter = ({
     return valuesRange && actionMin && actionMax ? (
       <div className='filter-generic'>
         <div className='filter-generic__top'>
-          <h5>{title}</h5>
+          <h5>{title} {titleComponent ? titleComponent : ''}</h5>
         </div>
         <div className='filter-minmax'>
           <div className='filter-line'>
@@ -113,6 +116,7 @@ export const Filter = ({
               value={valuesRange.min}
               onChange={(e) => handleActionMin(Number(e.target.value))}
             />
+            <InputNumberArrows value={valuesRange.min} onChange={handleActionMin} />
           </div>
           <div className='filter-line'>
             <span>Max: </span>
@@ -122,6 +126,7 @@ export const Filter = ({
               value={valuesRange.max}
               onChange={(e) => handleActionMax(Number(e.target.value))}
             />
+            <InputNumberArrows value={valuesRange.max} onChange={handleActionMax} />
           </div>
         </div>
       </div>

@@ -13,6 +13,7 @@ interface OffersTableItemInterface {
   onLend: (pubkey: string) => Promise<void>
   offerPublicKey: string
   count?: number
+  isYours: boolean
 }
 
 export const OffersTableRow = ({
@@ -25,7 +26,8 @@ export const OffersTableRow = ({
   amount,
   duration,
   currency,
-  count
+  count,
+  isYours
 }: OffersTableItemInterface) => {
   const handlePrevent = useCallback((e: React.FormEvent<HTMLButtonElement>) => {
     e.stopPropagation()
@@ -37,26 +39,28 @@ export const OffersTableRow = ({
       <Link href={`/offers/${subOfferKey}`}>
         <a>
           <div className='row-cell'>
+            {isYours ? (<div className='owner-indicator'><i className='icon icon--owner' /></div>) : ''}
             {image ? <Image src={image} alt='NFT Picture' width={36} height={36} /> : ''}
             <span className='text-content'>{nftName}</span>
           </div>
           <div className='row-cell'>
-            <button onClick={handlePrevent}>Lend tokens</button>
+            <button className={isYours ? 'deactivated' : ''} onClick={(e) => { if (!isYours) { handlePrevent(e) } }}>{isYours ? 'Can\'t lend' : 'Lend tokens'}</button>
           </div>
           <div className='row-cell'>
             <span className='text-content'>{apr} %</span>
           </div>
           <div className='row-cell'>
             <span className='text-content'>
-              {amount} {currency}
+              {amount}
+            </span>
+          </div>
+          <div className='row-cell'>
+            <span className='text-content'>
+              <i className={`icon icon--sm icon--currency--${currency}`}></i>
             </span>
           </div>
           <div className='row-cell'>
             <span className='text-content'>{duration} Days</span>
-          </div>
-
-          <div className='row-cell'>
-            <span className='text-content'>{count ? `${count}` : ``}</span>
           </div>
         </a>
       </Link>

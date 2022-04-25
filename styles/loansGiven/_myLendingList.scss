@@ -1,0 +1,218 @@
+.my-lending-nft-list {
+  display: inline-block;
+  width: 100%;
+  margin: 20px 0;
+
+  &__inner {
+    display: flex;
+    width: 100%;
+    flex-wrap: wrap;
+    justify-content: space-between;
+
+    @media (max-width: $bp-tablet) {
+      flex-direction: column;
+      align-items: center;
+    }
+  }
+}
+
+.my-lending-nft-list.empty h1 {
+  text-align: center;
+}
+
+.loan-given {
+  width: 49%;
+  margin-bottom: 10px;
+  @include theme-aware('background', 'myOffers-subOffer-bg');
+  backdrop-filter: blur(4px);
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  margin-top: 8px;
+  padding: 20px;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr 1fr 1fr;
+  border-radius: $brd-rds-2tn;
+
+  &.green {
+    @include theme-aware('background', 'timeLoan-offer-green');
+  }
+
+  &.yellow {
+    @include theme-aware('background', 'timeLoan-offer-yellow');
+  }
+
+  &.red {
+    @include theme-aware('background', 'timeLoan-offer-red');
+  }
+
+  @media (max-width: $bp-tablet) {
+    width: 95%;
+  }
+
+  .loan__row:first-child {
+    margin-bottom: 25px;
+  }
+
+  .loan__row:last-child {
+    margin-top: 25px;
+  }
+
+  .loan__row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+    &--item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      :first-child {
+        margin-bottom: 5px;
+      }
+
+      &.green p,
+      &.green span {
+        @include theme-aware('color', 'timeLoan-green');
+      }
+
+      &.yellow p,
+      &.yellow span {
+        @include theme-aware('color', 'timeLoan-yellow');
+      }
+
+      &.red p,
+      &.red span {
+        @include theme-aware('color', 'timeLoan-red');
+      }
+
+      &.yellow.status p {
+        @include theme-aware('background', 'timeLoan-yellow-btn');
+      }
+
+      &.red.status p {
+        @include theme-aware('background', 'timeLoan-red-btn');
+      }
+
+      h4 {
+        font-weight: 400;
+      }
+
+      &.header {
+        flex-direction: row;
+      }
+    }
+
+    &.details {
+      @include theme-aware('background', 'myOffers-subOffer-info-bg');
+      @include theme-aware('color', 'myOffers-nftName-color');
+      box-shadow: inset 0px 2px 2px rgba(0, 0, 0, 0.25);
+      border-radius: $brd-rds-2tn;
+      justify-content: space-around;
+      align-items: center;
+
+      .loan__row--item {
+        min-width: 20%;
+      }
+    }
+
+    button {
+      border-radius: $brd-rds-2tn;
+      width: 48%;
+      display: flex;
+      justify-content: center;
+    }
+
+    .claim-nft--button {
+      margin: 0 auto;
+      border: 0px;
+    }
+
+    .loan-not-repaid-button {
+      margin: 0 auto;
+      border: 0px;
+      @include theme-aware('background', 'myOffers-subOffer-info-bg');
+      @include theme-aware('color', 'timeLoanDisabled-color');
+    }
+
+    .item__title {
+      margin-left: 10px;
+
+      .name {
+        font-weight: 700;
+      }
+
+      .name,
+      .collection {
+        @include theme-aware('color', 'myLoan-header-color');
+      }
+    }
+
+    img {
+      border-radius: $brd-rds-sm;
+    }
+  }
+
+  &.disabled {
+    .loan__row--item div,
+    .loan__row--item p,
+    .loan__row button {
+      @include theme-aware('color', 'timeLoanDiabled-color');
+      @include theme-aware('background', 'disabled-bg');
+    }
+
+    .loan__row--item h4 {
+      @include theme-aware('color', 'timeLoanDiabled-color');
+    }
+
+    .loan__row button {
+      pointer-events: none;
+      cursor: not-allowed;
+      border: 0px;
+    }
+  }
+}
+
+.loan-containers {
+  &__mint,
+  &__id,
+  &__status {
+    width: 160px;
+    height: 30px;
+    text-align: center;
+    line-height: 30px;
+    font-weight: 700;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    border-radius: $brd-rds-sm;
+  }
+
+  &__mint {
+    @include theme-aware('background', 'myLoan-mint-bg');
+    color: white;
+  }
+
+  &__id {
+    @include theme-aware('background', 'myLoan-id-bg');
+    color: white;
+  }
+
+  &__status {
+    @include theme-aware('color', 'timeLoan-green');
+    background: rgba(0, 215, 86, 0.25);
+  }
+}
+
+.loan-time {
+  line-height: 16px;
+
+  span {
+    width: 100%;
+    text-align: right;
+  }
+
+  &--left {
+    font-size: 30px;
+    font-weight: 700;
+  }
+}

@@ -1,0 +1,25 @@
+:root {
+    --toastify-icon-color-success: #00d756;
+}
+
+.Toastify__toast {
+    border-radius: $brd-rds-1md;
+    padding: 15px 6% 40px 6%;
+}
+
+.Toastify__toast-theme--light {
+    @include theme-aware('background', 'toaster-bg');
+    @include theme-aware('color', 'toaster-color');
+}
+
+.Toastify__progress-bar {
+    bottom: 20px;
+    height: 10px;
+    left: 6%;
+    width: 88%;
+    border-radius: 50px;
+}
+
+.Toastify__progress-bar--success {
+    @include theme-aware('background', 'toaster-progress');
+}

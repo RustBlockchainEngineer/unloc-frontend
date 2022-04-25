@@ -16,6 +16,7 @@ interface OffersGridItemInterface {
   currency: string
   count?: number
   collection: string
+  isYours: boolean
 }
 
 export const OffersGridItem = ({
@@ -30,7 +31,8 @@ export const OffersGridItem = ({
   duration,
   currency,
   count,
-  collection
+  collection,
+  isYours
 }: OffersGridItemInterface) => {
   const [hover, setHover] = useState<boolean>(false)
   const rangeSheetsCount = (sheetCount: number) => {
@@ -65,6 +67,7 @@ export const OffersGridItem = ({
       onMouseOver={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
     >
+      {isYours ? (<div className='owner-indicator'><i className='icon icon--owner' /></div>) : ''}
       <OffersGridItemHover
         visible={hover}
         apr={apr}
@@ -78,6 +81,7 @@ export const OffersGridItem = ({
         subOfferKey={subOfferKey}
         count={count}
         collection={collection}
+        isYours={isYours}
       />
       <Link href={`/offers/${subOfferKey}`}>
         <a>

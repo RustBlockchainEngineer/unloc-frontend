@@ -11,6 +11,10 @@
     display: flex;
     justify-content: center;
   }
+
+  :last-child a {
+    border-radius: 0px 0px $brd-rds-sm $brd-rds-sm;
+  }
 }
 
 .offers-table-heading {
@@ -23,7 +27,8 @@
   font-weight: $wg-bd;
   border-radius: $brd-rds-sm $brd-rds-sm 0 0;
   display: grid;
-  grid-template-columns: 2fr 1fr 2fr 1fr 1fr 1fr;
+  grid-template-columns: 2fr 1.5fr 1fr 1fr 1fr 1fr;
+  backdrop-filter: blur(21px);
 
   .row-cell {
     text-align: left;
@@ -32,21 +37,27 @@
 
 .offers-table-row {
   width: 100%;
-
   a {
     display: grid;
-    grid-template-columns: 2fr 1fr 2fr 1fr 1fr 1fr;
+    grid-template-columns: 2fr 1.5fr 1fr 1fr 1fr 1fr;
     align-content: center;
     width: 100%;
     @include theme-aware('background-color', 'bg-table');
     @include theme-aware('color', 'color-label');
     text-decoration: none;
     transition: background-color 0.3s ease-in-out;
+    backdrop-filter: blur(21px);
 
     &:hover {
       @include theme-aware('background-color', 'bg-table-hover');
+      & button {
+        opacity: 1;
+        @include theme-aware('color', 'lend-offer-button');
+      }
     }
     & button {
+      transition: 0.3s ease-in-out;
+      opacity: 0;
       @include theme-aware('background-color', 'color-primary');
       border: none;
       border-radius: 6px;
@@ -59,15 +70,49 @@
       &:hover {
         @include theme-aware('background-color', 'color-primary-dark');
       }
+
+      &.deactivated {
+        pointer-events: none;
+        cursor: not-allowed;
+        @include theme-aware('background-color', 'disabled-bg');
+        @include theme-aware('color', 'disabled-color');
+      }
+    }
+
+    .owner-indicator {
+      transform: scale(0.5);
+      margin: -25px 0 0 -15px;
+      position: absolute;
+      width: 32px;
+      height: 32px;
+      @include theme-aware('background-color', 'color-primary');
+      border-radius: 50%;
+      z-index: 10000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      i {
+        width: 25px;
+        height: 25px;
+      }
+    }
+
+    img {
+      border-radius: 50%;
     }
 
     .row-cell {
       display: flex;
       text-align: left;
-      align-items: flex-end;
+      align-items: center;
       padding: 10px;
       height: 58px;
       line-height: 40px;
+
+      i {
+        display: block;
+      }
 
       &:first-child {
         .text-content {

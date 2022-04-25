@@ -139,6 +139,7 @@ export const CreateCollateral: React.FC = observer(() => {
           </>
         ) : (
           <div className='collateral-empty'>
+            <div></div>
             <h2>No whitelisted NFTs in your wallet</h2>
           </div>
         )}

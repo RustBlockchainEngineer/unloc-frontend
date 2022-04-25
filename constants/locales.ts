@@ -4,7 +4,8 @@ export const localesHome = {
 
 export const localesTop = {
   home: 'Home',
-  myOffers: 'My Offers'
+  myOffers: 'My Offers',
+  loansGiven: 'Loans Given'
 }
 
 export const localesFooterCommunity: { [x: string]: string } = {

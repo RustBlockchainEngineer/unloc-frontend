@@ -1,22 +1,58 @@
+.offers-filters-wrapper {
+  margin-top: 50px;
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+
+  .btn--filters {
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    @include theme-aware('color', 'color-label');
+
+    span {
+      margin: 0px 40px;
+    }
+
+    .filter--icon {
+      margin: 0px -15px;
+    }
+
+    &.active {
+      @include theme-aware('background-color', 'color-accent');
+      box-shadow: 0px 3px 0px rgba(33, 13, 72, 0.25);
+    }
+
+    &:hover {
+      @include theme-aware('background-color', 'filter-btn-hover');
+    }
+  }
+
+  @media (max-width: $bp-tablet) {
+    margin-top: 100px;
+
+    .btn--filters {
+      margin-top: 0;
+      margin-bottom: -160px;
+      z-index: 0;
+
+      &.active {
+        border-radius: $brd-rds-lg;
+        margin-top: 40px;
+        margin-bottom: -18px;
+      }
+    }
+  }
+}
+
 .offers-top {
   width: 100%;
   display: flex;
   justify-content: space-between;
-  margin-top: 50px;
 
   h1 {
     font-size: $tp-1xl;
     margin-bottom: 0;
-  }
-
-  .btn--filters {
-    margin-top: 40px;
-
-    &.active {
-      @include theme-aware('background-color', 'color-accent');
-      border-radius: 24px 24px 0 0;
-      margin-top: 50px;
-    }
   }
 
   @media (max-width: $bp-tablet) {
@@ -26,16 +62,6 @@
 
     h1 {
       text-align: center;
-    }
-
-    .btn--filters {
-      position: absolute;
-      bottom: 20px;
-      right: 20px;
-      &.active {
-        border-radius: $brd-rds-lg;
-        margin-top: 40px;
-      }
     }
   }
 }
@@ -49,23 +75,29 @@
   }
 
   button.active {
-    @include theme-aware('background-color', 'color-accent');
+    @include theme-aware('background-color', 'grid-table-button-bg');
+    @include theme-aware('color', 'switch-color');
   }
 
   button {
-    @include theme-aware('color', 'color-content');
+    @include theme-aware('color', 'grid-table-button-bg');
+    @include theme-aware('border-color', 'grid-table-button-bg');
+
+    &:hover:not(.active) {
+      @include theme-aware('background-color', 'color-accent');
+    }
+
+    :last-child {
+      display: block;
+      margin-left: 20px;
+    }
   }
 
   @media (max-width: $bp-tablet) {
+    display: none;
     margin: 30px 10px 20px;
-
     button {
       font-size: $tp-tn;
-
-      &:last-child {
-        margin-left: 13px;
-      }
-
       &.btn--table {
         display: none;
       }
@@ -74,19 +106,23 @@
 }
 
 .offers-filters {
+  margin-top: -20px;
+  margin-bottom: -200px;
   display: flex;
   justify-items: center;
+  align-items: center;
   width: 100%;
   transform: scaleY(0);
   transition: transform 0.3s ease-in-out, padding 0.3s ease-in-out, margin 0.3s ease-in-out;
   @include theme-aware('background-color', 'color-accent');
   padding: 0;
   height: auto;
-  border-radius: $brd-rds-lg;
+  border-radius: $brd-rds-md;
 
   &.active {
     width: 100%;
-    margin-top: 0px;
+    margin-top: -20px;
+    margin-bottom: 0;
     transform: scaleY(1);
     height: auto;
     padding: 30px;
@@ -96,7 +132,6 @@
   .filter-generic {
     padding-right: 20px;
     margin-left: 20px;
-    border-right: 1px dotted;
     @include theme-aware('border-color', 'color-secondary');
 
     &:first-child {
@@ -110,6 +145,7 @@
   }
 
   @media (max-width: $bp-tablet) {
+    margin-bottom: 0;
     &.active {
       width: 95vw;
       flex-direction: column;

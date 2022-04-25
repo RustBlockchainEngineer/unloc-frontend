@@ -6,6 +6,7 @@ import { ShowOnHover } from '@components/layout/showOnHover'
 import { ClipboardButton } from '@components/layout/clipboardButton'
 import { SolscanExplorerIcon } from '@components/layout/solscanExplorerIcon'
 import ConnectWallet from '@components/connectWallet/ConnectWallet'
+import { compressAddress } from '@utils/stringUtils/compressAdress'
 
 export const MyOffersTop: React.FC = observer(() => {
   const store = useContext(StoreContext)
@@ -26,7 +27,7 @@ export const MyOffersTop: React.FC = observer(() => {
           <>
             <span className='wallet-label'>Your wallet address:</span>
             <h2>
-              <ShowOnHover label={`#${walletKey.toBase58()}`}>
+              <ShowOnHover label={`#${compressAddress(4, walletKey.toBase58())}`}>
                 <ClipboardButton data={walletKey.toBase58()} />
                 <SolscanExplorerIcon type={'account'} address={walletKey.toBase58()} />
               </ShowOnHover>

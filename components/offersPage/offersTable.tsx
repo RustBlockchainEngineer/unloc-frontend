@@ -9,7 +9,10 @@ import { toast } from 'react-toastify'
 
 export const OffersTable = observer(() => {
   const store = useContext(StoreContext)
+  const { connected, walletKey } = store.Wallet
   const { pageOfferData, pageNFTData, currentPage, maxPage } = store.Offers
+  console.log(pageOfferData);
+
   const handleAcceptOffer = async (offerPublicKey: string) => {
     try {
       store.Lightbox.setContent('processing')
@@ -63,8 +66,8 @@ export const OffersTable = observer(() => {
           <div className='row-cell'></div>
           <div className='row-cell'>APR</div>
           <div className='row-cell'>Amount</div>
+          <div className='row-cell'>Currency</div>
           <div className='row-cell'>Duration</div>
-          <div className='row-cell'>Offers</div>
         </div>
         {pageOfferData.map((offerData, index) => {
           return (
@@ -80,6 +83,7 @@ export const OffersTable = observer(() => {
               duration={Math.floor(offerData.loanDuration.toNumber() / (3600 * 24))}
               currency={currencyMints[offerData.offerMint.toBase58()]}
               count={offerData.count}
+              isYours={offerData.borrower.toBase58() == walletKey?.toBase58()}
             />
           )
         })}
@@ -87,7 +91,7 @@ export const OffersTable = observer(() => {
       <div className='offers-pagination'>
         <div>
           <button disabled={currentPage === 1} onClick={() => store.Offers.setCurrentPage(currentPage - 1)}>
-            Previous
+            <i className='icon icon--sm icon--paginator--left' />
           </button>
         </div>
         <div className='offers-pagination__pages'>
@@ -103,7 +107,7 @@ export const OffersTable = observer(() => {
         </div>
         <div>
           <button disabled={currentPage === maxPage} onClick={() => store.Offers.setCurrentPage(currentPage + 1)}>
-            Next
+            <i className='icon icon--sm icon--paginator--right' />
           </button>
         </div>
       </div>

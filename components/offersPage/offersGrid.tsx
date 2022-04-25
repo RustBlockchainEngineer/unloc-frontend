@@ -9,6 +9,7 @@ import { toast } from 'react-toastify'
 
 export const OffersGrid = observer(() => {
   const store = useContext(StoreContext)
+  const { connected, walletKey } = store.Wallet
   const { pageOfferData, pageNFTData, currentPage, maxPage, itemsPerPage, offersEmpty } = store.Offers
   const generateEmptyFields = () => {
     const count = (itemsPerPage - pageNFTData.length) as number
@@ -85,6 +86,7 @@ export const OffersGrid = observer(() => {
               currency={currencyMints[offerData.offerMint.toBase58()]}
               count={offerData.count}
               collection={offerData.collection}
+              isYours={offerData.borrower.toBase58() == walletKey?.toBase58()}
             />
           )
         })}
@@ -93,7 +95,7 @@ export const OffersGrid = observer(() => {
       <div className='offers-pagination'>
         <div>
           <button disabled={currentPage === 1} onClick={() => store.Offers.setCurrentPage(currentPage - 1)}>
-            Previous
+            <i className='icon icon--sm icon--paginator--left' />
           </button>
         </div>
         <div className='offers-pagination__pages'>
@@ -109,7 +111,7 @@ export const OffersGrid = observer(() => {
         </div>
         <div>
           <button disabled={currentPage === maxPage} onClick={() => store.Offers.setCurrentPage(currentPage + 1)}>
-            Next
+            <i className='icon icon--sm icon--paginator--right' />
           </button>
         </div>
       </div>
