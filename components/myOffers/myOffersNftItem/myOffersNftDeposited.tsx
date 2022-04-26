@@ -88,7 +88,7 @@ export const MyOffersNftDeposited: React.FC<MyOffersNftDepositedProps> = observe
                 </div>
                 <div className='nft-deposited-item__row'>
                     <div className='row--item'>
-                        <p>Offer ID</p>
+                        <p>Collateral ID</p>
                         <div className='id'>{compressAddress(4, offerKey)}</div>
                     </div>
                     <div className='row--item'>

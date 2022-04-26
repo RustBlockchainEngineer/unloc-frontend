@@ -48,7 +48,7 @@ export const Offer: React.FC<IProps> = ({
       <div className='offer-container'>
         <div className='offer-header'>
           <div className='offer-ID'>
-            <p>Offer ID</p>
+            <p>Collateral ID</p>
             <ShowOnHover label={`${compressAddress(4, offerID)}`}>
               <ClipboardButton data={offerID} />
               <SolscanExplorerIcon type={'account'} address={offerID} />

@@ -176,11 +176,11 @@ export const MyOffersNftItem: React.FC<MyOffersNftItemProps> = observer(
                     <p className='info-name'>{name}</p>
                     <div className='nft-metadata'>
                       {/*
-                  <ShowOnHover label={`${compressAddress(4, nftMint)}`}>
-                    <ClipboardButton data={nftMint} />
-                    <SolscanExplorerIcon type={'token'} address={nftMint} />
-                  </ShowOnHover>
-                  */}
+                      <ShowOnHover label={`${compressAddress(4, nftMint)}`}>
+                        <ClipboardButton data={nftMint} />
+                        <SolscanExplorerIcon type={'token'} address={nftMint} />
+                      </ShowOnHover>
+                      */}
                       <p>Collection:</p>
                       <p>Example</p>
                     </div>
