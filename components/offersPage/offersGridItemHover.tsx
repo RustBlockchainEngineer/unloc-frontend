@@ -6,7 +6,7 @@ interface IProps {
   apr: number
   name: string
   totalRepay: any
-  amount: number
+  amount: string
   onLend: (Pubkey: string) => Promise<void>
   offerPublicKey: string
   duration: number

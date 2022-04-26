@@ -7,7 +7,7 @@ interface OffersTableItemInterface {
   image: string
   nftName: string
   apr: number
-  amount: number
+  amount: string
   duration: number
   currency: string
   onLend: (pubkey: string) => Promise<void>

@@ -6,7 +6,7 @@ import { currencyMints } from '@constants/currency'
 import { asBigNumber } from '@utils/asBigNumber'
 import { BlobLoader } from '@components/layout/blobLoader'
 import { toast } from 'react-toastify'
-import getDecimalsForLoanAmount from '@integration/getDecimalForLoanAmount'
+import { getDecimalsForLoanAmountAsString } from '@integration/getDecimalForLoanAmount'
 
 export const OffersTable = observer(() => {
   const store = useContext(StoreContext)
@@ -76,7 +76,7 @@ export const OffersTable = observer(() => {
               subOfferKey={offerData.nftData.mint}
               image={offerData.nftData.arweaveMetadata.image}
               nftName={offerData.nftData.arweaveMetadata.name}
-              amount={+getDecimalsForLoanAmount(offerData.offerAmount.toNumber(), offerData.offerMint.toString())}
+              amount={getDecimalsForLoanAmountAsString(offerData.offerAmount.toNumber(), offerData.offerMint.toString(), 0)}
               onLend={handleAcceptOffer}
               offerPublicKey={offerData.subOfferKey.toString()}
               apr={asBigNumber(offerData.aprNumerator)}

@@ -4,7 +4,7 @@ import { compressAddress } from '@utils/stringUtils/compressAdress'
 import { PublicKey } from '@solana/web3.js'
 import { IsubOfferData } from '@stores/Lightbox.store'
 import { currencyMints } from '@constants/currency'
-import getDecimalsForLoanAmount from '@integration/getDecimalForLoanAmount'
+import { getDecimalsForLoanAmountAsString } from '@integration/getDecimalForLoanAmount'
 
 interface MyOffersNftOfferItemProps {
   offerAmount: any
@@ -64,7 +64,7 @@ export const MyOffersNftOfferItem: React.FC<MyOffersNftOfferItemProps> = ({
       <div className='offer__row details'>
         <div className='offer__row--item'>
           <h4>Amount</h4>
-          <p>{`${getDecimalsForLoanAmount(offerAmount.toNumber(), offerMint.toString())} ${
+          <p>{`${getDecimalsForLoanAmountAsString(offerAmount.toNumber(), offerMint.toString(), 2)} ${
             currencyMints[offerMint.toBase58()]
           }`}</p>
         </div>

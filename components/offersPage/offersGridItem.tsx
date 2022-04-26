@@ -11,7 +11,7 @@ interface OffersGridItemInterface {
   name: string
   onLend: (pubkey: string) => Promise<void>
   totalRepay: any
-  amount: number
+  amount: string
   duration: number
   currency: string
   count?: number
