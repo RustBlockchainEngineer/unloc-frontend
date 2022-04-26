@@ -7,7 +7,6 @@ import { CustomSelect } from '@components/layout/customSelect'
 
 export const OffersTop = observer(() => {
   const store = useContext(StoreContext)
-  // const [currency, setCurrency] = useState(true)
   const [currency, setCurrency] = useState('USDC')
 
   const {
