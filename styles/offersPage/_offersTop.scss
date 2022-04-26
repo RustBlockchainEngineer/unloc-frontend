@@ -142,6 +142,11 @@
       margin-right: 0;
       border: none;
     }
+
+    &__top {
+      display: inline-flex;
+      justify-content: space-between;
+    }
   }
 
   @media (max-width: $bp-tablet) {
