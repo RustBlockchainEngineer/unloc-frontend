@@ -49,6 +49,14 @@ const Unloc: FC<AppProps> = ({ Component, pageProps }) => {
       <WalletProvider wallets={wallets} autoConnect onError={rootStore.Wallet.handleWalletError}>
         <WalletModalProvider>
           <StoreContext.Provider value={rootStore}>
+            {config.devnet
+              ? <div className='devnet-container'>
+                  <span className='devnet'><i className='icon icon--smd icon--info'></i>Devnet Version</span>
+                </div>
+              : ''
+            }
+            <div className='home-bg-top' />
+            <div className='home-bg-bottom' />
             <Component {...pageProps} />
             <ToastContainer
               position='top-center'
