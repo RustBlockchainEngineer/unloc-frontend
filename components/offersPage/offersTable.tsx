@@ -63,9 +63,9 @@ export const OffersTable = observer(() => {
         <div className='offers-table-heading'>
           <div className='row-cell'>Name</div>
           <div className='row-cell'></div>
-          <div className='row-cell'>APR</div>
           <div className='row-cell'>Amount</div>
           <div className='row-cell'>Currency</div>
+          <div className='row-cell'>APR</div>
           <div className='row-cell'>Duration</div>
         </div>
         {pageOfferData.map((offerData, index) => {
