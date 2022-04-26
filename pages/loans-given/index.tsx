@@ -44,7 +44,6 @@ const MyOffers: NextPage = observer(() => {
         <MyOffersTop />
         {connected ? <MyLendingList /> : ''}
       </div>
-      <div className='home-bg-bottom' />
 
       <Footer />
       <LayoutTopMobile />

@@ -21,7 +21,6 @@ const MyOffers: NextPage = observer(() => {
           website='unloc.xyz'
         />
       </div>
-      <div className='home-bg-bottom' />
       <Footer />
       <LayoutTopMobile />
     </StoreDataAdapter>

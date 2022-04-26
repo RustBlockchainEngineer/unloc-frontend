@@ -24,6 +24,7 @@ export const CreateCollateral: React.FC = observer(() => {
   const [sortOption, setSortOption] = useState('Default')
   const [data, setData] = useState<NFTMetadata[]>(myOffers.collaterables)
   const [processing, setProcessing] = useState(false)
+  const [loading, setLoading] = useState(true)
 
   const chooseNFT = (mint: any) => {
     if (mint === itemMint) {
@@ -95,14 +96,19 @@ export const CreateCollateral: React.FC = observer(() => {
     if (wallet && walletKey) {
       const fetchData = async () => {
         try {
+          setLoading(true)
           await myOffers.getUserNFTs(walletKey)
           await myOffers.getNFTsData()
           setData(myOffers.collaterables)
+          setLoading(false)
         } catch (e) {
           // eslint-disable-next-line no-console
           console.error(e)
+          setLoading(false)
         }
       }
+  
+      
       fetchData()
     }
   }, [wallet, connection, walletKey])
@@ -115,44 +121,51 @@ export const CreateCollateral: React.FC = observer(() => {
   ) : (
     <StoreDataAdapter>
       <div className='collateral-lightbox'>
-        {data && data.length ? (
-          <>
-            <div className='NFT-lb-header'>
-              <h1>Choose an NFT for collateral</h1>
-              <label htmlFor='sort-select'>Sort by:
-                <CustomSelect
-                  options={['Default', 'Name']}
-                  selectedOption={sortOption}
-                  setSelectedOption={sortNFT}
-                  classNames={'sort-select'}
-                />
-              </label>
-            </div>
-            <div className='NFT-lb-collateral-list'>
-              {data?.map((item: NFTMetadata) => {
-                return (
-                  <CollateralItem
-                    key={item.mint}
-                    data={item}
-                    onClick={() => chooseNFT(item.mint)}
-                    choosen={item.mint === itemMint}
+        {!loading ?
+          (data && data.length ? (
+            <>
+              <div className='NFT-lb-header'>
+                <h1>Choose an NFT for collateral</h1>
+                <label htmlFor='sort-select'>Sort by:
+                  <CustomSelect
+                    options={['Default', 'Name']}
+                    selectedOption={sortOption}
+                    setSelectedOption={sortNFT}
+                    classNames={'sort-select'}
                   />
-                )
-              })}
+                </label>
+              </div>
+              <div className='NFT-lb-collateral-list'>
+                {data?.map((item: NFTMetadata) => {
+                  return (
+                    <CollateralItem
+                      key={item.mint}
+                      data={item}
+                      onClick={() => chooseNFT(item.mint)}
+                      choosen={item.mint === itemMint}
+                    />
+                  )
+                })}
+              </div>
+              <button
+                onClick={() => {
+                  createOffer(itemMint)
+                }}
+                className='lb-collateral-button'
+              >
+                Use as Collateral
+              </button>
+            </>
+          ) : (
+            <div className='collateral-empty'>
+              <div></div>
+              <h2>No whitelisted NFTs in your wallet</h2>
             </div>
-            <button
-              onClick={() => {
-                createOffer(itemMint)
-              }}
-              className='lb-collateral-button'
-            >
-              Use as Collateral
-            </button>
-          </>
+          )
         ) : (
-          <div className='collateral-empty'>
-            <div></div>
-            <h2>No whitelisted NFTs in your wallet</h2>
+          <div className='collateral-loading'>
+            <BlobLoader />
+            <h2>Loading...</h2>
           </div>
         )}
       </div>

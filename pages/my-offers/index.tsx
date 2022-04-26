@@ -61,7 +61,6 @@ const MyOffers: NextPage = observer(() => {
         </div>
           : ''}
       </div>
-      <div className='home-bg-bottom' />
 
       <Footer />
       <LayoutTopMobile />
