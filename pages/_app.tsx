@@ -20,6 +20,7 @@ import { config } from '@constants/config'
 import { rootStore } from '@stores/Root.store'
 import 'react-toastify/dist/ReactToastify.css'
 import '@styles/main.scss'
+import Footer from '@components/layout/footer'
 
 export const StoreContext = createContext(rootStore)
 
@@ -69,6 +70,7 @@ const Unloc: FC<AppProps> = ({ Component, pageProps }) => {
               draggable
               pauseOnHover
             />
+            <Footer />
           </StoreContext.Provider>
         </WalletModalProvider>
       </WalletProvider>

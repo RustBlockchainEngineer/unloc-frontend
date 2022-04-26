@@ -21,7 +21,6 @@ const MyOffers: NextPage = observer(() => {
           website='unloc.xyz'
         />
       </div>
-      <Footer />
       <LayoutTopMobile />
     </StoreDataAdapter>
   )

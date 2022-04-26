@@ -145,7 +145,6 @@ const SingleNftPage: NextPage = observer(({ }) => {
             <BlobLoader />
           </div>
         )}
-        <Footer />
       </div>
     </StoreDataAdapter>
   )
