@@ -3,5 +3,5 @@ export const calculateRepayValue = (amount: number, apr: number, duration: numbe
     return '0'
   }
   const totalRepay = amount + amount * ((apr / 36500) * duration)
-  return Math.floor(totalRepay).toFixed(4).toLocaleString()
+  return totalRepay.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 4})
 }
