@@ -6,6 +6,7 @@ import { StoreContext } from '@pages/_app'
 import { StoreDataAdapter } from '@components/storeDataAdapter'
 import { CollateralItem } from './collateralItem'
 import { BlobLoader } from '@components/layout/blobLoader'
+import { CustomSelect } from '@components/layout/customSelect'
 
 export interface INFTCollateral {
   NFTAddress: string
@@ -19,8 +20,8 @@ export const CreateCollateral: React.FC = observer(() => {
   const myOffers = store.MyOffers
   const { wallet, connection, walletKey } = store.Wallet
 
-  const [itemMint, setItemMint] = useState<string>('')
-  const [sortOption, setSortOption] = useState<string>('')
+  const [itemMint, setItemMint] = useState('')
+  const [sortOption, setSortOption] = useState('Default')
   const [data, setData] = useState<NFTMetadata[]>(myOffers.collaterables)
   const [processing, setProcessing] = useState(false)
 
@@ -79,11 +80,14 @@ export const CreateCollateral: React.FC = observer(() => {
       if (sortOption === '') {
         return
       }
-      setData(
-        data.sort((a, b) =>
-          a.arweaveMetadata.name > b.arweaveMetadata.name ? 1 : b.arweaveMetadata.name > a.arweaveMetadata.name ? -1 : 0
+
+      if (sortOption.toLowerCase() === 'name') {
+        setData(
+          data.sort((a, b) =>
+            a.arweaveMetadata.name > b.arweaveMetadata.name ? 1 : b.arweaveMetadata.name > a.arweaveMetadata.name ? -1 : 0
+          )
         )
-      )
+      }
     }
   }, [sortOption])
 
@@ -111,10 +115,14 @@ export const CreateCollateral: React.FC = observer(() => {
           <>
             <div className='NFT-lb-header'>
               <h1>Choose an NFT for collateral</h1>
-              <select onChange={(e) => sortNFT(e.target.value)} className='sort-select'>
-                <option value=''>Sort by</option>
-                <option value='name'>Sort by name</option>
-              </select>
+              <label htmlFor='sort-select'>Sort by:
+                <CustomSelect
+                  options={['Default', 'Name']}
+                  selectedOption={sortOption}
+                  setSelectedOption={sortNFT}
+                  classNames={'sort-select'}
+                />
+              </label>
             </div>
             <div className='NFT-lb-collateral-list'>
               {data?.map((item: NFTMetadata) => {

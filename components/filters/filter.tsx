@@ -105,7 +105,7 @@ export const Filter = ({
     return valuesRange && actionMin && actionMax ? (
       <div className='filter-generic'>
         <div className='filter-generic__top'>
-          <h5>{title} {titleComponent ? titleComponent : ''}</h5>
+          <h5>{title}</h5>{titleComponent ? titleComponent : ''}
         </div>
         <div className='filter-minmax'>
           <div className='filter-line'>
