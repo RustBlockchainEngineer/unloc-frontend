@@ -15,8 +15,6 @@ export const MyLendingList = observer(() => {
   const store = useContext(StoreContext)
   const { lendingList } = store.MyOffers
 
-
-
   const handleTimeLeft = (duration: number, startTime: number, formated: boolean) => {
     let output: string | number
     const currentDate = new Date()
@@ -157,10 +155,10 @@ export const MyLendingList = observer(() => {
               <p>{offer.aprNumerator.toString()}%</p>
             </div>
 
-            <div className='loan__row--item'>
+            {/* <div className='loan__row--item'>
               <h4>Min repaid value</h4>
               <p>{offer.minRepaidNumerator.toString()}</p>
-            </div>
+            </div> */}
           </div>
 
           {canClaim(offer.loanDuration.toNumber() / 60 / 60 / 24, offer.loanStartedTime.toNumber() * 1000) ? (
