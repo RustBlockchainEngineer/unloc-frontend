@@ -140,10 +140,10 @@ export const MyOffersNftOfferItemAccepted: React.FC<MyOffersNftOfferItemAccepted
           <h4>{status.toString() == '1' ? 'Time left' : 'Duration'}  </h4>
           <p>{timeLeft} Days</p>
         </div>
-        <div className='offer__row--item'>
+        {/* <div className='offer__row--item'>
           <h4>Min repaid value</h4>
           <p>{repaid.toString()}</p>
-        </div>
+        </div> */}
       </div>
 
       {
