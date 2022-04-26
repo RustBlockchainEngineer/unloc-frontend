@@ -131,6 +131,13 @@ export const CreateLoan: React.FC<CreateLoanProps> = observer(({ mode }) => {
     }
   }
 
+  const getInitialValueOnUpdate = () => {
+    if (mode === 'update' && activeSubOfferData) {
+      return +getDecimalsForLoanAmount(activeSubOfferData.offerAmount, activeSubOfferData.offerMint)
+    }
+    return false
+  }
+
   return processing ? (
     <div className='create-offer-processing'>
       <BlobLoader />
@@ -151,14 +158,20 @@ export const CreateLoan: React.FC<CreateLoanProps> = observer(({ mode }) => {
                   component='input'
                   type='number'
                   name='loanvalue'
-                  min={1}
+                  min={(values && values.currency && values.currency.toUpperCase()) == 'USDC' ? 1000 : 10}
                   placeholder='Amount'
                   className='input-text'
+                  // initialValue={
+                  //   mode === 'update' && activeSubOfferData
+                  //     ? +getDecimalsForLoanAmount(activeSubOfferData.offerAmount, activeSubOfferData.offerMint)
+                  //     : 1
+                  // }
                   initialValue={
-                    mode === 'update' && activeSubOfferData
-                      ? +getDecimalsForLoanAmount(activeSubOfferData.offerAmount, activeSubOfferData.offerMint)
-                      : 1
-                  }
+                    getInitialValueOnUpdate()
+                      ?
+                      getInitialValueOnUpdate()
+                      :
+                      ((values && values.currency && values.currency.toUpperCase()) == 'USDC' ? 1000 : 10)}
                 />
               </div>
               <div>
