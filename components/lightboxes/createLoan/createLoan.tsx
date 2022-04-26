@@ -4,7 +4,7 @@ import { toast } from 'react-toastify'
 import { Form, Field } from 'react-final-form'
 import { StoreContext } from '@pages/_app'
 import { SubOfferInterface } from '@stores/LoanActionStore'
-import { calculateRepayValue } from '@methods/calculateRepayValue'
+import { calculateRepayValue } from '@utils/calculateRepayValue'
 import { BlobLoader } from '@components/layout/blobLoader'
 import getDecimalsForLoanAmount from '@integration/getDecimalForLoanAmount'
 import { currencyMints } from '@constants/currency'
@@ -151,6 +151,7 @@ export const CreateLoan: React.FC<CreateLoanProps> = observer(({ mode }) => {
                   component='input'
                   type='number'
                   name='loanvalue'
+                  min={1}
                   placeholder='Amount'
                   className='input-text'
                   initialValue={
@@ -218,6 +219,7 @@ export const CreateLoan: React.FC<CreateLoanProps> = observer(({ mode }) => {
                 <Field
                   type='number'
                   name='apr'
+                  min={1}
                   component='input'
                   initialValue={mode === 'update' && activeSubOfferData ? activeSubOfferData.aprNumerator : 500}
                   className='input-text'

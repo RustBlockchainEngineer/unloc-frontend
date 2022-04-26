@@ -105,8 +105,12 @@ export class SingleOfferStore {
     const offersData = await getOffersBy(this.rootStore.Wallet.walletKey, undefined, undefined)
     for (let offer in offersData) {
       if (offersData[offer].account.nftMint.toBase58() == this.nftData.mint) {
-        this.isYours = true
+        this.setIsYours(true)
       }
     }
+  }
+
+  @action.bound setIsYours = (isYours: boolean): void => {
+    this.isYours = isYours
   }
 }
