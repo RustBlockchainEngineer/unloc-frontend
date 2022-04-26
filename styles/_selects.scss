@@ -37,15 +37,20 @@
     }
 
     li {
+      cursor: pointer;
       padding: $mr-tn;
       margin: $mr-tn 0;
       display: block;
       text-align: center;
       border-radius: 20px;
-      transition: all 0.6s ease-in-out;
+      transition: all 0.3s ease-in-out;
 
       &.selected {
         @include theme-aware('background-color', 'selected-option-bg');
+      }
+
+      &:not(.selected):hover {
+        @include theme-aware('background-color', 'hover-option-bg');
       }
     }
   }
