@@ -27,7 +27,7 @@ export const MyOffersTop: React.FC = observer(() => {
           <>
             <span className='wallet-label'>Your wallet address:</span>
             <h2>
-              <ShowOnHover label={`#${compressAddress(4, walletKey.toBase58())}`}>
+              <ShowOnHover label={`${compressAddress(4, walletKey.toBase58())}`}>
                 <ClipboardButton data={walletKey.toBase58()} />
                 <SolscanExplorerIcon type={'account'} address={walletKey.toBase58()} />
               </ShowOnHover>

@@ -288,7 +288,7 @@ export class OffersStore {
       offersViable = [...offersViable, ...proposedOffersKeys]
 
       if (offersViable && offersViable.length) {
-        this.offersEmpty = false
+        this.setOffersEmpty(false)
         this.setOffersKeys(offersViable)
         this.setOffersCount(offersViable?.length)
 
@@ -334,7 +334,7 @@ export class OffersStore {
     } else {
       this.pageOfferData = []
       this.pageNFTData = []
-      this.offersEmpty = true
+      this.setOffersEmpty(true)
     }
   }
 

@@ -34,7 +34,6 @@ const SingleNftPage: NextPage = observer(({ }) => {
   const { nftData, loansData, isYours } = store.SingleOffer
   const [hasActive, setHasActive] = useState(false)
 
-  console.log(nftData)
   const handleData = async () => {
     try {
       if (connected && wallet && router.query.id) {

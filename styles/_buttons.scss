@@ -30,7 +30,7 @@
 
   &--primary {
     @include theme-aware('background-color', 'color-primary');
-    @include theme-aware('color', 'color-label');
+    @include theme-aware('color', 'color-white');
 
     &:hover {
       @include theme-aware('background-color', 'color-primary-dark');

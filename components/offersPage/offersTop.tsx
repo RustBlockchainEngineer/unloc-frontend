@@ -3,10 +3,12 @@ import { observer } from 'mobx-react'
 import { StoreContext } from '@pages/_app'
 import { Filter } from '@components/filters/filter'
 import { CurrencyChanger } from '@components/layout/currencyChanger'
+import { CustomSelect } from '@components/layout/customSelect'
 
 export const OffersTop = observer(() => {
   const store = useContext(StoreContext)
-  const [currency, setCurrency] = useState(true)
+  const [currency, setCurrency] = useState('USDC')
+
   const {
     filterCollection,
     filterCollectionSelected,
@@ -34,7 +36,13 @@ export const OffersTop = observer(() => {
             />
             <Filter
               title='LOAN AMOUNT'
-              titleComponent={<CurrencyChanger state={currency} onClick={setCurrency} />}
+              titleComponent={
+                <CustomSelect
+                  classNames='offers-filters-select'
+                  options={['All', 'USDC', 'SOL']}
+                  selectedOption={currency}
+                  setSelectedOption={setCurrency}
+                />}
               type='minmax'
               valuesRange={{ min: filterAmountMin, max: filterAmountMax }}
               actionMin={store.Offers.setFilterAmountMin}
