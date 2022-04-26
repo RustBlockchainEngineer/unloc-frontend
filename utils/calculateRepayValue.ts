@@ -3,5 +3,6 @@ export const calculateRepayValue = (amount: number, apr: number, duration: numbe
     return '0'
   }
   const totalRepay = amount + amount * ((apr / 36500) * duration)
-  return totalRepay.toFixed(4).toLocaleString()
+  const totalRepayString = totalRepay.toLocaleString(undefined, {maximumFractionDigits: 4})
+  return (totalRepayString.includes('.') || totalRepayString.includes('.')) ? totalRepayString : totalRepayString + '.00'
 }
