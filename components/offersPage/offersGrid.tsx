@@ -72,30 +72,32 @@ export const OffersGrid = observer(() => {
     <>
       <div className='offers-grid'>
         {pageOfferData.map((offerData, index) => {
-          return (
-            <OffersGridItem
-              key={`offer-${offerData.nftData.arweaveMetadata.name}-${index}`}
-              subOfferKey={offerData.nftData.mint}
-              image={offerData.nftData.arweaveMetadata.image}
-              amount={offerData.offerAmount.toNumber() / 1000000}
-              apr={asBigNumber(offerData.aprNumerator)}
-              offerPublicKey={offerData.subOfferKey.toString()}
-              name={offerData.nftData.arweaveMetadata.name}
-              onLend={handleAcceptOffer}
-              totalRepay={
-                calculateRepayValue(
-                  offerData.offerAmount.toNumber() / 1000000,
-                  asBigNumber(offerData.aprNumerator),
-                  Math.floor(offerData.loanDuration.toNumber() / (3600 * 24))
-                )
-              }
-              duration={Math.floor(offerData.loanDuration.toNumber() / (3600 * 24))}
-              currency={currencyMints[offerData.offerMint.toBase58()]}
-              count={offerData.count}
-              collection={offerData.collection}
-              isYours={offerData.borrower.toBase58() == walletKey?.toBase58()}
-            />
-          )
+          if (offerData.state === 0 || offerData.state === 6) {
+            return (
+              <OffersGridItem
+                key={`offer-${offerData.nftData.arweaveMetadata.name}-${index}`}
+                subOfferKey={offerData.nftData.mint}
+                image={offerData.nftData.arweaveMetadata.image}
+                amount={offerData.offerAmount.toNumber() / 1000000}
+                apr={asBigNumber(offerData.aprNumerator)}
+                offerPublicKey={offerData.subOfferKey.toString()}
+                name={offerData.nftData.arweaveMetadata.name}
+                onLend={handleAcceptOffer}
+                totalRepay={
+                  calculateRepayValue(
+                    offerData.offerAmount.toNumber() / 1000000,
+                    asBigNumber(offerData.aprNumerator),
+                    Math.floor(offerData.loanDuration.toNumber() / (3600 * 24))
+                  )
+                }
+                duration={Math.floor(offerData.loanDuration.toNumber() / (3600 * 24))}
+                currency={currencyMints[offerData.offerMint.toBase58()]}
+                count={offerData.count}
+                collection={offerData.collection}
+                isYours={offerData.borrower.toBase58() == walletKey?.toBase58()}
+              />
+            )
+          }
         })}
         {generateEmptyFields()}
       </div>
