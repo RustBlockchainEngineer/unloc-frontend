@@ -7,6 +7,7 @@ import { currencyMints } from '@constants/currency'
 import { StoreContext } from '@pages/_app'
 import { usePopperTooltip } from 'react-popper-tooltip'
 import { toast } from 'react-toastify'
+import { getDecimalsForLoanAmountAsString } from '@integration/getDecimalForLoanAmount'
 
 interface MyOffersNftOfferItemAcceptedProps {
   offerAmount: any
@@ -129,7 +130,7 @@ export const MyOffersNftOfferItemAccepted: React.FC<MyOffersNftOfferItemAccepted
       <div className='offer__row details'>
         <div className='offer__row--item'>
           <h4>Amount</h4>
-          <p>{`${offerAmount.toNumber() / 1000000} ${currencyMints[offerMint.toBase58()]}`}</p>
+          <p>{`${getDecimalsForLoanAmountAsString(offerAmount.toNumber(), offerMint.toBase58(), 0)} ${currencyMints[offerMint.toBase58()]}`}</p>
         </div>
 
         <div className='offer__row--item'>
