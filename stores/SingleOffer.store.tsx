@@ -88,6 +88,16 @@ export class SingleOfferStore {
       console.log(e)
     }
   }
+  
+  @action.bound async getOffersByWallet(): Promise<void> {
+    const offersData = await getOffersBy(this.rootStore.Wallet.walletKey, undefined, undefined)
+    this.checkIfYours(offersData)
+  }
+
+  @action.bound checkIfYours = (data: any[]): void => {
+    const isYours = data.some((item) => item.account.nftMint.toBase58() === this.nftData.mint)
+    this.setIsYours(isYours)
+  }
 
   @action.bound setNftData = (data: IOfferData): void => {
     this.nftData = data
@@ -95,19 +105,6 @@ export class SingleOfferStore {
 
   @action.bound setLoansData = (data: any[]): void => {
     this.loansData = data
-  }
-
-  @action.bound getSubOffersByNft = async (): Promise<void> => {
-    const activeOffers = await getSubOffersKeysByState([0])
-  }
-
-  @action.bound async getOffersByWallet(): Promise<void> {
-    const offersData = await getOffersBy(this.rootStore.Wallet.walletKey, undefined, undefined)
-    for (let offer in offersData) {
-      if (offersData[offer].account.nftMint.toBase58() == this.nftData.mint) {
-        this.setIsYours(true)
-      }
-    }
   }
 
   @action.bound setIsYours = (isYours: boolean): void => {
