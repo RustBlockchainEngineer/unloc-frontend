@@ -3,6 +3,7 @@ import { usePopperTooltip } from 'react-popper-tooltip'
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
 import { observer } from 'mobx-react'
 import { StoreContext } from '@pages/_app'
+import { SwitchButton } from './switchButton'
 
 export const UserToolbox = observer(() => {
   const { getArrowProps, getTooltipProps, setTooltipRef, setTriggerRef, visible } = usePopperTooltip()
@@ -25,17 +26,24 @@ export const UserToolbox = observer(() => {
   return (
     <div className='user-toolbox'>
       <WalletMultiButton />
-      <button
-        ref={setTriggerRef}
-        className={`theme-switcher theme-switcher--${store.Interface.theme}`}
-        onClick={() => handleThemeSet()}
-      />
-      {visible && (
+
+      <div className='theme-switcher'>
+        <div className='theme-switcher--header'>
+          <i className='icon icon--sm icon--theme--sun' />
+          <i className='icon icon--sm icon--theme--moon' />
+        </div>
+        <SwitchButton state={store.Interface.theme == 'light'} classNames={'theme-switcher--switch'} onClick={handleThemeSet} />
+      </div>
+
+
+
+
+      {/* {visible && (
         <div ref={setTooltipRef} {...getTooltipProps({ className: 'tooltip-container' })}>
           <div {...getArrowProps({ className: 'tooltip-arrow' })} />
           Switch Theme
         </div>
-      )}
+      )} */}
     </div>
   )
 })

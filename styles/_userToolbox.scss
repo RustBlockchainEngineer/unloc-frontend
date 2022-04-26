@@ -10,23 +10,16 @@
 }
 
 .theme-switcher {
-  margin: 13px 0 0 10px;
-  display: inline-block;
-  width: 24px;
-  height: 24px;
-  outline: none;
-  border: none;
-  border-radius: $brd-rds-lg;
-  -moz-box-shadow: 1px 1px 5px 0px rgba(0, 0, 0, 0.75);
-  box-shadow: 1px 1px 5px 0px rgba(0, 0, 0, 0.75);
-  transition: background 0.5s ease-in-out;
-  cursor: pointer;
-
-  &--dark {
-    @include theme-aware('background-color', 'color-primary');
+  display: flex;
+  flex-direction: column;
+  margin-left: 20px;
+  margin-top: -2px;
+  &--header {
+    display: flex;
+    margin-bottom: -4px;
   }
 
-  &--light {
-    @include theme-aware('background-color', 'color-secondary');
+  &--switch {
+    margin: 0 auto;
   }
 }
