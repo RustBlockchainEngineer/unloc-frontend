@@ -47,7 +47,7 @@ export const MyOffersNftOfferItem: React.FC<MyOffersNftOfferItemProps> = ({
 
       <div className='offer__row'>
         <div className='offer__row--item'>
-          <h4>Offer ID</h4>
+          <h4>Collateral ID</h4>
           <div className='suboffer-containers__id'>{compressAddress(4, offerID.toString())}</div>
         </div>
         <div className='offer__row--item'>
