@@ -33,7 +33,7 @@ export const MyOffersNftDeposited: React.FC<MyOffersNftDepositedProps> = observe
 
             try {
                 await store.MyOffers.handleCancelCollateral(nftMint)
-                toast.success(`Collateral canceled`, {
+                toast.success(`NFT ${name} returned to the wallet`, {
                     autoClose: 3000,
                     position: 'top-center',
                     hideProgressBar: false,
