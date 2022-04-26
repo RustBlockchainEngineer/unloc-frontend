@@ -53,7 +53,7 @@ const MyOffers: NextPage = observer(() => {
           </div>
           <div className='active-offers--scrolldown'>
             <h1 onClick={() => { setDepositedVisible(!depositedVisible) }}>
-              Deposited NFTs
+              My Vault
               <i className={`icon icon--sm icon--filter--${depositedVisible ? 'striped' : 'down'}`} />
             </h1>
             {depositedVisible ? <MyOffersNftList type='deposited' /> : <></>}
