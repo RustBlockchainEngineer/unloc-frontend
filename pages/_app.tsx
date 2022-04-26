@@ -55,6 +55,8 @@ const Unloc: FC<AppProps> = ({ Component, pageProps }) => {
                 </div>
               : ''
             }
+            <div className='home-bg-top' />
+            <div className='home-bg-bottom' />
             <Component {...pageProps} />
             <ToastContainer
               position='top-center'
