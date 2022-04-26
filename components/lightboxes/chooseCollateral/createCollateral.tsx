@@ -94,12 +94,16 @@ export const CreateCollateral: React.FC = observer(() => {
   useEffect(() => {
     if (wallet && walletKey) {
       const fetchData = async () => {
-        await myOffers.getUserNFTs(walletKey)
-        await myOffers.getNFTsData()
+        try {
+          await myOffers.getUserNFTs(walletKey)
+          await myOffers.getNFTsData()
+          setData(myOffers.collaterables)
+        } catch (e) {
+          // eslint-disable-next-line no-console
+          console.error(e)
+        }
       }
       fetchData()
-        .then(() => setData(myOffers.collaterables))
-        .catch((err) => console.log(err))
     }
   }, [wallet, connection, walletKey])
 
