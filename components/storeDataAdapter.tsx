@@ -16,6 +16,7 @@ export const StoreDataAdapter: React.FC<Props> = observer(({ children }: Props) 
   useEffect(() => {
     if (connected && wallet) {
       initLoanProgram(wallet.adapter)
+      store.GlobalState.fetchGlobalState()
       store.Wallet.setConnected(connected)
       store.Wallet.setWallet(wallet)
       store.Wallet.setHandleDisconnect(disconnect)
