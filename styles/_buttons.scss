@@ -18,14 +18,19 @@
       margin-top: 6px;
       margin-right: 5px;
     }
+  }
 
-    &.btn--bordered {
-      line-height: 35px;
+  &--bordered {
+    line-height: 35px;
 
-      .icon {
-        margin-top: 4px;
-      }
+    .icon {
+      margin-top: 4px;
     }
+  }
+
+  &--xl {
+    padding: $mr-sm $mr-md;
+    border-radius: $brd-rds-lg;
   }
 
   &--primary {
