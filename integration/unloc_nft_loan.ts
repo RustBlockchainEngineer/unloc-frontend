@@ -245,7 +245,7 @@ export type UnlocNftLoan = {
         },
         {
           name: 'borrower'
-          isMut: false
+          isMut: true
           isSigner: false
         },
         {
@@ -306,7 +306,7 @@ export type UnlocNftLoan = {
         },
         {
           name: 'lender'
-          isMut: false
+          isMut: true
           isSigner: false
         },
         {
@@ -970,7 +970,7 @@ export const IDL: UnlocNftLoan = {
         },
         {
           name: 'borrower',
-          isMut: false,
+          isMut: true,
           isSigner: false
         },
         {
@@ -1031,7 +1031,7 @@ export const IDL: UnlocNftLoan = {
         },
         {
           name: 'lender',
-          isMut: false,
+          isMut: true,
           isSigner: false
         },
         {
