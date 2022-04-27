@@ -4,6 +4,7 @@ import { compressAddress } from '@utils/stringUtils/compressAdress'
 import { PublicKey } from '@solana/web3.js'
 import { IsubOfferData } from '@stores/Lightbox.store'
 import { currencyMints } from '@constants/currency'
+import { getDecimalsForLoanAmountAsString } from '@integration/getDecimalForLoanAmount'
 
 interface MyOffersNftOfferItemProps {
   offerAmount: any
@@ -42,12 +43,16 @@ export const MyOffersNftOfferItem: React.FC<MyOffersNftOfferItemProps> = ({
 
   let offerClassNames = (classNames ? classNames : '') + ' ' + (disabled ? 'disabled' : '')
 
+  const stopOnClickPropagation = (e: React.MouseEvent<HTMLElement>) => {
+    e.stopPropagation()
+  }
+
   return (
-    <div className={`my-offers-nft__offer ${offerClassNames}`}>
+    <div className={`my-offers-nft__offer ${offerClassNames}`} onClick={(e) => stopOnClickPropagation(e)}>
 
       <div className='offer__row'>
         <div className='offer__row--item'>
-          <h4>Offer ID</h4>
+          <h4>Collateral ID</h4>
           <div className='suboffer-containers__id'>{compressAddress(4, offerID.toString())}</div>
         </div>
         <div className='offer__row--item'>
@@ -63,7 +68,9 @@ export const MyOffersNftOfferItem: React.FC<MyOffersNftOfferItemProps> = ({
       <div className='offer__row details'>
         <div className='offer__row--item'>
           <h4>Amount</h4>
-          <p>{`${offerAmount.toNumber() / 1000000} ${currencyMints[offerMint.toBase58()]}`}</p>
+          <p>{`${getDecimalsForLoanAmountAsString(offerAmount.toNumber(), offerMint.toString(), 2)} ${
+            currencyMints[offerMint.toBase58()]
+          }`}</p>
         </div>
 
         <div className='offer__row--item'>
@@ -74,10 +81,10 @@ export const MyOffersNftOfferItem: React.FC<MyOffersNftOfferItemProps> = ({
           <h4>{status.toString() == '1' ? 'Time left' : 'Duration'}  </h4>
           <p>{Number(duration.toString()) / 60 / 60 / 24} Days</p>
         </div>
-        <div className='offer__row--item'>
+        {/* <div className='offer__row--item'>
           <h4>Min repaid value</h4>
           <p>{repaid.toString()}</p>
-        </div>
+        </div> */}
       </div>
 
       <div className='offer__row'>

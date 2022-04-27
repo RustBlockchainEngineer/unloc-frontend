@@ -89,7 +89,7 @@ export const MyOffersNftItem: React.FC<MyOffersNftItemProps> = observer(
 
       try {
         await store.MyOffers.handleCancelCollateral(nftMint)
-        toast.success(`Collateral canceled`, {
+        toast.success(`NFT ${name} returned to the wallet`, {
           autoClose: 3000,
           position: 'top-center',
           hideProgressBar: false,
@@ -135,8 +135,7 @@ export const MyOffersNftItem: React.FC<MyOffersNftItemProps> = observer(
         return (
           <div className='nft-info-buttons'>
             <button
-              ref={setTriggerRef}
-              className='btn--md btn--primary'
+              className='btn--md btn--primary active-offer--tooltip--parent'
               onClick={() => {
                 store.MyOffers.setActiveNftMint(nftMint)
                 store.Lightbox.setContent('loanCreate')
@@ -144,15 +143,20 @@ export const MyOffersNftItem: React.FC<MyOffersNftItemProps> = observer(
               }}
             >
               +
-            </button>
-            {visible && (
-              <div ref={setTooltipRef} {...getTooltipProps({ className: 'tooltip-container' })}>
-                Create a new Loan Offer using this NFT as Collateral
+              <div className='tooltip-container active-offer--tooltip'>
+                <span>Create a new Loan Offer with this NFT as Collateral</span>
               </div>
-            )}
-            <button className='btn--md btn--bordered' onClick={() => handleCancelCollateral()}>
-              -
             </button>
+            <button
+              className='btn--md btn--bordered active-offer--tooltip--parent'
+              onClick={() => handleCancelCollateral()}
+            >
+              &minus;
+              <div className='tooltip-container active-offer--tooltip'>
+                <span>Return NFT to wallet</span>
+              </div>
+            </button>
+
           </div>
         )
       }
@@ -176,11 +180,11 @@ export const MyOffersNftItem: React.FC<MyOffersNftItemProps> = observer(
                     <p className='info-name'>{name}</p>
                     <div className='nft-metadata'>
                       {/*
-                  <ShowOnHover label={`#${compressAddress(4, nftMint)}`}>
-                    <ClipboardButton data={nftMint} />
-                    <SolscanExplorerIcon type={'token'} address={nftMint} />
-                  </ShowOnHover>
-                  */}
+                      <ShowOnHover label={`${compressAddress(4, nftMint)}`}>
+                        <ClipboardButton data={nftMint} />
+                        <SolscanExplorerIcon type={'token'} address={nftMint} />
+                      </ShowOnHover>
+                      */}
                       <p>Collection:</p>
                       <p>Example</p>
                     </div>

@@ -1,12 +1,12 @@
 .layout-top {
   display: flex;
   width: $pg-col;
-  margin-top: 50px;
+  padding-top: 50px;
   justify-content: space-between;
 
   @media (max-width: $bp-tablet) {
     flex-direction: column;
-    margin-top: 10px;
+    padding-top: 10px;
     width: 100%;
     justify-content: center;
     text-align: center;

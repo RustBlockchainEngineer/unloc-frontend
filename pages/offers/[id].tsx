@@ -9,10 +9,10 @@ import { Header } from '@components/singleOffer/Header/Header'
 import { Offer } from '@components/singleOffer/Offer/Offer'
 import { StoreDataAdapter } from '@components/storeDataAdapter'
 import { getQueryParamAsString } from '@utils/getQueryParamsAsString'
-import { compressAddress } from '@utils/stringUtils/compressAdress'
 import { StoreContext } from '@pages/_app'
 import { BlobLoader } from '@components/layout/blobLoader'
 import Footer from '@components/layout/footer'
+import { currencyMints } from '@constants/currency'
 
 interface IOffer {
   amount: string
@@ -32,9 +32,11 @@ const SingleNftPage: NextPage = observer(({ }) => {
 
   const { connected, wallet } = store.Wallet
   const { nftData, loansData, isYours } = store.SingleOffer
+  const { setActiveNftMint } = store.MyOffers
+  const { setContent, setVisible } = store.Lightbox
+
   const [hasActive, setHasActive] = useState(false)
 
-  console.log(nftData)
   const handleData = async () => {
     try {
       if (connected && wallet && router.query.id) {
@@ -126,7 +128,7 @@ const SingleNftPage: NextPage = observer(({ }) => {
                     offerPublicKey={offer.publicKey.toBase58()}
                     status={offer.status.toString()}
                     amount={offer.amount}
-                    token='USDC'
+                    token={currencyMints[offer.offerMint.toString()]}
                     duration={offer.duration.toString()}
                     // durationRemaning='20' // TODO: include date of offer creation in Program data
                     APR={offer.apr}
@@ -140,15 +142,27 @@ const SingleNftPage: NextPage = observer(({ }) => {
                 return <></>
               }
             })}
+            {
+              <div className='offer-root--add-new' onClick={() => {
+                store.MyOffers.setActiveNftMint(nftData.mint)
+                store.Lightbox.setContent('loanCreate')
+                store.Lightbox.setVisible(true)
+              }}>
+                <div className='offer-root--add-new__plus active-offer--tooltip--parent'>
+                  &#43;
+                  <div className='tooltip-container active-offer--tooltip'>
+                    Create a new loan offer with your terms!
+                  </div>
+                </div>
+              </div>
+            }
           </div>
         ) : (
           <div className='offer-grid-empty'>
             <BlobLoader />
           </div>
         )}
-        <Footer />
       </div>
-      <div className='home-bg-bottom' />
     </StoreDataAdapter>
   )
 })

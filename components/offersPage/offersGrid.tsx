@@ -6,6 +6,8 @@ import { currencyMints } from '@constants/currency'
 import { asBigNumber } from '@utils/asBigNumber'
 import { BlobLoader } from '@components/layout/blobLoader'
 import { toast } from 'react-toastify'
+import { getDecimalsForLoanAmountAsString } from '@integration/getDecimalForLoanAmount'
+import { calculateRepayValue } from '@utils/calculateRepayValue'
 
 export const OffersGrid = observer(() => {
   const store = useContext(StoreContext)
@@ -71,24 +73,32 @@ export const OffersGrid = observer(() => {
     <>
       <div className='offers-grid'>
         {pageOfferData.map((offerData, index) => {
-          return (
-            <OffersGridItem
-              key={`offer-${offerData.nftData.arweaveMetadata.name}-${index}`}
-              subOfferKey={offerData.nftData.mint}
-              image={offerData.nftData.arweaveMetadata.image}
-              amount={offerData.offerAmount.toNumber() / 1000000}
-              apr={asBigNumber(offerData.aprNumerator)}
-              offerPublicKey={offerData.subOfferKey.toString()}
-              name={offerData.nftData.arweaveMetadata.name}
-              onLend={handleAcceptOffer}
-              totalRepay={offerData.repaidAmount.toString()}
-              duration={Math.floor(offerData.loanDuration.toNumber() / (3600 * 24))}
-              currency={currencyMints[offerData.offerMint.toBase58()]}
-              count={offerData.count}
-              collection={offerData.collection}
-              isYours={offerData.borrower.toBase58() == walletKey?.toBase58()}
-            />
-          )
+          if (offerData.state === 0 || offerData.state === 6) {
+            return (
+              <OffersGridItem
+                key={`offer-${offerData.nftData.arweaveMetadata.name}-${index}`}
+                subOfferKey={offerData.nftData.mint}
+                image={offerData.nftData.arweaveMetadata.image}
+                amount={getDecimalsForLoanAmountAsString(offerData.offerAmount, offerData.offerMint.toString(), 0)}
+                apr={asBigNumber(offerData.aprNumerator)}
+                offerPublicKey={offerData.subOfferKey.toString()}
+                name={offerData.nftData.arweaveMetadata.name}
+                onLend={handleAcceptOffer}
+                totalRepay={
+                  calculateRepayValue(
+                    offerData.offerAmount.toNumber() / 1000000,
+                    asBigNumber(offerData.aprNumerator),
+                    Math.floor(offerData.loanDuration.toNumber() / (3600 * 24))
+                  )
+                }
+                duration={Math.floor(offerData.loanDuration.toNumber() / (3600 * 24))}
+                currency={currencyMints[offerData.offerMint.toBase58()]}
+                count={offerData.count}
+                collection={offerData.collection}
+                isYours={offerData.borrower.toBase58() == walletKey?.toBase58()}
+              />
+            )
+          }
         })}
         {generateEmptyFields()}
       </div>

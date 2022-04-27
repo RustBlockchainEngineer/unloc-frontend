@@ -5,10 +5,11 @@ import { getSubOfferList, getOffersBy } from '@integration/nftLoan'
 import { IOfferData } from '../@types/IOfferData'
 import { PublicKey } from '@solana/web3.js'
 import { getMetadata } from '@integration/nftIntegration'
-import getDecimalsForLoanAmount from '@integration/getDecimalForLoanAmount'
+import { getDecimalsForLoanAmount } from '@integration/getDecimalForLoanAmount'
 import { getSubOffersKeysByState } from '@integration/offersListing'
 import { calculateRepayValue } from '@utils/calculateRepayValue'
 import { asBigNumber } from '@utils/asBigNumber'
+import { currencyMints } from '@constants/currency'
 interface LoanInterface {
   id: string
   status: number
@@ -72,8 +73,8 @@ export class SingleOfferStore {
           loansArr.push({
             id: element.publicKey.toBase58(),
             status: element.account.state,
-            amount: amountConvered,
-            currency: 'USDC',
+            amount: amountConvered.toString(),
+            currency: currencyMints[element.account.offerMint.toBase58()],
             duration: durationConverted, // suspecting wrong type here, also we are showing loans with 0 day duration this is wrong
             apr: aprConverted,
             offerMint: element.account.offerMint.toBase58(),
@@ -88,6 +89,16 @@ export class SingleOfferStore {
       console.log(e)
     }
   }
+  
+  @action.bound async getOffersByWallet(): Promise<void> {
+    const offersData = await getOffersBy(this.rootStore.Wallet.walletKey, undefined, undefined)
+    this.checkIfYours(offersData)
+  }
+
+  @action.bound checkIfYours = (data: any[]): void => {
+    const isYours = data.some((item) => item.account.nftMint.toBase58() === this.nftData.mint)
+    this.setIsYours(isYours)
+  }
 
   @action.bound setNftData = (data: IOfferData): void => {
     this.nftData = data
@@ -97,16 +108,7 @@ export class SingleOfferStore {
     this.loansData = data
   }
 
-  @action.bound getSubOffersByNft = async (): Promise<void> => {
-    const activeOffers = await getSubOffersKeysByState([0])
-  }
-
-  @action.bound async getOffersByWallet(): Promise<void> {
-    const offersData = await getOffersBy(this.rootStore.Wallet.walletKey, undefined, undefined)
-    for (let offer in offersData) {
-      if (offersData[offer].account.nftMint.toBase58() == this.nftData.mint) {
-        this.isYours = true
-      }
-    }
+  @action.bound setIsYours = (isYours: boolean): void => {
+    this.isYours = isYours
   }
 }

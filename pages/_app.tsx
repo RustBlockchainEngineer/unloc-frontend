@@ -20,6 +20,7 @@ import { config } from '@constants/config'
 import { rootStore } from '@stores/Root.store'
 import 'react-toastify/dist/ReactToastify.css'
 import '@styles/main.scss'
+import Footer from '@components/layout/footer'
 
 export const StoreContext = createContext(rootStore)
 
@@ -49,6 +50,14 @@ const Unloc: FC<AppProps> = ({ Component, pageProps }) => {
       <WalletProvider wallets={wallets} autoConnect onError={rootStore.Wallet.handleWalletError}>
         <WalletModalProvider>
           <StoreContext.Provider value={rootStore}>
+            {config.devnet
+              ? <div className='devnet-container'>
+                  <span className='devnet'><i className='icon icon--smd icon--info'></i>Devnet Version</span>
+                </div>
+              : ''
+            }
+            <div className='home-bg-top' />
+            <div className='home-bg-bottom' />
             <Component {...pageProps} />
             <ToastContainer
               position='top-center'
@@ -61,6 +70,7 @@ const Unloc: FC<AppProps> = ({ Component, pageProps }) => {
               draggable
               pauseOnHover
             />
+            <Footer />
           </StoreContext.Provider>
         </WalletModalProvider>
       </WalletProvider>

@@ -68,8 +68,6 @@ const Home: NextPage = observer(() => {
           <OffersTop />
           {viewType === 'grid' ? <OffersGrid /> : <OffersTable />}
         </main>
-        <div className='home-bg-bottom' />
-        <Footer />
         <LayoutTopMobile />
       </div>
     </StoreDataAdapter>

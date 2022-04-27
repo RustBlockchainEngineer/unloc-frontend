@@ -114,3 +114,36 @@
   left: 3px;
   top: 0;
 }
+
+.active-offer--tooltip {
+  position: absolute;
+  width: 300px;
+  line-height: 30px;
+  top: 50px;
+  left: -135px;
+  display: none;
+}
+
+.active-offer--tooltip--parent {
+  position: relative;
+  transform: rotate(180deg);
+  &:hover {
+    .active-offer--tooltip {
+      display: block;
+      transform: rotate(180deg);
+    }
+  }
+}
+
+.active-offer--tooltip:after {
+  content: '';
+  display: block;
+  width: 0;
+  height: 0;
+  position: absolute;
+  border-top: 16px solid var(--tooltipBackground);
+  border-bottom: 16px solid transparent;
+  border-right: 16px solid transparent;
+  border-left: 16px solid transparent;
+  left: 133px;
+}

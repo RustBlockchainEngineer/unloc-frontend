@@ -100,7 +100,7 @@
       height: 30px;
       width: 30px;
       padding: 0;
-      line-height: 10px;
+      line-height: 0px;
       font-size: 20px;
       font-weight: 700;
 
@@ -200,9 +200,10 @@
   }
 
   .my-offers-nft__offer {
+    @include theme-aware('background-color', 'myOffers-subOffer-bg');
+    @include theme-aware('background-image', 'myOffers-subOffer-gradient');
     width: 49%;
     margin-bottom: 10px;
-    @include theme-aware('background', 'myOffers-subOffer-bg');
     backdrop-filter: blur(4px);
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
     margin-top: 8px;
@@ -213,15 +214,15 @@
     border-radius: $brd-rds-2tn;
 
     &.green {
-      @include theme-aware('background', 'time-offer-green');
+      @include theme-aware('background-image', 'time-offer-green');
     }
 
     &.yellow {
-      @include theme-aware('background', 'time-offer-yellow');
+      @include theme-aware('background-image', 'time-offer-yellow');
     }
 
     &.red {
-      @include theme-aware('background', 'time-offer-red');
+      @include theme-aware('background-image', 'time-offer-red');
     }
 
     @media (max-width: $bp-tablet) {
@@ -378,18 +379,28 @@
   }
 
   &__status {
-    background: rgba(0, 215, 86, 0.25);
-    color: #00d756;
+    @include theme-aware('background-color', 'status-proposed-bg');
+    @include theme-aware('color', 'status-proposed-color');
   }
 }
 
 .nft-deposited {
+  $p: &;
   width: 100%;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   flex-wrap: wrap;
   margin: 40px 0 60px 0;
+
+  button {
+    text-transform: uppercase;
+    font-size: $tp-lg;
+
+    @at-root #{$p} {
+      justify-content: center;
+    }
+  }
 
   @media (max-width: $bp-tablet) {
     flex-direction: column;
@@ -399,7 +410,9 @@
 }
 
 .nft-deposited-item {
-  @include theme-aware('background', 'myOffers-subOffer-bg');
+  @include theme-aware('background-color', 'myOffers-subOffer-bg');
+  @include theme-aware('background-image', 'myOffers-subOffer-gradient');
+  transition: background 0.8s ease-in-out;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   backdrop-filter: blur(4px);
   border-radius: $brd-rds-2tn;

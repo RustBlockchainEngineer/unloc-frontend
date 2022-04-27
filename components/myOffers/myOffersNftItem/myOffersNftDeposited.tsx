@@ -33,7 +33,7 @@ export const MyOffersNftDeposited: React.FC<MyOffersNftDepositedProps> = observe
 
             try {
                 await store.MyOffers.handleCancelCollateral(nftMint)
-                toast.success(`Collateral canceled`, {
+                toast.success(`NFT ${name} returned to the wallet`, {
                     autoClose: 3000,
                     position: 'top-center',
                     hideProgressBar: false,
@@ -88,7 +88,7 @@ export const MyOffersNftDeposited: React.FC<MyOffersNftDepositedProps> = observe
                 </div>
                 <div className='nft-deposited-item__row'>
                     <div className='row--item'>
-                        <p>Offer ID</p>
+                        <p>Collateral ID</p>
                         <div className='id'>{compressAddress(4, offerKey)}</div>
                     </div>
                     <div className='row--item'>
@@ -102,12 +102,12 @@ export const MyOffersNftDeposited: React.FC<MyOffersNftDepositedProps> = observe
                 </div>
                 <div className='nft-deposited-item__row'>
                     <div className='buttons'>
-                        <button className='btn--md btn--bordered' onClick={() => handleCancelCollateral()}>
+                        <button className='btn btn--md btn--bordered' onClick={() => handleCancelCollateral()}>
                             Cancel Collateral
                         </button>
                         <button
                             ref={setTriggerRef}
-                            className='btn--md btn--primary'
+                            className='btn btn--md btn--primary'
                             onClick={() => {
                                 store.MyOffers.setActiveNftMint(nftMint)
                                 store.Lightbox.setContent('loanCreate')

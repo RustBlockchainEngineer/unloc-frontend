@@ -7,7 +7,7 @@ interface OffersTableItemInterface {
   image: string
   nftName: string
   apr: number
-  amount: number
+  amount: string
   duration: number
   currency: string
   onLend: (pubkey: string) => Promise<void>
@@ -47,9 +47,6 @@ export const OffersTableRow = ({
             <button className={isYours ? 'deactivated' : ''} onClick={(e) => { if (!isYours) { handlePrevent(e) } }}>{isYours ? 'Can\'t lend' : 'Lend tokens'}</button>
           </div>
           <div className='row-cell'>
-            <span className='text-content'>{apr} %</span>
-          </div>
-          <div className='row-cell'>
             <span className='text-content'>
               {amount}
             </span>
@@ -58,6 +55,9 @@ export const OffersTableRow = ({
             <span className='text-content'>
               <i className={`icon icon--sm icon--currency--${currency}`}></i>
             </span>
+          </div>
+          <div className='row-cell'>
+            <span className='text-content'>{apr} %</span>
           </div>
           <div className='row-cell'>
             <span className='text-content'>{duration} Days</span>

@@ -6,12 +6,12 @@ import { currencyMints } from '@constants/currency'
 import { asBigNumber } from '@utils/asBigNumber'
 import { BlobLoader } from '@components/layout/blobLoader'
 import { toast } from 'react-toastify'
+import { getDecimalsForLoanAmountAsString } from '@integration/getDecimalForLoanAmount'
 
 export const OffersTable = observer(() => {
   const store = useContext(StoreContext)
   const { connected, walletKey } = store.Wallet
   const { pageOfferData, pageNFTData, currentPage, maxPage } = store.Offers
-  console.log(pageOfferData);
 
   const handleAcceptOffer = async (offerPublicKey: string) => {
     try {
@@ -64,9 +64,9 @@ export const OffersTable = observer(() => {
         <div className='offers-table-heading'>
           <div className='row-cell'>Name</div>
           <div className='row-cell'></div>
-          <div className='row-cell'>APR</div>
           <div className='row-cell'>Amount</div>
           <div className='row-cell'>Currency</div>
+          <div className='row-cell'>APR</div>
           <div className='row-cell'>Duration</div>
         </div>
         {pageOfferData.map((offerData, index) => {
@@ -76,7 +76,7 @@ export const OffersTable = observer(() => {
               subOfferKey={offerData.nftData.mint}
               image={offerData.nftData.arweaveMetadata.image}
               nftName={offerData.nftData.arweaveMetadata.name}
-              amount={offerData.offerAmount.toNumber() / 1000000}
+              amount={getDecimalsForLoanAmountAsString(offerData.offerAmount.toNumber(), offerData.offerMint.toString(), 0)}
               onLend={handleAcceptOffer}
               offerPublicKey={offerData.subOfferKey.toString()}
               apr={asBigNumber(offerData.aprNumerator)}

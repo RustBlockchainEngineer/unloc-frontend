@@ -1,5 +1,5 @@
 .offers-filters-wrapper {
-  margin-top: 50px;
+  padding-top: 50px;
   display: flex;
   flex-direction: column-reverse;
   align-items: center;
@@ -29,7 +29,7 @@
   }
 
   @media (max-width: $bp-tablet) {
-    margin-top: 100px;
+    padding-top: 100px;
 
     .btn--filters {
       margin-top: 0;
@@ -141,6 +141,11 @@
     &:last-child {
       margin-right: 0;
       border: none;
+    }
+
+    &__top {
+      display: inline-flex;
+      justify-content: space-between;
     }
   }
 

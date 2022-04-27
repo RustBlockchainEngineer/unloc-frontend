@@ -4,9 +4,9 @@ import { toast } from 'react-toastify'
 import { Form, Field } from 'react-final-form'
 import { StoreContext } from '@pages/_app'
 import { SubOfferInterface } from '@stores/LoanActionStore'
-import { calculateRepayValue } from '@methods/calculateRepayValue'
+import { calculateRepayValue } from '@utils/calculateRepayValue'
 import { BlobLoader } from '@components/layout/blobLoader'
-import getDecimalsForLoanAmount from '@integration/getDecimalForLoanAmount'
+import { getDecimalsForLoanAmount } from '@integration/getDecimalForLoanAmount'
 import { currencyMints } from '@constants/currency'
 
 interface CreateLoanProps {
@@ -131,6 +131,13 @@ export const CreateLoan: React.FC<CreateLoanProps> = observer(({ mode }) => {
     }
   }
 
+  const getInitialValueOnUpdate = () => {
+    if (mode === 'update' && activeSubOfferData) {
+      return +getDecimalsForLoanAmount(activeSubOfferData.offerAmount, activeSubOfferData.offerMint)
+    }
+    return false
+  }
+
   return processing ? (
     <div className='create-offer-processing'>
       <BlobLoader />
@@ -151,13 +158,20 @@ export const CreateLoan: React.FC<CreateLoanProps> = observer(({ mode }) => {
                   component='input'
                   type='number'
                   name='loanvalue'
+                  min={(values && values.currency && values.currency.toUpperCase()) == 'USDC' ? 1000 : 10}
                   placeholder='Amount'
                   className='input-text'
+                  // initialValue={
+                  //   mode === 'update' && activeSubOfferData
+                  //     ? +getDecimalsForLoanAmount(activeSubOfferData.offerAmount, activeSubOfferData.offerMint)
+                  //     : 1
+                  // }
                   initialValue={
-                    mode === 'update' && activeSubOfferData
-                      ? +getDecimalsForLoanAmount(activeSubOfferData.offerAmount, activeSubOfferData.offerMint)
-                      : 1
-                  }
+                    getInitialValueOnUpdate()
+                      ?
+                      getInitialValueOnUpdate()
+                      :
+                      ((values && values.currency && values.currency.toUpperCase()) == 'USDC' ? 1000 : 10)}
                 />
               </div>
               <div>
@@ -218,6 +232,7 @@ export const CreateLoan: React.FC<CreateLoanProps> = observer(({ mode }) => {
                 <Field
                   type='number'
                   name='apr'
+                  min={1}
                   component='input'
                   initialValue={mode === 'update' && activeSubOfferData ? activeSubOfferData.aprNumerator : 500}
                   className='input-text'
