@@ -225,7 +225,7 @@ export const CreateLoan: React.FC<CreateLoanProps> = observer(({ mode }) => {
                   component='input'
                   type='number'
                   name='loanvalue'
-                  min={(values && values.currency && values.currency.toUpperCase()) == 'USDC' ? 1000 : 10}
+                  min={(values && values.currency && values.currency.toUpperCase()) == 'USDC' ? 0.1 : 0.01}
                   placeholder='Amount'
                   className='input-text'
                   // initialValue={
