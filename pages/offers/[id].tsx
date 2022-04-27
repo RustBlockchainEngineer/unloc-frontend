@@ -9,10 +9,10 @@ import { Header } from '@components/singleOffer/Header/Header'
 import { Offer } from '@components/singleOffer/Offer/Offer'
 import { StoreDataAdapter } from '@components/storeDataAdapter'
 import { getQueryParamAsString } from '@utils/getQueryParamsAsString'
-import { compressAddress } from '@utils/stringUtils/compressAdress'
 import { StoreContext } from '@pages/_app'
 import { BlobLoader } from '@components/layout/blobLoader'
 import Footer from '@components/layout/footer'
+import { currencyMints } from '@constants/currency'
 
 interface IOffer {
   amount: string
@@ -128,7 +128,7 @@ const SingleNftPage: NextPage = observer(({ }) => {
                     offerPublicKey={offer.publicKey.toBase58()}
                     status={offer.status.toString()}
                     amount={offer.amount}
-                    token='USDC'
+                    token={currencyMints[offer.offerMint.toString()]}
                     duration={offer.duration.toString()}
                     // durationRemaning='20' // TODO: include date of offer creation in Program data
                     APR={offer.apr}
@@ -162,9 +162,7 @@ const SingleNftPage: NextPage = observer(({ }) => {
             <BlobLoader />
           </div>
         )}
-        <Footer />
       </div>
-      <div className='home-bg-bottom' />
     </StoreDataAdapter>
   )
 })
