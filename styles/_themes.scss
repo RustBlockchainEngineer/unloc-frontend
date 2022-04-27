@@ -30,7 +30,7 @@ $themes: (
     info-red: #b82626,
     info-green: #7fbe20,
     icon-eye: url('/icons/eye-icon-white.svg'),
-    nft-pill-bg: #9480BF,
+    nft-pill-bg: #9480bf,
     input-number-bg: #ffffff,
     input-number-color: #210d48,
     input-number-button-bg: #e2d9f6,
@@ -50,10 +50,10 @@ $themes: (
     wallet-adapter-bg-hover: #d1c1f3,
     wallet-adapter-color: #210d48,
 
-    selected-option-bg: #D1C1F3,
+    selected-option-bg: #d1c1f3,
     hover-option-bg: rgba(243, 237, 255, 0.8),
     status-proposed-bg: rgba(44, 156, 89, 0.3),
-    status-proposed-color: #2C9C59,
+    status-proposed-color: #2c9c59,
 
     nft-offers-color: #2e13d2,
 
@@ -90,7 +90,7 @@ $themes: (
     time-yellow-btn: #b43105,
     time-red: #ff005c,
     time-red-btn: rgba(112, 0, 40, 0.25),
-    time-offer-green: linear-gradient(180deg, #80D3A1 0%, rgba(45, 19, 96, 0) 100%),
+    time-offer-green: linear-gradient(180deg, #80d3a1 0%, rgba(45, 19, 96, 0) 100%),
     time-offer-yellow: linear-gradient(180deg, #ed693c 0%, rgba(45, 19, 96, 0) 100%),
     time-offer-red: linear-gradient(180deg, #ff005c 0%, rgba(45, 19, 96, 0) 100%),
     timeLoan-green: #2c9c59,
@@ -106,7 +106,17 @@ $themes: (
     myLoan-mint-bg: #7f70df,
     myLoan-header-color: #210d48,
 
-    bg-gradient-home: linear-gradient(194.54deg, #E0D0FF -44.32%, rgba(150, 97, 255, 0.06) 44.37%),
+    toaster-bg: #482688,
+    toaster-color: #00d756,
+    toaster-progress-bg: rgba(0, 215, 86, 0.6),
+    toaster-progress: #00d756,
+
+    yourNFT-offer-bg: #e5dcf5,
+    yourNFT-offer-plus-bg: #ffffff,
+    yourNFT-offer-plus-bg-hover: #b7adf3,
+    yourNFT-offer-plus-color: #2e13d1,
+
+    bg-gradient-home: linear-gradient(194.54deg, #e0d0ff -44.32%, rgba(150, 97, 255, 0.06) 44.37%),
   ),
   dark: (
     color-white: #fff,
@@ -161,12 +171,11 @@ $themes: (
     wallet-adapter-color: #ffffff,
 
     status-proposed-bg: rgba(0, 215, 86, 0.25),
-    status-proposed-color: #00D756,
-  
-    nft-offers-color: #ffffff,
-    selected-option-bg: #3E1F78,
-    hover-option-bg: rgba(76, 44, 135, 0.4),
+    status-proposed-color: #00d756,
 
+    nft-offers-color: #ffffff,
+    selected-option-bg: #3e1f78,
+    hover-option-bg: rgba(76, 44, 135, 0.4),
     icon-paginator-left: url('/icons/page-left-icon-dark.svg'),
     icon-paginator-right: url('/icons/page-right-icon-dark.svg'),
     pagination-color: white,
@@ -200,7 +209,7 @@ $themes: (
     time-yellow-btn: #b43105,
     time-red: #ff005c,
     time-red-btn: rgba(112, 0, 40, 0.25),
-    time-offer-green: linear-gradient(180deg, #166C38 0%, rgba(45, 19, 96, 0) 100%),
+    time-offer-green: linear-gradient(180deg, #166c38 0%, rgba(45, 19, 96, 0) 100%),
     time-offer-yellow: linear-gradient(180deg, #ed693c 0%, rgba(45, 19, 96, 0) 100%),
     time-offer-red: linear-gradient(180deg, #ff005c 0%, rgba(45, 19, 96, 0) 100%),
     timeLoan-green: #00d756,
@@ -218,8 +227,13 @@ $themes: (
 
     toaster-bg: #482688,
     toaster-color: #00d756,
-    toaster-progress: #00d756,
     toaster-progress-bg: rgba(0, 215, 86, 0.6),
+    toaster-progress: #00d756,
+
+    yourNFT-offer-bg: #2f185b,
+    yourNFT-offer-plus-bg: #2e13d1,
+    yourNFT-offer-plus-bg-hover: #1f08a7,
+    yourNFT-offer-plus-color: #ffffff,
 
     bg-gradient-home: linear-gradient(194.54deg, #482688 -44.32%, rgba(46, 19, 210, 0) 44.37%),
   ),

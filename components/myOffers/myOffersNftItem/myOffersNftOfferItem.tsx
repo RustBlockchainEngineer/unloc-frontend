@@ -43,8 +43,12 @@ export const MyOffersNftOfferItem: React.FC<MyOffersNftOfferItemProps> = ({
 
   let offerClassNames = (classNames ? classNames : '') + ' ' + (disabled ? 'disabled' : '')
 
+  const stopOnClickPropagation = (e: React.MouseEvent<HTMLElement>) => {
+    e.stopPropagation()
+  }
+
   return (
-    <div className={`my-offers-nft__offer ${offerClassNames}`}>
+    <div className={`my-offers-nft__offer ${offerClassNames}`} onClick={(e) => stopOnClickPropagation(e)}>
 
       <div className='offer__row'>
         <div className='offer__row--item'>

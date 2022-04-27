@@ -23,6 +23,8 @@ export class OffersStore {
   filterCollectionSelected: string[] = []
   refresh = false // not sure if this is really needed
   viewType: 'grid' | 'table' = 'grid'
+
+  readyToFilter = true
   filterAprMin = 1
   filterAprMax = 10000 //take this value dynamically from offers
   filterAmountMin = 1
@@ -351,14 +353,30 @@ export class OffersStore {
   }
 
   @action.bound refetchOffers = async () => {
-    this.offers = []
-    this.pageNFTData = []
-    this.pageOfferData = []
-    await this.getOffersForListings()
+    if (this.readyToFilter) {
+      console.log('filter run');
+
+      this.waitForNextAction()
+      this.offers = []
+      this.pageNFTData = []
+      this.pageOfferData = []
+      await this.getOffersForListings()
+    }
   }
 
   @action.bound clearFilters = () => {
     this.filterCollectionSelected = []
     this.filterCollection = []
+  }
+
+  @action.bound waitForNextAction = () => {
+    if (this.readyToFilter) {
+      this.readyToFilter = false
+      let waiting = setTimeout(() => {
+        this.readyToFilter = true
+        console.log('end')
+        clearInterval(waiting)
+      }, 3000)
+    }
   }
 }

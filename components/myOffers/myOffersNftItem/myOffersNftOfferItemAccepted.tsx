@@ -109,8 +109,12 @@ export const MyOffersNftOfferItemAccepted: React.FC<MyOffersNftOfferItemAccepted
   timeClassNames += ((status.toString() == '1' && timeLeft <= 3 && timeLeft > 0) ? 'yellow' : '') + ' '
   timeClassNames += ((status.toString() == '1' && timeLeft <= 0) ? 'red' : '') + ' '
 
+  const stopOnClickPropagation = (e: React.MouseEvent<HTMLElement>) => {
+    e.stopPropagation()
+  }
+
   return (
-    <div className={`my-offers-nft__offer ${(classNames ? classNames : '') + ' '} ${timeClassNames}`}>
+    <div className={`my-offers-nft__offer ${(classNames ? classNames : '') + ' '} ${timeClassNames}`} onClick={(e) => stopOnClickPropagation(e)}>
 
       <div className='offer__row'>
         <div className='offer__row--item'>
