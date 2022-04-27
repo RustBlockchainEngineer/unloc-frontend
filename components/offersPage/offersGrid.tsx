@@ -6,12 +6,12 @@ import { currencyMints } from '@constants/currency'
 import { asBigNumber } from '@utils/asBigNumber'
 import { BlobLoader } from '@components/layout/blobLoader'
 import { toast } from 'react-toastify'
-import { getDecimalsForLoanAmountAsString } from '@integration/getDecimalForLoanAmount'
+import { getDecimalsForLoanAmountAsString, getDecimalsForOfferMint } from '@integration/getDecimalForLoanAmount'
 import { calculateRepayValue } from '@utils/calculateRepayValue'
 
 export const OffersGrid = observer(() => {
   const store = useContext(StoreContext)
-  const { connected, walletKey } = store.Wallet
+  const { walletKey } = store.Wallet
   const { pageOfferData, pageNFTData, currentPage, maxPage, itemsPerPage, offersEmpty } = store.Offers
   const generateEmptyFields = () => {
     const count = (itemsPerPage - pageNFTData.length) as number
@@ -86,7 +86,7 @@ export const OffersGrid = observer(() => {
                 onLend={handleAcceptOffer}
                 totalRepay={
                   calculateRepayValue(
-                    offerData.offerAmount.toNumber() / 1000000,
+                    offerData.offerAmount.toNumber() / getDecimalsForOfferMint(offerData.offerMint),
                     asBigNumber(offerData.aprNumerator),
                     Math.floor(offerData.loanDuration.toNumber() / (3600 * 24))
                   )

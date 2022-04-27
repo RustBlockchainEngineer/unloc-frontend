@@ -7,6 +7,7 @@ import { MultipleNFT, getSubOfferMultiple, acceptOffer } from '@integration/nftL
 import { getSubOffersKeysByState } from '@integration/offersListing'
 import { asBigNumber } from '@utils/asBigNumber'
 import { removeDuplicatesByPropertyIndex } from '@utils/removeDuplicatesByPropertyIndex'
+import { getDecimalsForOfferMint } from '@integration/getDecimalForLoanAmount'
 
 export class OffersStore {
   rootStore
@@ -183,8 +184,9 @@ export class OffersStore {
         offerAmount: { toNumber: () => number }
         aprNumerator: BigNumber.Value
         loanDuration: { toNumber: () => number }
+        offerMint: { toBase58: () => string }
       }) => {
-        amounts.push(offer.offerAmount.toNumber() / 1000000)
+        amounts.push(offer.offerAmount.toNumber() / getDecimalsForOfferMint(offer.offerMint.toBase58()))
         aprs.push(asBigNumber(offer.aprNumerator))
         durations.push(Math.floor(offer.loanDuration.toNumber() / (3600 * 24)))
       }
@@ -209,7 +211,7 @@ export class OffersStore {
     data.forEach((offer: any) => {
       if (offer.offerAmount) {
         const amountCheck = this.inRange(
-          offer.offerAmount.toNumber() / 1000000,
+          offer.offerAmount.toNumber() / getDecimalsForOfferMint(offer.offerMint),
           this.filterAmountMin,
           this.filterAmountMax
         )
