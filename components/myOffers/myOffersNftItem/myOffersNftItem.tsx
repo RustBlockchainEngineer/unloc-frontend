@@ -89,7 +89,7 @@ export const MyOffersNftItem: React.FC<MyOffersNftItemProps> = observer(
 
       try {
         await store.MyOffers.handleCancelCollateral(nftMint)
-        toast.success(`Collateral canceled`, {
+        toast.success(`NFT ${name} returned to the wallet`, {
           autoClose: 3000,
           position: 'top-center',
           hideProgressBar: false,
@@ -144,7 +144,7 @@ export const MyOffersNftItem: React.FC<MyOffersNftItemProps> = observer(
             >
               +
               <div className='tooltip-container active-offer--tooltip'>
-                Create a new Loan Offer with this NFT as Collateral
+                <span>Create a new Loan Offer with this NFT as Collateral</span>
               </div>
             </button>
             <button
@@ -153,7 +153,7 @@ export const MyOffersNftItem: React.FC<MyOffersNftItemProps> = observer(
             >
               &minus;
               <div className='tooltip-container active-offer--tooltip'>
-                Return NFT to wallet
+                <span>Return NFT to wallet</span>
               </div>
             </button>
 

@@ -3,8 +3,12 @@ export const calculateRepayValue = (amount: number, apr: number, days: number, d
     return '0'
   }
 
-  const accrued = (amount * apr * days) / (365 * (denominator / 100))
-  const totalRepay = amount + accrued
-
-  return totalRepay.toLocaleString(undefined, {maximumFractionDigits: 4, minimumFractionDigits: 2})
+  const gain = amount * ((apr / 36500) * duration)
+  return (
+    amount.toLocaleString(undefined, { maximumFractionDigits: 4, minimumFractionDigits: 2 })
+    +
+    ' + '
+    +
+    gain.toLocaleString(undefined, { maximumFractionDigits: 4, minimumFractionDigits: 2 })
+  )
 }

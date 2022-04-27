@@ -5,10 +5,11 @@ import { getSubOfferList, getOffersBy } from '@integration/nftLoan'
 import { IOfferData } from '../@types/IOfferData'
 import { PublicKey } from '@solana/web3.js'
 import { getMetadata } from '@integration/nftIntegration'
-import getDecimalsForLoanAmount from '@integration/getDecimalForLoanAmount'
+import { getDecimalsForLoanAmount } from '@integration/getDecimalForLoanAmount'
 import { getSubOffersKeysByState } from '@integration/offersListing'
 import { calculateRepayValue } from '@utils/calculateRepayValue'
 import { asBigNumber } from '@utils/asBigNumber'
+import { currencyMints } from '@constants/currency'
 interface LoanInterface {
   id: string
   status: number
@@ -73,8 +74,8 @@ export class SingleOfferStore {
           loansArr.push({
             id: element.publicKey.toBase58(),
             status: element.account.state,
-            amount: amountConvered,
-            currency: 'USDC',
+            amount: amountConvered.toString(),
+            currency: currencyMints[element.account.offerMint.toBase58()],
             duration: durationConverted, // suspecting wrong type here, also we are showing loans with 0 day duration this is wrong
             apr: aprConverted,
             offerMint: element.account.offerMint.toBase58(),

@@ -385,12 +385,22 @@
 }
 
 .nft-deposited {
+  $p: &;
   width: 100%;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   flex-wrap: wrap;
   margin: 40px 0 60px 0;
+
+  button {
+    text-transform: uppercase;
+    font-size: $tp-lg;
+
+    @at-root #{$p} {
+      justify-content: center;
+    }
+  }
 
   @media (max-width: $bp-tablet) {
     flex-direction: column;

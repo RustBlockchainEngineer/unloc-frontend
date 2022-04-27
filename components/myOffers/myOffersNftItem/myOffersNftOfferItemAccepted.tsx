@@ -7,6 +7,7 @@ import { currencyMints } from '@constants/currency'
 import { StoreContext } from '@pages/_app'
 import { usePopperTooltip } from 'react-popper-tooltip'
 import { toast } from 'react-toastify'
+import { getDecimalsForLoanAmountAsString } from '@integration/getDecimalForLoanAmount'
 
 interface MyOffersNftOfferItemAcceptedProps {
   offerAmount: any
@@ -108,8 +109,12 @@ export const MyOffersNftOfferItemAccepted: React.FC<MyOffersNftOfferItemAccepted
   timeClassNames += ((status.toString() == '1' && timeLeft <= 3 && timeLeft > 0) ? 'yellow' : '') + ' '
   timeClassNames += ((status.toString() == '1' && timeLeft <= 0) ? 'red' : '') + ' '
 
+  const stopOnClickPropagation = (e: React.MouseEvent<HTMLElement>) => {
+    e.stopPropagation()
+  }
+
   return (
-    <div className={`my-offers-nft__offer ${(classNames ? classNames : '') + ' '} ${timeClassNames}`}>
+    <div className={`my-offers-nft__offer ${(classNames ? classNames : '') + ' '} ${timeClassNames}`} onClick={(e) => stopOnClickPropagation(e)}>
 
       <div className='offer__row'>
         <div className='offer__row--item'>
@@ -129,7 +134,7 @@ export const MyOffersNftOfferItemAccepted: React.FC<MyOffersNftOfferItemAccepted
       <div className='offer__row details'>
         <div className='offer__row--item'>
           <h4>Amount</h4>
-          <p>{`${offerAmount.toNumber() / 1000000} ${currencyMints[offerMint.toBase58()]}`}</p>
+          <p>{`${getDecimalsForLoanAmountAsString(offerAmount.toNumber(), offerMint.toBase58(), 0)} ${currencyMints[offerMint.toBase58()]}`}</p>
         </div>
 
         <div className='offer__row--item'>

@@ -3,6 +3,7 @@ import { observer } from 'mobx-react'
 import { StoreContext } from '@pages/_app'
 import { MyOffersNftItem } from './myOffersNftItem/myOffersNftItem'
 import { MyOffersNftDeposited } from './myOffersNftItem/myOffersNftDeposited'
+import { usePopperTooltip } from 'react-popper-tooltip'
 
 type MyOffersNftListProps = {
   type: 'active' | 'deposited'
@@ -12,8 +13,10 @@ export const MyOffersNftList: React.FC<MyOffersNftListProps> = observer(({ type 
   const store = useContext(StoreContext)
   const { offers, nftData, subOffers } = store.MyOffers
 
+  const { getTooltipProps, setTooltipRef, setTriggerRef, visible } = usePopperTooltip()
+
   const renderOffers = () => {
-    return offers.map((offer) => {
+    const mappedOffers = offers.map((offer) => {
       let offerSanitized: any = {
         offerKey: offer.publicKey.toBase58(),
         nftMint: offer.account.nftMint.toBase58(),
@@ -87,9 +90,28 @@ export const MyOffersNftList: React.FC<MyOffersNftListProps> = observer(({ type 
           />
         )
       }
+    }).filter((item) => item !== undefined && item !== null)
 
-    })
+    return mappedOffers.length > 0 ? mappedOffers : (
+      type === 'active' ? '' : <div className='no-offers'>
+        <button
+          ref={setTriggerRef}
+          className='btn btn--xl btn--rounded btn--primary'
+          onClick={() => {
+            store.Lightbox.setContent('collateral')
+            store.Lightbox.setVisible(true)
+          }}
+        >Deposit NFT</button>
+        {visible && (
+          <div ref={setTooltipRef} {...getTooltipProps({ className: 'tooltip-container' })}>
+            Create a new Collateral from a NFT
+          </div>
+        )}
+        </div>
+    )
   }
 
-  return <div className={type == 'active' ? 'my-offers-nft-list' : 'nft-deposited'}>{renderOffers()}</div>
+  return <div className={type == 'active' ? 'my-offers-nft-list' : 'nft-deposited'}>
+    {renderOffers()}
+  </div>
 })
