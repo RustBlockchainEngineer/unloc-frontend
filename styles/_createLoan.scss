@@ -43,6 +43,10 @@
         margin: 0 0 30px 0;
       }
     }
+
+    .switch--button {
+      align-self: flex-start;
+    }
   }
 
   .input-text,
@@ -78,13 +82,37 @@
     }
   }
 
+  input.disabled {
+    @include theme-aware('background-color', 'bg-input-disabled');
+  }
+
   .form-APR {
     & > div:nth-child(1),
-    & > div:nth-child(2) {
+    & > div:nth-child(3) {
       width: 50%;
     }
 
-    & p {
+    & > div:nth-child(1) {
+      margin-right: $mr-md;
+    }
+
+    & > div:nth-child(3) {
+      margin-left: $mr-md;
+    }
+
+    & > div:nth-child(2) {
+      width: 50px;
+      position: relative;
+
+      div.switch--button--knob {
+        width: 22px;
+        margin: 0;
+      }
+    }
+
+    & span {
+      display: block;
+      text-align: center;
       font-size: 24px;
       width: 100%;
     }

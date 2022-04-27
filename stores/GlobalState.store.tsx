@@ -17,13 +17,6 @@ export class GlobalStateStore {
   @action.bound fetchGlobalState = flow(function* (this: GlobalStateStore) {
     const globalState = yield getGlobalState()
 
-    for (const key in globalState) {
-      if (globalState.hasOwnProperty(key) && globalState[key] instanceof anchor.BN) {
-        // eslint-disable-next-line no-console
-        console.log(key + ' :>> ' + globalState[key].toNumber())
-      }
-    }
-
     if (globalState) {
       this.setAccruedInterestNumerator(globalState.accruedInterestNumerator)
       this.setAprNumerator(globalState.aprNumerator)
