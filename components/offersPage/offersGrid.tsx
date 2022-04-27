@@ -88,7 +88,8 @@ export const OffersGrid = observer(() => {
                   calculateRepayValue(
                     offerData.offerAmount.toNumber() / 1000000,
                     asBigNumber(offerData.aprNumerator),
-                    Math.floor(offerData.loanDuration.toNumber() / (3600 * 24))
+                    offerData.loanDuration.toNumber() / (3600 * 24),
+                    store.GlobalState.denominator
                   )
                 }
                 duration={Math.floor(offerData.loanDuration.toNumber() / (3600 * 24))}

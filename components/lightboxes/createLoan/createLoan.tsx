@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useRef, useState, useEffect, FormEvent } from 'react'
 import { observer } from 'mobx-react'
 import { toast } from 'react-toastify'
 import { Form, Field } from 'react-final-form'
@@ -8,6 +8,7 @@ import { calculateRepayValue } from '@utils/calculateRepayValue'
 import { BlobLoader } from '@components/layout/blobLoader'
 import { getDecimalsForLoanAmount } from '@integration/getDecimalForLoanAmount'
 import { currencyMints } from '@constants/currency'
+import { calculateAprFromRepayValue } from '@utils/calculateAprFromRepayValue'
 
 interface CreateLoanProps {
   mode: 'new' | 'update'
@@ -19,19 +20,51 @@ export const CreateLoan: React.FC<CreateLoanProps> = observer(({ mode }) => {
   const { activeSubOffer, activeSubOfferData } = store.Lightbox
 
   const [processing, setProcessing] = useState(false)
+  const [repayValue, setRepayValue] = useState('0.00')
+
+  const amountRef = useRef<HTMLInputElement>(null)
+  const durationRef = useRef<HTMLInputElement>(null)
+  const aprRef = useRef<HTMLInputElement>(null)
+  const accruedRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    if (mode === 'update' && activeSubOfferData) {
+      console.log('a')
+      if (!(accruedRef.current && amountRef.current && durationRef.current && aprRef.current)) {
+        return
+      }
+
+      amountRef.current.value = activeSubOfferData.offerAmount.toString()
+      durationRef.current.value = (activeSubOfferData.loanDuration / 3600 / 24).toString()
+      aprRef.current.value = activeSubOfferData.aprNumerator.toString()
+      accruedRef.current.value = activeSubOfferData.minRepaidNumerator.toString()
+    }
+
+    console.log(activeSubOfferData)
+  }, [amountRef.current, durationRef.current, aprRef.current, accruedRef.current, activeSubOfferData])
 
   const onSubmit = async (values: SubOfferInterface) => {
     if (connected && wallet && walletKey) {
+      if (!(accruedRef.current && amountRef.current && durationRef.current && aprRef.current)) {
+        return
+      }
+
+      const { currency } = values
+
+      const accrued = Number(accruedRef.current.value)
+      const amount = Number(amountRef.current.value)
+      const duration = Number(durationRef.current.value)
+      const apr = Number(aprRef.current.value)
+
       if (mode === 'new') {
         try {
           if (store.Lightbox.content === 'loanCreate' && store.MyOffers.activeNftMint) {
-            const { loanvalue, currency, duration, apr } = values
             store.Lightbox.setCanClose(false)
             setProcessing(true)
 
             await store.MyOffers.handleCreateSubOffer(
               store.MyOffers.activeNftMint,
-              Number(loanvalue),
+              Number(amount + accrued),
               Number(duration),
               Number(apr),
               currency
@@ -78,12 +111,11 @@ export const CreateLoan: React.FC<CreateLoanProps> = observer(({ mode }) => {
           await store.MyOffers.refetchStoreData()
         }
       } else if (mode === 'update') {
-        const { loanvalue, duration, apr } = values
         store.Lightbox.setCanClose(false)
         setProcessing(true)
         try {
           await store.MyOffers.handleEditSubOffer(
-            Number(loanvalue),
+            Number(amount + accrued),
             Number(duration),
             Number(apr),
             Number(activeSubOfferData.minRepaidNumerator),
@@ -131,6 +163,40 @@ export const CreateLoan: React.FC<CreateLoanProps> = observer(({ mode }) => {
     }
   }
 
+  const onInterestInput = (e: FormEvent<HTMLInputElement>) => {
+    if (!(accruedRef.current && amountRef.current && durationRef.current && aprRef.current)) {
+      return
+    }
+
+    const accrued = Number(accruedRef.current.value)
+    const amount = Number(amountRef.current.value)
+    const duration = Number(durationRef.current.value)
+
+    const apr = calculateAprFromRepayValue(amount, amount + accrued, duration, store.GlobalState.denominator)
+
+    aprRef.current.value = apr.toString()
+    setRepayValue(
+      calculateRepayValue(amount, parseFloat(apr), duration, store.GlobalState.denominator)
+    )
+  }
+
+  const onAprInput = (e: FormEvent<HTMLInputElement>) => {
+    if (!(accruedRef.current && amountRef.current && durationRef.current && aprRef.current)) {
+      return
+    }
+
+    const apr = Number(aprRef.current.value)
+    const amount = Number(amountRef.current.value)
+    const duration = Number(durationRef.current.value)
+
+    const accrued = ((amount * apr * duration) / (365 * (store.GlobalState.denominator / 100))).toFixed(6).toString()
+    
+    accruedRef.current.value = accrued
+    setRepayValue(
+      calculateRepayValue(amount, apr, duration, store.GlobalState.denominator)
+    )
+  }
+
   const getInitialValueOnUpdate = () => {
     if (mode === 'update' && activeSubOfferData) {
       return +getDecimalsForLoanAmount(activeSubOfferData.offerAmount, activeSubOfferData.offerMint)
@@ -155,6 +221,7 @@ export const CreateLoan: React.FC<CreateLoanProps> = observer(({ mode }) => {
               <div>
                 <span>Amount</span>
                 <Field
+                ref={amountRef}
                   component='input'
                   type='number'
                   name='loanvalue'
@@ -197,6 +264,7 @@ export const CreateLoan: React.FC<CreateLoanProps> = observer(({ mode }) => {
               <div>
                 <span>Duration</span>
                 <Field
+                  ref={durationRef}
                   component='input'
                   name='duration'
                   type='range'
@@ -204,7 +272,7 @@ export const CreateLoan: React.FC<CreateLoanProps> = observer(({ mode }) => {
                   max={90}
                   initialValue={
                     mode === 'update' && activeSubOfferData
-                      ? Number(activeSubOfferData.loanDuration.toString()) / 60 / 60 / 24
+                      ? activeSubOfferData.loanDuration / (3600 * 24)
                       : 1
                   }
                 />
@@ -220,7 +288,7 @@ export const CreateLoan: React.FC<CreateLoanProps> = observer(({ mode }) => {
                   className='input-text'
                   initialValue={
                     mode === 'update' && activeSubOfferData
-                      ? Number(activeSubOfferData.loanDuration.toString()) / 60 / 60 / 24
+                      ? activeSubOfferData.loanDuration / (3600 * 24)
                       : 1
                   }
                 />
@@ -229,18 +297,43 @@ export const CreateLoan: React.FC<CreateLoanProps> = observer(({ mode }) => {
             <div className='form-line form-APR'>
               <div>
                 <span>APR (%)</span>
-                <Field
+                <input
+                  ref={aprRef}
+                  onInput={onAprInput}
                   type='number'
                   name='apr'
-                  min={1}
-                  component='input'
-                  initialValue={mode === 'update' && activeSubOfferData ? activeSubOfferData.aprNumerator : 500}
+                  step={0.01}
+                  min={0.01}
+                  defaultValue={mode === 'update' && activeSubOfferData ? activeSubOfferData.aprNumerator : 500}
                   className='input-text'
                 />
               </div>
               <div>
-                {calculateRepayValue(Number(values.loanvalue), Number(values.apr), Number(values.duration))}
-                <span> {values && values.currency ? values.currency.toUpperCase() : ''}</span>
+                <span>Interest</span>
+                <input
+                  ref={accruedRef}
+                  onInput={onInterestInput}
+                  type='number'
+                  name='interest'
+                  step={0.000001}
+                  min={0.000001}
+                  defaultValue={
+                    mode === 'update' && activeSubOfferData ? (
+                    activeSubOfferData.offerAmount * activeSubOfferData.aprNumerator * activeSubOfferData.loanDuration) /
+                    (3600 * 24 * 365 * (store.GlobalState.denominator / 100))
+                    : 1
+                  }
+                  className='input-text'
+                />
+              </div>
+            </div>
+            <div className='form-line form-repaid'>
+              <div>
+                <span className='title'>Total Repay Amount</span>
+                <div className='amount'>
+                  {repayValue}
+                  <span>{values && values.currency ? values.currency.toUpperCase() : ''}</span>
+                </div>
               </div>
             </div>
             <button type='submit' className='btn-content' disabled={submitting || pristine}>

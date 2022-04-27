@@ -67,7 +67,8 @@ export class SingleOfferStore {
             element.account.offerAmount.toNumber(),
             element.account.offerMint.toBase58()
           )
-          const durationConverted = Math.floor(element.account.loanDuration.toNumber() / (3600 * 24))
+
+          const durationConverted = element.account.loanDuration.toNumber() / (3600 * 24)
           const aprConverted = asBigNumber(element.account.aprNumerator as any)
 
           loansArr.push({
@@ -79,7 +80,7 @@ export class SingleOfferStore {
             apr: aprConverted,
             offerMint: element.account.offerMint.toBase58(),
             publicKey: element.publicKey,
-            totalRepay: calculateRepayValue(Number(amountConvered), aprConverted, durationConverted)
+            totalRepay: calculateRepayValue(Number(amountConvered), aprConverted, durationConverted, this.rootStore.GlobalState.denominator)
           })
         }
       )

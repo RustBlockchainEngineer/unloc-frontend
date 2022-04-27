@@ -12,9 +12,8 @@ export const config = {
   loanMinRepayMin: 1
 }
 
-export const nftSources = ['81sWMLg1EgYps3nMwyeSW1JfjKgFqkGYPP85vTnkFzRn']
-
 export const NFT_LOAN_PID = new PublicKey(
   config.devnet ? '4MwL9T4Kjyq8KuVbJM5hpfQizTKFbZmg7aqBQP9zapBJ' : 'H87mP39hQqZvh3GESPCAV426Gp3vJcraz1YgtU21i5RV'
 )
+
 export const RPC_ENDPOINT = config.devnet ? config.devnetEndpoint : config.mainnetEndpoint
