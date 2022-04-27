@@ -6,7 +6,7 @@ interface IProps {
   apr: number
   name: string
   totalRepay: any
-  amount: number
+  amount: string
   onLend: (Pubkey: string) => Promise<void>
   offerPublicKey: string
   duration: number
@@ -21,7 +21,6 @@ const OffersGridItemHover: React.FC<IProps> = ({
   visible,
   apr,
   name,
-  totalRepay,
   amount,
   onLend,
   duration,
@@ -61,10 +60,6 @@ const OffersGridItemHover: React.FC<IProps> = ({
           <div className='data-item'>
             <span className='label'>Duration</span>
             <span className='content'>{duration} Days</span>
-          </div>
-          <div className='data-item'>
-            <span className='label'>total repay amount</span>
-            <span className='content'>{totalRepay}</span>
           </div>
           <div className='data-item'>
             <span className='label'>Collection</span>

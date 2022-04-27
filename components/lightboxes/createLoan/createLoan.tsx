@@ -6,7 +6,7 @@ import { StoreContext } from '@pages/_app'
 import { SubOfferInterface } from '@stores/LoanActionStore'
 import { calculateRepayValue } from '@utils/calculateRepayValue'
 import { BlobLoader } from '@components/layout/blobLoader'
-import getDecimalsForLoanAmount from '@integration/getDecimalForLoanAmount'
+import { getDecimalsForLoanAmount } from '@integration/getDecimalForLoanAmount'
 import { currencyMints } from '@constants/currency'
 
 interface CreateLoanProps {
