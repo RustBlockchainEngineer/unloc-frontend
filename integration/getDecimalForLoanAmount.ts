@@ -10,3 +10,7 @@ export const getDecimalsForLoanAmountAsString = (amount: number, offerMint: stri
     maximumFractionDigits: 4
   })
 }
+
+export const getDecimalsForOfferMint = (offerMint: string): number => {
+  return 10 ** currencies[currencyMints[offerMint]].decimals
+}
