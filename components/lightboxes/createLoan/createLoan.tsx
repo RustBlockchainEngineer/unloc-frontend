@@ -27,6 +27,22 @@ export const CreateLoan: React.FC<CreateLoanProps> = observer(({ mode }) => {
   const aprRef = useRef<HTMLInputElement>(null)
   const accruedRef = useRef<HTMLInputElement>(null)
 
+  useEffect(() => {
+    if (mode === 'update' && activeSubOfferData) {
+      console.log('a')
+      if (!(accruedRef.current && amountRef.current && durationRef.current && aprRef.current)) {
+        return
+      }
+
+      amountRef.current.value = activeSubOfferData.offerAmount.toString()
+      durationRef.current.value = (activeSubOfferData.loanDuration / 3600 / 24).toString()
+      aprRef.current.value = activeSubOfferData.aprNumerator.toString()
+      accruedRef.current.value = activeSubOfferData.minRepaidNumerator.toString()
+    }
+
+    console.log(activeSubOfferData)
+  }, [amountRef.current, durationRef.current, aprRef.current, accruedRef.current, activeSubOfferData])
+
   const onSubmit = async (values: SubOfferInterface) => {
     if (connected && wallet && walletKey) {
       if (!(accruedRef.current && amountRef.current && durationRef.current && aprRef.current)) {
@@ -174,11 +190,12 @@ export const CreateLoan: React.FC<CreateLoanProps> = observer(({ mode }) => {
     const duration = Number(durationRef.current.value)
 
     const accrued = ((amount * apr * duration) / (365 * (store.GlobalState.denominator / 100))).toFixed(6).toString()
-
+    
     accruedRef.current.value = accrued
     setRepayValue(
       calculateRepayValue(amount, apr, duration, store.GlobalState.denominator)
     )
+  }
 
   const getInitialValueOnUpdate = () => {
     if (mode === 'update' && activeSubOfferData) {

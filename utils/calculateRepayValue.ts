@@ -1,5 +1,5 @@
-export const calculateRepayValue = (amount: number, apr: number, days: number, denominator: number): string => {
-  if (Number.isNaN(amount) || Number.isNaN(apr) || Number.isNaN(days) || Number.isNaN(denominator)) {
+export const calculateRepayValue = (amount: number, apr: number, duration: number, denominator: number): string => {
+  if (Number.isNaN(amount) || Number.isNaN(apr) || Number.isNaN(duration) || Number.isNaN(denominator)) {
     return '0'
   }
 
