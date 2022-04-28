@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { observer } from 'mobx-react'
 
 import { StoreContext } from '@pages/_app'
@@ -11,10 +11,12 @@ import { toast } from 'react-toastify'
 import Image from 'next/image'
 import { compressAddress } from '@utils/stringUtils/compressAdress'
 import { getDecimalsForLoanAmountAsString } from '@integration/getDecimalForLoanAmount'
+import { BlobLoader } from '@components/layout/blobLoader'
 
 export const MyLendingList = observer(() => {
   const store = useContext(StoreContext)
   const { lendingList } = store.MyOffers
+  const [isFetchingUserLended, setIsFetchingUserLended] = useState(true)
 
   const handleTimeLeft = (duration: number, startTime: number, formated: boolean) => {
     let output: string | number
@@ -181,10 +183,23 @@ export const MyLendingList = observer(() => {
   }
 
   useEffect(() => {
+    const fetchUserLended = async () => {
     if (store.Wallet.connected && store.Wallet.wallet) {
-      store.MyOffers.fetchUserLendedOffers()
+        setIsFetchingUserLended(true)
+        await store.MyOffers.fetchUserLendedOffers()
+        setIsFetchingUserLended(false)
     }
+    }
+    fetchUserLended()
   }, [store.Wallet.connected, store.Wallet.wallet])
+
+  if (isFetchingUserLended) {
+    return (
+      <div className='my-lending-nft-list-loading'>
+        <BlobLoader />
+      </div>
+    )
+  }
 
   return lendingList && lendingList.length ? (
     <div className='my-lending-nft-list'>
@@ -197,6 +212,3 @@ export const MyLendingList = observer(() => {
     </div>
   )
 })
-
-
-
