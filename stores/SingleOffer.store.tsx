@@ -10,6 +10,7 @@ import { getSubOffersKeysByState } from '@integration/offersListing'
 import { calculateRepayValue } from '@utils/calculateRepayValue'
 import { asBigNumber } from '@utils/asBigNumber'
 import { currencyMints } from '@constants/currency'
+import { toast } from 'react-toastify'
 interface LoanInterface {
   id: string
   status: number
@@ -87,6 +88,18 @@ export class SingleOfferStore {
 
       this.setLoansData(loansArr)
     } catch (e) {
+      if ((e as Error).message.includes('503 Service Unavailable')) {
+        toast.error('Solana RPC currently inavailable', {
+          autoClose: 3000,
+          position: 'top-center',
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined
+        })
+      }
+
       console.log(e)
     }
   }

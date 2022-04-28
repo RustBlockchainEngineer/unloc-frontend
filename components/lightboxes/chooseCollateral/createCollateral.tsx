@@ -62,15 +62,28 @@ export const CreateCollateral: React.FC = observer(() => {
       setProcessing(false)
       store.Lightbox.setVisible(false)
       console.log(e)
-      toast.error(`Transaction rejected`, {
-        autoClose: 3000,
-        position: 'top-center',
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined
-      })
+
+      if ((e as Error).message.includes('503 Service Unavailable')) {
+        toast.error('Solana RPC currently inavailable', {
+          autoClose: 3000,
+          position: 'top-center',
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined
+        })
+      } else {        
+        toast.error(`Transaction rejected`, {
+          autoClose: 3000,
+          position: 'top-center',
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined
+        })
+      }
     }
 
     store.MyOffers.refetchStoreData()
@@ -105,10 +118,22 @@ export const CreateCollateral: React.FC = observer(() => {
           // eslint-disable-next-line no-console
           console.error(e)
           setLoading(false)
+          store.Lightbox.setVisible(false)
+
+          if ((e as Error).message.includes('503 Service Unavailable')) {
+            toast.error('Solana RPC currently inavailable', {
+              autoClose: 3000,
+              position: 'top-center',
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined
+            })
+          }
         }
       }
-  
-      
+
       fetchData()
     }
   }, [wallet, connection, walletKey])

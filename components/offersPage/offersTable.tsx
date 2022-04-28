@@ -41,6 +41,16 @@ export const OffersTable = observer(() => {
           draggable: true,
           progress: undefined
         })
+      } else if ((e as Error).message.includes('503 Service Unavailable')) {
+        toast.error('Solana RPC currently inavailable', {
+          autoClose: 3000,
+          position: 'top-center',
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined
+        })
       } else {
         toast.error(`Something went wrong`, {
           autoClose: 3000,
