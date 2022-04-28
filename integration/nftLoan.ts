@@ -199,7 +199,9 @@ export const getSubOfferMultiple = async (keys: anchor.web3.PublicKey[]) => {
     if (subOffers[i]) {
       const offerKey = subOffers[i].offer
       const offerData = await program.account.offer.fetch(offerKey)
-      if (offerData.startSubOfferNum.toNumber() <= subOffers[i].subOfferNumber.toNumber()) {
+      // Check if offer state is proposed. 
+      // Suboffer can be proposed when the offer isn't.
+      if (offerData.startSubOfferNum.toNumber() <= subOffers[i].subOfferNumber.toNumber() && offerData.state === 0) {
         result.push(subOffers[i])
       }
     }
