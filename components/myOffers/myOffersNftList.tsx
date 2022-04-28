@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { observer } from 'mobx-react'
 import { StoreContext } from '@pages/_app'
 import { MyOffersNftItem } from './myOffersNftItem/myOffersNftItem'
@@ -7,9 +7,10 @@ import { usePopperTooltip } from 'react-popper-tooltip'
 
 type MyOffersNftListProps = {
   type: 'active' | 'deposited'
+  listVisible: boolean
 }
 
-export const MyOffersNftList: React.FC<MyOffersNftListProps> = observer(({ type }) => {
+export const MyOffersNftList: React.FC<MyOffersNftListProps> = observer(({ type, listVisible }) => {
   const store = useContext(StoreContext)
   const { offers, nftData, subOffers } = store.MyOffers
 
@@ -75,9 +76,7 @@ export const MyOffersNftList: React.FC<MyOffersNftListProps> = observer(({ type 
             state={offerSanitized.state}
           />
         )
-      }
-
-      if (type == 'deposited' && offerSubOffers.length <= 0) {
+      } else if (type == 'deposited' && offerSubOffers.length <= 0) {
         return (
           <MyOffersNftDeposited
             key={offerSanitized.offerKey}
@@ -91,6 +90,12 @@ export const MyOffersNftList: React.FC<MyOffersNftListProps> = observer(({ type 
         )
       }
     }).filter((item) => item !== undefined && item !== null)
+
+    if (type === 'active') {
+      store.MyOffers.setActiveHideable(mappedOffers.length > 0)
+    } else if (type === 'deposited') {
+      store.MyOffers.setDepositedHideable(mappedOffers.length > 0)
+    }
 
     return mappedOffers.length > 0 ? mappedOffers : (
       type === 'active' ? '' : <div className='no-offers'>
@@ -111,7 +116,9 @@ export const MyOffersNftList: React.FC<MyOffersNftListProps> = observer(({ type 
     )
   }
 
-  return <div className={type == 'active' ? 'my-offers-nft-list' : 'nft-deposited'}>
-    {renderOffers()}
-  </div>
+  return (
+    <div className={`${type == 'active' ? 'my-offers-nft-list' : 'nft-deposited'} ${!listVisible ? 'hidden' : ''}`}>
+      {renderOffers()}
+    </div>
+  )
 })

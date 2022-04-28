@@ -6,18 +6,16 @@ import { StoreContext } from '@pages/_app'
 import { StoreDataAdapter } from '@components/storeDataAdapter'
 import { LayoutTop } from '@components/layout/layoutTop'
 import { LayoutTopMobile } from '@components/layout/layoutTopMobile'
-import Footer from '@components/layout/footer'
 import { MyOffersTop } from '@components/myOffers/myOffersTop'
 import { MyOffersNftList } from '@components/myOffers/myOffersNftList'
-import { MyLendingList } from '@components/myOffers/myLendingList'
 
 const MyOffers: NextPage = observer(() => {
-  const [tabVisible, setTabVisible] = useState('offers')
   const [activeVisible, setActiveVisible] = useState(true)
   const [depositedVisible, setDepositedVisible] = useState(true)
 
   const store = useContext(StoreContext)
   const { connected, walletKey } = store.Wallet
+  const { activeHideable, depositedHideable } = store.MyOffers
 
   const refreshSubOffers = async (wallet: { adapter: { publicKey: PublicKey } }) => {
     try {
@@ -30,6 +28,18 @@ const MyOffers: NextPage = observer(() => {
       // eslint-disable-next-line no-console
       console.log(e)
     }
+  }
+
+  const handleActiveVisibility = () => {
+    if (!activeHideable) return
+
+    setActiveVisible(!activeVisible)
+  }
+
+  const handleDepositedVisibility = () => {
+    if (!depositedHideable) return
+
+    setDepositedVisible(!depositedVisible)
   }
 
   useEffect(() => {
@@ -45,18 +55,18 @@ const MyOffers: NextPage = observer(() => {
         <MyOffersTop />
         {connected ? <div>
           <div className='active-offers--scrolldown'>
-            <h1 onClick={() => { setActiveVisible(!activeVisible) }}>
+            <h1 onClick={handleActiveVisibility}>
               Active Offers
-              <i className={`icon icon--sm icon--filter--${activeVisible ? 'striped' : 'down'}`} />
+              {activeHideable ? <i className={`icon icon--sm icon--filter--${activeVisible ? 'striped' : 'down'}`} /> : ''}
             </h1>
-            {activeVisible ? <MyOffersNftList type='active' /> : <></>}
+            <MyOffersNftList type='active' listVisible={activeVisible} />
           </div>
           <div className='active-offers--scrolldown'>
-            <h1 onClick={() => { setDepositedVisible(!depositedVisible) }}>
+            <h1 onClick={handleDepositedVisibility}>
               My Vault
-              <i className={`icon icon--sm icon--filter--${depositedVisible ? 'striped' : 'down'}`} />
+              {depositedHideable ? <i className={`icon icon--sm icon--filter--${depositedVisible ? 'striped' : 'down'}`} /> : ''}
             </h1>
-            {depositedVisible ? <MyOffersNftList type='deposited' /> : <></>}
+            <MyOffersNftList type='deposited' listVisible={depositedVisible} />
           </div>
         </div>
           : ''}
