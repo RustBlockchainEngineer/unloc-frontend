@@ -60,7 +60,7 @@ export const MyOffersNftOfferItem: React.FC<MyOffersNftOfferItemProps> = ({
           {setStatus(status.toString())}
         </div>
         <div className='offer__row--item'>
-          <h4>MFT Mint</h4>
+          <h4>NFT Mint</h4>
           <div className='suboffer-containers__mint'>{compressAddress(4, nftMint)}</div>
         </div>
       </div>

@@ -142,7 +142,7 @@ export const MyLendingList = observer(() => {
               {setStatus(offer.state.toString())}
             </div>
             <div className='loan__row--item'>
-              <h4>MFT Mint</h4>
+              <h4>NFT Mint</h4>
               <div className='loan-containers__mint'>{compressAddress(4, offer.nftMint.toBase58())}</div>
             </div>
           </div>
