@@ -22,6 +22,10 @@ export const OffersTop = observer(() => {
     filtersVisible
   } = store.Offers
 
+  const switchCurrency = (currency: string) => {
+    store.Offers.setFilterCurrency(currency)
+  }
+
   return (
     <>
       <div className='layout-line'>
@@ -41,7 +45,7 @@ export const OffersTop = observer(() => {
                   classNames='offers-filters-select'
                   options={['All', 'USDC', 'SOL']}
                   selectedOption={filterCurrency}
-                  setSelectedOption={store.Offers.setFilterCurrency}
+                  setSelectedOption={switchCurrency}
                 />}
               type='minmax'
               valuesRange={{ min: filterAmountMin, max: filterAmountMax }}
