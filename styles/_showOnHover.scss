@@ -16,9 +16,11 @@
   }
 
   &__elements {
-    display: hidden;
-    opacity: 0;
+    visibility: hidden;
     transition: opacity ease-in-out 0.3s;
+    display: none;
+    align-items: center;
+    opacity: 0;
 
     &__wrap {
       display: flex;
@@ -26,7 +28,8 @@
   }
 
   &__elements.active {
-    display: inline-block;
+    visibility: visible;
+    display: flex;
     opacity: 1;
   }
 }
