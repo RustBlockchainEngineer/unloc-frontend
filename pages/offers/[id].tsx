@@ -142,7 +142,7 @@ const SingleNftPage: NextPage = observer(({ }) => {
                 return <></>
               }
             })}
-            {
+            {isYours && (
               <div className='offer-root--add-new' onClick={() => {
                 store.MyOffers.setActiveNftMint(nftData.mint)
                 store.Lightbox.setContent('loanCreate')
@@ -155,7 +155,7 @@ const SingleNftPage: NextPage = observer(({ }) => {
                   </div>
                 </div>
               </div>
-            }
+            )}
           </div>
         ) : (
           <div className='offer-grid-empty'>
