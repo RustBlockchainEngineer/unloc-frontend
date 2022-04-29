@@ -82,7 +82,7 @@ export const MyLendingList = observer(() => {
           progress: undefined
         })
       } else if ((e as Error).message.includes('503 Service Unavailable')) {
-        toast.error('Solana RPC currently inavailable', {
+        toast.error('Solana RPC currently unavailable, please try again in a moment', {
           autoClose: 3000,
           position: 'top-center',
           hideProgressBar: false,
