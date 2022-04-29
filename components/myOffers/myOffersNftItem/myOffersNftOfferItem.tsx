@@ -66,7 +66,7 @@ export const MyOffersNftOfferItem: React.FC<MyOffersNftOfferItemProps> = ({
           {setStatus(status.toString())}
         </div>
         <div className='offer__row--item'>
-          <h4>MFT Mint</h4>
+          <h4>NFT Mint</h4>
           <ShowOnHover label={compressAddress(4, nftMint)} classNames='suboffer-containers__mint'>
             <ClipboardButton data={nftMint} />
             <SolscanExplorerIcon type={'token'} address={nftMint} />
