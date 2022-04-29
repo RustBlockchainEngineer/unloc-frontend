@@ -191,16 +191,33 @@ export const getAllSubOffers = async () => {
   return result
 }
 
-export const getSubOfferMultiple = async (keys: anchor.web3.PublicKey[]) => {
+export const getSubOfferMultiple = async (keys: anchor.web3.PublicKey[], offerState?: number) => {
   const subOffers: any[] = await program.account.subOffer.fetchMultiple(keys)
-  const result = []
 
+  // Filter for nulls and get the offer address
+  const offerAddresses = subOffers.filter((subOffer) => subOffer).map((subOffer) => subOffer.offer)
+
+  // Get all offer data in a single call instead of a loop, filter for nulls
+  const offers: any[] = (await program.account.offer.fetchMultiple(offerAddresses)).filter((data) => data)
+
+  const result = []
   for (let i = 0; i < subOffers.length; i++) {
     if (subOffers[i]) {
       const offerKey = subOffers[i].offer
-      const offerData = await program.account.offer.fetch(offerKey)
-      if (offerData.startSubOfferNum.toNumber() <= subOffers[i].subOfferNumber.toNumber()) {
-        result.push(subOffers[i])
+      const offerKeyIndex = offerAddresses.findIndex((address) => address.equals(offerKey))
+      const offerData = offers[offerKeyIndex]
+
+      // If we want to, check the offer state too.
+      // Suboffer can be proposed when the offer isn't, so that's why we check the state on the offer, not just the suboffer.
+      // Be careful, offerState = 0 can coerce to false.
+      if (typeof offerState === 'number') {
+        if (offerData.startSubOfferNum.toNumber() <= subOffers[i].subOfferNumber.toNumber() && offerData.state === offerState) {
+          result.push(subOffers[i])
+        }
+      } else {
+        if (offerData.startSubOfferNum.toNumber() <= subOffers[i].subOfferNumber.toNumber()) {
+          result.push(subOffers[i])
+        }
       }
     }
   }
