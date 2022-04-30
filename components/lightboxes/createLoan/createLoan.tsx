@@ -322,7 +322,7 @@ export const CreateLoan: React.FC<CreateLoanProps> = observer(({ mode }) => {
             </div>
             <div className='form-line form-duration'>
               <div>
-                <span>Duration</span>
+                <span>Duration (Days)</span>
                 <Field
                   onInput={onValueInput}
                   component='input'

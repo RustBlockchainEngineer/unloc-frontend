@@ -50,3 +50,9 @@
   justify-items: center;
   @include theme-aware('color', 'color-label');
 }
+
+.lightbox-hiding {
+  animation: fadeOutAnimation ease 0.3s;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+}

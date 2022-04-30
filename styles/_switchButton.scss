@@ -5,6 +5,9 @@
     height: 26px;
     @include theme-aware('background-color', 'input-number-bg');
     position: relative;
+    &:hover {
+        cursor: pointer;
+    }
 }
 
 .switch--button--knob {
@@ -14,11 +17,11 @@
     border-radius: 50%;
     position: absolute;
     top: 2px;
+    transition: left 0.2s ease-in-out;
     &.left {
         left: 3px;
     }
-
     &.right {
-        right: 3px;
+        left: calc(100% - 3px - 22px);
     }
 }

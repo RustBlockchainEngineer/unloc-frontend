@@ -296,7 +296,7 @@ export class OffersStore {
         this.setOffersKeys(offersViable)
         this.setOffersCount(offersViable?.length)
 
-        const offersData = await getSubOfferMultiple(this.offersKeys)
+        const offersData = await getSubOfferMultiple(this.offersKeys, 0)
         const offersWithKeys = proposedOffersKeys.map((subOfferKey, index) => {
           return {
             ...offersData[index],
