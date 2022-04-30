@@ -7,7 +7,6 @@ import { CustomSelect } from '@components/layout/customSelect'
 
 export const OffersTop = observer(() => {
   const store = useContext(StoreContext)
-  const [currency, setCurrency] = useState('USDC')
 
   const {
     filterCollection,
@@ -18,9 +17,14 @@ export const OffersTop = observer(() => {
     filterAmountMax,
     filterDurationMin,
     filterDurationMax,
+    filterCurrency,
     viewType,
     filtersVisible
   } = store.Offers
+
+  const switchCurrency = (currency: string) => {
+    store.Offers.setFilterCurrency(currency)
+  }
 
   return (
     <>
@@ -40,8 +44,8 @@ export const OffersTop = observer(() => {
                 <CustomSelect
                   classNames='offers-filters-select'
                   options={['All', 'USDC', 'SOL']}
-                  selectedOption={currency}
-                  setSelectedOption={setCurrency}
+                  selectedOption={filterCurrency}
+                  setSelectedOption={switchCurrency}
                 />}
               type='minmax'
               valuesRange={{ min: filterAmountMin, max: filterAmountMax }}
