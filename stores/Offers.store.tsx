@@ -112,6 +112,8 @@ export class OffersStore {
   }
 
   @action.bound setFilterCurrency(filterCurrency: string): void {
+    if (filterCurrency === this.filterCurrency) return
+  
     this.filterCurrency = filterCurrency
     this.currentPage = 1
     this.refetchOffers()
