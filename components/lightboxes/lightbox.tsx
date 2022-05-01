@@ -24,7 +24,7 @@ export const Lightbox: React.FC<LightboxProps> = observer(({ children, className
   return (
     <div
       ref={container}
-      onClick={(e) => {
+      onMouseDown={(e) => {
         closeWindow(e, true)
       }}
       className={`lightbox ${classNames ? classNames : ''}`}
