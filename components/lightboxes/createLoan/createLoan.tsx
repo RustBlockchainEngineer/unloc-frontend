@@ -11,6 +11,7 @@ import { currencyMints } from '@constants/currency'
 import { calculateAprFromRepayValue } from '@utils/calculateAprFromRepayValue'
 import { SwitchButton } from '@components/layout/switchButton'
 import { calculateAprFromTotalRepayAndApr } from '@utils/calculateAmountFromTotalRepayAndApr'
+import { CustomSelect } from '@components/layout/customSelect'
 
 interface CreateLoanProps {
   mode: 'new' | 'update'
@@ -26,19 +27,18 @@ export const CreateLoan: React.FC<CreateLoanProps> = observer(({ mode }) => {
     mode === 'update' ? getDecimalsForLoanAmount(activeSubOfferData.offerAmount, activeSubOfferData.offerMint) : '0.00'
   )
   const [interestMode, setInterestMode] = useState(false)
+  const [currency, setCurrency] = useState<string>('USDC')
 
   const amountRef = useRef<HTMLInputElement>(null)
   const durationRef = useRef<HTMLInputElement>(null)
   const aprRef = useRef<HTMLInputElement>(null)
   const accruedRef = useRef<HTMLInputElement>(null)
 
-  const onSubmit = async (values: SubOfferInterface) => {
+  const onSubmit = async (_values: SubOfferInterface) => {
     if (connected && wallet && walletKey) {
       if (!(amountRef.current && durationRef.current && aprRef.current && accruedRef.current)) {
         return
       }
-
-      const { currency } = values
 
       const amount = Number(amountRef.current.value)
       const duration = Number(durationRef.current.value)
@@ -184,6 +184,9 @@ export const CreateLoan: React.FC<CreateLoanProps> = observer(({ mode }) => {
       return
     }
 
+    return
+
+    /*
     setInterestMode(!interestMode)
 
     const accrued = Number(accruedRef.current.value)
@@ -198,6 +201,7 @@ export const CreateLoan: React.FC<CreateLoanProps> = observer(({ mode }) => {
       accruedRef.current.value = ((amount * apr * duration) / (365 * (store.GlobalState.denominator / 100))).toFixed(6).toString()
       aprRef.current.value = ''
     }
+     */
   }
 
   const onValueInput = (e: FormEvent<HTMLInputElement>) => {
@@ -303,21 +307,13 @@ export const CreateLoan: React.FC<CreateLoanProps> = observer(({ mode }) => {
               </div>
               <div>
                 <span>Currency</span>
-                <Field
-                  name='currency'
-                  component='select'
-                  initialValue={
-                    mode === 'update' && activeSubOfferData ? currencyMints[activeSubOfferData.offerMint] : 'USDC'
-                  }
+                <CustomSelect
+                  options={['USDC', 'SOL']}
+                  selectedOption={mode === 'update' && activeSubOfferData ? currencyMints[activeSubOfferData.offerMint] : currency}
+                  setSelectedOption={setCurrency}
+                  classNames='loan-currency'
                   disabled={mode === 'update'}
-                >
-                  <option value='USDC' key='USDC'>
-                    USDC
-                  </option>
-                  <option value='SOL' key='SOL'>
-                    SOL
-                  </option>
-                </Field>
+                />
               </div>
             </div>
             <div className='form-line form-duration'>
@@ -371,7 +367,7 @@ export const CreateLoan: React.FC<CreateLoanProps> = observer(({ mode }) => {
                   disabled={interestMode}
                 />
               </div>
-              <SwitchButton state={!interestMode} onClick={() => handleInterestModeChange()} />
+              <SwitchButton state={!interestMode} onClick={() => handleInterestModeChange()} classNames='disabled' />
               <div>
                 <span>Interest</span>
                 <input
@@ -397,7 +393,7 @@ export const CreateLoan: React.FC<CreateLoanProps> = observer(({ mode }) => {
                 <span className='title'>Total Repay Amount</span>
                 <div className='amount'>
                   {repayValue}
-                  <span>{values && values.currency ? values.currency.toUpperCase() : ''}</span>
+                  <span>{currency.toUpperCase()}</span>
                 </div>
               </div>
             </div>

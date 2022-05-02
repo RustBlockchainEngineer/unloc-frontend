@@ -20,8 +20,8 @@
 
   .form-line {
     display: flex;
-    align-items: center;
     margin-bottom: 24px;
+    justify-content: space-between;
 
     div:nth-child(1) {
       display: flex;
@@ -46,6 +46,10 @@
 
     .switch--button {
       align-self: flex-start;
+
+      &.disabled {
+        cursor: not-allowed;
+      }
     }
   }
 
@@ -68,17 +72,26 @@
     width: 100%;
   }
 
-  select {
+  .loan-currency {
     @include theme-aware('background-color', 'lightbox-collection-select-bg');
     @include theme-aware('color', 'lightbox-collection-select-color');
-    appearance: none;
-    -moz-appearance: none;
-    -webkit-appearance: none;
 
-    margin-top: 5px;
+    margin-top: $mr-tn;
+    border-radius: 6px;
 
-    &:focus {
-      outline: none;
+    .custom-select__selected {
+      padding: 8.5px;
+      margin-right: 0 !important;
+      display: inline-flex !important;
+      flex-direction: row !important;
+    }
+
+    .custom-select__options {
+      margin-top: 45px;
+    }
+
+    &.disabled {
+      @include theme-aware('background-color', 'bg-input-disabled');
     }
   }
 
