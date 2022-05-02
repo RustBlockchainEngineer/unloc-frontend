@@ -16,10 +16,6 @@ export const StoreDataAdapter: React.FC<Props> = observer(({ children }: Props) 
   const store = useContext(StoreContext)
 
   useEffect(() => {
-    disconnect()
-  }, [])
-
-  useEffect(() => {
     const setWallet = async () => {
       if (connected && wallet && publicKey) {
         const response = await axios.post('/api/auth', { user: publicKey.toBase58() })
