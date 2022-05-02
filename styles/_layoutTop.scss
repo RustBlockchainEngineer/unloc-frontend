@@ -3,7 +3,9 @@
   width: $pg-col;
   padding-top: 50px;
   justify-content: space-between;
+  align-items: center;
 
+  
   @media (max-width: $bp-tablet) {
     flex-direction: column;
     padding-top: 10px;
@@ -23,7 +25,6 @@
 
 .top-menu {
   display: flex;
-  margin: 10px 20px;
   padding: 0;
   list-style: none;
   justify-content: space-between;
