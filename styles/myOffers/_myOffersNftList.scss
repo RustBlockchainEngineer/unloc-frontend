@@ -414,21 +414,16 @@
 
   .no-offers {
     margin: auto;
-  }
-
-  &.hidden {
-    display: none;
-  }
-
-  button {
-    text-transform: uppercase;
-    font-size: $tp-lg;
-    margin: auto;
 
     button {
       text-transform: uppercase;
       font-size: $tp-lg;
+      margin: auto;
     }
+  }
+
+  &.hidden {
+    display: none;
   }
 
   @media (max-width: $bp-tablet) {
