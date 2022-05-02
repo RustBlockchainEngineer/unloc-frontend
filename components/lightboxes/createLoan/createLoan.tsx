@@ -184,6 +184,9 @@ export const CreateLoan: React.FC<CreateLoanProps> = observer(({ mode }) => {
       return
     }
 
+    return
+
+    /*
     setInterestMode(!interestMode)
 
     const accrued = Number(accruedRef.current.value)
@@ -198,6 +201,7 @@ export const CreateLoan: React.FC<CreateLoanProps> = observer(({ mode }) => {
       accruedRef.current.value = ((amount * apr * duration) / (365 * (store.GlobalState.denominator / 100))).toFixed(6).toString()
       aprRef.current.value = ''
     }
+     */
   }
 
   const onValueInput = (e: FormEvent<HTMLInputElement>) => {
@@ -371,7 +375,7 @@ export const CreateLoan: React.FC<CreateLoanProps> = observer(({ mode }) => {
                   disabled={interestMode}
                 />
               </div>
-              <SwitchButton state={!interestMode} onClick={() => handleInterestModeChange()} />
+              <SwitchButton state={!interestMode} onClick={() => handleInterestModeChange()} classNames='disabled' />
               <div>
                 <span>Interest</span>
                 <input

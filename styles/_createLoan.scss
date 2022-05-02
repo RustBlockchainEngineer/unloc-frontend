@@ -46,6 +46,10 @@
 
     .switch--button {
       align-self: flex-start;
+
+      &.disabled {
+        cursor: not-allowed;
+      }
     }
   }
 
