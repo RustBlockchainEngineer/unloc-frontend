@@ -285,7 +285,7 @@ export const CreateLoan: React.FC<CreateLoanProps> = observer(({ mode }) => {
       onSubmit={onSubmit}
       render={({ handleSubmit, submitting, pristine, values }) => (
         <form className='create-offer' onSubmit={handleSubmit}>
-          <h1>{mode === 'new' ? `Create Loan Offer` : `Update Loan Offer`}</h1>
+          <h1>{mode === 'new' ? `Create a Loan Offer` : `Update Loan Offer`}</h1>
           <div className='offer-form'>
             <div className='form-line form-amount'>
               <div>
