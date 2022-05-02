@@ -179,11 +179,11 @@
 }
 
 .icon--theme--moon {
-  background-image: url('/icons/theme-moon-icon.svg');
+  @include theme-aware('background-image', 'icon-theme-moon');
 }
 
 .icon--theme--sun {
-  background-image: url('/icons/theme-sun-icon.svg');
+  @include theme-aware('background-image', 'icon-theme-sun');
 }
 
 .icon--tn {

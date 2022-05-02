@@ -34,16 +34,6 @@ export const UserToolbox = observer(() => {
         </div>
         <SwitchButton state={store.Interface.theme == 'light'} classNames={'theme-switcher--switch'} onClick={handleThemeSet} />
       </div>
-
-
-
-
-      {/* {visible && (
-        <div ref={setTooltipRef} {...getTooltipProps({ className: 'tooltip-container' })}>
-          <div {...getArrowProps({ className: 'tooltip-arrow' })} />
-          Switch Theme
-        </div>
-      )} */}
     </div>
   )
 })
