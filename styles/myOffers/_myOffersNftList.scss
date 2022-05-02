@@ -538,10 +538,12 @@
   }
 }
 
+.deposited--scrolldown,
 .active-offers--scrolldown {
   h1 {
     margin-left: 20px;
     user-select: none;
+
     :last-child {
       margin-left: 20px;
     }

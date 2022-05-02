@@ -5,13 +5,18 @@ interface CustomSelectProps {
   options: string[]
   defaultOption?: string
   selectedOption: string
+  disabled?: boolean
   setSelectedOption: (option: string) => void
 }
 
-export const CustomSelect: React.FC<CustomSelectProps> = ({ classNames, options, defaultOption, selectedOption, setSelectedOption}: CustomSelectProps) => {
+export const CustomSelect: React.FC<CustomSelectProps> = ({ disabled, classNames, options, defaultOption, selectedOption, setSelectedOption}: CustomSelectProps) => {
   const [hidden, setHidden] = useState(true)
 
   const handleHideOptions = (e: MouseEvent) => {
+    if (disabled) {
+      return
+    }
+
     const element = e.target as HTMLElement
 
     if (element.offsetParent && element.offsetParent.classList.contains('custom-select')) {
@@ -22,10 +27,18 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({ classNames, options,
   }
 
   const handleVisibilityForOptions = () => {
+    if (disabled) {
+      return
+    }
+
     setHidden(!hidden)
   }
 
   const handleSelectOption = (option: string) => {
+    if (disabled) {
+      return
+    }
+
     setSelectedOption(option)
     handleVisibilityForOptions()
   }
@@ -38,8 +51,8 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({ classNames, options,
     }
   })
 
-  return <div className={`custom-select ${classNames}`}>
-    <div className='custom-select__selected' onClick={() => handleVisibilityForOptions()}>
+  return <div className={`custom-select ${classNames} ${disabled ? 'disabled' : ''}`}>
+    <div className='custom-select__selected' onClick={handleVisibilityForOptions}>
       { selectedOption || defaultOption }
       <i className='icon icon--sm icon--rnd--triangle--down'></i>
     </div>
