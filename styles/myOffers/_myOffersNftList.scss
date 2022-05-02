@@ -11,6 +11,10 @@
   display: flex;
   flex-direction: column;
   margin: 40px 0 60px 0;
+
+  &.hidden {
+    display: none;
+  }
 }
 
 .my-offers-nft {
@@ -414,7 +418,12 @@
     button {
       text-transform: uppercase;
       font-size: $tp-lg;
+      margin: auto;
     }
+  }
+
+  &.hidden {
+    display: none;
   }
 
   @media (max-width: $bp-tablet) {
