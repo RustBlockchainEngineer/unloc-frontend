@@ -83,20 +83,32 @@ export const MyOffersNftList: React.FC<MyOffersNftListProps> = observer(({ type,
     }
 
     setSanitizedOffers(sanitized)
-  }, [offers])
+  }, [offers, nftData, subOffers])
 
   const renderOffers = () => {
-    const mappedOffers = sanitizedOffers.map((offer) => (
-      <MyOffersNftDeposited
-        key={offer.offerKey}
-        offerKey={offer.offerKey}
-        name={offer.name}
-        image={offer.image}
-        nftMint={offer.nftMint}
-        offers={offer}
-        state={offer.state}
-      />
-    ))
+    const mappedOffers = sanitizedOffers.map((offer) => {
+      if (type === 'deposited') {
+        return <MyOffersNftDeposited
+          key={offer.offerKey}
+          offerKey={offer.offerKey}
+          name={offer.name}
+          image={offer.image}
+          nftMint={offer.nftMint}
+          offers={offer}
+          state={offer.state}
+        />
+      } else if (type === 'active') {
+        return <MyOffersNftItem
+          key={offer.offerKey}
+          offerKey={offer.offerKey}
+          name={offer.name}
+          image={offer.image}
+          nftMint={offer.nftMint}
+          offers={offer.subOffers}
+          state={offer.state}
+        />
+      }
+    })
 
     return mappedOffers.length > 0 ? mappedOffers : (
       type === 'active' ? '' : <div className='no-offers'>

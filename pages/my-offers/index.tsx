@@ -43,7 +43,6 @@ const MyOffers: NextPage = observer(() => {
   }
 
   useEffect(() => {
-    console.log(connected, walletKey?.toBase58())
     if (connected && walletKey) {
       refreshSubOffers(walletKey)
     }
@@ -62,7 +61,7 @@ const MyOffers: NextPage = observer(() => {
             </h1>
             <MyOffersNftList type='active' listVisible={activeVisible} />
           </div>
-          <div className='active-offers--scrolldown'>
+          <div className='deposited--scrolldown'>
             <h1 onClick={handleDepositedVisibility}>
               My Vault
               {depositedHideable && <i className={`icon icon--sm icon--filter--${depositedVisible ? 'striped' : 'down'}`} />}
