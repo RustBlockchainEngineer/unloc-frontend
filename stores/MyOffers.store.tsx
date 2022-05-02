@@ -220,11 +220,15 @@ export class MyOffersStore {
     await claimCollateral(subOffer)
   }
 
-  @action.bound setActiveHideable(activeHideable: boolean): void {
-    this.activeHideable = activeHideable
+  @action.bound setActiveHideable(activeHideable: boolean) {
+    runInAction(() => {
+      this.activeHideable = activeHideable
+    })
   }
 
-  @action.bound setDepositedHideable(depositedHideable: boolean): void {
-    this.depositedHideable = depositedHideable
+  @action.bound setDepositedHideable(depositedHideable: boolean) {
+    runInAction(() => {
+      this.depositedHideable = depositedHideable
+    })
   }
 }
