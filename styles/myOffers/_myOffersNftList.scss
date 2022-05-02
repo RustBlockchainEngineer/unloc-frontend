@@ -127,12 +127,12 @@
 }
 
 .offers-list {
+  @include theme-aware('background', 'myOffers-multipleSubOffers-bg');
   width: 100%;
   margin-top: -40px;
   display: flex;
   flex-direction: column;
   overflow-y: hidden;
-  @include theme-aware('background', 'myOffers-multipleSubOffers-bg');
   backdrop-filter: blur(21px);
   border-radius: 0 0 8px 8px;
   padding: 8px 16px 20px 16px;
@@ -246,6 +246,20 @@
       flex-direction: row;
       justify-content: space-between;
 
+      .show-on-hover {
+        padding: 0 8px;
+        display: inline-flex;
+        justify-content: center;
+  
+        i {
+          margin: 0;
+        }
+
+        &:hover {
+          padding: 0;
+        }
+      }
+  
       &--item {
         display: flex;
         flex-direction: column;
@@ -285,6 +299,7 @@
         align-items: center;
 
         .offer__row--item {
+          text-align: center;
           min-width: 12%;
 
           h4 {
@@ -397,6 +412,10 @@
   flex-wrap: wrap;
   margin: 40px 0 60px 0;
 
+  .no-offers {
+    margin: auto;
+  }
+
   &.hidden {
     display: none;
   }
@@ -404,9 +423,11 @@
   button {
     text-transform: uppercase;
     font-size: $tp-lg;
+    margin: auto;
 
-    @at-root #{$p} {
-      justify-content: center;
+    button {
+      text-transform: uppercase;
+      font-size: $tp-lg;
     }
   }
 
@@ -476,12 +497,24 @@
 
   .row--item {
     text-align: center;
+    font-weight: $wg-bd;
+    font-size: 14px;
 
-    div {
+    > div {
       width: 80px;
       text-align: center;
       overflow: hidden;
       text-overflow: ellipsis;
+    }
+
+    .show-on-hover {
+      padding: 0 8px;
+      display: inline-flex;
+      justify-content: center;
+
+      &:hover {
+        padding: 0;
+      }
     }
 
     .mint,
@@ -505,6 +538,7 @@
 
     .id {
       @include theme-aware('background', 'myOffers-id-bg');
+      
     }
   }
 }

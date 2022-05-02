@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useRef } from 'react'
 import { observer } from 'mobx-react'
 import { StoreContext } from '@pages/_app'
 
@@ -9,19 +9,22 @@ interface LightboxProps {
 
 export const Lightbox: React.FC<LightboxProps> = observer(({ children, classNames }: LightboxProps) => {
   const store = useContext(StoreContext)
+  const container = useRef<HTMLDivElement>(null)
 
   const closeWindow = (e: any, check: boolean) => {
     if (e.target !== e.currentTarget && check) {
       return
     }
     if (store.Lightbox.canClose) {
-      store.Lightbox.setVisible(false)
+      container.current?.classList.add('lightbox-hiding')
+      setTimeout(() => store.Lightbox.setVisible(false), 300)
     }
   }
 
   return (
     <div
-      onClick={(e) => {
+      ref={container}
+      onMouseDown={(e) => {
         closeWindow(e, true)
       }}
       className={`lightbox ${classNames ? classNames : ''}`}

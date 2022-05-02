@@ -57,14 +57,14 @@ const MyOffers: NextPage = observer(() => {
           <div className='active-offers--scrolldown'>
             <h1 onClick={handleActiveVisibility}>
               Active Offers
-              {activeHideable ? <i className={`icon icon--sm icon--filter--${activeVisible ? 'striped' : 'down'}`} /> : ''}
+              {activeHideable && <i className={`icon icon--sm icon--filter--${activeVisible ? 'striped' : 'down'}`} />}
             </h1>
             <MyOffersNftList type='active' listVisible={activeVisible} />
           </div>
           <div className='active-offers--scrolldown'>
             <h1 onClick={handleDepositedVisibility}>
               My Vault
-              {depositedHideable ? <i className={`icon icon--sm icon--filter--${depositedVisible ? 'striped' : 'down'}`} /> : ''}
+              {depositedHideable && <i className={`icon icon--sm icon--filter--${depositedVisible ? 'striped' : 'down'}`} />}
             </h1>
             <MyOffersNftList type='deposited' listVisible={depositedVisible} />
           </div>

@@ -5,6 +5,9 @@ import { PublicKey } from '@solana/web3.js'
 import { IsubOfferData } from '@stores/Lightbox.store'
 import { currencyMints } from '@constants/currency'
 import { getDecimalsForLoanAmountAsString } from '@integration/getDecimalForLoanAmount'
+import { ClipboardButton } from '@components/layout/clipboardButton'
+import { ShowOnHover } from '@components/layout/showOnHover'
+import { SolscanExplorerIcon } from '@components/layout/solscanExplorerIcon'
 
 interface MyOffersNftOfferItemProps {
   offerAmount: any
@@ -53,15 +56,21 @@ export const MyOffersNftOfferItem: React.FC<MyOffersNftOfferItemProps> = ({
       <div className='offer__row'>
         <div className='offer__row--item'>
           <h4>Collateral ID</h4>
-          <div className='suboffer-containers__id'>{compressAddress(4, offerID.toString())}</div>
+          <ShowOnHover label={compressAddress(4, offerID.toString())} classNames='suboffer-containers__id'>
+            <ClipboardButton data={offerID.toString()} />
+            <SolscanExplorerIcon type={'token'} address={offerID.toString()} />
+          </ShowOnHover>
         </div>
         <div className='offer__row--item'>
           <h4>Status</h4>
           {setStatus(status.toString())}
         </div>
         <div className='offer__row--item'>
-          <h4>MFT Mint</h4>
-          <div className='suboffer-containers__mint'>{compressAddress(4, nftMint)}</div>
+          <h4>NFT Mint</h4>
+          <ShowOnHover label={compressAddress(4, nftMint)} classNames='suboffer-containers__mint'>
+            <ClipboardButton data={nftMint} />
+            <SolscanExplorerIcon type={'token'} address={nftMint} />
+          </ShowOnHover>
         </div>
       </div>
 

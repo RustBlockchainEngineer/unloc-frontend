@@ -8,6 +8,7 @@ import { getSubOffersKeysByState } from '@integration/offersListing'
 import { asBigNumber } from '@utils/asBigNumber'
 import { removeDuplicatesByPropertyIndex } from '@utils/removeDuplicatesByPropertyIndex'
 import { getDecimalsForOfferMint } from '@integration/getDecimalForLoanAmount'
+import { currencyMints } from '@constants/currency'
 
 export class OffersStore {
   rootStore
@@ -27,9 +28,9 @@ export class OffersStore {
 
   readyToFilter = true
   filterAprMin = 1
-  filterAprMax = 10000 //take this value dynamically from offers
+  filterAprMax = 10000
   filterAmountMin = 1
-  filterAmountMax = 10000 //take this value dynamically from offers
+  filterAmountMax = 10000
   filterDurationMin = 1
   filterDurationMax = 90
   filtersVisible = true
@@ -39,6 +40,7 @@ export class OffersStore {
   filterAmountValidatorMax = 10000
   filterDurationValidatorMin = 1
   filterDurationValidatorMax = 90
+  filterCurrency = 'All'
 
   offersKeys: PublicKey[] = []
   offersCount: number = 0
@@ -84,11 +86,13 @@ export class OffersStore {
 
   @action.bound setFilterCollection = (value: string): void => {
     const hasValue = this.filterCollectionSelected.map((e) => e).indexOf(value)
+
     if (hasValue === -1) {
       this.filterCollectionSelected = [...this.filterCollectionSelected, value]
     } else {
       this.filterCollectionSelected.splice(hasValue, 1)
     }
+
     this.currentPage = 1
     this.refetchOffers()
   }
@@ -107,10 +111,22 @@ export class OffersStore {
     this.maxPage = pages
   }
 
+  @action.bound setFilterCurrency(filterCurrency: string): void {
+    if (filterCurrency === this.filterCurrency) return
+  
+    this.filterCurrency = filterCurrency
+    this.currentPage = 1
+    this.refetchOffers()
+  }
+
+  @action.bound setPageNFTData(pageNFTData: any[]): void {
+    this.pageNFTData = pageNFTData
+  }
+
   @action.bound setCurrentPage(page: number): void {
     this.currentPage = page
     this.pageNFTData = []
-    this.pageOfferData = []
+    this.setPageOfferData([])
     this.getOffersForListings()
   }
 
@@ -207,28 +223,29 @@ export class OffersStore {
   }
 
   private handleFilters = (data: any) => {
-    const output: any[] = []
-    data.forEach((offer: any) => {
+    return data.filter((offer: any) => {
       if (offer.offerAmount) {
+        const currencyCheck =
+          this.filterCurrency === 'All' ||
+          currencyMints[offer.offerMint] === this.filterCurrency
+
         const amountCheck = this.inRange(
           offer.offerAmount.toNumber() / getDecimalsForOfferMint(offer.offerMint),
           this.filterAmountMin,
           this.filterAmountMax
         )
+
         const durationCheck = this.inRange(
           offer.loanDuration.toNumber() / (3600 * 24),
           this.filterDurationMin,
           this.filterDurationMax
         )
+
         const aprCheck = this.inRange(asBigNumber(offer.aprNumerator), this.filterAprMin, this.filterAprMax)
 
-        if (aprCheck && amountCheck && durationCheck) {
-          output.push(offer)
-        }
+        return currencyCheck && aprCheck && amountCheck && durationCheck
       }
     })
-
-    return output
   }
 
   private handleCollectionFilter = () => {
@@ -283,61 +300,52 @@ export class OffersStore {
     }
   }
 
+  @action.bound setPageOfferData(pageOfferData: any[]): void {
+    this.pageOfferData = pageOfferData
+  }
+
   @action.bound getOffersForListings = async (): Promise<void> => {
     const proposedOffersKeys = await getSubOffersKeysByState([0])
 
-    let offersViable: any[] = []
+    if (proposedOffersKeys?.length) {
+      this.setOffersEmpty(false)
+      this.setOffersKeys(proposedOffersKeys)
+      this.setOffersCount(proposedOffersKeys?.length)
 
-    if (proposedOffersKeys && proposedOffersKeys.length) {
-      offersViable = [...offersViable, ...proposedOffersKeys]
-
-      if (offersViable && offersViable.length) {
-        this.setOffersEmpty(false)
-        this.setOffersKeys(offersViable)
-        this.setOffersCount(offersViable?.length)
-
-        const offersData = await getSubOfferMultiple(this.offersKeys)
-        const offersWithKeys = proposedOffersKeys.map((subOfferKey, index) => {
-          return {
-            ...offersData[index],
-            subOfferKey: subOfferKey
-          }
+      const offersData = await getSubOfferMultiple(this.offersKeys, 0)
+      if (offersData?.length) {
+        const nftMints = offersData.map((offerData: any) => {
+          return offerData.nftMint
         })
 
-        if (offersWithKeys && offersWithKeys.length) {
-          const nftMints = offersData.map((offerData: any) => {
-            return offerData.nftMint
-          })
-          const data = await this.initManyNfts(nftMints)
-          const paginatedNFTData = data.metadatas.slice(
-            (this.currentPage - 1) * this.itemsPerPage,
-            this.currentPage * this.itemsPerPage
+        const data = await this.initManyNfts(nftMints)
+        const paginatedNFTData = data.metadatas.slice(
+          (this.currentPage - 1) * this.itemsPerPage,
+          this.currentPage * this.itemsPerPage
+        )
+
+        this.setPageNFTData(paginatedNFTData)
+        this.setOffersData(this.handleFilters(offersData))
+
+        await this.fetchCollectionForNfts()
+
+        this.setOffersData(this.handleCollectionFilter())
+        this.offersRef = this.offers
+
+        const finalData = this.mangleNftData()
+        if (finalData && finalData.length > 16) {
+          this.setPageOfferData(
+            finalData.slice((this.currentPage - 1) * this.itemsPerPage, this.currentPage * this.itemsPerPage)
           )
-
-          this.pageNFTData = paginatedNFTData
-          this.offers = this.handleFilters(offersWithKeys)
-
-          await this.fetchCollectionForNfts()
-
-          this.offers = this.handleCollectionFilter()
-          this.offersRef = this.offers
-
-          const finalData = this.mangleNftData()
-          if (finalData && finalData.length > 16) {
-            this.pageOfferData = finalData.slice(
-              (this.currentPage - 1) * this.itemsPerPage,
-              this.currentPage * this.itemsPerPage
-            )
-          } else {
-            this.pageOfferData = finalData
-          }
-
-          this.setMaxPage(Math.ceil(this.offersRef.length / this.itemsPerPage))
+        } else {
+          this.setPageOfferData(finalData)
         }
+
+        this.setMaxPage(Math.ceil(this.offersRef.length / this.itemsPerPage))
       }
     } else {
-      this.pageOfferData = []
-      this.pageNFTData = []
+      this.setPageOfferData([])
+      this.setPageNFTData([])
       this.setOffersEmpty(true)
     }
   }
@@ -359,9 +367,9 @@ export class OffersStore {
       console.log('filter run');
 
       this.waitForNextAction()
-      this.offers = []
-      this.pageNFTData = []
-      this.pageOfferData = []
+      this.setOffersData([])
+      this.setPageNFTData([])
+      this.setPageOfferData([])
       await this.getOffersForListings()
     }
   }

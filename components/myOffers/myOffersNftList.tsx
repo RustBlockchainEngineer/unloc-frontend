@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { observer } from 'mobx-react'
 import { StoreContext } from '@pages/_app'
 import { MyOffersNftItem } from './myOffersNftItem/myOffersNftItem'
@@ -13,17 +13,18 @@ type MyOffersNftListProps = {
 export const MyOffersNftList: React.FC<MyOffersNftListProps> = observer(({ type, listVisible }) => {
   const store = useContext(StoreContext)
   const { offers, nftData, subOffers } = store.MyOffers
+  const [sanitizedOffers, setSanitizedOffers] = useState<any[]>([])
 
   const { getTooltipProps, setTooltipRef, setTriggerRef, visible } = usePopperTooltip()
 
-  const renderOffers = () => {
-    const mappedOffers = offers.map((offer) => {
+  useEffect(() => {
+    const sanitized: any[] = offers.map((offer) => {
       let offerSanitized: any = {
         offerKey: offer.publicKey.toBase58(),
         nftMint: offer.account.nftMint.toBase58(),
-        state: offer.account.state
+        state: offer.account.state,
+        subOffers: []
       }
-      const offerSubOffers: any[] = []
 
       nftData.forEach((nft) => {
         if (nft.mint === offerSanitized.nftMint) {
@@ -47,7 +48,8 @@ export const MyOffersNftList: React.FC<MyOffersNftListProps> = observer(({ type,
             subOfferNumber,
             loanStartedTime
           } = subOffer.account
-          offerSubOffers.push({
+
+          offerSanitized.subOffers.push({
             subOfferKey: subOffer.publicKey,
             aprNumerator,
             borrower,
@@ -64,38 +66,37 @@ export const MyOffersNftList: React.FC<MyOffersNftListProps> = observer(({ type,
         }
       })
 
-      if (type == 'active' && offerSubOffers.length > 0) {
-        return (
-          <MyOffersNftItem
-            key={offerSanitized.offerKey}
-            offerKey={offerSanitized.offerKey}
-            name={offerSanitized.name}
-            image={offerSanitized.image}
-            nftMint={offerSanitized.nftMint}
-            offers={offerSubOffers}
-            state={offerSanitized.state}
-          />
-        )
-      } else if (type == 'deposited' && offerSubOffers.length <= 0) {
-        return (
-          <MyOffersNftDeposited
-            key={offerSanitized.offerKey}
-            offerKey={offerSanitized.offerKey}
-            name={offerSanitized.name}
-            image={offerSanitized.image}
-            nftMint={offerSanitized.nftMint}
-            offers={offerSubOffers}
-            state={offerSanitized.state}
-          />
-        )
+      if (
+        (type == 'active' && offerSanitized.subOffers.length > 0) ||
+        (type == 'deposited' && offerSanitized.subOffers.length === 0)
+      ) {
+        return offerSanitized
       }
-    }).filter((item) => item !== undefined && item !== null)
+
+      return null
+    }).filter((item) => item !== null)
 
     if (type === 'active') {
-      store.MyOffers.setActiveHideable(mappedOffers.length > 0)
+      store.MyOffers.setActiveHideable(sanitized.length > 0)
     } else if (type === 'deposited') {
-      store.MyOffers.setDepositedHideable(mappedOffers.length > 0)
+      store.MyOffers.setDepositedHideable(sanitized.length > 0)
     }
+
+    setSanitizedOffers(sanitized)
+  }, [])
+
+  const renderOffers = () => {
+    const mappedOffers = sanitizedOffers.map((offer) => (
+      <MyOffersNftDeposited
+        key={offer.offerKey}
+        offerKey={offer.offerKey}
+        name={offer.name}
+        image={offer.image}
+        nftMint={offer.nftMint}
+        offers={offer}
+        state={offer.state}
+      />
+    ))
 
     return mappedOffers.length > 0 ? mappedOffers : (
       type === 'active' ? '' : <div className='no-offers'>

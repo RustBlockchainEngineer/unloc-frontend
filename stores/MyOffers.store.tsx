@@ -29,8 +29,8 @@ export class MyOffersStore {
   nftData: NFTMetadata[] = []
   activeNftMint: string = ''
   lendingList: any[] = []
-  activeHideable = false
-  depositedHideable = false
+  activeHideable: boolean = false
+  depositedHideable: boolean = false
 
   constructor(rootStore: any) {
     makeAutoObservable(this)
@@ -220,11 +220,11 @@ export class MyOffersStore {
     await claimCollateral(subOffer)
   }
 
-  @action.bound setActiveHideable = (activeHideable: boolean) => {
+  @action.bound setActiveHideable(activeHideable: boolean): void {
     this.activeHideable = activeHideable
   }
 
-  @action.bound setDepositedHideable = (depositedHideable: boolean) => {
+  @action.bound setDepositedHideable(depositedHideable: boolean): void {
     this.depositedHideable = depositedHideable
   }
 }
