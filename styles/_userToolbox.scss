@@ -13,12 +13,11 @@
   flex-direction: column;
   margin-left: 20px;
   margin-top: -2px;
+
   &--header {
     display: flex;
-    margin-bottom: -4px;
-  }
-
-  &--switch {
-    margin: 0 auto;
+    margin-bottom: -2px;
+    width: 60px;
+    justify-content: space-between;
   }
 }

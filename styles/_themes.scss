@@ -37,6 +37,7 @@ $themes: (
     checkbox-checked-bg: #df0b7f,
     switch-knob: #2e13d2,
     switch-color: #ffffff,
+    switch-bg: #ffffff,
     filter-btn-hover: #705ceb,
     filter-arrow-down: url('/icons/filter-arrow-down-whiteTheme.svg'),
     filter-stripe: url('/icons/filter-arrow-striped-whiteTheme.svg'),
@@ -61,7 +62,7 @@ $themes: (
     icon-paginator-right: url('/icons/page-right-icon-light.svg'),
     pagination-color: white,
 
-    bg-input-disabled: #EBE2FF,
+    bg-input-disabled: #ebe2ff,
 
     lightbox-collection-border: #2e13d2,
     lightbox-collection-color: #210d48,
@@ -119,6 +120,8 @@ $themes: (
     yourNFT-offer-plus-color: #2e13d1,
 
     bg-gradient-home: linear-gradient(194.54deg, #e0d0ff -44.32%, rgba(150, 97, 255, 0.06) 44.37%),
+    icon-theme-moon: url('/icons/theme-moon-icon-light.svg'),
+    icon-theme-sun: url('/icons/theme-sun-icon-light.svg'),
   ),
   dark: (
     color-white: #fff,
@@ -159,6 +162,7 @@ $themes: (
     checkbox-checked-bg: #df0b7f,
     switch-knob: #e00a7f,
     switch-color: #ffffff,
+    switch-bg: #482688,
     filter-btn-hover: #5d38a2,
     filter-arrow-down: url('/icons/filter-arrow-down.svg'),
     filter-stripe: url('/icons/filter-arrow-striped.svg'),
@@ -203,7 +207,7 @@ $themes: (
     myOffers-id-bg: rgba(224, 9, 126, 0.7),
     myOffers-mint-bg: #532ba0,
 
-    bg-input-disabled: #2F175D,
+    bg-input-disabled: #2f175d,
 
     disabled-color: #6944b4,
     disabled-bg: #2f175d,
@@ -240,5 +244,7 @@ $themes: (
     yourNFT-offer-plus-color: #ffffff,
 
     bg-gradient-home: linear-gradient(194.54deg, #482688 -44.32%, rgba(46, 19, 210, 0) 44.37%),
+    icon-theme-moon: url('/icons/theme-moon-icon-dark.svg'),
+    icon-theme-sun: url('/icons/theme-sun-icon-dark.svg'),
   ),
 );
