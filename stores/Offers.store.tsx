@@ -307,57 +307,41 @@ export class OffersStore {
   @action.bound getOffersForListings = async (): Promise<void> => {
     const proposedOffersKeys = await getSubOffersKeysByState([0])
 
-    let offersViable: any[] = []
+    if (proposedOffersKeys?.length) {
+      this.setOffersEmpty(false)
+      this.setOffersKeys(proposedOffersKeys)
+      this.setOffersCount(proposedOffersKeys?.length)
 
-    if (proposedOffersKeys && proposedOffersKeys.length) {
-      offersViable = [...offersViable, ...proposedOffersKeys]
-
-      if (offersViable && offersViable.length) {
-        this.setOffersEmpty(false)
-        this.setOffersKeys(offersViable)
-        this.setOffersCount(offersViable?.length)
-
-        const offersData = await getSubOfferMultiple(this.offersKeys, 0)
-        const offersWithKeys = proposedOffersKeys.map((subOfferKey, index) => {
-          return {
-            ...offersData[index],
-            subOfferKey: subOfferKey
-          }
+      const offersData = await getSubOfferMultiple(this.offersKeys, 0)
+      if (offersData?.length) {
+        const nftMints = offersData.map((offerData: any) => {
+          return offerData.nftMint
         })
 
-        if (offersWithKeys && offersWithKeys.length) {
-          const nftMints = offersData.map((offerData: any) => {
-            return offerData.nftMint
-          })
+        const data = await this.initManyNfts(nftMints)
+        const paginatedNFTData = data.metadatas.slice(
+          (this.currentPage - 1) * this.itemsPerPage,
+          this.currentPage * this.itemsPerPage
+        )
 
-          const data = await this.initManyNfts(nftMints)
-          const paginatedNFTData = data.metadatas.slice(
-            (this.currentPage - 1) * this.itemsPerPage,
-            this.currentPage * this.itemsPerPage
+        this.setPageNFTData(paginatedNFTData)
+        this.setOffersData(this.handleFilters(offersData))
+
+        await this.fetchCollectionForNfts()
+
+        this.setOffersData(this.handleCollectionFilter())
+        this.offersRef = this.offers
+
+        const finalData = this.mangleNftData()
+        if (finalData && finalData.length > 16) {
+          this.setPageOfferData(
+            finalData.slice((this.currentPage - 1) * this.itemsPerPage, this.currentPage * this.itemsPerPage)
           )
-
-          this.setPageNFTData(paginatedNFTData)
-          this.setOffersData(this.handleFilters(offersWithKeys))
-
-          await this.fetchCollectionForNfts()
-
-          this.setOffersData(this.handleCollectionFilter())
-          this.offersRef = this.offers
-
-          const finalData = this.mangleNftData()
-          if (finalData && finalData.length > 16) {
-            this.setPageOfferData(
-              finalData.slice(
-                (this.currentPage - 1) * this.itemsPerPage,
-                this.currentPage * this.itemsPerPage
-              )
-            )
-          } else {
-            this.setPageOfferData(finalData)
-          }
-
-          this.setMaxPage(Math.ceil(this.offersRef.length / this.itemsPerPage))
+        } else {
+          this.setPageOfferData(finalData)
         }
+
+        this.setMaxPage(Math.ceil(this.offersRef.length / this.itemsPerPage))
       }
     } else {
       this.setPageOfferData([])

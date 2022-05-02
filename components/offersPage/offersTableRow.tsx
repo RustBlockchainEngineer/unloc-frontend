@@ -33,7 +33,7 @@ export const OffersTableRow = ({
     e.stopPropagation()
     e.preventDefault()
     onLend(offerPublicKey)
-  }, [])
+  }, [offerPublicKey, onLend])
   return (
     <div className='offers-table-row' key={subOfferKey}>
       <Link href={`/offers/${subOfferKey}`}>
@@ -44,7 +44,7 @@ export const OffersTableRow = ({
             <span className='text-content'>{nftName}</span>
           </div>
           <div className='row-cell'>
-            <button className={isYours ? 'deactivated' : ''} onClick={(e) => { if (!isYours) { handlePrevent(e) } }}>{isYours ? 'Can\'t lend' : 'Lend tokens'}</button>
+            <button className={isYours ? 'deactivated' : ''} onClick={(e) => { if (!isYours) { handlePrevent(e) } }}>{isYours ? 'Can\'t lend' : `Lend ${currency}`}</button>
           </div>
           <div className='row-cell'>
             <span className='text-content'>
