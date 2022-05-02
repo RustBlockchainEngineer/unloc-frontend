@@ -17,9 +17,9 @@ const MyOffers: NextPage = observer(() => {
   const { connected, walletKey } = store.Wallet
   const { activeHideable, depositedHideable } = store.MyOffers
 
-  const refreshSubOffers = async (wallet: { adapter: { publicKey: PublicKey } }) => {
+  const refreshSubOffers = async (walletKey: PublicKey) => {
     try {
-      if (wallet && walletKey) {
+      if (walletKey) {
         await store.MyOffers.getOffersByWallet(walletKey)
         await store.MyOffers.getNFTsData()
         await store.MyOffers.getSubOffersByOffers()
@@ -43,10 +43,11 @@ const MyOffers: NextPage = observer(() => {
   }
 
   useEffect(() => {
-    if (connected && store.Wallet.wallet) {
-      refreshSubOffers(store.Wallet.wallet)
+    console.log(connected, walletKey?.toBase58())
+    if (connected && walletKey) {
+      refreshSubOffers(walletKey)
     }
-  }, [connected, store.Wallet.wallet])
+  }, [connected, walletKey])
 
   return (
     <StoreDataAdapter>

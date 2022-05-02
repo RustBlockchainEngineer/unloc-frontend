@@ -83,7 +83,7 @@ export const MyOffersNftList: React.FC<MyOffersNftListProps> = observer(({ type,
     }
 
     setSanitizedOffers(sanitized)
-  }, [])
+  }, [offers])
 
   const renderOffers = () => {
     const mappedOffers = sanitizedOffers.map((offer) => (

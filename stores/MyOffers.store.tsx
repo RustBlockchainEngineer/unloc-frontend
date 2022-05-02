@@ -29,8 +29,8 @@ export class MyOffersStore {
   nftData: NFTMetadata[] = []
   activeNftMint: string = ''
   lendingList: any[] = []
-  activeHideable: boolean = false
-  depositedHideable: boolean = false
+  activeHideable = false
+  depositedHideable = false
 
   constructor(rootStore: any) {
     makeAutoObservable(this)
