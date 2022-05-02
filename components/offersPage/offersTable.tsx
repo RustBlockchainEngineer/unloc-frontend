@@ -93,7 +93,7 @@ export const OffersTable = observer(() => {
               duration={Math.floor(offerData.loanDuration.toNumber() / (3600 * 24))}
               currency={currencyMints[offerData.offerMint.toBase58()]}
               count={offerData.count}
-              isYours={offerData.borrower.toBase58() == walletKey?.toBase58()}
+              isYours={offerData.borrower.equals(walletKey)}
             />
           )
         })}

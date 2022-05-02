@@ -106,7 +106,7 @@ export const OffersGrid = observer(() => {
                 currency={currencyMints[offerData.offerMint.toBase58()]}
                 count={offerData.count}
                 collection={offerData.collection}
-                isYours={offerData.borrower.toBase58() == walletKey?.toBase58()}
+                isYours={offerData.borrower.equals(walletKey)}
               />
             )
           }
