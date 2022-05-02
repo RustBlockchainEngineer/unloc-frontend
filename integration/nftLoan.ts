@@ -212,11 +212,11 @@ export const getSubOfferMultiple = async (keys: anchor.web3.PublicKey[], offerSt
       // Be careful, offerState = 0 can coerce to false.
       if (typeof offerState === 'number') {
         if (offerData.startSubOfferNum.toNumber() <= subOffers[i].subOfferNumber.toNumber() && offerData.state === offerState) {
-          result.push(subOffers[i])
+          result.push({ ...subOffers[i], subOfferKey: keys[i] })
         }
       } else {
         if (offerData.startSubOfferNum.toNumber() <= subOffers[i].subOfferNumber.toNumber()) {
-          result.push(subOffers[i])
+          result.push({ ...subOffers[i], subOfferKey: keys[i] })
         }
       }
     }
