@@ -97,6 +97,7 @@
 
   input.disabled {
     @include theme-aware('background-color', 'bg-input-disabled');
+    @include theme-aware('color', 'disabled-color')
   }
 
   .form-APR {
@@ -135,11 +136,11 @@
     width: 100%;
 
     .title {
-      font-size: 32px;
+      font-size: 24px;
     }
 
     .amount {
-      font-size: 26px;
+      font-size: 20px;
 
       span {
         margin-left: $mr-sm;

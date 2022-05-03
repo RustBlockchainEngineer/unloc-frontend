@@ -4,7 +4,7 @@ import { toast } from 'react-toastify'
 import { Form, Field } from 'react-final-form'
 import { StoreContext } from '@pages/_app'
 import { SubOfferInterface } from '@stores/LoanActionStore'
-import { calculateRepayValue } from '@utils/calculateRepayValue'
+import { calculateRepayValue, formatRepayValue } from '@utils/calculateRepayValue'
 import { BlobLoader } from '@components/layout/blobLoader'
 import { getDecimalsForLoanAmount } from '@integration/getDecimalForLoanAmount'
 import { currencyMints } from '@constants/currency'
@@ -184,9 +184,6 @@ export const CreateLoan: React.FC<CreateLoanProps> = observer(({ mode }) => {
       return
     }
 
-    return
-
-    /*
     setInterestMode(!interestMode)
 
     const accrued = Number(accruedRef.current.value)
@@ -196,12 +193,9 @@ export const CreateLoan: React.FC<CreateLoanProps> = observer(({ mode }) => {
 
     if (interestMode) {
       aprRef.current.value = calculateAprFromRepayValue(amount, amount + accrued, duration, store.GlobalState.denominator)
-      accruedRef.current.value = ''
     } else {
-      accruedRef.current.value = ((amount * apr * duration) / (365 * (store.GlobalState.denominator / 100))).toFixed(6).toString()
-      aprRef.current.value = ''
+      accruedRef.current.value = ((amount * apr * duration) / (365 * (store.GlobalState.denominator / 100))).toFixed(4)
     }
-     */
   }
 
   const onValueInput = (e: FormEvent<HTMLInputElement>) => {
@@ -213,17 +207,20 @@ export const CreateLoan: React.FC<CreateLoanProps> = observer(({ mode }) => {
 
     const amount = Number(amountRef.current.value)
     const duration = Number(name === 'duration' ? (e.target as HTMLInputElement).value : durationRef.current.value)
-    const apr = Number(aprRef.current.value)
     
     if (name === 'duration') {
       durationRef.current.value = duration.toString()
     }
 
     if (interestMode) {
+      const accrued = Number(accruedRef.current.value)
+      aprRef.current.value = calculateAprFromRepayValue(amount, amount + accrued, duration, store.GlobalState.denominator)
       setRepayValue(
-        calculateRepayValue(amount, apr, duration, store.GlobalState.denominator)
+        formatRepayValue(amount, accrued)
       )
     } else {
+      const apr = Number(aprRef.current.value)
+      accruedRef.current.value = ((amount * ((apr / 36500) * duration))).toFixed(4)
       setRepayValue(
         calculateRepayValue(amount, apr, duration, store.GlobalState.denominator)
       )
@@ -241,6 +238,7 @@ export const CreateLoan: React.FC<CreateLoanProps> = observer(({ mode }) => {
 
     const apr = calculateAprFromRepayValue(amount, amount + accrued, duration, store.GlobalState.denominator)
 
+    aprRef.current.value = apr
     setRepayValue(
       calculateRepayValue(amount, parseFloat(apr), duration, store.GlobalState.denominator)
     )
@@ -255,6 +253,7 @@ export const CreateLoan: React.FC<CreateLoanProps> = observer(({ mode }) => {
     const amount = Number(amountRef.current.value)
     const duration = Number(durationRef.current.value)
 
+    accruedRef.current.value = ((amount * apr * duration) / (365 * (store.GlobalState.denominator / 100))).toFixed(4)
     setRepayValue(
       calculateRepayValue(amount, apr, duration, store.GlobalState.denominator)
     )
@@ -367,7 +366,7 @@ export const CreateLoan: React.FC<CreateLoanProps> = observer(({ mode }) => {
                   disabled={interestMode}
                 />
               </div>
-              <SwitchButton state={!interestMode} onClick={() => handleInterestModeChange()} classNames='disabled' />
+              <SwitchButton state={!interestMode} onClick={() => handleInterestModeChange()} />
               <div>
                 <span>Interest</span>
                 <input
@@ -390,11 +389,11 @@ export const CreateLoan: React.FC<CreateLoanProps> = observer(({ mode }) => {
             </div>
             <div className='form-line form-repaid'>
               <div>
-                <span className='title'>Total Repay Amount</span>
-                <div className='amount'>
+                <h3 className='title'>Total Repay Amount</h3>
+                <p className='amount'>
                   {repayValue}
                   <span>{currency.toUpperCase()}</span>
-                </div>
+                </p>
               </div>
             </div>
             <button type='submit' className='btn-content' disabled={submitting || pristine}>
