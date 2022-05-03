@@ -389,11 +389,11 @@ export const CreateLoan: React.FC<CreateLoanProps> = observer(({ mode }) => {
             </div>
             <div className='form-line form-repaid'>
               <div>
-                <span className='title'>Total Repay Amount</span>
-                <div className='amount'>
+                <h3 className='title'>Total Repay Amount</h3>
+                <p className='amount'>
                   {repayValue}
                   <span>{currency.toUpperCase()}</span>
-                </div>
+                </p>
               </div>
             </div>
             <button type='submit' className='btn-content' disabled={submitting || pristine}>
