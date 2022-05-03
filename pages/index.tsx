@@ -42,7 +42,7 @@ const Home: NextPage = observer(() => {
           <title>{localesHome.pageTitle}</title>
 
           <meta name='description' content='UNLOC your NFTs full potential' />
-          <meta property='og:title' content='UNLOC your NFTs full potential' />
+          <meta property='og:title' content='UNLOC' />
           <meta property='og:url' content='https://unloc.xyz' />
           <meta property='og:image' content='https://unloc.xyz/icons/apple-touch-icon.pngg' />
           <link rel='apple-touch-icon' sizes='180x180' href='/icons/apple-touch-icon.png' />
