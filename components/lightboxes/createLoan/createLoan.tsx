@@ -210,23 +210,17 @@ export const CreateLoan: React.FC<CreateLoanProps> = observer(({ mode }) => {
     
     if (name === 'duration') {
       durationRef.current.value = duration.toString()
-
-      if (interestMode) {
-        const accrued = Number(accruedRef.current.value)
-        aprRef.current.value = calculateAprFromRepayValue(amount, amount + accrued, duration, store.GlobalState.denominator)
-      } else {
-        const apr = Number(aprRef.current.value)
-        accruedRef.current.value = ((amount * ((apr / 36500) * duration))).toFixed(4)
-      }
     }
 
     if (interestMode) {
       const accrued = Number(accruedRef.current.value)
+      aprRef.current.value = calculateAprFromRepayValue(amount, amount + accrued, duration, store.GlobalState.denominator)
       setRepayValue(
         formatRepayValue(amount, accrued)
       )
     } else {
       const apr = Number(aprRef.current.value)
+      accruedRef.current.value = ((amount * ((apr / 36500) * duration))).toFixed(4)
       setRepayValue(
         calculateRepayValue(amount, apr, duration, store.GlobalState.denominator)
       )
