@@ -12,3 +12,17 @@ export const calculateRepayValue = (amount: number, apr: number, duration: numbe
     gain.toLocaleString(undefined, { maximumFractionDigits: 4, minimumFractionDigits: 2 })
   )
 }
+
+export const formatRepayValue = (amount: number, accrued: number): string => {
+  if (Number.isNaN(amount) || Number.isNaN(accrued)) {
+    return '0'
+  }
+
+  return (
+    amount.toLocaleString(undefined, { maximumFractionDigits: 4, minimumFractionDigits: 2 })
+    +
+    ' + '
+    +
+    accrued.toLocaleString(undefined, { maximumFractionDigits: 4, minimumFractionDigits: 2 })
+  )
+}
