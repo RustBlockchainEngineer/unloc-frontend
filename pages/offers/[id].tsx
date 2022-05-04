@@ -133,7 +133,7 @@ const SingleNftPage: NextPage = observer(({ }) => {
                     // durationRemaning='20' // TODO: include date of offer creation in Program data
                     APR={offer.apr}
                     totalRepay={offer.totalRepay}
-                    btnMessage={'Lend Tokens'}
+                    btnMessage={`Lend ${offer.currency}`}
                     handleConfirmOffer={handleConfirmOffer}
                     isYours={isYours}
                   />
