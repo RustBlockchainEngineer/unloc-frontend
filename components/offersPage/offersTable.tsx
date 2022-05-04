@@ -74,10 +74,12 @@ export const OffersTable = observer(() => {
         <div className='offers-table-heading'>
           <div className='row-cell'>Name</div>
           <div className='row-cell'></div>
+          <div className='row-cell'>Collection</div>
           <div className='row-cell'>Amount</div>
           <div className='row-cell'>Currency</div>
           <div className='row-cell'>APR</div>
           <div className='row-cell'>Duration</div>
+          <div className='row-cell'>Repay amount</div>
         </div>
         {pageOfferData.map((offerData, index) => {
           return (
@@ -94,6 +96,7 @@ export const OffersTable = observer(() => {
               currency={currencyMints[offerData.offerMint.toBase58()]}
               count={offerData.count}
               isYours={offerData.borrower.equals(walletKey)}
+              collectionName={offerData.collection}
             />
           )
         })}

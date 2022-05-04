@@ -1,6 +1,8 @@
-import React, { useCallback, useRef } from 'react'
+import React, {useCallback, useContext, useRef} from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import {calculateRepayValue} from "@utils/calculateRepayValue";
+import {StoreContext} from "@pages/_app";
 
 interface OffersTableItemInterface {
   subOfferKey: string
@@ -14,6 +16,7 @@ interface OffersTableItemInterface {
   offerPublicKey: string
   count?: number
   isYours: boolean
+  collectionName: string
 }
 
 export const OffersTableRow = ({
@@ -27,13 +30,16 @@ export const OffersTableRow = ({
   duration,
   currency,
   count,
-  isYours
+  isYours,
+  collectionName
 }: OffersTableItemInterface) => {
   const handlePrevent = useCallback((e: React.FormEvent<HTMLButtonElement>) => {
     e.stopPropagation()
     e.preventDefault()
     onLend(offerPublicKey)
   }, [offerPublicKey, onLend])
+  const store = useContext(StoreContext);
+  const { denominator } = store.GlobalState;
   return (
     <div className='offers-table-row' key={subOfferKey}>
       <Link href={`/offers/${subOfferKey}`}>
@@ -45,6 +51,9 @@ export const OffersTableRow = ({
           </div>
           <div className='row-cell'>
             <button className={isYours ? 'deactivated' : ''} onClick={(e) => { if (!isYours) { handlePrevent(e) } }}>{isYours ? 'Can\'t lend' : `Lend ${currency}`}</button>
+          </div>
+          <div className='row-cell'>
+            <span className='text-content collection'>{collectionName}</span>
           </div>
           <div className='row-cell'>
             <span className='text-content'>
@@ -61,6 +70,9 @@ export const OffersTableRow = ({
           </div>
           <div className='row-cell'>
             <span className='text-content'>{duration} Days</span>
+          </div>
+          <div className='row-cell'>
+            <span className='text-content'>{calculateRepayValue(Number(amount), apr, duration, denominator)} {currency}</span>
           </div>
         </a>
       </Link>

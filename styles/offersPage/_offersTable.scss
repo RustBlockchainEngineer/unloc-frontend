@@ -18,20 +18,19 @@
 }
 
 .offers-table-heading {
-  display: flex;
-  justify-content: space-between;
-  padding: 10px;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr .5fr 0.5fr .5fr .5fr 1fr;
+  padding: 10px 0;
   @include theme-aware('background-color', 'color-accent');
   @include theme-aware('color', 'color-label');
   font-size: $tp-sm;
   font-weight: $wg-bd;
   border-radius: $brd-rds-sm $brd-rds-sm 0 0;
-  display: grid;
-  grid-template-columns: 2fr 1.5fr 1fr 1fr 1fr 1fr;
   backdrop-filter: blur(21px);
 
   .row-cell {
     text-align: left;
+    padding-left: 10px;
   }
 }
 
@@ -39,7 +38,7 @@
   width: 100%;
   a {
     display: grid;
-    grid-template-columns: 2fr 1.5fr 1fr 1fr 1fr 1fr;
+    grid-template-columns: 2fr 1fr 1fr .5fr 0.5fr .5fr .5fr 1fr;
     align-content: center;
     width: 100%;
     @include theme-aware('background-color', 'bg-table');
@@ -106,9 +105,17 @@
       display: flex;
       text-align: left;
       align-items: center;
-      padding: 10px;
+      padding-left: 10px;
       height: 58px;
       line-height: 40px;
+      .text-content {
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+        &.collection{
+          width: 145px;
+        }
+      }
 
       i {
         display: block;
