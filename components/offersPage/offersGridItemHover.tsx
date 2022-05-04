@@ -67,7 +67,7 @@ const OffersGridItemHover: React.FC<IProps> = ({
           </div>
         </div>
       </Link>
-      <button className={isYours ? 'deactivated' : ''} onClick={() => { if (!isYours) { onLend(offerPublicKey) } }}>{isYours ? 'Can\'t Lend' : 'Lend Token'}</button>
+      <button className={isYours ? 'deactivated' : ''} onClick={() => { if (!isYours) { onLend(offerPublicKey) } }}>{isYours ? 'Can\'t Lend' : `Lend ${currency}`}</button>
     </div>
   )
 }
