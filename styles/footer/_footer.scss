@@ -12,6 +12,7 @@
   border-top: 2px solid;
   padding: 20px 0 0 0;
   margin: 70px auto $tp-3xl-mb auto;
+  font-family: "Red Hat Display", sans-serif;
 
   @media (max-width: $bp-tablet) {
     width: 100vw;
@@ -20,26 +21,29 @@
 
 .footer-links {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
-  width: 40%;
-  max-width: 450px;
+  // max-width: 450px;
 }
 
 .community-section {
   & > * {
-    font-size: 14px;
+    font-size: $tp-lg;
+    font-weight: $wg-md;
   }
 }
 
 .footer-header {
-  font-weight: 700;
-  padding-bottom: 6px;
+  font-weight: $wg-hv;
+  padding-bottom: $mr-md;
   text-transform: uppercase;
 }
 
 .footer-list {
   list-style-type: none;
+  display: flex;
+  padding: $mr-lg;
+  gap: $mr-xl;
 
   .list-item {
     padding-bottom: 6px;
