@@ -1,5 +1,7 @@
+import React, {useContext} from 'react'
 import Link from 'next/link'
-import React from 'react'
+import {calculateRepayValue} from "@utils/calculateRepayValue";
+import { StoreContext } from '@pages/_app'
 
 interface IProps {
   visible: boolean
@@ -31,6 +33,9 @@ const OffersGridItemHover: React.FC<IProps> = ({
   collection,
   isYours
 }) => {
+  const store = useContext(StoreContext)
+  const { denominator } = store.GlobalState
+
   return (
     <div className={`onHover-data ${visible ? '' : 'hide'}`}>
       <Link href={`/offers/${subOfferKey}`}>
@@ -64,6 +69,10 @@ const OffersGridItemHover: React.FC<IProps> = ({
           <div className='data-item'>
             <span className='label'>Collection</span>
             <span className='content'>{collection}</span>
+          </div>
+          <div className='data-item'>
+            <span className='label'>Repay amount</span>
+            <span className='content'>{calculateRepayValue(Number(amount), apr, duration, denominator)}</span>
           </div>
         </div>
       </Link>
