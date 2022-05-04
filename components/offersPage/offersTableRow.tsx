@@ -72,7 +72,7 @@ export const OffersTableRow = ({
             <span className='text-content'>{duration} Days</span>
           </div>
           <div className='row-cell'>
-            <span className='text-content'>{calculateRepayValue(Number(amount), apr, duration, denominator)} {currency}</span>
+            <span className='text-content'>{calculateRepayValue(Number(amount), apr, duration, denominator)}</span>
           </div>
         </a>
       </Link>
