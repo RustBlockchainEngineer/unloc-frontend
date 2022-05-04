@@ -12,13 +12,8 @@ import { calculateRepayValue } from '@utils/calculateRepayValue'
 export const OffersGrid = observer(() => {
   const store = useContext(StoreContext)
   const { walletKey } = store.Wallet
-  const { pageOfferData, pageNFTData, currentPage, maxPage, itemsPerPage, offersEmpty } = store.Offers
-  const generateEmptyFields = () => {
-    const count = (itemsPerPage - pageNFTData.length) as number
-    return [...Array(count)].map((_page, index) => {
-      return <div key={`offers-${index}`} className='offers-empty'></div>
-    })
-  }
+  const { pageOfferData, currentPage, maxPage, offersEmpty } = store.Offers
+
   const handleAcceptOffer = async (offerPublicKey: string) => {
     try {
       store.Lightbox.setContent('processing')
@@ -111,7 +106,6 @@ export const OffersGrid = observer(() => {
             )
           }
         })}
-        {generateEmptyFields()}
       </div>
       <div className='offers-pagination'>
         <div>
