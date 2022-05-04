@@ -89,7 +89,7 @@ export const OffersGrid = observer(() => {
                 key={`offer-${offerData.nftData.arweaveMetadata.name}-${index}`}
                 subOfferKey={offerData.nftData.mint}
                 image={offerData.nftData.arweaveMetadata.image}
-                amount={getDecimalsForLoanAmountAsString(offerData.offerAmount, offerData.offerMint.toString(), 0)}
+                amount={getDecimalsForLoanAmountAsString(offerData.offerAmount, offerData.offerMint.toString(), 0, 2)}
                 apr={asBigNumber(offerData.aprNumerator)}
                 offerPublicKey={offerData.subOfferKey.toString()}
                 name={offerData.nftData.arweaveMetadata.name}

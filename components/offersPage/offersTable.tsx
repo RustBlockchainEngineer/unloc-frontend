@@ -86,7 +86,7 @@ export const OffersTable = observer(() => {
               subOfferKey={offerData.nftData.mint}
               image={offerData.nftData.arweaveMetadata.image}
               nftName={offerData.nftData.arweaveMetadata.name}
-              amount={getDecimalsForLoanAmountAsString(offerData.offerAmount.toNumber(), offerData.offerMint.toString(), 0)}
+              amount={getDecimalsForLoanAmountAsString(offerData.offerAmount.toNumber(), offerData.offerMint.toString(), 0, 2)}
               onLend={handleAcceptOffer}
               offerPublicKey={offerData.subOfferKey.toString()}
               apr={asBigNumber(offerData.aprNumerator)}
