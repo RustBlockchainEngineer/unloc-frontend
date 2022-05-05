@@ -191,16 +191,27 @@
     overflow: hidden;
     text-overflow: ellipsis;
     border-radius: $brd-rds-sm;
+    justify-content: center
+  }
+
+  &__mint, &__id {
+    color: white;
+    &.show-on-hover:hover {
+      padding: 0;
+    }
+    &.show-on-hover {
+      & .show-on-hover__elements__wrap {
+        margin-bottom: 0;
+      }
+    }
   }
 
   &__mint {
     @include theme-aware('background', 'myLoan-mint-bg');
-    color: white;
   }
 
   &__id {
     @include theme-aware('background', 'myLoan-id-bg');
-    color: white;
   }
 
   &__status {

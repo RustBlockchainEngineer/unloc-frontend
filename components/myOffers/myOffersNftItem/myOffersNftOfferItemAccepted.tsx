@@ -8,6 +8,9 @@ import { StoreContext } from '@pages/_app'
 import { usePopperTooltip } from 'react-popper-tooltip'
 import { toast } from 'react-toastify'
 import { getDecimalsForLoanAmountAsString } from '@integration/getDecimalForLoanAmount'
+import { ShowOnHover } from '@components/layout/showOnHover'
+import { ClipboardButton } from '@components/layout/clipboardButton'
+import { SolscanExplorerIcon } from '@components/layout/solscanExplorerIcon'
 
 interface MyOffersNftOfferItemAcceptedProps {
   offerAmount: any
@@ -119,7 +122,10 @@ export const MyOffersNftOfferItemAccepted: React.FC<MyOffersNftOfferItemAccepted
       <div className='offer__row'>
         <div className='offer__row--item'>
           <h4>Collateral ID</h4>
-          <div className='suboffer-containers__id'>{compressAddress(4, offerID.toString())}</div>
+          <ShowOnHover label={compressAddress(4, offerID.toString())} classNames='suboffer-containers__id'>
+            <ClipboardButton data={offerID.toString()} />
+            <SolscanExplorerIcon type={'token'} address={offerID.toString()} />
+          </ShowOnHover>
         </div>
         <div className={`offer__row--item ${timeClassNames} status`}>
           <h4>Status</h4>
@@ -127,7 +133,10 @@ export const MyOffersNftOfferItemAccepted: React.FC<MyOffersNftOfferItemAccepted
         </div>
         <div className='offer__row--item'>
           <h4>NFT Mint</h4>
-          <div className='suboffer-containers__mint'>{compressAddress(4, nftMint)}</div>
+          <ShowOnHover label={compressAddress(4, nftMint)} classNames='suboffer-containers__mint'>
+            <ClipboardButton data={nftMint} />
+            <SolscanExplorerIcon type={'token'} address={nftMint} />
+          </ShowOnHover>
         </div>
       </div>
 
