@@ -376,7 +376,8 @@ export class OffersStore {
 
   @action.bound clearFilters = () => {
     this.filterCollectionSelected = []
-    this.filterCollection = []
+    // this.filterCollection = []
+    this.refetchOffers()
   }
 
   @action.bound waitForNextAction = () => {

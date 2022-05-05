@@ -19,7 +19,8 @@ export const OffersTop = observer(() => {
     filterDurationMax,
     filterCurrency,
     viewType,
-    filtersVisible
+    filtersVisible,
+    clearFilters
   } = store.Offers
 
   const switchCurrency = (currency: string) => {
@@ -39,6 +40,7 @@ export const OffersTop = observer(() => {
                   title='Select collections'
                   options={filterCollection}
                   values={filterCollectionSelected}
+                  clearFilters={clearFilters}
                   onCheck={store.Offers.setFilterCollection}
                 />
               }
