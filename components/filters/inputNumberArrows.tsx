@@ -1,4 +1,3 @@
-import React from 'react'
 interface InputNumberArrowsInterface {
     value: number
     onChange: (value: number) => void

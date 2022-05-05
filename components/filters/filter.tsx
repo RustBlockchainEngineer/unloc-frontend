@@ -1,10 +1,16 @@
-import React from 'react'
-import { validateFilterInput, validateFilterInputMin, validateFilterInputMax } from '../../methods/validators/filterValidator'
-import { InputNumberArrows } from './inputNumberArrows'
+import {ReactNode, ReactElement, useState, useCallback, useEffect} from "react";
+
+import {
+  validateFilterInput,
+  validateFilterInputMin,
+  validateFilterInputMax
+} from '../../methods/validators/filterValidator'
+import {InputNumberArrows} from './inputNumberArrows'
+
 interface FilterOffersInterface {
   title: string
-  titleComponent?: React.ReactElement<any, any>
-  customComponent?: React.ReactNode,
+  titleComponent?: ReactElement<any, any>
+  customComponent?: ReactNode,
   type: 'single' | 'multi' | 'minmax' | 'custom'
   action?: (value: string) => void
   actionMin?: (value: number) => void
@@ -18,25 +24,45 @@ interface FilterOffersInterface {
 }
 
 export const Filter = ({
-  title,
-  titleComponent,
-  customComponent,
-  type,
-  items,
-  action,
-  actionMin,
-  actionMax,
-  actionValidator,
-  actionValidatorMin,
-  actionValidatorMax,
-  values,
-  valuesRange
-}: FilterOffersInterface) => {
+   title,
+   titleComponent,
+   customComponent,
+   type,
+   items,
+   action,
+   actionMin,
+   actionMax,
+   actionValidator,
+   actionValidatorMin,
+   actionValidatorMax,
+   values,
+   valuesRange
+ }: FilterOffersInterface) => {
+
+  const [min, setMin] = useState(valuesRange?.min);
+  const [max, setMax] = useState(valuesRange?.max);
+
+  useEffect(() => {
+    setMin(valuesRange?.min);
+    setMax(valuesRange?.max);
+  }, [valuesRange]);
+
+  const context = this;
+
+  function debounce(func: (val: number) => void, timeout = 400) {
+    let timer: NodeJS.Timeout;
+    return (...args: [number]) => {
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        func.apply(context, args)
+      }, timeout);
+    };
+  }
+
   const handleCheckedItem = (itemValue: string): boolean => {
     if (values) {
       return values.includes(itemValue)
     }
-
     return false
   }
 
@@ -57,20 +83,25 @@ export const Filter = ({
   }
 
   const handleActionMin = (inputValue: number) => {
+    setMin(inputValue);
     if (inputValue && actionValidatorMin && validateFilterInputMin(inputValue, actionValidatorMin) && actionMin) {
-      actionMin(inputValue)
+      min && debounceMin(min);
     } else if (actionValidatorMin && actionMax) {
-      actionMax(actionValidatorMin)
+      debounceMax(actionValidatorMin)
     }
   }
 
   const handleActionMax = (inputValue: number) => {
+    setMax(inputValue);
     if (inputValue && actionValidatorMax && validateFilterInputMax(inputValue, actionValidatorMax) && actionMax) {
-      actionMax(inputValue)
+      max && debounceMax(max);
     } else if (actionValidatorMax && actionMax) {
-      actionMax(actionValidatorMax)
+      debounceMax(actionValidatorMax)
     }
   }
+
+  const debounceMin = useCallback(debounce((val) => actionMin && actionMin(val)), [valuesRange]);
+  const debounceMax = useCallback(debounce((val) => actionMax && actionMax(val)), [valuesRange]);
 
   const renderList = () => {
     const data =
@@ -115,20 +146,20 @@ export const Filter = ({
             <input
               className='min'
               type='number'
-              value={valuesRange.min}
+              value={min}
               onChange={(e) => handleActionMin(Number(e.target.value))}
             />
-            <InputNumberArrows value={valuesRange.min} onChange={handleActionMin} />
+            <InputNumberArrows value={min ? min : valuesRange.min} onChange={() => handleActionMin}/>
           </div>
           <div className='filter-line'>
             <span>Max: </span>
             <input
               className='max'
               type='number'
-              value={valuesRange.max}
+              value={max}
               onChange={(e) => handleActionMax(Number(e.target.value))}
             />
-            <InputNumberArrows value={valuesRange.max} onChange={handleActionMax} />
+            <InputNumberArrows value={max ? max : valuesRange.max} onChange={() => handleActionMax}/>
           </div>
         </div>
       </div>
