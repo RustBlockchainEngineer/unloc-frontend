@@ -4,7 +4,8 @@ import { InputNumberArrows } from './inputNumberArrows'
 interface FilterOffersInterface {
   title: string
   titleComponent?: React.ReactElement<any, any>
-  type: 'single' | 'multi' | 'minmax'
+  customComponent?: React.ReactNode,
+  type: 'single' | 'multi' | 'minmax' | 'custom'
   action?: (value: string) => void
   actionMin?: (value: number) => void
   actionMax?: (value: number) => void
@@ -19,6 +20,7 @@ interface FilterOffersInterface {
 export const Filter = ({
   title,
   titleComponent,
+  customComponent,
   type,
   items,
   action,
@@ -135,11 +137,25 @@ export const Filter = ({
     )
   }
 
+  const renderCustom = () => {
+    return (
+      <div className='filter-generic'>
+        <div className='filter-generic__top'>
+          <h5>{title}</h5>
+          {titleComponent ? titleComponent : ''}
+        </div>
+        {customComponent}
+      </div>
+    )
+  }
+
   const renderFilterByType = () => {
     if ((type === 'single' || type === 'multi') && items && Array.isArray(items)) {
       return renderList()
     } else if (type === 'minmax') {
       return renderMinMax()
+    } else if (type === 'custom') {
+      return renderCustom()
     }
 
     return <></>
