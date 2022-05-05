@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useMemo } from 'react'
+import { useState, useEffect, useRef, useMemo, SyntheticEvent } from 'react'
 
 interface CustomMultiSelectProps {
   classNames?: string
@@ -78,9 +78,9 @@ export const CollectionList = ({options, values, disabled, onCheck, setHidden}: 
     return false
   }
 
-  const handleCheckOption = (option: string) => {
+  const handleCheckOption = (e: SyntheticEvent, option: string) => {
+    e.stopPropagation();
     !disabled && onCheck(option);
-    !disabled && setHidden(false);
   }
 
   const MemoizedList = () => useMemo(() => {
@@ -93,7 +93,7 @@ export const CollectionList = ({options, values, disabled, onCheck, setHidden}: 
               type='checkbox'
               name={option.value}
               defaultChecked={handleCheckedItem(option.value)}
-              onClick={() => handleCheckOption(option.value)}
+              onClick={(e) => handleCheckOption(e, option.value)}
             />
             <span className='checkbox-custom rectangular'></span>
             <span className='checkbox-title'>{option.label}</span>
