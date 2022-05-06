@@ -69,7 +69,7 @@ export const LendConfirmation = observer(() => {
         </div>
       </div>
       <div className='offer-data'>
-        <div className='offer-data-top'>Your terms:</div>
+        <div className='offer-data-top'>Loan terms:</div>
         <div className='offer-data-liner'>
           <div className='title'>Amount</div>
           <div className='data'>
