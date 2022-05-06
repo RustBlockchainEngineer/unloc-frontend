@@ -12,13 +12,8 @@ import { calculateRepayValue } from '@utils/calculateRepayValue'
 export const OffersGrid = observer(() => {
   const store = useContext(StoreContext)
   const { walletKey } = store.Wallet
-  const { pageOfferData, pageNFTData, currentPage, maxPage, itemsPerPage, offersEmpty } = store.Offers
-  const generateEmptyFields = () => {
-    const count = (itemsPerPage - pageNFTData.length) as number
-    return [...Array(count)].map((_page, index) => {
-      return <div key={`offers-${index}`} className='offers-empty'></div>
-    })
-  }
+  const { pageOfferData, currentPage, maxPage, offersEmpty } = store.Offers
+
   const handleAcceptOffer = async (offerPublicKey: string) => {
     try {
       store.Lightbox.setContent('processing')
@@ -89,7 +84,7 @@ export const OffersGrid = observer(() => {
                 key={`offer-${offerData.nftData.arweaveMetadata.name}-${index}`}
                 subOfferKey={offerData.nftData.mint}
                 image={offerData.nftData.arweaveMetadata.image}
-                amount={getDecimalsForLoanAmountAsString(offerData.offerAmount, offerData.offerMint.toString(), 0)}
+                amount={getDecimalsForLoanAmountAsString(offerData.offerAmount, offerData.offerMint.toString(), 0, 2)}
                 apr={asBigNumber(offerData.aprNumerator)}
                 offerPublicKey={offerData.subOfferKey.toString()}
                 name={offerData.nftData.arweaveMetadata.name}
@@ -111,7 +106,6 @@ export const OffersGrid = observer(() => {
             )
           }
         })}
-        {generateEmptyFields()}
       </div>
       <div className='offers-pagination'>
         <div>

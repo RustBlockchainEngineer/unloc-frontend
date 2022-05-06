@@ -12,22 +12,9 @@ const Footer: React.FC = () => {
 
   return (
     <div className='footer'>
-      {/* <div className='footer-logo'>
-        <img src='' />
-        <img src='' />
-      </div> */}
       <div className='footer-links'>
         <div className='community-section'>
-          <h2 className='footer-header'>community</h2>
           <ul className='footer-list'>{createList(localesFooterCommunity)}</ul>
-        </div>
-        <div className='community-section'>
-          <h2 className='footer-header'>legal</h2>
-          <ul className='footer-list'>{createList(localesFooterCompany)}</ul>
-        </div>
-        <div className='community-section'>
-          <h2 className='footer-header'>company</h2>
-          <ul className='footer-list'>{createList(localesFooterLegal)}</ul>
         </div>
       </div>
     </div>

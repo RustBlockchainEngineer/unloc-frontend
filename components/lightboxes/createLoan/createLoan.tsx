@@ -295,12 +295,12 @@ export const CreateLoan: React.FC<CreateLoanProps> = observer(({ mode }) => {
                   onInput={onValueInput}
                   type='number'
                   name='loanvalue'
-                  step={(values && values.currency && values.currency.toUpperCase()) == 'USDC' ? '0.01' : '0.001'}
-                  min={(values && values.currency && values.currency.toUpperCase()) == 'USDC' ? 0.1 : 0.01}
+                  step={currency.toUpperCase() == 'USDC' ? '0.01' : '0.001'}
+                  min={currency.toUpperCase() == 'USDC' ? 0.1 : 0.01}
                   placeholder='Amount'
                   className='input-text'
                   initialValue={
-                    getInitialValueOnUpdate() || ((values && values.currency && values.currency.toUpperCase()) == 'USDC' ? 1000 : 10)
+                    getInitialValueOnUpdate() || currency.toUpperCase() == 'USDC' ? 1000 : 10
                   }
                 />
               </div>

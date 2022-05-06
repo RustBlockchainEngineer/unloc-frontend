@@ -58,7 +58,7 @@ export const LendConfirmation = observer(() => {
 
   return (
     <div className='lend-confirmation'>
-      <h2>Lend Tokens</h2>
+      <h2>Lend Funds</h2>
       <div className='collateral'>
         <div className='label'>Collateral:</div>
         <div className='nft-pill'>
@@ -69,7 +69,7 @@ export const LendConfirmation = observer(() => {
         </div>
       </div>
       <div className='offer-data'>
-        <div className='offer-data-top'>Your terms:</div>
+        <div className='offer-data-top'>Loan terms:</div>
         <div className='offer-data-liner'>
           <div className='title'>Amount</div>
           <div className='data'>

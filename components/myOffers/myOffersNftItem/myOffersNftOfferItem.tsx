@@ -24,7 +24,7 @@ interface MyOffersNftOfferItemProps {
   disabled: boolean
 }
 
-export const MyOffersNftOfferItem: React.FC<MyOffersNftOfferItemProps> = ({
+export const MyOffersNftOfferItem = ({
   offerAmount,
   offerID,
   status,
@@ -37,7 +37,7 @@ export const MyOffersNftOfferItem: React.FC<MyOffersNftOfferItemProps> = ({
   classNames,
   nftMint,
   disabled
-}) => {
+}: MyOffersNftOfferItemProps) => {
   const setStatus = (status: string) => {
     if (status === '0' || status === '6') {
       return <p className={'suboffer-containers__status'}>Proposed</p>
@@ -48,6 +48,10 @@ export const MyOffersNftOfferItem: React.FC<MyOffersNftOfferItemProps> = ({
 
   const stopOnClickPropagation = (e: React.MouseEvent<HTMLElement>) => {
     e.stopPropagation()
+  }
+
+  if (disabled) {
+    return <></>
   }
 
   return (

@@ -1,9 +1,9 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext } from 'react'
 import { observer } from 'mobx-react'
 import { StoreContext } from '@pages/_app'
 import { Filter } from '@components/filters/filter'
-import { CurrencyChanger } from '@components/layout/currencyChanger'
 import { CustomSelect } from '@components/layout/customSelect'
+import { CustomMultiSelect } from '@components/layout/customMultiSelect'
 
 export const OffersTop = observer(() => {
   const store = useContext(StoreContext)
@@ -19,7 +19,8 @@ export const OffersTop = observer(() => {
     filterDurationMax,
     filterCurrency,
     viewType,
-    filtersVisible
+    filtersVisible,
+    clearFilters
   } = store.Offers
 
   const switchCurrency = (currency: string) => {
@@ -33,10 +34,16 @@ export const OffersTop = observer(() => {
           <div className={`offers-filters ${filtersVisible ? 'active' : ''}`}>
             <Filter
               title='COLLECTIONS'
-              type='multi'
-              items={filterCollection}
-              action={store.Offers.setFilterCollection}
-              values={filterCollectionSelected}
+              type='custom'
+              customComponent={
+                <CustomMultiSelect
+                  title='Select collections'
+                  options={filterCollection}
+                  values={filterCollectionSelected}
+                  clearFilters={clearFilters}
+                  onCheck={store.Offers.setFilterCollection}
+                />
+              }
             />
             <Filter
               title='LOAN AMOUNT'
@@ -46,7 +53,8 @@ export const OffersTop = observer(() => {
                   options={['All', 'USDC', 'SOL']}
                   selectedOption={filterCurrency}
                   setSelectedOption={switchCurrency}
-                />}
+                />
+              }
               type='minmax'
               valuesRange={{ min: filterAmountMin, max: filterAmountMax }}
               actionMin={store.Offers.setFilterAmountMin}

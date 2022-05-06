@@ -145,7 +145,10 @@ export const MyLendingList = observer(() => {
           <div className='loan__row'>
             <div className='loan__row--item'>
               <h4>Borrower ID</h4>
-              <div className='loan-containers__id'>{compressAddress(4, offer.borrower.toBase58())}</div>
+              <ShowOnHover label={compressAddress(4, offer.borrower.toBase58())} classNames='loan-containers__id'>
+                <ClipboardButton data={offer.borrower} />
+                <SolscanExplorerIcon type={'token'} address={offer.borrower} />
+              </ShowOnHover>
             </div>
             <div className={`loan__row--item ${timeClassNames} status`}>
               <h4>Status</h4>
@@ -153,7 +156,10 @@ export const MyLendingList = observer(() => {
             </div>
             <div className='loan__row--item'>
               <h4>NFT Mint</h4>
-              <div className='loan-containers__mint'>{compressAddress(4, offer.nftMint.toBase58())}</div>
+              <ShowOnHover label={compressAddress(4, offer.nftMint.toString())} classNames='loan-containers__mint'>
+                <ClipboardButton data={offer.nftMint} />
+                <SolscanExplorerIcon type={'token'} address={offer.nftMint} />
+              </ShowOnHover>
             </div>
           </div>
 
@@ -175,8 +181,8 @@ export const MyLendingList = observer(() => {
           </div>
 
           {canClaim(offer.loanDuration.toNumber() / 60 / 60 / 24, offer.loanStartedTime.toNumber() * 1000) ? (
-            <div className='lined-info'>
-              <button className='btn btn--md btn--primary claim-nft--button' onClick={() => handleClaimCollateral(offer.offer)}>
+            <div className='loan__row'>
+              <button className='btn btn--md btn--primary claim-nft--button' onClick={() => handleClaimCollateral(offer.subOfferKey)}>
                 Claim NFT
               </button>
             </div>

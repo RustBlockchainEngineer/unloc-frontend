@@ -55,3 +55,95 @@
     }
   }
 }
+
+.custom-multi-select {
+  @include theme-aware('background-color', 'bg-dropdown-multiple');
+  @include theme-aware('color', 'color-white');
+
+  transition: all 0.1s ease;
+  padding: $mr-sm $mr-sm $mr-sm $mr-md;
+  border-radius: $brd-rds-2tn;
+  position: relative;
+  display: inline-flex;
+
+  &__title {
+    font-family: 'Red Hat Display', sans-serif;
+    display: inline-flex;
+    align-items: center;
+    padding: 0 $mr-sm;
+    justify-content: space-between;
+    z-index: 2;
+
+    & span {
+      margin-right: $mr-sm;
+    }
+  }
+  
+  &__reset {
+    display: flex;
+    justify-content: center;
+    padding-bottom: $mr-tn;
+
+    button {
+      display: inline-block;
+      width: 100%;
+      text-align: center;
+      @include theme-aware('background-color', 'color-accent');
+      @include theme-aware('border-color', 'color-secondary');
+      @include theme-aware('color', 'color-secondary');
+
+      &:hover {
+        @include theme-aware('background-color', 'color-secondary');
+      }
+    }
+  }
+
+  .custom-multi-select__options {
+    @include theme-aware('background-color', 'color-accent');
+    font-family: 'Red Hat Display', sans-serif;
+    box-shadow: 0px 0px 10px rgba(45, 26, 81, 0.9);
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translate(-50%, 0);
+    margin-top: $mr-tn;
+    transition: all 0.3s ease;
+    border-radius: $brd-rds-1md;
+    padding: 15px 32px;
+    min-width: 300px;
+
+    &.hidden {
+      visibility: hidden;
+      margin-top: 0;
+      opacity: 0;
+      z-index: 1;
+    }
+
+    li {
+      cursor: pointer;
+      padding: 8px $mr-tn;
+      margin: 0;
+      display: block;
+      text-align: left;
+      position: relative;
+
+      &.selected {
+        @include theme-aware('background-color', 'selected-option-bg');
+      }
+
+      & .checkbox-title {
+        margin-left: 32px;
+      }
+
+      & .checkbox-label {
+        height: auto;
+        width: auto;
+        font-size: inherit;
+        line-height: inherit;
+        & .checkbox-custom.rectangular {
+          top: 6px;
+        }
+      }
+    }
+  }
+}

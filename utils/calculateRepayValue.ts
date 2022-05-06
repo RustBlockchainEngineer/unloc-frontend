@@ -4,13 +4,7 @@ export const calculateRepayValue = (amount: number, apr: number, duration: numbe
   }
 
   const gain = amount * ((apr / 36500) * duration)
-  return (
-    amount.toLocaleString(undefined, { maximumFractionDigits: 4, minimumFractionDigits: 2 })
-    +
-    ' + '
-    +
-    gain.toLocaleString(undefined, { maximumFractionDigits: 4, minimumFractionDigits: 2 })
-  )
+  return formatRepayValue(amount, gain)
 }
 
 export const formatRepayValue = (amount: number, accrued: number): string => {
@@ -18,11 +12,5 @@ export const formatRepayValue = (amount: number, accrued: number): string => {
     return '0'
   }
 
-  return (
-    amount.toLocaleString(undefined, { maximumFractionDigits: 4, minimumFractionDigits: 2 })
-    +
-    ' + '
-    +
-    accrued.toLocaleString(undefined, { maximumFractionDigits: 4, minimumFractionDigits: 2 })
-  )
+  return (amount + accrued).toLocaleString(undefined, { maximumFractionDigits: 4, minimumFractionDigits: 2 })
 }

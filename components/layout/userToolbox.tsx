@@ -28,10 +28,6 @@ export const UserToolbox = observer(() => {
       <WalletMultiButton />
 
       <div className='theme-switcher'>
-        <div className='theme-switcher--header'>
-          <i className='icon icon--sm icon--theme--sun' />
-          <i className='icon icon--sm icon--theme--moon' />
-        </div>
         <SwitchButton state={store.Interface.theme == 'light'} classNames={'theme-switcher--switch'} onClick={handleThemeSet} />
       </div>
     </div>
