@@ -181,8 +181,8 @@ export const MyLendingList = observer(() => {
           </div>
 
           {canClaim(offer.loanDuration.toNumber() / 60 / 60 / 24, offer.loanStartedTime.toNumber() * 1000) ? (
-            <div className='lined-info'>
-              <button className='btn btn--md btn--primary claim-nft--button' onClick={() => handleClaimCollateral(offer.offer)}>
+            <div className='loan__row'>
+              <button className='btn btn--md btn--primary claim-nft--button' onClick={() => handleClaimCollateral(offer.subOfferKey)}>
                 Claim NFT
               </button>
             </div>
