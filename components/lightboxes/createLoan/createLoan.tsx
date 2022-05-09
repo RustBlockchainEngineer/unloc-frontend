@@ -60,7 +60,7 @@ export const CreateLoan: React.FC<CreateLoanProps> = observer(({ mode }) => {
 
             await store.MyOffers.handleCreateSubOffer(
               store.MyOffers.activeNftMint,
-              Number(amount + accrued),
+              Number(amount),
               Number(duration),
               Number(apr),
               currency
@@ -121,7 +121,7 @@ export const CreateLoan: React.FC<CreateLoanProps> = observer(({ mode }) => {
         setProcessing(true)
         try {
           await store.MyOffers.handleEditSubOffer(
-            Number(amount + accrued),
+            Number(amount),
             Number(duration),
             Number(apr),
             Number(activeSubOfferData.minRepaidNumerator),
@@ -260,16 +260,8 @@ export const CreateLoan: React.FC<CreateLoanProps> = observer(({ mode }) => {
   }
 
   const getInitialValueOnUpdate = () => {
-    if (mode === 'update' && activeSubOfferData) {
-      return +getDecimalsForLoanAmount(activeSubOfferData.offerAmount, activeSubOfferData.offerMint)
-      /*
-      return +calculateAprFromTotalRepayAndApr(
-        activeSubOfferData.offerAmount,
-        activeSubOfferData.aprNumerator,
-        activeSubOfferData.loanDuration,
-        store.GlobalState.denominator
-      )
-      */
+    if (activeSubOfferData) {
+      return getDecimalsForLoanAmount(activeSubOfferData.offerAmount, activeSubOfferData.offerMint)
     }
   }
 
@@ -300,7 +292,7 @@ export const CreateLoan: React.FC<CreateLoanProps> = observer(({ mode }) => {
                   placeholder='Amount'
                   className='input-text'
                   initialValue={
-                    getInitialValueOnUpdate() || currency.toUpperCase() == 'USDC' ? 1000 : 10
+                    mode === 'update' ? getInitialValueOnUpdate() : currency.toUpperCase() === 'USDC' ? 1000 : 10
                   }
                 />
               </div>
