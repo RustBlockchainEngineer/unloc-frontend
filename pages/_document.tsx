@@ -12,13 +12,13 @@ export default function Document() {
         <link rel='icon' type='image/png' sizes='16x16' href='/icons/favicon-16x16.png' />
         <link rel='icon' type='image/png' sizes='32x32' href='/icons/favicon-32x32.png' />
         <link rel='manifest' href='/site.webmanifest' />
+        <link
+          href='https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@300;400;700&display=optional'
+          rel='stylesheet'
+        />
 
         <meta name='msapplication.TileColor' content='#e00a7f' />
         <meta name='theme-color' content='#e00a7f' />
-        <link
-          href='https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@300;400;700&display=swap'
-          rel='stylesheet'
-        />
 
         <meta name='robots' content='all' />
         <meta name='google' content='nositelinksearchbox' />
@@ -26,11 +26,6 @@ export default function Document() {
 
         <meta property='og:type' content='website' />
         <meta name='twitter:card' content='summary_large_image' />
-
-        <link
-          href='https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@300;400;700&display=optional'
-          rel='stylesheet'
-        />
       </Head>
       <body>
         <Main />
