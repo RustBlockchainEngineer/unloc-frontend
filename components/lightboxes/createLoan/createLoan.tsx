@@ -60,7 +60,7 @@ export const CreateLoan: React.FC<CreateLoanProps> = observer(({ mode }) => {
 
             await store.MyOffers.handleCreateSubOffer(
               store.MyOffers.activeNftMint,
-              Number(amount + accrued),
+              Number(amount),
               Number(duration),
               Number(apr),
               currency
@@ -121,7 +121,7 @@ export const CreateLoan: React.FC<CreateLoanProps> = observer(({ mode }) => {
         setProcessing(true)
         try {
           await store.MyOffers.handleEditSubOffer(
-            Number(amount + accrued),
+            Number(amount),
             Number(duration),
             Number(apr),
             Number(activeSubOfferData.minRepaidNumerator),
