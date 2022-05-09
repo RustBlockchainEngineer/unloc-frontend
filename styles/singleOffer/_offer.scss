@@ -133,7 +133,6 @@
   width: 100%;
   height: 50px;
   @include theme-aware('background-color', 'color-primary');
-  font-family: 'Red Hat Display', sans-serif;
   font-weight: $wg-hv;
   @include theme-aware('color', 'lend-offer-button');
   border: none;

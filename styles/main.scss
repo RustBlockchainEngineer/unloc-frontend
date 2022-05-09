@@ -52,7 +52,7 @@ body {
   @include theme-aware('background-image', 'bg-gradient-home');
   @include theme-aware('color', 'color-primary');
   background-size: 100vw 100vh;
-  font-family: 'Open Sans', sans-serif;
+  font-family: 'Red Hat Display', sans-serif;
   background-attachment: fixed;
   box-sizing: border-box;
   padding: 0px;
@@ -136,7 +136,6 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: 'Red Hat Display', sans-serif;
   @include theme-aware('color', 'color-content');
 }
 
