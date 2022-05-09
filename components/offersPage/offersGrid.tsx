@@ -99,9 +99,9 @@ export const OffersGrid = observer(() => {
                 }
                 duration={Math.floor(offerData.loanDuration.toNumber() / (3600 * 24))}
                 currency={currencyMints[offerData.offerMint.toBase58()]}
-                count={offerData.count}
+                count={offerData.count} // We do not have this data currently
                 collection={offerData.collection}
-                isYours={offerData.borrower.equals(walletKey)}
+                isYours={walletKey?.equals(offerData.borrower)}
               />
             )
           }
