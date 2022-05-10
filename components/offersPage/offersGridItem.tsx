@@ -7,7 +7,6 @@ interface OffersGridItemInterface {
   subOfferKey: string
   image: string
   apr: number
-  offerPublicKey: string
   name: string
   onLend: (pubkey: string) => Promise<void>
   totalRepay: any
@@ -23,7 +22,6 @@ export const OffersGridItem = ({
   subOfferKey,
   image,
   apr,
-  offerPublicKey,
   name,
   onLend,
   totalRepay,
@@ -75,7 +73,6 @@ export const OffersGridItem = ({
         totalRepay={totalRepay}
         amount={amount}
         onLend={onLend}
-        offerPublicKey={offerPublicKey}
         duration={duration}
         currency={currency}
         subOfferKey={subOfferKey}

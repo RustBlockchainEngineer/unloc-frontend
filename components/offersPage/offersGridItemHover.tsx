@@ -10,7 +10,6 @@ interface IProps {
   totalRepay: any
   amount: string
   onLend: (Pubkey: string) => Promise<void>
-  offerPublicKey: string
   duration: number
   currency: string
   subOfferKey: string
@@ -27,7 +26,6 @@ const OffersGridItemHover: React.FC<IProps> = ({
   totalRepay,
   onLend,
   duration,
-  offerPublicKey,
   currency,
   subOfferKey,
   count,
@@ -77,7 +75,7 @@ const OffersGridItemHover: React.FC<IProps> = ({
           </div>
         </div>
       </Link>
-      <button className={isYours ? 'deactivated' : ''} onClick={() => { if (!isYours) { onLend(offerPublicKey) } }}>{isYours ? 'Can\'t Lend' : `Lend ${currency}`}</button>
+      <button className={isYours ? 'deactivated' : ''} onClick={() => { if (!isYours) { onLend(subOfferKey) } }}>{isYours ? 'Can\'t Lend' : `Lend ${currency}`}</button>
     </div>
   )
 }
