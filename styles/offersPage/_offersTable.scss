@@ -31,6 +31,20 @@
   .row-cell {
     text-align: left;
     padding-left: 10px;
+
+    button {
+      border: 0;
+      background: transparent;
+      color: inherit;
+      font-weight: inherit;
+      cursor: pointer;
+
+      .icon--sm{
+        width: 8px;
+        height: 5px;
+        margin-left: 5px;
+      }
+    }
   }
 }
 

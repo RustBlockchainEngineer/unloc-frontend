@@ -1,19 +1,46 @@
-import React, { useContext } from 'react'
-import { observer } from 'mobx-react'
-import { StoreContext } from '@pages/_app'
-import { OffersTableRow } from './offersTableRow'
-import { currencyMints } from '@constants/currency'
-import { asBigNumber } from '@utils/asBigNumber'
-import { BlobLoader } from '@components/layout/blobLoader'
-import { toast } from 'react-toastify'
-import { getDecimalsForLoanAmountAsString } from '@integration/getDecimalForLoanAmount'
+import {useContext, useMemo, useState} from 'react'
+import {observer} from 'mobx-react'
+import {StoreContext} from '@pages/_app'
+import {OffersTableRow} from './offersTableRow'
+import {BlobLoader} from '@components/layout/blobLoader'
+import {toast} from 'react-toastify'
+import {CollectedOffersData, ICollectedOffersData} from "@components/offersPage/CollectedOffersData";
 
 export const OffersTable = observer(() => {
   const store = useContext(StoreContext)
-  const { connected, walletKey } = store.Wallet
-  const { pageOfferData, pageNFTData, currentPage, maxPage } = store.Offers
+  const {pageNFTData, currentPage, maxPage} = store.Offers;
 
-  const handleAcceptOffer = async (offerPublicKey: string) => {
+  const [list, updateList] = useState(CollectedOffersData());
+  const [, setInc] = useState(0);
+  const [label, setLabel] = useState<string>('');
+  const [order, switchOrder] = useState(true);
+
+  const Sort = (row: EventTarget, type = 'string') => {
+    const element = row as Element;
+
+    function compare(a: any, b: any) {
+      if (type === 'string')
+        return a[element.id].toString().replace(/\s+/g, '').localeCompare(b[element.id].replace(/\s+/g, ''), undefined, {numeric: true, sensitivity: 'base'});
+      else if (type === 'number') return a[element.id] - b[element.id]
+    }
+    let sorted;
+    if(element.id !== label) {
+      setLabel(element.id);
+      switchOrder(true);
+      sorted = list.sort(compare)
+      console.log('setLabel, switchOrder')
+    } else {
+      switchOrder(!order);
+      sorted = list.reverse();
+    }
+    updateList(sorted);
+    setInc(i => i + 1);
+  };
+
+
+
+
+  const HandleAcceptOffer = async (offerPublicKey: string) => {
     try {
       store.Lightbox.setContent('processing')
       store.Lightbox.setCanClose(false)
@@ -68,43 +95,75 @@ export const OffersTable = observer(() => {
     }
   }
 
-  return pageNFTData.length > 0 && pageOfferData.length > 0 ? (
+  const MemoizedList = useMemo(() => {
+    return list.map((item, index) => {
+      return <OffersTableRow
+        key={`offer-${item.name}-${index}`}
+        subOfferKey={item.subOfferKey}
+        image={item.image}
+        amount={item.amount}
+        name={item.name}
+        onLend={HandleAcceptOffer}
+        apr={item.apr}
+        duration={item.duration}
+        currency={item.currency}
+        count={item.count}
+        isYours={item.isYours}
+        collection={item.collection}
+      />
+    });
+  }, [list, HandleAcceptOffer]);
+
+  return pageNFTData.length > 0 && list.length ? (
     <>
       <div className='offers-table'>
         <div className='offers-table-heading'>
-          <div className='row-cell'>Name</div>
-          <div className='row-cell'></div>
-          <div className='row-cell'>Collection</div>
-          <div className='row-cell'>Amount</div>
-          <div className='row-cell'>Currency</div>
-          <div className='row-cell'>APR</div>
-          <div className='row-cell'>Duration</div>
-          <div className='row-cell'>Repay amount</div>
+          {/*TODO: map it */}
+          <div className='row-cell'>
+            <button id="name" onClick={(e) => Sort(e.target)}>Name
+              {label === 'name' && <i className={`icon icon--sm icon--rnd--triangle--${order?'down':'up'}`}></i>}
+            </button>
+          </div>
+          <div className='row-cell'/>
+          <div className='row-cell'>
+            <button id="collection" onClick={(e) => Sort(e.target)}>Collection
+              {label === 'collection' && <i className={`icon icon--sm icon--rnd--triangle--${order?'down':'up'}`}></i>}
+            </button>
+          </div>
+          <div className='row-cell'>
+            <button id="amount" onClick={(e) => Sort(e.target)}>Amount
+              {label === 'amount' && <i className={`icon icon--sm icon--rnd--triangle--${order?'down':'up'}`}></i>}
+            </button>
+          </div>
+          <div className='row-cell'>
+            <button id="currency" onClick={(e) => Sort(e.target)}>Currency
+              {label === 'currency' && <i className={`icon icon--sm icon--rnd--triangle--${order?'down':'up'}`}></i>}
+            </button>
+          </div>
+          <div className='row-cell'>
+            <button id="apr" onClick={(e) => Sort(e.target, 'number')}>APR
+              {label === 'apr' && <i className={`icon icon--sm icon--rnd--triangle--${order?'down':'up'}`}></i>}
+            </button>
+          </div>
+          <div className='row-cell'>
+            <button id="duration" onClick={(e) => Sort(e.target, 'number')}>Duration
+              {label === 'duration' && <i className={`icon icon--sm icon--rnd--triangle--${order?'down':'up'}`}></i>}
+            </button>
+          </div>
+          <div className='row-cell'>
+            <button id="repayAmount" onClick={(e) => Sort(e.target)}>Repay amount
+              {label === 'repayAmount' && <i className={`icon icon--sm icon--rnd--triangle--${order?'down':'up'}`}></i>}
+            </button>
+          </div>
         </div>
-        {pageOfferData.map((offerData, index) => {
-          return (
-            <OffersTableRow
-              key={`offer-${offerData.nftData.arweaveMetadata.name}-${index}`}
-              subOfferKey={offerData.nftData.mint}
-              image={offerData.nftData.arweaveMetadata.image}
-              nftName={offerData.nftData.arweaveMetadata.name}
-              amount={getDecimalsForLoanAmountAsString(offerData.offerAmount.toNumber(), offerData.offerMint.toString(), 0, 2)}
-              onLend={handleAcceptOffer}
-              offerPublicKey={offerData.subOfferKey.toString()}
-              apr={asBigNumber(offerData.aprNumerator)}
-              duration={Math.floor(offerData.loanDuration.toNumber() / (3600 * 24))}
-              currency={currencyMints[offerData.offerMint.toBase58()]}
-              count={offerData.count}
-              isYours={offerData.borrower.equals(walletKey)}
-              collectionName={offerData.collection}
-            />
-          )
-        })}
+
+        {MemoizedList}
+
       </div>
       <div className='offers-pagination'>
         <div>
           <button disabled={currentPage === 1} onClick={() => store.Offers.setCurrentPage(currentPage - 1)}>
-            <i className='icon icon--sm icon--paginator--left' />
+            <i className='icon icon--sm icon--paginator--left'/>
           </button>
         </div>
         <div className='offers-pagination__pages'>
@@ -120,14 +179,14 @@ export const OffersTable = observer(() => {
         </div>
         <div>
           <button disabled={currentPage === maxPage} onClick={() => store.Offers.setCurrentPage(currentPage + 1)}>
-            <i className='icon icon--sm icon--paginator--right' />
+            <i className='icon icon--sm icon--paginator--right'/>
           </button>
         </div>
       </div>
     </>
   ) : (
     <div className='offers-table--empty'>
-      <BlobLoader />
+      <BlobLoader/>
     </div>
   )
 })

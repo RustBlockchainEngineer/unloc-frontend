@@ -82,13 +82,17 @@ export const OffersGrid = observer(() => {
             return (
               <OffersGridItem
                 key={`offer-${offerData.nftData.arweaveMetadata.name}-${index}`}
-                subOfferKey={offerData.nftData.mint}
+                subOfferKey={offerData.subOfferKey.toString()}
                 image={offerData.nftData.arweaveMetadata.image}
                 amount={getDecimalsForLoanAmountAsString(offerData.offerAmount, offerData.offerMint.toString(), 0, 2)}
-                apr={asBigNumber(offerData.aprNumerator)}
-                offerPublicKey={offerData.subOfferKey.toString()}
                 name={offerData.nftData.arweaveMetadata.name}
                 onLend={handleAcceptOffer}
+                apr={asBigNumber(offerData.aprNumerator)}
+                duration={Math.floor(offerData.loanDuration.toNumber() / (3600 * 24))}
+                currency={currencyMints[offerData.offerMint.toBase58()]}
+                count={offerData.count}
+                isYours={offerData.borrower.equals(walletKey)}
+                collection={offerData.collection}
                 totalRepay={
                   calculateRepayValue(
                     offerData.offerAmount.toNumber() / getDecimalsForOfferMint(offerData.offerMint),
@@ -97,11 +101,6 @@ export const OffersGrid = observer(() => {
                     store.GlobalState.denominator
                   )
                 }
-                duration={Math.floor(offerData.loanDuration.toNumber() / (3600 * 24))}
-                currency={currencyMints[offerData.offerMint.toBase58()]}
-                count={offerData.count}
-                collection={offerData.collection}
-                isYours={offerData.borrower.equals(walletKey)}
               />
             )
           }
