@@ -12,6 +12,7 @@ import { calculateAprFromRepayValue } from '@utils/calculateAprFromRepayValue'
 import { SwitchButton } from '@components/layout/switchButton'
 import { calculateAprFromTotalRepayAndApr } from '@utils/calculateAmountFromTotalRepayAndApr'
 import { CustomSelect } from '@components/layout/customSelect'
+import { getDurationFromContractData } from '@utils/timeUtils/timeUtils'
 
 interface CreateLoanProps {
   mode: 'new' | 'update'
@@ -24,10 +25,20 @@ export const CreateLoan: React.FC<CreateLoanProps> = observer(({ mode }) => {
 
   const [processing, setProcessing] = useState(false)
   const [repayValue, setRepayValue] = useState(
-    mode === 'update' ? getDecimalsForLoanAmount(activeSubOfferData.offerAmount, activeSubOfferData.offerMint) : '0.00'
+    mode === 'update'
+      ? calculateRepayValue(
+          getDecimalsForLoanAmount(activeSubOfferData.offerAmount, activeSubOfferData.offerMint),
+          activeSubOfferData.aprNumerator,
+          getDurationFromContractData(activeSubOfferData.loanDuration, 'days'),
+          store.GlobalState.denominator
+        )
+      : '0.00'
   )
+
   const [interestMode, setInterestMode] = useState(false)
-  const [currency, setCurrency] = useState<string>('USDC')
+  const [currency, setCurrency] = useState<string>(
+    mode === 'update' ? currencyMints[activeSubOfferData.offerMint] : 'USDC'
+  )
 
   const amountRef = useRef<HTMLInputElement>(null)
   const durationRef = useRef<HTMLInputElement>(null)
