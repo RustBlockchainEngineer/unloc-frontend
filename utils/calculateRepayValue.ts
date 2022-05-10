@@ -12,5 +12,5 @@ export const formatRepayValue = (amount: number, accrued: number): string => {
     return '0'
   }
 
-  return (amount + accrued).toLocaleString(undefined, { maximumFractionDigits: 4, minimumFractionDigits: 2 })
+  return (amount + accrued).toLocaleString('en-US', { maximumFractionDigits: 4, minimumFractionDigits: 2, useGrouping: false })
 }
