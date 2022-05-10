@@ -10,9 +10,10 @@ export const getDecimalsForLoanAmountAsString = (
   minDigits = 2,
   maxDigits = 4
 ): string => {
-  return (amount / 10 ** currencies[currencyMints[offerMint]].decimals).toLocaleString(undefined, {
+  return (amount / 10 ** currencies[currencyMints[offerMint]].decimals).toLocaleString('en-US', {
     minimumFractionDigits: minDigits,
-    maximumFractionDigits: maxDigits
+    maximumFractionDigits: maxDigits,
+    useGrouping: false
   })
 }
 
