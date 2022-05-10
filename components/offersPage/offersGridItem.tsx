@@ -15,7 +15,7 @@ interface OffersGridItemInterface {
   currency: string
   count?: number
   collection: string
-  isYours: boolean
+  isYours?: boolean
 }
 
 export const OffersGridItem = ({

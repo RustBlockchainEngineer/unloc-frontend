@@ -182,10 +182,7 @@
     padding-top: 50px;
     display: flex;
     flex-wrap: wrap;
-
-    :nth-child(2n) {
-      margin-left: 2%;
-    }
+    gap: 20px;
 
     @media (max-width: $bp-tablet) {
       flex-direction: column;

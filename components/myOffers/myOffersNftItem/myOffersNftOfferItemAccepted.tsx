@@ -165,7 +165,7 @@ export const MyOffersNftOfferItemAccepted: React.FC<MyOffersNftOfferItemAccepted
           <div className='offer__row'>
             <button
               ref={setTriggerRef}
-              className='btn--md btn--primary repay-loan--button'
+              className='btn btn--md btn--primary repay-loan--button'
               onClick={() => handleRepayLoan(getActiveSubOffer())}
             >
               Repay Loan
@@ -178,14 +178,11 @@ export const MyOffersNftOfferItemAccepted: React.FC<MyOffersNftOfferItemAccepted
           </div>
           :
           <div className='offer__row'>
-            <button className='btn--md btn--primary loan-expired--button'>
+            <button className='btn btn--md btn--primary loan-expired--button'>
               Loan Expired
             </button>
           </div>
-
       }
-
-
     </div>
   )
 }

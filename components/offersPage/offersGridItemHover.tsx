@@ -15,7 +15,7 @@ interface IProps {
   subOfferKey: string
   count?: number
   collection: string
-  isYours: boolean
+  isYours?: boolean
 }
 
 const OffersGridItemHover: React.FC<IProps> = ({
@@ -23,6 +23,7 @@ const OffersGridItemHover: React.FC<IProps> = ({
   apr,
   name,
   amount,
+  totalRepay,
   onLend,
   duration,
   currency,
@@ -70,7 +71,7 @@ const OffersGridItemHover: React.FC<IProps> = ({
           </div>
           <div className='data-item'>
             <span className='label'>Repay amount</span>
-            <span className='content'>{calculateRepayValue(Number(amount), apr, duration, denominator)} {currency}</span>
+            <span className='content'>{totalRepay} {currency}</span>
           </div>
         </div>
       </Link>
