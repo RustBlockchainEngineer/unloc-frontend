@@ -7,6 +7,7 @@ import {calculateRepayValue} from "@utils/calculateRepayValue";
 
 export interface ICollectedOffersData {
   subOfferKey: string
+  nftMint: string
   image: string
   name: string
   apr: number
@@ -30,6 +31,7 @@ export const CollectedOffersData = () => {
     const duration = Math.floor(offerData.loanDuration.toNumber() / (3600 * 24));
     return {
       subOfferKey: offerData.subOfferKey.toString(),
+      nftMint: offerData.nftData.mint,
       image: offerData.nftData.arweaveMetadata.image,
       name: offerData.nftData.arweaveMetadata.name,
       amount,
