@@ -1,1449 +1,1449 @@
 export type UnlocNftLoan = {
-  version: '0.1.0'
-  name: 'unloc_nft_loan'
+  version: "0.1.0";
+  name: "unloc_nft_loan";
   instructions: [
     {
-      name: 'setGlobalState'
+      name: "setGlobalState";
       accounts: [
         {
-          name: 'superOwner'
-          isMut: true
-          isSigner: true
+          name: "superOwner";
+          isMut: true;
+          isSigner: true;
         },
         {
-          name: 'globalState'
-          isMut: true
-          isSigner: false
+          name: "globalState";
+          isMut: true;
+          isSigner: false;
         },
         {
-          name: 'newSuperOwner'
-          isMut: false
-          isSigner: false
+          name: "newSuperOwner";
+          isMut: false;
+          isSigner: false;
         },
         {
-          name: 'treasuryWallet'
-          isMut: false
-          isSigner: false
+          name: "treasuryWallet";
+          isMut: false;
+          isSigner: false;
         },
         {
-          name: 'systemProgram'
-          isMut: false
-          isSigner: false
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
         },
         {
-          name: 'tokenProgram'
-          isMut: false
-          isSigner: false
+          name: "tokenProgram";
+          isMut: false;
+          isSigner: false;
         },
         {
-          name: 'rent'
-          isMut: false
-          isSigner: false
-        }
-      ]
+          name: "rent";
+          isMut: false;
+          isSigner: false;
+        },
+      ];
       args: [
         {
-          name: 'accruedInterestNumerator'
-          type: 'u64'
+          name: "accruedInterestNumerator";
+          type: "u64";
         },
         {
-          name: 'denominator'
-          type: 'u64'
+          name: "denominator";
+          type: "u64";
         },
         {
-          name: 'aprNumerator'
-          type: 'u64'
+          name: "aprNumerator";
+          type: "u64";
         },
         {
-          name: 'expireDurationForLender'
-          type: 'u64'
-        }
-      ]
+          name: "expireDurationForLender";
+          type: "u64";
+        },
+      ];
     },
     {
-      name: 'setOffer'
+      name: "setOffer";
       accounts: [
         {
-          name: 'borrower'
-          isMut: true
-          isSigner: true
+          name: "borrower";
+          isMut: true;
+          isSigner: true;
         },
         {
-          name: 'offer'
-          isMut: true
-          isSigner: false
+          name: "offer";
+          isMut: true;
+          isSigner: false;
         },
         {
-          name: 'nftMint'
-          isMut: false
-          isSigner: false
+          name: "nftMint";
+          isMut: false;
+          isSigner: false;
         },
         {
-          name: 'nftVault'
-          isMut: true
-          isSigner: false
+          name: "nftVault";
+          isMut: true;
+          isSigner: false;
         },
         {
-          name: 'userVault'
-          isMut: true
-          isSigner: false
+          name: "userVault";
+          isMut: true;
+          isSigner: false;
         },
         {
-          name: 'systemProgram'
-          isMut: false
-          isSigner: false
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
         },
         {
-          name: 'tokenProgram'
-          isMut: false
-          isSigner: false
+          name: "tokenProgram";
+          isMut: false;
+          isSigner: false;
         },
         {
-          name: 'rent'
-          isMut: false
-          isSigner: false
-        }
-      ]
-      args: []
+          name: "rent";
+          isMut: false;
+          isSigner: false;
+        },
+      ];
+      args: [];
     },
     {
-      name: 'setSubOffer'
+      name: "setSubOffer";
       accounts: [
         {
-          name: 'borrower'
-          isMut: true
-          isSigner: true
+          name: "borrower";
+          isMut: true;
+          isSigner: true;
         },
         {
-          name: 'globalState'
-          isMut: false
-          isSigner: false
+          name: "globalState";
+          isMut: false;
+          isSigner: false;
         },
         {
-          name: 'offer'
-          isMut: true
-          isSigner: false
+          name: "offer";
+          isMut: true;
+          isSigner: false;
         },
         {
-          name: 'subOffer'
-          isMut: true
-          isSigner: false
+          name: "subOffer";
+          isMut: true;
+          isSigner: false;
         },
         {
-          name: 'offerMint'
-          isMut: false
-          isSigner: false
+          name: "offerMint";
+          isMut: false;
+          isSigner: false;
         },
         {
-          name: 'treasuryWallet'
-          isMut: true
-          isSigner: false
+          name: "treasuryWallet";
+          isMut: true;
+          isSigner: false;
         },
         {
-          name: 'treasuryVault'
-          isMut: true
-          isSigner: false
+          name: "treasuryVault";
+          isMut: true;
+          isSigner: false;
         },
         {
-          name: 'systemProgram'
-          isMut: false
-          isSigner: false
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
         },
         {
-          name: 'tokenProgram'
-          isMut: false
-          isSigner: false
+          name: "tokenProgram";
+          isMut: false;
+          isSigner: false;
         },
         {
-          name: 'rent'
-          isMut: false
-          isSigner: false
-        }
-      ]
+          name: "rent";
+          isMut: false;
+          isSigner: false;
+        },
+      ];
       args: [
         {
-          name: 'offerAmount'
-          type: 'u64'
+          name: "offerAmount";
+          type: "u64";
         },
         {
-          name: 'subOfferNumber'
-          type: 'u64'
+          name: "subOfferNumber";
+          type: "u64";
         },
         {
-          name: 'loanDuration'
-          type: 'u64'
+          name: "loanDuration";
+          type: "u64";
         },
         {
-          name: 'minRepaidNumerator'
-          type: 'u64'
+          name: "minRepaidNumerator";
+          type: "u64";
         },
         {
-          name: 'aprNumerator'
-          type: 'u64'
-        }
-      ]
+          name: "aprNumerator";
+          type: "u64";
+        },
+      ];
     },
     {
-      name: 'cancelOffer'
+      name: "cancelOffer";
       accounts: [
         {
-          name: 'borrower'
-          isMut: true
-          isSigner: true
+          name: "borrower";
+          isMut: true;
+          isSigner: true;
         },
         {
-          name: 'offer'
-          isMut: true
-          isSigner: false
+          name: "offer";
+          isMut: true;
+          isSigner: false;
         },
         {
-          name: 'nftVault'
-          isMut: true
-          isSigner: false
+          name: "nftVault";
+          isMut: true;
+          isSigner: false;
         },
         {
-          name: 'userVault'
-          isMut: true
-          isSigner: false
+          name: "userVault";
+          isMut: true;
+          isSigner: false;
         },
         {
-          name: 'tokenProgram'
-          isMut: false
-          isSigner: false
-        }
-      ]
-      args: []
+          name: "tokenProgram";
+          isMut: false;
+          isSigner: false;
+        },
+      ];
+      args: [];
     },
     {
-      name: 'cancelSubOffer'
+      name: "cancelSubOffer";
       accounts: [
         {
-          name: 'borrower'
-          isMut: true
-          isSigner: true
+          name: "borrower";
+          isMut: true;
+          isSigner: true;
         },
         {
-          name: 'offer'
-          isMut: true
-          isSigner: false
+          name: "offer";
+          isMut: true;
+          isSigner: false;
         },
         {
-          name: 'subOffer'
-          isMut: true
-          isSigner: false
-        }
-      ]
-      args: []
+          name: "subOffer";
+          isMut: true;
+          isSigner: false;
+        },
+      ];
+      args: [];
     },
     {
-      name: 'acceptOffer'
+      name: "acceptOffer";
       accounts: [
         {
-          name: 'lender'
-          isMut: true
-          isSigner: true
+          name: "lender";
+          isMut: true;
+          isSigner: true;
         },
         {
-          name: 'borrower'
-          isMut: true
-          isSigner: false
+          name: "borrower";
+          isMut: true;
+          isSigner: false;
         },
         {
-          name: 'offer'
-          isMut: true
-          isSigner: false
+          name: "offer";
+          isMut: true;
+          isSigner: false;
         },
         {
-          name: 'subOffer'
-          isMut: true
-          isSigner: false
+          name: "subOffer";
+          isMut: true;
+          isSigner: false;
         },
         {
-          name: 'offerMint'
-          isMut: true
-          isSigner: false
+          name: "offerMint";
+          isMut: true;
+          isSigner: false;
         },
         {
-          name: 'borrowerOfferVault'
-          isMut: true
-          isSigner: false
+          name: "borrowerOfferVault";
+          isMut: true;
+          isSigner: false;
         },
         {
-          name: 'lenderOfferVault'
-          isMut: true
-          isSigner: false
+          name: "lenderOfferVault";
+          isMut: true;
+          isSigner: false;
         },
         {
-          name: 'systemProgram'
-          isMut: false
-          isSigner: false
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
         },
         {
-          name: 'tokenProgram'
-          isMut: false
-          isSigner: false
+          name: "tokenProgram";
+          isMut: false;
+          isSigner: false;
         },
         {
-          name: 'rent'
-          isMut: false
-          isSigner: false
+          name: "rent";
+          isMut: false;
+          isSigner: false;
         },
         {
-          name: 'clock'
-          isMut: false
-          isSigner: false
-        }
-      ]
-      args: []
+          name: "clock";
+          isMut: false;
+          isSigner: false;
+        },
+      ];
+      args: [];
     },
     {
-      name: 'repayLoan'
+      name: "repayLoan";
       accounts: [
         {
-          name: 'borrower'
-          isMut: true
-          isSigner: true
+          name: "borrower";
+          isMut: true;
+          isSigner: true;
         },
         {
-          name: 'lender'
-          isMut: true
-          isSigner: false
+          name: "lender";
+          isMut: true;
+          isSigner: false;
         },
         {
-          name: 'globalState'
-          isMut: false
-          isSigner: false
+          name: "globalState";
+          isMut: false;
+          isSigner: false;
         },
         {
-          name: 'treasuryWallet'
-          isMut: true
-          isSigner: false
+          name: "treasuryWallet";
+          isMut: true;
+          isSigner: false;
         },
         {
-          name: 'offer'
-          isMut: true
-          isSigner: false
+          name: "offer";
+          isMut: true;
+          isSigner: false;
         },
         {
-          name: 'subOffer'
-          isMut: true
-          isSigner: false
+          name: "subOffer";
+          isMut: true;
+          isSigner: false;
         },
         {
-          name: 'borrowerNftVault'
-          isMut: true
-          isSigner: false
+          name: "borrowerNftVault";
+          isMut: true;
+          isSigner: false;
         },
         {
-          name: 'nftVault'
-          isMut: true
-          isSigner: false
+          name: "nftVault";
+          isMut: true;
+          isSigner: false;
         },
         {
-          name: 'lenderOfferVault'
-          isMut: true
-          isSigner: false
+          name: "lenderOfferVault";
+          isMut: true;
+          isSigner: false;
         },
         {
-          name: 'borrowerOfferVault'
-          isMut: true
-          isSigner: false
+          name: "borrowerOfferVault";
+          isMut: true;
+          isSigner: false;
         },
         {
-          name: 'treasuryVault'
-          isMut: true
-          isSigner: false
+          name: "treasuryVault";
+          isMut: true;
+          isSigner: false;
         },
         {
-          name: 'systemProgram'
-          isMut: false
-          isSigner: false
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
         },
         {
-          name: 'tokenProgram'
-          isMut: false
-          isSigner: false
+          name: "tokenProgram";
+          isMut: false;
+          isSigner: false;
         },
         {
-          name: 'clock'
-          isMut: false
-          isSigner: false
-        }
-      ]
-      args: []
+          name: "clock";
+          isMut: false;
+          isSigner: false;
+        },
+      ];
+      args: [];
     },
     {
-      name: 'claimCollateral'
+      name: "claimCollateral";
       accounts: [
         {
-          name: 'lender'
-          isMut: true
-          isSigner: true
+          name: "lender";
+          isMut: true;
+          isSigner: true;
         },
         {
-          name: 'globalState'
-          isMut: false
-          isSigner: false
+          name: "globalState";
+          isMut: false;
+          isSigner: false;
         },
         {
-          name: 'treasuryWallet'
-          isMut: true
-          isSigner: false
+          name: "treasuryWallet";
+          isMut: true;
+          isSigner: false;
         },
         {
-          name: 'offer'
-          isMut: true
-          isSigner: false
+          name: "offer";
+          isMut: true;
+          isSigner: false;
         },
         {
-          name: 'subOffer'
-          isMut: true
-          isSigner: false
+          name: "subOffer";
+          isMut: true;
+          isSigner: false;
         },
         {
-          name: 'lenderNftVault'
-          isMut: true
-          isSigner: false
+          name: "lenderNftVault";
+          isMut: true;
+          isSigner: false;
         },
         {
-          name: 'nftVault'
-          isMut: true
-          isSigner: false
+          name: "nftVault";
+          isMut: true;
+          isSigner: false;
         },
         {
-          name: 'lenderOfferVault'
-          isMut: true
-          isSigner: false
+          name: "lenderOfferVault";
+          isMut: true;
+          isSigner: false;
         },
         {
-          name: 'treasuryVault'
-          isMut: true
-          isSigner: false
+          name: "treasuryVault";
+          isMut: true;
+          isSigner: false;
         },
         {
-          name: 'systemProgram'
-          isMut: false
-          isSigner: false
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
         },
         {
-          name: 'tokenProgram'
-          isMut: false
-          isSigner: false
+          name: "tokenProgram";
+          isMut: false;
+          isSigner: false;
         },
         {
-          name: 'clock'
-          isMut: false
-          isSigner: false
-        }
-      ]
-      args: []
-    }
-  ]
+          name: "clock";
+          isMut: false;
+          isSigner: false;
+        },
+      ];
+      args: [];
+    },
+  ];
   accounts: [
     {
-      name: 'globalState'
+      name: "globalState";
       type: {
-        kind: 'struct'
+        kind: "struct";
         fields: [
           {
-            name: 'superOwner'
-            type: 'publicKey'
+            name: "superOwner";
+            type: "publicKey";
           },
           {
-            name: 'treasuryWallet'
-            type: 'publicKey'
+            name: "treasuryWallet";
+            type: "publicKey";
           },
           {
-            name: 'accruedInterestNumerator'
-            type: 'u64'
+            name: "accruedInterestNumerator";
+            type: "u64";
           },
           {
-            name: 'aprNumerator'
-            type: 'u64'
+            name: "aprNumerator";
+            type: "u64";
           },
           {
-            name: 'denominator'
-            type: 'u64'
+            name: "denominator";
+            type: "u64";
           },
           {
-            name: 'expireDurationForLender'
-            type: 'u64'
-          }
-        ]
-      }
+            name: "expireDurationForLender";
+            type: "u64";
+          },
+        ];
+      };
     },
     {
-      name: 'offer'
+      name: "offer";
       type: {
-        kind: 'struct'
+        kind: "struct";
         fields: [
           {
-            name: 'borrower'
-            type: 'publicKey'
+            name: "borrower";
+            type: "publicKey";
           },
           {
-            name: 'nftMint'
-            type: 'publicKey'
+            name: "nftMint";
+            type: "publicKey";
           },
           {
-            name: 'nftVault'
-            type: 'publicKey'
+            name: "nftVault";
+            type: "publicKey";
           },
           {
-            name: 'state'
-            type: 'u8'
+            name: "state";
+            type: "u8";
           },
           {
-            name: 'subOfferCount'
-            type: 'u64'
+            name: "subOfferCount";
+            type: "u64";
           },
           {
-            name: 'startSubOfferNum'
-            type: 'u64'
-          }
-        ]
-      }
+            name: "startSubOfferNum";
+            type: "u64";
+          },
+        ];
+      };
     },
     {
-      name: 'subOffer'
+      name: "subOffer";
       type: {
-        kind: 'struct'
+        kind: "struct";
         fields: [
           {
-            name: 'borrower'
-            type: 'publicKey'
+            name: "borrower";
+            type: "publicKey";
           },
           {
-            name: 'nftMint'
-            type: 'publicKey'
+            name: "nftMint";
+            type: "publicKey";
           },
           {
-            name: 'offerMint'
-            type: 'publicKey'
+            name: "offerMint";
+            type: "publicKey";
           },
           {
-            name: 'state'
-            type: 'u8'
+            name: "state";
+            type: "u8";
           },
           {
-            name: 'offer'
-            type: 'publicKey'
+            name: "offer";
+            type: "publicKey";
           },
           {
-            name: 'subOfferNumber'
-            type: 'u64'
+            name: "subOfferNumber";
+            type: "u64";
           },
           {
-            name: 'lender'
-            type: 'publicKey'
+            name: "lender";
+            type: "publicKey";
           },
           {
-            name: 'offerVault'
-            type: 'publicKey'
+            name: "offerVault";
+            type: "publicKey";
           },
           {
-            name: 'offerAmount'
-            type: 'u64'
+            name: "offerAmount";
+            type: "u64";
           },
           {
-            name: 'repaidAmount'
-            type: 'u64'
+            name: "repaidAmount";
+            type: "u64";
           },
           {
-            name: 'lenderClaimedAmount'
-            type: 'u64'
+            name: "lenderClaimedAmount";
+            type: "u64";
           },
           {
-            name: 'borrowerClaimedAmount'
-            type: 'u64'
+            name: "borrowerClaimedAmount";
+            type: "u64";
           },
           {
-            name: 'loanStartedTime'
-            type: 'u64'
+            name: "loanStartedTime";
+            type: "u64";
           },
           {
-            name: 'loanEndedTime'
-            type: 'u64'
+            name: "loanEndedTime";
+            type: "u64";
           },
           {
-            name: 'loanDuration'
-            type: 'u64'
+            name: "loanDuration";
+            type: "u64";
           },
           {
-            name: 'minRepaidNumerator'
-            type: 'u64'
+            name: "minRepaidNumerator";
+            type: "u64";
           },
           {
-            name: 'aprNumerator'
-            type: 'u64'
-          }
-        ]
-      }
-    }
-  ]
+            name: "aprNumerator";
+            type: "u64";
+          },
+        ];
+      };
+    },
+  ];
   types: [
     {
-      name: 'OfferState'
+      name: "OfferState";
       type: {
-        kind: 'enum'
+        kind: "enum";
         variants: [
           {
-            name: 'Proposed'
+            name: "Proposed";
           },
           {
-            name: 'Accepted'
+            name: "Accepted";
           },
           {
-            name: 'Expired'
+            name: "Expired";
           },
           {
-            name: 'Fulfilled'
+            name: "Fulfilled";
           },
           {
-            name: 'NFTClaimed'
+            name: "NFTClaimed";
           },
           {
-            name: 'Canceled'
-          }
-        ]
-      }
+            name: "Canceled";
+          },
+        ];
+      };
     },
     {
-      name: 'SubOfferState'
+      name: "SubOfferState";
       type: {
-        kind: 'enum'
+        kind: "enum";
         variants: [
           {
-            name: 'Proposed'
+            name: "Proposed";
           },
           {
-            name: 'Accepted'
+            name: "Accepted";
           },
           {
-            name: 'Expired'
+            name: "Expired";
           },
           {
-            name: 'Fulfilled'
+            name: "Fulfilled";
           },
           {
-            name: 'LoanPaymentClaimed'
+            name: "LoanPaymentClaimed";
           },
           {
-            name: 'Canceled'
+            name: "Canceled";
           },
           {
-            name: 'NFTClaimed'
-          }
-        ]
-      }
-    }
-  ]
+            name: "NFTClaimed";
+          },
+        ];
+      };
+    },
+  ];
   events: [
     {
-      name: 'OfferSet'
-      fields: []
+      name: "OfferSet";
+      fields: [];
     },
     {
-      name: 'OfferAccepted'
-      fields: []
+      name: "OfferAccepted";
+      fields: [];
     },
     {
-      name: 'OfferCanceled'
-      fields: []
+      name: "OfferCanceled";
+      fields: [];
     },
     {
-      name: 'NFTClaimed'
-      fields: []
+      name: "NFTClaimed";
+      fields: [];
     },
     {
-      name: 'LoanRepaid'
-      fields: []
+      name: "LoanRepaid";
+      fields: [];
     },
     {
-      name: 'LoanClaimed'
-      fields: []
-    }
-  ]
+      name: "LoanClaimed";
+      fields: [];
+    },
+  ];
   errors: [
     {
-      code: 6000
-      name: 'Unauthorized'
-      msg: 'You are not authorized to perform this action.'
+      code: 6000;
+      name: "Unauthorized";
+      msg: "You are not authorized to perform this action.";
     },
     {
-      code: 6001
-      name: 'AlreadyInUse'
-      msg: 'AlreadyInUse'
+      code: 6001;
+      name: "AlreadyInUse";
+      msg: "AlreadyInUse";
     },
     {
-      code: 6002
-      name: 'InvalidProgramAddress'
-      msg: 'InvalidProgramAddress'
+      code: 6002;
+      name: "InvalidProgramAddress";
+      msg: "InvalidProgramAddress";
     },
     {
-      code: 6003
-      name: 'InvalidState'
-      msg: 'InvalidState'
+      code: 6003;
+      name: "InvalidState";
+      msg: "InvalidState";
     },
     {
-      code: 6004
-      name: 'InvalidOwner'
-      msg: 'InvalidOwner'
+      code: 6004;
+      name: "InvalidOwner";
+      msg: "InvalidOwner";
     },
     {
-      code: 6005
-      name: 'NotAllowed'
-      msg: 'NotAllowed'
+      code: 6005;
+      name: "NotAllowed";
+      msg: "NotAllowed";
     },
     {
-      code: 6006
-      name: 'MathOverflow'
-      msg: 'Math operation overflow'
+      code: 6006;
+      name: "MathOverflow";
+      msg: "Math operation overflow";
     },
     {
-      code: 6007
-      name: 'InvalidAccountInput'
-      msg: 'InvalidAccountInput'
+      code: 6007;
+      name: "InvalidAccountInput";
+      msg: "InvalidAccountInput";
     },
     {
-      code: 6008
-      name: 'InvalidPubkey'
-      msg: 'InvalidPubkey'
+      code: 6008;
+      name: "InvalidPubkey";
+      msg: "InvalidPubkey";
     },
     {
-      code: 6009
-      name: 'InvalidAmount'
-      msg: 'InvalidAmount'
+      code: 6009;
+      name: "InvalidAmount";
+      msg: "InvalidAmount";
     },
     {
-      code: 6010
-      name: 'InvalidDenominator'
-      msg: 'InvalidDenominator'
-    }
-  ]
-}
+      code: 6010;
+      name: "InvalidDenominator";
+      msg: "InvalidDenominator";
+    },
+  ];
+};
 
 export const IDL: UnlocNftLoan = {
-  version: '0.1.0',
-  name: 'unloc_nft_loan',
+  version: "0.1.0",
+  name: "unloc_nft_loan",
   instructions: [
     {
-      name: 'setGlobalState',
+      name: "setGlobalState",
       accounts: [
         {
-          name: 'superOwner',
+          name: "superOwner",
           isMut: true,
-          isSigner: true
+          isSigner: true,
         },
         {
-          name: 'globalState',
+          name: "globalState",
           isMut: true,
-          isSigner: false
+          isSigner: false,
         },
         {
-          name: 'newSuperOwner',
+          name: "newSuperOwner",
           isMut: false,
-          isSigner: false
+          isSigner: false,
         },
         {
-          name: 'treasuryWallet',
+          name: "treasuryWallet",
           isMut: false,
-          isSigner: false
+          isSigner: false,
         },
         {
-          name: 'systemProgram',
+          name: "systemProgram",
           isMut: false,
-          isSigner: false
+          isSigner: false,
         },
         {
-          name: 'tokenProgram',
+          name: "tokenProgram",
           isMut: false,
-          isSigner: false
+          isSigner: false,
         },
         {
-          name: 'rent',
+          name: "rent",
           isMut: false,
-          isSigner: false
-        }
+          isSigner: false,
+        },
       ],
       args: [
         {
-          name: 'accruedInterestNumerator',
-          type: 'u64'
+          name: "accruedInterestNumerator",
+          type: "u64",
         },
         {
-          name: 'denominator',
-          type: 'u64'
+          name: "denominator",
+          type: "u64",
         },
         {
-          name: 'aprNumerator',
-          type: 'u64'
+          name: "aprNumerator",
+          type: "u64",
         },
         {
-          name: 'expireDurationForLender',
-          type: 'u64'
-        }
-      ]
-    },
-    {
-      name: 'setOffer',
-      accounts: [
-        {
-          name: 'borrower',
-          isMut: true,
-          isSigner: true
+          name: "expireDurationForLender",
+          type: "u64",
         },
-        {
-          name: 'offer',
-          isMut: true,
-          isSigner: false
-        },
-        {
-          name: 'nftMint',
-          isMut: false,
-          isSigner: false
-        },
-        {
-          name: 'nftVault',
-          isMut: true,
-          isSigner: false
-        },
-        {
-          name: 'userVault',
-          isMut: true,
-          isSigner: false
-        },
-        {
-          name: 'systemProgram',
-          isMut: false,
-          isSigner: false
-        },
-        {
-          name: 'tokenProgram',
-          isMut: false,
-          isSigner: false
-        },
-        {
-          name: 'rent',
-          isMut: false,
-          isSigner: false
-        }
       ],
-      args: []
     },
     {
-      name: 'setSubOffer',
+      name: "setOffer",
       accounts: [
         {
-          name: 'borrower',
+          name: "borrower",
           isMut: true,
-          isSigner: true
+          isSigner: true,
         },
         {
-          name: 'globalState',
-          isMut: false,
-          isSigner: false
-        },
-        {
-          name: 'offer',
+          name: "offer",
           isMut: true,
-          isSigner: false
+          isSigner: false,
         },
         {
-          name: 'subOffer',
+          name: "nftMint",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "nftVault",
           isMut: true,
-          isSigner: false
+          isSigner: false,
         },
         {
-          name: 'offerMint',
-          isMut: false,
-          isSigner: false
-        },
-        {
-          name: 'treasuryWallet',
+          name: "userVault",
           isMut: true,
-          isSigner: false
+          isSigner: false,
         },
         {
-          name: 'treasuryVault',
+          name: "systemProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "tokenProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "rent",
+          isMut: false,
+          isSigner: false,
+        },
+      ],
+      args: [],
+    },
+    {
+      name: "setSubOffer",
+      accounts: [
+        {
+          name: "borrower",
           isMut: true,
-          isSigner: false
+          isSigner: true,
         },
         {
-          name: 'systemProgram',
+          name: "globalState",
           isMut: false,
-          isSigner: false
+          isSigner: false,
         },
         {
-          name: 'tokenProgram',
-          isMut: false,
-          isSigner: false
+          name: "offer",
+          isMut: true,
+          isSigner: false,
         },
         {
-          name: 'rent',
+          name: "subOffer",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "offerMint",
           isMut: false,
-          isSigner: false
-        }
+          isSigner: false,
+        },
+        {
+          name: "treasuryWallet",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "treasuryVault",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "systemProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "tokenProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "rent",
+          isMut: false,
+          isSigner: false,
+        },
       ],
       args: [
         {
-          name: 'offerAmount',
-          type: 'u64'
+          name: "offerAmount",
+          type: "u64",
         },
         {
-          name: 'subOfferNumber',
-          type: 'u64'
+          name: "subOfferNumber",
+          type: "u64",
         },
         {
-          name: 'loanDuration',
-          type: 'u64'
+          name: "loanDuration",
+          type: "u64",
         },
         {
-          name: 'minRepaidNumerator',
-          type: 'u64'
+          name: "minRepaidNumerator",
+          type: "u64",
         },
         {
-          name: 'aprNumerator',
-          type: 'u64'
-        }
-      ]
+          name: "aprNumerator",
+          type: "u64",
+        },
+      ],
     },
     {
-      name: 'cancelOffer',
+      name: "cancelOffer",
       accounts: [
         {
-          name: 'borrower',
+          name: "borrower",
           isMut: true,
-          isSigner: true
+          isSigner: true,
         },
         {
-          name: 'offer',
+          name: "offer",
           isMut: true,
-          isSigner: false
+          isSigner: false,
         },
         {
-          name: 'nftVault',
+          name: "nftVault",
           isMut: true,
-          isSigner: false
+          isSigner: false,
         },
         {
-          name: 'userVault',
+          name: "userVault",
           isMut: true,
-          isSigner: false
+          isSigner: false,
         },
         {
-          name: 'tokenProgram',
+          name: "tokenProgram",
           isMut: false,
-          isSigner: false
-        }
+          isSigner: false,
+        },
       ],
-      args: []
+      args: [],
     },
     {
-      name: 'cancelSubOffer',
+      name: "cancelSubOffer",
       accounts: [
         {
-          name: 'borrower',
+          name: "borrower",
           isMut: true,
-          isSigner: true
+          isSigner: true,
         },
         {
-          name: 'offer',
+          name: "offer",
           isMut: true,
-          isSigner: false
+          isSigner: false,
         },
         {
-          name: 'subOffer',
+          name: "subOffer",
           isMut: true,
-          isSigner: false
-        }
+          isSigner: false,
+        },
       ],
-      args: []
+      args: [],
     },
     {
-      name: 'acceptOffer',
+      name: "acceptOffer",
       accounts: [
         {
-          name: 'lender',
+          name: "lender",
           isMut: true,
-          isSigner: true
+          isSigner: true,
         },
         {
-          name: 'borrower',
+          name: "borrower",
           isMut: true,
-          isSigner: false
+          isSigner: false,
         },
         {
-          name: 'offer',
+          name: "offer",
           isMut: true,
-          isSigner: false
+          isSigner: false,
         },
         {
-          name: 'subOffer',
+          name: "subOffer",
           isMut: true,
-          isSigner: false
+          isSigner: false,
         },
         {
-          name: 'offerMint',
+          name: "offerMint",
           isMut: true,
-          isSigner: false
+          isSigner: false,
         },
         {
-          name: 'borrowerOfferVault',
+          name: "borrowerOfferVault",
           isMut: true,
-          isSigner: false
+          isSigner: false,
         },
         {
-          name: 'lenderOfferVault',
+          name: "lenderOfferVault",
           isMut: true,
-          isSigner: false
+          isSigner: false,
         },
         {
-          name: 'systemProgram',
+          name: "systemProgram",
           isMut: false,
-          isSigner: false
+          isSigner: false,
         },
         {
-          name: 'tokenProgram',
+          name: "tokenProgram",
           isMut: false,
-          isSigner: false
+          isSigner: false,
         },
         {
-          name: 'rent',
+          name: "rent",
           isMut: false,
-          isSigner: false
+          isSigner: false,
         },
         {
-          name: 'clock',
+          name: "clock",
           isMut: false,
-          isSigner: false
-        }
+          isSigner: false,
+        },
       ],
-      args: []
+      args: [],
     },
     {
-      name: 'repayLoan',
+      name: "repayLoan",
       accounts: [
         {
-          name: 'borrower',
+          name: "borrower",
           isMut: true,
-          isSigner: true
+          isSigner: true,
         },
         {
-          name: 'lender',
+          name: "lender",
           isMut: true,
-          isSigner: false
+          isSigner: false,
         },
         {
-          name: 'globalState',
+          name: "globalState",
           isMut: false,
-          isSigner: false
+          isSigner: false,
         },
         {
-          name: 'treasuryWallet',
+          name: "treasuryWallet",
           isMut: true,
-          isSigner: false
+          isSigner: false,
         },
         {
-          name: 'offer',
+          name: "offer",
           isMut: true,
-          isSigner: false
+          isSigner: false,
         },
         {
-          name: 'subOffer',
+          name: "subOffer",
           isMut: true,
-          isSigner: false
+          isSigner: false,
         },
         {
-          name: 'borrowerNftVault',
+          name: "borrowerNftVault",
           isMut: true,
-          isSigner: false
+          isSigner: false,
         },
         {
-          name: 'nftVault',
+          name: "nftVault",
           isMut: true,
-          isSigner: false
+          isSigner: false,
         },
         {
-          name: 'lenderOfferVault',
+          name: "lenderOfferVault",
           isMut: true,
-          isSigner: false
+          isSigner: false,
         },
         {
-          name: 'borrowerOfferVault',
+          name: "borrowerOfferVault",
           isMut: true,
-          isSigner: false
+          isSigner: false,
         },
         {
-          name: 'treasuryVault',
+          name: "treasuryVault",
           isMut: true,
-          isSigner: false
+          isSigner: false,
         },
         {
-          name: 'systemProgram',
+          name: "systemProgram",
           isMut: false,
-          isSigner: false
+          isSigner: false,
         },
         {
-          name: 'tokenProgram',
+          name: "tokenProgram",
           isMut: false,
-          isSigner: false
+          isSigner: false,
         },
         {
-          name: 'clock',
+          name: "clock",
           isMut: false,
-          isSigner: false
-        }
+          isSigner: false,
+        },
       ],
-      args: []
+      args: [],
     },
     {
-      name: 'claimCollateral',
+      name: "claimCollateral",
       accounts: [
         {
-          name: 'lender',
+          name: "lender",
           isMut: true,
-          isSigner: true
+          isSigner: true,
         },
         {
-          name: 'globalState',
+          name: "globalState",
           isMut: false,
-          isSigner: false
+          isSigner: false,
         },
         {
-          name: 'treasuryWallet',
+          name: "treasuryWallet",
           isMut: true,
-          isSigner: false
+          isSigner: false,
         },
         {
-          name: 'offer',
+          name: "offer",
           isMut: true,
-          isSigner: false
+          isSigner: false,
         },
         {
-          name: 'subOffer',
+          name: "subOffer",
           isMut: true,
-          isSigner: false
+          isSigner: false,
         },
         {
-          name: 'lenderNftVault',
+          name: "lenderNftVault",
           isMut: true,
-          isSigner: false
+          isSigner: false,
         },
         {
-          name: 'nftVault',
+          name: "nftVault",
           isMut: true,
-          isSigner: false
+          isSigner: false,
         },
         {
-          name: 'lenderOfferVault',
+          name: "lenderOfferVault",
           isMut: true,
-          isSigner: false
+          isSigner: false,
         },
         {
-          name: 'treasuryVault',
+          name: "treasuryVault",
           isMut: true,
-          isSigner: false
+          isSigner: false,
         },
         {
-          name: 'systemProgram',
+          name: "systemProgram",
           isMut: false,
-          isSigner: false
+          isSigner: false,
         },
         {
-          name: 'tokenProgram',
+          name: "tokenProgram",
           isMut: false,
-          isSigner: false
+          isSigner: false,
         },
         {
-          name: 'clock',
+          name: "clock",
           isMut: false,
-          isSigner: false
-        }
+          isSigner: false,
+        },
       ],
-      args: []
-    }
+      args: [],
+    },
   ],
   accounts: [
     {
-      name: 'globalState',
+      name: "globalState",
       type: {
-        kind: 'struct',
+        kind: "struct",
         fields: [
           {
-            name: 'superOwner',
-            type: 'publicKey'
+            name: "superOwner",
+            type: "publicKey",
           },
           {
-            name: 'treasuryWallet',
-            type: 'publicKey'
+            name: "treasuryWallet",
+            type: "publicKey",
           },
           {
-            name: 'accruedInterestNumerator',
-            type: 'u64'
+            name: "accruedInterestNumerator",
+            type: "u64",
           },
           {
-            name: 'aprNumerator',
-            type: 'u64'
+            name: "aprNumerator",
+            type: "u64",
           },
           {
-            name: 'denominator',
-            type: 'u64'
+            name: "denominator",
+            type: "u64",
           },
           {
-            name: 'expireDurationForLender',
-            type: 'u64'
-          }
-        ]
-      }
+            name: "expireDurationForLender",
+            type: "u64",
+          },
+        ],
+      },
     },
     {
-      name: 'offer',
+      name: "offer",
       type: {
-        kind: 'struct',
+        kind: "struct",
         fields: [
           {
-            name: 'borrower',
-            type: 'publicKey'
+            name: "borrower",
+            type: "publicKey",
           },
           {
-            name: 'nftMint',
-            type: 'publicKey'
+            name: "nftMint",
+            type: "publicKey",
           },
           {
-            name: 'nftVault',
-            type: 'publicKey'
+            name: "nftVault",
+            type: "publicKey",
           },
           {
-            name: 'state',
-            type: 'u8'
+            name: "state",
+            type: "u8",
           },
           {
-            name: 'subOfferCount',
-            type: 'u64'
+            name: "subOfferCount",
+            type: "u64",
           },
           {
-            name: 'startSubOfferNum',
-            type: 'u64'
-          }
-        ]
-      }
+            name: "startSubOfferNum",
+            type: "u64",
+          },
+        ],
+      },
     },
     {
-      name: 'subOffer',
+      name: "subOffer",
       type: {
-        kind: 'struct',
+        kind: "struct",
         fields: [
           {
-            name: 'borrower',
-            type: 'publicKey'
+            name: "borrower",
+            type: "publicKey",
           },
           {
-            name: 'nftMint',
-            type: 'publicKey'
+            name: "nftMint",
+            type: "publicKey",
           },
           {
-            name: 'offerMint',
-            type: 'publicKey'
+            name: "offerMint",
+            type: "publicKey",
           },
           {
-            name: 'state',
-            type: 'u8'
+            name: "state",
+            type: "u8",
           },
           {
-            name: 'offer',
-            type: 'publicKey'
+            name: "offer",
+            type: "publicKey",
           },
           {
-            name: 'subOfferNumber',
-            type: 'u64'
+            name: "subOfferNumber",
+            type: "u64",
           },
           {
-            name: 'lender',
-            type: 'publicKey'
+            name: "lender",
+            type: "publicKey",
           },
           {
-            name: 'offerVault',
-            type: 'publicKey'
+            name: "offerVault",
+            type: "publicKey",
           },
           {
-            name: 'offerAmount',
-            type: 'u64'
+            name: "offerAmount",
+            type: "u64",
           },
           {
-            name: 'repaidAmount',
-            type: 'u64'
+            name: "repaidAmount",
+            type: "u64",
           },
           {
-            name: 'lenderClaimedAmount',
-            type: 'u64'
+            name: "lenderClaimedAmount",
+            type: "u64",
           },
           {
-            name: 'borrowerClaimedAmount',
-            type: 'u64'
+            name: "borrowerClaimedAmount",
+            type: "u64",
           },
           {
-            name: 'loanStartedTime',
-            type: 'u64'
+            name: "loanStartedTime",
+            type: "u64",
           },
           {
-            name: 'loanEndedTime',
-            type: 'u64'
+            name: "loanEndedTime",
+            type: "u64",
           },
           {
-            name: 'loanDuration',
-            type: 'u64'
+            name: "loanDuration",
+            type: "u64",
           },
           {
-            name: 'minRepaidNumerator',
-            type: 'u64'
+            name: "minRepaidNumerator",
+            type: "u64",
           },
           {
-            name: 'aprNumerator',
-            type: 'u64'
-          }
-        ]
-      }
-    }
+            name: "aprNumerator",
+            type: "u64",
+          },
+        ],
+      },
+    },
   ],
   types: [
     {
-      name: 'OfferState',
+      name: "OfferState",
       type: {
-        kind: 'enum',
+        kind: "enum",
         variants: [
           {
-            name: 'Proposed'
+            name: "Proposed",
           },
           {
-            name: 'Accepted'
+            name: "Accepted",
           },
           {
-            name: 'Expired'
+            name: "Expired",
           },
           {
-            name: 'Fulfilled'
+            name: "Fulfilled",
           },
           {
-            name: 'NFTClaimed'
+            name: "NFTClaimed",
           },
           {
-            name: 'Canceled'
-          }
-        ]
-      }
+            name: "Canceled",
+          },
+        ],
+      },
     },
     {
-      name: 'SubOfferState',
+      name: "SubOfferState",
       type: {
-        kind: 'enum',
+        kind: "enum",
         variants: [
           {
-            name: 'Proposed'
+            name: "Proposed",
           },
           {
-            name: 'Accepted'
+            name: "Accepted",
           },
           {
-            name: 'Expired'
+            name: "Expired",
           },
           {
-            name: 'Fulfilled'
+            name: "Fulfilled",
           },
           {
-            name: 'LoanPaymentClaimed'
+            name: "LoanPaymentClaimed",
           },
           {
-            name: 'Canceled'
+            name: "Canceled",
           },
           {
-            name: 'NFTClaimed'
-          }
-        ]
-      }
-    }
+            name: "NFTClaimed",
+          },
+        ],
+      },
+    },
   ],
   events: [
     {
-      name: 'OfferSet',
-      fields: []
+      name: "OfferSet",
+      fields: [],
     },
     {
-      name: 'OfferAccepted',
-      fields: []
+      name: "OfferAccepted",
+      fields: [],
     },
     {
-      name: 'OfferCanceled',
-      fields: []
+      name: "OfferCanceled",
+      fields: [],
     },
     {
-      name: 'NFTClaimed',
-      fields: []
+      name: "NFTClaimed",
+      fields: [],
     },
     {
-      name: 'LoanRepaid',
-      fields: []
+      name: "LoanRepaid",
+      fields: [],
     },
     {
-      name: 'LoanClaimed',
-      fields: []
-    }
+      name: "LoanClaimed",
+      fields: [],
+    },
   ],
   errors: [
     {
       code: 6000,
-      name: 'Unauthorized',
-      msg: 'You are not authorized to perform this action.'
+      name: "Unauthorized",
+      msg: "You are not authorized to perform this action.",
     },
     {
       code: 6001,
-      name: 'AlreadyInUse',
-      msg: 'AlreadyInUse'
+      name: "AlreadyInUse",
+      msg: "AlreadyInUse",
     },
     {
       code: 6002,
-      name: 'InvalidProgramAddress',
-      msg: 'InvalidProgramAddress'
+      name: "InvalidProgramAddress",
+      msg: "InvalidProgramAddress",
     },
     {
       code: 6003,
-      name: 'InvalidState',
-      msg: 'InvalidState'
+      name: "InvalidState",
+      msg: "InvalidState",
     },
     {
       code: 6004,
-      name: 'InvalidOwner',
-      msg: 'InvalidOwner'
+      name: "InvalidOwner",
+      msg: "InvalidOwner",
     },
     {
       code: 6005,
-      name: 'NotAllowed',
-      msg: 'NotAllowed'
+      name: "NotAllowed",
+      msg: "NotAllowed",
     },
     {
       code: 6006,
-      name: 'MathOverflow',
-      msg: 'Math operation overflow'
+      name: "MathOverflow",
+      msg: "Math operation overflow",
     },
     {
       code: 6007,
-      name: 'InvalidAccountInput',
-      msg: 'InvalidAccountInput'
+      name: "InvalidAccountInput",
+      msg: "InvalidAccountInput",
     },
     {
       code: 6008,
-      name: 'InvalidPubkey',
-      msg: 'InvalidPubkey'
+      name: "InvalidPubkey",
+      msg: "InvalidPubkey",
     },
     {
       code: 6009,
-      name: 'InvalidAmount',
-      msg: 'InvalidAmount'
+      name: "InvalidAmount",
+      msg: "InvalidAmount",
     },
     {
       code: 6010,
-      name: 'InvalidDenominator',
-      msg: 'InvalidDenominator'
-    }
-  ]
-}
+      name: "InvalidDenominator",
+      msg: "InvalidDenominator",
+    },
+  ],
+};

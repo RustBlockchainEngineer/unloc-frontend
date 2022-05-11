@@ -1,18 +1,18 @@
-import { action, makeAutoObservable } from 'mobx'
-import localStorage from 'mobx-localstorage'
+import { action, makeAutoObservable } from "mobx";
+import localStorage from "mobx-localstorage";
 
 export class InterfaceStore {
-  rootStore
-  theme: 'light' | 'dark' = 'dark'
+  rootStore;
+  theme: "light" | "dark" = "dark";
 
   constructor(rootStore: any) {
-    makeAutoObservable(this)
-    this.rootStore = rootStore
+    makeAutoObservable(this);
+    this.rootStore = rootStore;
   }
 
-  @action.bound setTheme(theme: 'light' | 'dark'): void {
-    this.theme = theme
-    document.documentElement.className = ''
-    document.documentElement.classList.add(`theme-${theme}`)
+  @action.bound setTheme(theme: "light" | "dark"): void {
+    this.theme = theme;
+    document.documentElement.className = "";
+    document.documentElement.classList.add(`theme-${theme}`);
   }
 }

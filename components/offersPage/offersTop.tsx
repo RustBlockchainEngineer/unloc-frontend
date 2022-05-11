@@ -1,12 +1,12 @@
-import React, { useContext } from 'react'
-import { observer } from 'mobx-react'
-import { StoreContext } from '@pages/_app'
-import { Filter } from '@components/filters/filter'
-import { CustomSelect } from '@components/layout/customSelect'
-import { CustomMultiSelect } from '@components/layout/customMultiSelect'
+import React, { useContext } from "react";
+import { observer } from "mobx-react";
+import { StoreContext } from "@pages/_app";
+import { Filter } from "@components/filters/filter";
+import { CustomSelect } from "@components/layout/customSelect";
+import { CustomMultiSelect } from "@components/layout/customMultiSelect";
 
 export const OffersTop = observer(() => {
-  const store = useContext(StoreContext)
+  const store = useContext(StoreContext);
 
   const {
     filterCollection,
@@ -20,24 +20,24 @@ export const OffersTop = observer(() => {
     filterCurrency,
     viewType,
     filtersVisible,
-    clearFilters
-  } = store.Offers
+    clearFilters,
+  } = store.Offers;
 
   const switchCurrency = (currency: string) => {
-    store.Offers.setFilterCurrency(currency)
-  }
+    store.Offers.setFilterCurrency(currency);
+  };
 
   return (
     <>
-      <div className='layout-line'>
-        <div className='offers-filters-wrapper'>
-          <div className={`offers-filters ${filtersVisible ? 'active' : ''}`}>
+      <div className="layout-line">
+        <div className="offers-filters-wrapper">
+          <div className={`offers-filters ${filtersVisible ? "active" : ""}`}>
             <Filter
-              title='COLLECTIONS'
-              type='custom'
+              title="COLLECTIONS"
+              type="custom"
               customComponent={
                 <CustomMultiSelect
-                  title='Select collections'
+                  title="Select collections"
                   options={filterCollection}
                   values={filterCollectionSelected}
                   clearFilters={clearFilters}
@@ -46,16 +46,16 @@ export const OffersTop = observer(() => {
               }
             />
             <Filter
-              title='LOAN AMOUNT'
+              title="LOAN AMOUNT"
               titleComponent={
                 <CustomSelect
-                  classNames='offers-filters-select'
-                  options={['All', 'USDC', 'SOL']}
+                  classNames="offers-filters-select"
+                  options={["All", "USDC", "SOL"]}
                   selectedOption={filterCurrency}
                   setSelectedOption={switchCurrency}
                 />
               }
-              type='minmax'
+              type="minmax"
               valuesRange={{ min: filterAmountMin, max: filterAmountMax }}
               actionMin={store.Offers.setFilterAmountMin}
               actionMax={store.Offers.setFilterAmountMax}
@@ -63,8 +63,8 @@ export const OffersTop = observer(() => {
               actionValidatorMax={store.Offers.filterAmountValidatorMax}
             />
             <Filter
-              title='APR'
-              type='minmax'
+              title="APR"
+              type="minmax"
               valuesRange={{ min: filterAprMin, max: filterAprMax }}
               actionMin={store.Offers.setFilterAprMin}
               actionMax={store.Offers.setFilterAprMax}
@@ -72,8 +72,8 @@ export const OffersTop = observer(() => {
               actionValidatorMax={store.Offers.filterAprValidatorMax}
             />
             <Filter
-              title='DURATION (DAYS)'
-              type='minmax'
+              title="DURATION (DAYS)"
+              type="minmax"
               valuesRange={{ min: filterDurationMin, max: filterDurationMax }}
               actionMin={store.Offers.setFilterDurationMin}
               actionMax={store.Offers.setFilterDurationMax}
@@ -82,37 +82,41 @@ export const OffersTop = observer(() => {
             />
           </div>
           <button
-            className={`btn--filters btn btn--md btn--secondary ${filtersVisible ? 'active' : ''}`}
+            className={`btn--filters btn btn--md btn--secondary ${filtersVisible ? "active" : ""}`}
             onClick={() => {
-              store.Offers.setFiltersVisible(!filtersVisible)
-            }}
-          >
-            <i className='icon icon--vs filter--icon'></i>
+              store.Offers.setFiltersVisible(!filtersVisible);
+            }}>
+            <i className="icon icon--vs filter--icon"></i>
             <span>FILTERS</span>
-            <i className={`icon icon--vs filter--icon icon--filter${filtersVisible ? '--down' : '--striped'}`}></i>
+            <i
+              className={`icon icon--vs filter--icon icon--filter${
+                filtersVisible ? "--down" : "--striped"
+              }`}></i>
           </button>
         </div>
-        <div className='offers-top'>
+        <div className="offers-top">
           <h1>Offers</h1>
 
-          <div className='offers-view'>
+          <div className="offers-view">
             <button
-              className={`btn btn--md btn--grid btn--bordered ${viewType === 'grid' ? 'active' : ''}`}
-              onClick={() => store.Offers.setViewType('grid')}
-            >
+              className={`btn btn--md btn--grid btn--bordered ${
+                viewType === "grid" ? "active" : ""
+              }`}
+              onClick={() => store.Offers.setViewType("grid")}>
               <span>Grid</span>
-              <i className={`icon icon--sm icon--grid ${viewType === 'grid' ? 'active' : ''}`} />
+              <i className={`icon icon--sm icon--grid ${viewType === "grid" ? "active" : ""}`} />
             </button>
             <button
-              className={`btn btn--md btn--table btn--bordered ${viewType === 'table' ? 'active' : ''}`}
-              onClick={() => store.Offers.setViewType('table')}
-            >
+              className={`btn btn--md btn--table btn--bordered ${
+                viewType === "table" ? "active" : ""
+              }`}
+              onClick={() => store.Offers.setViewType("table")}>
               <span>Table</span>
-              <i className={`icon icon--sm icon--table ${viewType === 'table' ? 'active' : ''}`} />
+              <i className={`icon icon--sm icon--table ${viewType === "table" ? "active" : ""}`} />
             </button>
           </div>
         </div>
       </div>
     </>
-  )
-})
+  );
+});
