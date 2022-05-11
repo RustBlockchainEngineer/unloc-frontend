@@ -1,63 +1,79 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect } from "react";
 
 interface CustomSelectProps {
-  classNames?: string
-  options: string[]
-  defaultOption?: string
-  selectedOption: string
-  disabled?: boolean
-  setSelectedOption: (option: string) => void
+  classNames?: string;
+  options: string[];
+  defaultOption?: string;
+  selectedOption: string;
+  disabled?: boolean;
+  setSelectedOption: (option: string) => void;
 }
 
-export const CustomSelect: React.FC<CustomSelectProps> = ({ disabled, classNames, options, defaultOption, selectedOption, setSelectedOption}: CustomSelectProps) => {
-  const [hidden, setHidden] = useState(true)
+export const CustomSelect: React.FC<CustomSelectProps> = ({
+  disabled,
+  classNames,
+  options,
+  defaultOption,
+  selectedOption,
+  setSelectedOption,
+}: CustomSelectProps) => {
+  const [hidden, setHidden] = useState(true);
 
   const handleHideOptions = (e: MouseEvent) => {
     if (disabled) {
-      return
+      return;
     }
 
-    const element = e.target as HTMLElement
+    const element = e.target as HTMLElement;
 
-    if (element.offsetParent && element.offsetParent.classList.contains('custom-select')) {
-      return
+    if (element.offsetParent && element.offsetParent.classList.contains("custom-select")) {
+      return;
     }
-  
-    setHidden(true)
-  }
+
+    setHidden(true);
+  };
 
   const handleVisibilityForOptions = () => {
     if (disabled) {
-      return
+      return;
     }
 
-    setHidden(!hidden)
-  }
+    setHidden(!hidden);
+  };
 
   const handleSelectOption = (option: string) => {
     if (disabled) {
-      return
+      return;
     }
 
-    setSelectedOption(option)
-    handleVisibilityForOptions()
-  }
+    setSelectedOption(option);
+    handleVisibilityForOptions();
+  };
 
   useEffect(() => {
-    window.addEventListener('click', handleHideOptions)
+    window.addEventListener("click", handleHideOptions);
 
     return () => {
-      window.removeEventListener('click', handleHideOptions)
-    }
-  })
+      window.removeEventListener("click", handleHideOptions);
+    };
+  });
 
-  return <div className={`custom-select ${classNames} ${disabled ? 'disabled' : ''}`}>
-    <div className='custom-select__selected' onClick={handleVisibilityForOptions}>
-      { selectedOption || defaultOption }
-      <i className='icon icon--sm icon--rnd--triangle--down'></i>
+  return (
+    <div className={`custom-select ${classNames} ${disabled ? "disabled" : ""}`}>
+      <div className="custom-select__selected" onClick={handleVisibilityForOptions}>
+        {selectedOption || defaultOption}
+        <i className="icon icon--sm icon--rnd--triangle--down" />
+      </div>
+      <ul className={`custom-select__options ${hidden ? "hidden" : ""}`}>
+        {options.map((option) => (
+          <li
+            key={option}
+            className={option === selectedOption ? "selected" : ""}
+            onClick={() => handleSelectOption(option)}>
+            {option}
+          </li>
+        ))}
+      </ul>
     </div>
-    <ul className={`custom-select__options ${hidden ? 'hidden' : ''}`}>
-      { options.map(option => <li key={option} className={option === selectedOption ? 'selected' : ''} onClick={() => handleSelectOption(option)}>{ option }</li>) }
-    </ul>
-  </div>
-}
+  );
+};

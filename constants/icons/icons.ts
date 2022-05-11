@@ -1,9 +1,9 @@
-import copyIcon from '@icons/svg/copy.svg'
-import revealIcon from '@icons/svg/Triangle.svg'
+import copyIcon from "@icons/svg/copy.svg";
+import revealIcon from "@icons/svg/Triangle.svg";
 
 const icons: { [key: string]: string } = {
   copy: copyIcon,
-  reveal: revealIcon
-}
+  reveal: revealIcon,
+};
 
-export default icons
+export default icons;

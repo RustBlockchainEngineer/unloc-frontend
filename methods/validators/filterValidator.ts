@@ -1,11 +1,11 @@
 export const validateFilterInput = (value: string, names: string): boolean => {
-    return value != undefined;
-}
+  return value != undefined;
+};
 
-export const validateFilterInputMin = (value:number, min: Number): boolean => {
-    return value != undefined && value >= min;
-}
+export const validateFilterInputMin = (value: number, min: Number): boolean => {
+  return value != undefined && value >= min;
+};
 
-export const validateFilterInputMax = (value:number, max: number): boolean => {
-    return value != undefined && value <= max;
-}
+export const validateFilterInputMax = (value: number, max: number): boolean => {
+  return value != undefined && value <= max;
+};
