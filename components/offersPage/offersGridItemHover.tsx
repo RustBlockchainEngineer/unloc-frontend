@@ -13,6 +13,7 @@ interface IProps {
   duration: number
   currency: string
   subOfferKey: string
+  nftMint: string
   count?: number
   collection: string
   isYours?: boolean
@@ -28,6 +29,7 @@ const OffersGridItemHover: React.FC<IProps> = ({
   duration,
   currency,
   subOfferKey,
+  nftMint,
   count,
   collection,
   isYours
@@ -37,7 +39,7 @@ const OffersGridItemHover: React.FC<IProps> = ({
 
   return (
     <div className={`onHover-data ${visible ? '' : 'hide'}`}>
-      <Link href={`/offers/${subOfferKey}`}>
+      <Link href={`/offers/${nftMint}`}>
         <div className='onHover-link'>
           <div className='data-item'>
             <span className='item-name'>{name}</span>

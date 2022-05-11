@@ -100,6 +100,7 @@ export const OffersTable = observer(() => {
       return <OffersTableRow
         key={`offer-${item.name}-${index}`}
         subOfferKey={item.subOfferKey}
+        nftMint={item.nftMint}
         image={item.image}
         amount={item.amount}
         name={item.name}

@@ -6,6 +6,7 @@ import {StoreContext} from "@pages/_app";
 
 interface OffersTableItemInterface {
   subOfferKey: string
+  nftMint: string
   image: string
   name: string
   apr: number
@@ -20,6 +21,7 @@ interface OffersTableItemInterface {
 
 export const OffersTableRow = ({
   subOfferKey,
+  nftMint,
   image,
   name,
   apr,
@@ -40,7 +42,7 @@ export const OffersTableRow = ({
   const { denominator } = store.GlobalState;
   return (
     <div className='offers-table-row' key={subOfferKey}>
-      <Link href={`/offers/${subOfferKey}`}>
+      <Link href={`/offers/${nftMint}`}>
         <a>
           <div className='row-cell'>
             {isYours ? (<div className='owner-indicator'><i className='icon icon--owner' /></div>) : ''}
