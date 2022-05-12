@@ -1,13 +1,10 @@
-import { useContext, useMemo, useState } from "react";
+import { useContext, useMemo, useState, useCallback } from "react";
 import { observer } from "mobx-react";
 import { StoreContext } from "@pages/_app";
 import { OffersTableRow } from "./offersTableRow";
 import { BlobLoader } from "@components/layout/blobLoader";
 import { toast } from "react-toastify";
-import {
-  CollectedOffersData,
-  ICollectedOffersData,
-} from "@components/offersPage/CollectedOffersData";
+import { CollectedOffersData } from "@components/offersPage/CollectedOffersData";
 
 export const OffersTable = observer(() => {
   const store = useContext(StoreContext);
@@ -46,60 +43,63 @@ export const OffersTable = observer(() => {
     setInc((i) => i + 1);
   };
 
-  const HandleAcceptOffer = async (offerPublicKey: string) => {
-    try {
-      store.Lightbox.setContent("processing");
-      store.Lightbox.setCanClose(false);
-      store.Lightbox.setVisible(true);
-      await store.Offers.handleAcceptOffer(offerPublicKey);
-      toast.success(`Loan Accepted`, {
-        autoClose: 3000,
-        position: "top-center",
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
-    } catch (e: any) {
-      console.log(e);
+  const HandleAcceptOffer = useCallback(
+    async (offerPublicKey: string) => {
+      try {
+        store.Lightbox.setContent("processing");
+        store.Lightbox.setCanClose(false);
+        store.Lightbox.setVisible(true);
+        await store.Offers.handleAcceptOffer(offerPublicKey);
+        toast.success(`Loan Accepted`, {
+          autoClose: 3000,
+          position: "top-center",
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      } catch (e: any) {
+        console.log(e);
 
-      if (e.message === "User rejected the request.") {
-        toast.error(`Transaction rejected`, {
-          autoClose: 3000,
-          position: "top-center",
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-      } else if ((e as Error).message.includes("503 Service Unavailable")) {
-        toast.error("Solana RPC currently unavailable, please try again in a moment", {
-          autoClose: 3000,
-          position: "top-center",
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-      } else {
-        toast.error(`Something went wrong`, {
-          autoClose: 3000,
-          position: "top-center",
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
+        if (e.message === "User rejected the request.") {
+          toast.error(`Transaction rejected`, {
+            autoClose: 3000,
+            position: "top-center",
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
+        } else if ((e as Error).message.includes("503 Service Unavailable")) {
+          toast.error("Solana RPC currently unavailable, please try again in a moment", {
+            autoClose: 3000,
+            position: "top-center",
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
+        } else {
+          toast.error(`Something went wrong`, {
+            autoClose: 3000,
+            position: "top-center",
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
+        }
+      } finally {
+        store.Lightbox.setCanClose(true);
+        store.Lightbox.setVisible(false);
       }
-    } finally {
-      store.Lightbox.setCanClose(true);
-      store.Lightbox.setVisible(false);
-    }
-  };
+    },
+    [store.Lightbox, store.Offers],
+  );
 
   const MemoizedList = useMemo(() => {
     return list.map((item, index) => {
@@ -117,7 +117,7 @@ export const OffersTable = observer(() => {
           currency={item.currency}
           count={item.count}
           isYours={item.isYours}
-          collection={item.collection}
+          collection={item.collection ?? ""}
         />
       );
     });

@@ -15,7 +15,7 @@ interface OffersTableItemInterface {
   currency: string;
   onLend: (pubkey: string) => Promise<void>;
   count?: number;
-  isYours: boolean;
+  isYours?: boolean;
   collection: string;
 }
 
