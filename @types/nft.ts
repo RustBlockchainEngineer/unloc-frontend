@@ -1,7 +1,7 @@
 import { PublicKey } from "@solana/web3.js";
 import BN from "bn.js";
 
-export interface IOfferData {
+export interface NftCoreData {
   tokenAccount?: PublicKey;
   collection: string;
   mint: string;
