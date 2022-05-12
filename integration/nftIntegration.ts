@@ -84,39 +84,3 @@ export const getWhitelistedNFTsByWallet = async (owner: PublicKey): Promise<NFTM
 
   return nfts;
 };
-
-export const getTokensByPubKey = async (user: string): Promise<NftCoreData[]> => {
-  const USER_PUBKEY = new PublicKey(user);
-  const { value: tokens } = await SOLANA_CONNECTION.getParsedTokenAccountsByOwner(USER_PUBKEY, {
-    programId: TOKEN_PROGRAM_ID,
-  });
-  const nfts: any[] = [];
-
-  const filteredTokens = tokens.filter((token) => {
-    const { tokenAmount } = token.account.data.parsed.info;
-    return tokenAmount.decimals === 0;
-  });
-
-  for (let i = 0; i < filteredTokens.length; i++) {
-    try {
-      const nft = {
-        collection: "",
-        tokenAccount: filteredTokens[i].pubkey,
-        mint: new PublicKey(filteredTokens[i].account.data.parsed.info.mint).toBase58(),
-        metadata: await getMetadata(filteredTokens[i].account.data.parsed.info.mint),
-      };
-
-      nfts.push(nft as any);
-    } catch (e) {
-      // eslint-disable-next-line no-console
-      console.log(e);
-
-      if ((<Error>e).message.includes("Unable to find account")) {
-        continue;
-      }
-      await new Promise((r) => setTimeout(r, 1000));
-    }
-  }
-
-  return nfts;
-};
