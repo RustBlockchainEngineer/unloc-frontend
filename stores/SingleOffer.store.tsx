@@ -8,6 +8,7 @@ import { getDecimalsForLoanAmount } from "@integration/getDecimalForLoanAmount";
 import { calculateRepayValue } from "@utils/calculateRepayValue";
 import { currencyMints } from "@constants/currency";
 import { toast } from "react-toastify";
+import { getDurationFromContractData } from "@utils/getDuration";
 interface LoanInterface {
   id: string;
   status: number;
@@ -59,7 +60,10 @@ export class SingleOfferStore {
           offerMint.toBase58(),
         );
 
-        const durationConverted = loanDuration.toNumber() / (3600 * 24);
+        // Converting the duration to days if it's more than 0, otherwise just use 0
+        const durationConverted = loanDuration.gtn(0)
+          ? getDurationFromContractData(loanDuration.toNumber(), "days")
+          : 0;
         const aprConverted = aprNumerator.toNumber();
 
         loansArr.push({
