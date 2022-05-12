@@ -3,7 +3,6 @@ import { observer } from "mobx-react";
 import { StoreContext } from "@pages/_app";
 import { OffersGridItem } from "./offersGridItem";
 import { currencyMints } from "@constants/currency";
-import { asBigNumber } from "@utils/asBigNumber";
 import { BlobLoader } from "@components/layout/blobLoader";
 import { toast } from "react-toastify";
 import {
@@ -81,30 +80,30 @@ export const OffersGrid = observer(() => {
     <>
       <div className="offers-grid">
         {pageOfferData.map((offerData, index) => {
-          if (offerData.state === 0 || offerData.state === 6) {
+          if ((offerData.state === 0 || offerData.state === 6) && offerData.nftData) {
             return (
               <OffersGridItem
-                key={`offer-${offerData.nftData.arweaveMetadata.name}-${index}`}
+                key={`offer-${offerData.subOfferKey.toString()}-${index}`}
                 nftMint={offerData.nftData.mint}
                 subOfferKey={offerData.subOfferKey.toString()}
                 image={offerData.nftData.arweaveMetadata.image}
                 amount={getDecimalsForLoanAmountAsString(
-                  offerData.offerAmount,
+                  offerData.offerAmount.toNumber(),
                   offerData.offerMint.toString(),
                   0,
                   2,
                 )}
                 name={offerData.nftData.arweaveMetadata.name}
                 onLend={handleAcceptOffer}
-                apr={asBigNumber(offerData.aprNumerator)}
+                apr={offerData.aprNumerator.toNumber()}
                 duration={Math.floor(offerData.loanDuration.toNumber() / (3600 * 24))}
                 currency={currencyMints[offerData.offerMint.toBase58()]}
-                count={offerData.count}
-                isYours={offerData.borrower.equals(walletKey)}
-                collection={offerData.collection}
+                count={0}
+                isYours={walletKey?.equals(offerData.borrower)}
+                collection={offerData?.collection ?? ''}
                 totalRepay={calculateRepayValue(
-                  offerData.offerAmount.toNumber() / getDecimalsForOfferMint(offerData.offerMint),
-                  asBigNumber(offerData.aprNumerator),
+                  offerData.offerAmount.toNumber() / getDecimalsForOfferMint(offerData.offerMint.toString()),
+                  offerData.aprNumerator.toNumber(),
                   offerData.loanDuration.toNumber() / (3600 * 24),
                   store.GlobalState.denominator,
                 )}

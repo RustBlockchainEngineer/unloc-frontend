@@ -21,7 +21,6 @@
     "@solana/wallet-adapter-wallets": "^0.15.5",
     "@solana/web3.js": "^1.37.0",
     "axios": "^0.26.1",
-    "bignumber.js": "^9.0.2",
     "dotenv": "^16.0.0",
     "final-form": "^4.20.6",
     "ioredis": "^5.0.2",

@@ -2,15 +2,13 @@ import { action, makeAutoObservable, flow } from "mobx";
 import axios from "axios";
 import * as anchor from "@project-serum/anchor";
 import { getSubOfferList, getOffersBy } from "@integration/nftLoan";
-import { IOfferData } from "../@types/IOfferData";
-import { PublicKey } from "@solana/web3.js";
+import { NftCoreData } from "../@types/nft";
 import { getMetadata } from "@integration/nftIntegration";
 import { getDecimalsForLoanAmount } from "@integration/getDecimalForLoanAmount";
-import { getSubOffersKeysByState } from "@integration/offersListing";
 import { calculateRepayValue } from "@utils/calculateRepayValue";
-import { asBigNumber } from "@utils/asBigNumber";
 import { currencyMints } from "@constants/currency";
 import { toast } from "react-toastify";
+import { getDurationFromContractData } from "@utils/getDuration";
 interface LoanInterface {
   id: string;
   status: number;
@@ -25,8 +23,8 @@ interface LoanInterface {
 
 export class SingleOfferStore {
   rootStore;
-  nftData = {} as IOfferData;
-  loansData: any[] = [];
+  nftData = {} as NftCoreData;
+  loansData: LoanInterface[] = [];
   isYours: boolean = false;
 
   constructor(rootStore: any) {
@@ -53,43 +51,38 @@ export class SingleOfferStore {
 
       const data = await getSubOfferList(undefined, subOfferKey, 0);
       const loansArr: Array<LoanInterface> = [];
-      data.forEach(
-        (element: {
-          publicKey: PublicKey;
-          account: {
-            state: any;
-            offerAmount: { toNumber: () => number };
-            offerMint: { toBase58: () => string };
-            loanDuration: { toNumber: () => any };
-            aprNumerator: { toNumber: () => any };
-          };
-        }): void => {
-          const amountConvered = getDecimalsForLoanAmount(
-            element.account.offerAmount.toNumber(),
-            element.account.offerMint.toBase58(),
-          );
+      data.forEach((element) => {
+        const { publicKey, account } = element;
+        const { offerAmount, offerMint, loanDuration, aprNumerator, state } = account;
 
-          const durationConverted = element.account.loanDuration.toNumber() / (3600 * 24);
-          const aprConverted = asBigNumber(element.account.aprNumerator as any);
+        const amountConvered = getDecimalsForLoanAmount(
+          offerAmount.toNumber(),
+          offerMint.toBase58(),
+        );
 
-          loansArr.push({
-            id: element.publicKey.toBase58(),
-            status: element.account.state,
-            amount: amountConvered.toString(),
-            currency: currencyMints[element.account.offerMint.toBase58()],
-            duration: durationConverted, // suspecting wrong type here, also we are showing loans with 0 day duration this is wrong
-            apr: aprConverted,
-            offerMint: element.account.offerMint.toBase58(),
-            publicKey: element.publicKey,
-            totalRepay: calculateRepayValue(
-              Number(amountConvered),
-              aprConverted,
-              durationConverted,
-              this.rootStore.GlobalState.denominator,
-            ),
-          });
-        },
-      );
+        // Converting the duration to days if it's more than 0, otherwise just use 0
+        const durationConverted = loanDuration.gtn(0)
+          ? getDurationFromContractData(loanDuration.toNumber(), "days")
+          : 0;
+        const aprConverted = aprNumerator.toNumber();
+
+        loansArr.push({
+          id: publicKey.toBase58(),
+          status: state,
+          amount: amountConvered.toString(),
+          currency: currencyMints[element.account.offerMint.toBase58()],
+          duration: durationConverted, // suspecting wrong type here, also we are showing loans with 0 day duration this is wrong
+          apr: aprConverted,
+          offerMint: offerMint.toBase58(),
+          publicKey: publicKey,
+          totalRepay: calculateRepayValue(
+            Number(amountConvered),
+            aprConverted,
+            durationConverted,
+            this.rootStore.GlobalState.denominator,
+          ),
+        });
+      });
 
       this.setLoansData(loansArr);
     } catch (e) {
@@ -119,11 +112,11 @@ export class SingleOfferStore {
     this.setIsYours(isYours);
   };
 
-  @action.bound setNftData = (data: IOfferData): void => {
+  @action.bound setNftData = (data: NftCoreData): void => {
     this.nftData = data;
   };
 
-  @action.bound setLoansData = (data: any[]): void => {
+  @action.bound setLoansData = (data: LoanInterface[]): void => {
     this.loansData = data;
   };
 

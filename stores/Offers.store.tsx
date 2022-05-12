@@ -1,25 +1,29 @@
 import { action, flow, makeAutoObservable } from "mobx";
 import { PublicKey } from "@solana/web3.js";
 import axios from "axios";
-import { BigNumber } from "bignumber.js";
-
-import { MultipleNFT, getSubOfferMultiple, acceptOffer } from "@integration/nftLoan";
+import { MultipleNFT, getSubOfferMultiple, acceptOffer, NFTMetadata } from "@integration/nftLoan";
 import { getSubOffersKeysByState } from "@integration/offersListing";
-import { asBigNumber } from "@utils/asBigNumber";
 import { removeDuplicatesByPropertyIndex } from "@utils/removeDuplicatesByPropertyIndex";
 import { getDecimalsForOfferMint } from "@integration/getDecimalForLoanAmount";
 import { currencyMints } from "@constants/currency";
+import { SubOffer } from "../@types/loans";
+
+export interface SubOfferData extends SubOffer {
+  subOfferKey: PublicKey;
+  collection?: string; // Lazy loaded
+  nftData?: NFTMetadata; // Lazy loaded
+}
 
 export class OffersStore {
   rootStore;
-  offers: any[] = [];
-  offersRef: any[] = [];
-  filteredOffers: any[] = [];
+  offers: SubOfferData[] = [];
+  offersRef: SubOfferData[] = [];
+  filteredOffers: SubOfferData[] = [];
   currentPage = 1;
   maxPage = 1;
   itemsPerPage = 16;
-  pageOfferData: any[] = []; // same type as offers, should describe it
-  pageNFTData: any[] = [];
+  pageOfferData: SubOfferData[] = []; // same type as offers, should describe it
+  pageNFTData: NFTMetadata[] = [];
   nftCollections: string[] = [];
   filterCollection: { label: string; value: string }[] = [];
   filterCollectionSelected: string[] = [];
@@ -103,7 +107,7 @@ export class OffersStore {
     });
   };
 
-  @action.bound setOffersData(data: any[]): void {
+  @action.bound setOffersData(data: SubOfferData[]): void {
     this.offers = data;
   }
 
@@ -119,7 +123,7 @@ export class OffersStore {
     this.refetchOffers();
   }
 
-  @action.bound setPageNFTData(pageNFTData: any[]): void {
+  @action.bound setPageNFTData(pageNFTData: NFTMetadata[]): void {
     this.pageNFTData = pageNFTData;
   }
 
@@ -130,7 +134,7 @@ export class OffersStore {
     this.getOffersForListings();
   }
 
-  @action.bound setFilteredOffers(offers: any[]): void {
+  @action.bound setFilteredOffers(offers: SubOfferData[]): void {
     this.filteredOffers = offers;
   }
 
@@ -190,25 +194,18 @@ export class OffersStore {
     return multipleNft;
   };
 
-  private getFiltersMinMaxValues = (data: any) => {
+  private getFiltersMinMaxValues = (data: SubOfferData[]) => {
     const amounts: number[] = [];
     const durations: number[] = [];
     const aprs: number[] = [];
 
-    data.forEach(
-      (offer: {
-        offerAmount: { toNumber: () => number };
-        aprNumerator: BigNumber.Value;
-        loanDuration: { toNumber: () => number };
-        offerMint: { toBase58: () => string };
-      }) => {
-        amounts.push(
-          offer.offerAmount.toNumber() / getDecimalsForOfferMint(offer.offerMint.toBase58()),
-        );
-        aprs.push(asBigNumber(offer.aprNumerator));
-        durations.push(Math.floor(offer.loanDuration.toNumber() / (3600 * 24)));
-      },
-    );
+    data.forEach((offer) => {
+      amounts.push(
+        offer.offerAmount.toNumber() / getDecimalsForOfferMint(offer.offerMint.toBase58()),
+      );
+      aprs.push(offer.aprNumerator.toNumber());
+      durations.push(Math.floor(offer.loanDuration.toNumber() / (3600 * 24)));
+    });
 
     return {
       amountMin: Math.min(...amounts),
@@ -224,14 +221,14 @@ export class OffersStore {
     return (x - min) * (x - max) <= 0;
   }
 
-  private handleFilters = (data: any) => {
-    return data.filter((offer: any) => {
+  private handleFilters = (data: SubOfferData[]) => {
+    return data.filter((offer) => {
       if (offer.offerAmount) {
         const currencyCheck =
-          this.filterCurrency === "All" || currencyMints[offer.offerMint] === this.filterCurrency;
+          this.filterCurrency === "All" || currencyMints[offer.offerMint.toString()] === this.filterCurrency;
 
         const amountCheck = this.inRange(
-          offer.offerAmount.toNumber() / getDecimalsForOfferMint(offer.offerMint),
+          offer.offerAmount.toNumber() / getDecimalsForOfferMint(offer.offerMint.toString()),
           this.filterAmountMin,
           this.filterAmountMax,
         );
@@ -243,7 +240,7 @@ export class OffersStore {
         );
 
         const aprCheck = this.inRange(
-          asBigNumber(offer.aprNumerator),
+          offer.aprNumerator.toNumber(),
           this.filterAprMin,
           this.filterAprMax,
         );

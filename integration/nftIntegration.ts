@@ -3,7 +3,7 @@ import { Connection, PublicKey } from "@solana/web3.js";
 import { Metadata } from "@metaplex-foundation/mpl-token-metadata";
 import axios from "axios";
 
-import { IMetadata, IOfferData } from "../@types/IOfferData";
+import { IMetadata, NftCoreData } from "../@types/nft";
 import { RPC_ENDPOINT } from "@constants/config";
 import { MultipleNFT, NFTMetadata } from "./nftLoan";
 
@@ -79,42 +79,6 @@ export const getWhitelistedNFTsByWallet = async (owner: PublicKey): Promise<NFTM
     } catch (e) {
       // eslint-disable-next-line no-console
       console.log(e);
-    }
-  }
-
-  return nfts;
-};
-
-export const getTokensByPubKey = async (user: string): Promise<IOfferData[]> => {
-  const USER_PUBKEY = new PublicKey(user);
-  const { value: tokens } = await SOLANA_CONNECTION.getParsedTokenAccountsByOwner(USER_PUBKEY, {
-    programId: TOKEN_PROGRAM_ID,
-  });
-  const nfts: any[] = [];
-
-  const filteredTokens = tokens.filter((token) => {
-    const { tokenAmount } = token.account.data.parsed.info;
-    return tokenAmount.decimals === 0;
-  });
-
-  for (let i = 0; i < filteredTokens.length; i++) {
-    try {
-      const nft = {
-        collection: "",
-        tokenAccount: filteredTokens[i].pubkey,
-        mint: new PublicKey(filteredTokens[i].account.data.parsed.info.mint).toBase58(),
-        metadata: await getMetadata(filteredTokens[i].account.data.parsed.info.mint),
-      };
-
-      nfts.push(nft as any);
-    } catch (e) {
-      // eslint-disable-next-line no-console
-      console.log(e);
-
-      if ((<Error>e).message.includes("Unable to find account")) {
-        continue;
-      }
-      await new Promise((r) => setTimeout(r, 1000));
     }
   }
 

@@ -34,12 +34,9 @@ const OffersGridItemHover: React.FC<IProps> = ({
   collection,
   isYours,
 }) => {
-  const store = useContext(StoreContext);
-  const { denominator } = store.GlobalState;
-
   return (
     <div className={`onHover-data ${visible ? "" : "hide"}`}>
-      <Link href={`/offers/${nftMint}`}>
+      <Link passHref href={`/offers/${nftMint}`}>
         <div className="onHover-link">
           <div className="data-item">
             <span className="item-name">{name}</span>

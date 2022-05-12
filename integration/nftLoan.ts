@@ -21,7 +21,7 @@ import {
   MetadataKey,
 } from "@metaplex-foundation/mpl-token-metadata";
 import axios from "axios";
-import { ArweaveMetadata, IMasterEdition, IMetadata, OnChainMetadata } from "../@types/IOfferData";
+import { ArweaveMetadata, IMasterEdition, IMetadata, OnChainMetadata } from "../@types/nft";
 
 const SOLANA_CONNECTION = new Connection(RPC_ENDPOINT, {
   disableRetryOnRateLimit: true,

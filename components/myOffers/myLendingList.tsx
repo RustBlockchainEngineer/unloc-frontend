@@ -119,6 +119,11 @@ export const MyLendingList = observer(() => {
 
   const renderLoansGiven = () => {
     return lendingList.map((offer) => {
+
+      if (!offer?.nftData) {
+        return <></>
+      }
+
       const daysDuration = offer.loanDuration.toNumber() / 60 / 60 / 24;
       //const daysDuration = 0 //css testing
       const timeClassNames = `${daysDuration <= 0 ? "red" : ""}${
@@ -126,7 +131,7 @@ export const MyLendingList = observer(() => {
       }${daysDuration > 3 ? "green" : ""}`;
 
       return (
-        <div key={offer.nftData.arweaveMetadata.name} className={`loan-given ${timeClassNames}`}>
+        <div key={offer.subOfferKey.toString()} className={`loan-given ${timeClassNames}`}>
           <div className="loan__row">
             <div className={`loan__row--item header`}>
               <Image
@@ -158,8 +163,8 @@ export const MyLendingList = observer(() => {
               <ShowOnHover
                 label={compressAddress(4, offer.borrower.toBase58())}
                 classNames="loan-containers__id">
-                <ClipboardButton data={offer.borrower} />
-                <SolscanExplorerIcon type={"token"} address={offer.borrower} />
+                <ClipboardButton data={offer.borrower.toString()} />
+                <SolscanExplorerIcon type={"token"} address={offer.borrower.toString()} />
               </ShowOnHover>
             </div>
             <div className={`loan__row--item ${timeClassNames} status`}>
@@ -171,8 +176,8 @@ export const MyLendingList = observer(() => {
               <ShowOnHover
                 label={compressAddress(4, offer.nftMint.toString())}
                 classNames="loan-containers__mint">
-                <ClipboardButton data={offer.nftMint} />
-                <SolscanExplorerIcon type={"token"} address={offer.nftMint} />
+                <ClipboardButton data={offer.nftMint.toString()} />
+                <SolscanExplorerIcon type={"token"} address={offer.nftMint.toString()} />
               </ShowOnHover>
             </div>
           </div>
