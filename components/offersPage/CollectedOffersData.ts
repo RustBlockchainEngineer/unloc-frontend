@@ -1,7 +1,6 @@
 import { useContext, useMemo } from "react";
 import { StoreContext } from "@pages/_app";
 import { getDecimalsForLoanAmountAsString } from "@integration/getDecimalForLoanAmount";
-import { asBigNumber } from "@utils/asBigNumber";
 import { currencyMints } from "@constants/currency";
 import { calculateRepayValue } from "@utils/calculateRepayValue";
 import { SubOfferData } from "@stores/Offers.store";

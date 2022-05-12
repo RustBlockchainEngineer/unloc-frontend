@@ -3,12 +3,9 @@ import axios from "axios";
 import * as anchor from "@project-serum/anchor";
 import { getSubOfferList, getOffersBy } from "@integration/nftLoan";
 import { NftCoreData } from "../@types/nft";
-import { PublicKey } from "@solana/web3.js";
 import { getMetadata } from "@integration/nftIntegration";
 import { getDecimalsForLoanAmount } from "@integration/getDecimalForLoanAmount";
-import { getSubOffersKeysByState } from "@integration/offersListing";
 import { calculateRepayValue } from "@utils/calculateRepayValue";
-import { asBigNumber } from "@utils/asBigNumber";
 import { currencyMints } from "@constants/currency";
 import { toast } from "react-toastify";
 interface LoanInterface {
@@ -60,7 +57,7 @@ export class SingleOfferStore {
         );
 
         const durationConverted = element.account.loanDuration.toNumber() / (3600 * 24);
-        const aprConverted = asBigNumber(element.account.aprNumerator as any);
+        const aprConverted = element.account.aprNumerator.toNumber();
 
         loansArr.push({
           id: element.publicKey.toBase58(),

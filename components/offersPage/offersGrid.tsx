@@ -3,7 +3,6 @@ import { observer } from "mobx-react";
 import { StoreContext } from "@pages/_app";
 import { OffersGridItem } from "./offersGridItem";
 import { currencyMints } from "@constants/currency";
-import { asBigNumber } from "@utils/asBigNumber";
 import { BlobLoader } from "@components/layout/blobLoader";
 import { toast } from "react-toastify";
 import {

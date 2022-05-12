@@ -3,7 +3,6 @@ import { PublicKey } from "@solana/web3.js";
 import axios from "axios";
 import { MultipleNFT, getSubOfferMultiple, acceptOffer, NFTMetadata } from "@integration/nftLoan";
 import { getSubOffersKeysByState } from "@integration/offersListing";
-import { asBigNumber } from "@utils/asBigNumber";
 import { removeDuplicatesByPropertyIndex } from "@utils/removeDuplicatesByPropertyIndex";
 import { getDecimalsForOfferMint } from "@integration/getDecimalForLoanAmount";
 import { currencyMints } from "@constants/currency";
