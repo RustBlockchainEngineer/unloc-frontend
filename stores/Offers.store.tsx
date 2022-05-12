@@ -3,12 +3,19 @@ import { PublicKey } from "@solana/web3.js";
 import axios from "axios";
 import { BigNumber } from "bignumber.js";
 
-import { MultipleNFT, getSubOfferMultiple, acceptOffer } from "@integration/nftLoan";
+import { MultipleNFT, getSubOfferMultiple, acceptOffer, NFTMetadata } from "@integration/nftLoan";
 import { getSubOffersKeysByState } from "@integration/offersListing";
 import { asBigNumber } from "@utils/asBigNumber";
 import { removeDuplicatesByPropertyIndex } from "@utils/removeDuplicatesByPropertyIndex";
 import { getDecimalsForOfferMint } from "@integration/getDecimalForLoanAmount";
 import { currencyMints } from "@constants/currency";
+import { SubOffer } from "../@types/loans";
+
+export interface SubOfferData extends SubOffer {
+  subOfferKey: PublicKey;
+  collection?: string; // Lazy loaded
+  nftData?: NFTMetadata; // Lazy loaded
+}
 
 export class OffersStore {
   rootStore;

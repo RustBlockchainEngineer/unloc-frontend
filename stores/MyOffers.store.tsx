@@ -20,15 +20,27 @@ import {
 import { currencies, currencyMints } from "@constants/currency";
 import { getDurationForContractData } from "@utils/getDuration";
 import { getSubOffersKeysByState } from "@integration/offersListing";
+import { Offer, SubOffer } from "../@types/loans";
+import { SubOfferData } from "./Offers.store";
+
+export interface OfferAccount {
+  publicKey: PublicKey;
+  account: Offer;
+}
+
+export interface SubOfferAccount {
+  publicKey: PublicKey;
+  account: SubOffer;
+}
 
 export class MyOffersStore {
   rootStore;
-  offers: any[] = [];
-  collaterables = [];
-  subOffers: any[] = [];
+  offers: OfferAccount[] = [];
+  collaterables: NFTMetadata[] = [];
+  subOffers: SubOfferAccount[] = [];
   nftData: NFTMetadata[] = [];
   activeNftMint: string = "";
-  lendingList: any[] = [];
+  lendingList: SubOfferData[] = [];
   activeHideable = false;
   depositedHideable = false;
 
@@ -37,11 +49,11 @@ export class MyOffersStore {
     this.rootStore = rootStore;
   }
 
-  private filterOffersByState(offers: any[], state: number) {
+  private filterOffersByState(offers: OfferAccount[], state: number) {
     return offers.filter((offer) => offer.account.state === state);
   }
 
-  @action.bound setOffers(offers: never[]): void {
+  @action.bound setOffers(offers: OfferAccount[]): void {
     this.offers = offers;
   }
 
@@ -52,12 +64,12 @@ export class MyOffersStore {
 
     if (offersData) {
       runInAction(() => {
-        this.setOffers([...activeOffers, ...proposedOffers] as any);
+        this.setOffers([...activeOffers, ...proposedOffers]);
       });
     }
   }
 
-  @action.bound setCollaterables(collaterables: never[]): void {
+  @action.bound setCollaterables(collaterables: NFTMetadata[]): void {
     this.collaterables = collaterables;
   }
 
@@ -65,22 +77,22 @@ export class MyOffersStore {
     const data = await getWhitelistedNFTsByWallet(wallet);
     if (data) {
       runInAction(() => {
-        this.setCollaterables(data as any);
+        this.setCollaterables(data);
       });
     }
   }
 
-  @action.bound setNftData(nftData: never[]): void {
+  @action.bound setNftData(nftData: NFTMetadata[]): void {
     this.nftData = nftData;
   }
 
-  @action.bound setSubOffers(subOffers: never[]): void {
+  @action.bound setSubOffers(subOffers: SubOfferAccount[]): void {
     this.subOffers = subOffers;
   }
 
   @action.bound getSubOffersByOffers = flow(function* (this: MyOffersStore) {
     if (this.offers && this.offers.length > 0) {
-      const data = [];
+      const data: SubOfferAccount[] = [];
       for (const offer of this.offers) {
         if (offer && offer.publicKey) {
           const subOfferData = yield getSubOfferList(offer.publicKey);
@@ -99,7 +111,7 @@ export class MyOffersStore {
       for (const offer of this.offers) {
         const nftMint = offer.account.nftMint;
 
-        if (!nftMintKeys.includes(nftMint.toBase58())) {
+        if (!nftMintKeys.find((mintKey) => mintKey.equals(nftMint))) {
           nftMintKeys.push(nftMint);
         }
       }
@@ -194,17 +206,13 @@ export class MyOffersStore {
   @action.bound fetchUserLendedOffers = async () => {
     const activeOffersKeys = await getSubOffersKeysByState([1]);
     if (activeOffersKeys && activeOffersKeys.length) {
-      const offersData = await getSubOfferMultiple(activeOffersKeys);
+      const offersData: SubOfferData[] = await getSubOfferMultiple(activeOffersKeys);
 
-      const lendedLoans: any[] = [];
+      const lendedLoans = offersData.filter((offer) =>
+        offer.lender.equals(this.rootStore.Wallet.walletKey),
+      );
 
-      offersData.forEach((offer: any) => {
-        if (offer.lender.toBase58() === this.rootStore.Wallet.walletKey.toBase58()) {
-          lendedLoans.push(offer);
-        }
-      });
-
-      const nftMints = lendedLoans.map((offerData: any) => {
+      const nftMints = lendedLoans.map((offerData) => {
         return offerData.nftMint;
       });
       const nftsData = await this.initManyNfts(nftMints);
