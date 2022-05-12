@@ -2,7 +2,7 @@ import { action, makeAutoObservable, flow } from "mobx";
 import axios from "axios";
 import * as anchor from "@project-serum/anchor";
 import { getSubOfferList, getOffersBy } from "@integration/nftLoan";
-import { IOfferData } from "../@types/IOfferData";
+import { NftCoreData } from "../@types/nft";
 import { PublicKey } from "@solana/web3.js";
 import { getMetadata } from "@integration/nftIntegration";
 import { getDecimalsForLoanAmount } from "@integration/getDecimalForLoanAmount";
@@ -25,7 +25,7 @@ interface LoanInterface {
 
 export class SingleOfferStore {
   rootStore;
-  nftData = {} as IOfferData;
+  nftData = {} as NftCoreData;
   loansData: any[] = [];
   isYours: boolean = false;
 
@@ -119,7 +119,7 @@ export class SingleOfferStore {
     this.setIsYours(isYours);
   };
 
-  @action.bound setNftData = (data: IOfferData): void => {
+  @action.bound setNftData = (data: NftCoreData): void => {
     this.nftData = data;
   };
 

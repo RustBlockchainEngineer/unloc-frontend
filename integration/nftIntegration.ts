@@ -3,7 +3,7 @@ import { Connection, PublicKey } from "@solana/web3.js";
 import { Metadata } from "@metaplex-foundation/mpl-token-metadata";
 import axios from "axios";
 
-import { IMetadata, IOfferData } from "../@types/IOfferData";
+import { IMetadata, NftCoreData } from "../@types/nft";
 import { RPC_ENDPOINT } from "@constants/config";
 import { MultipleNFT, NFTMetadata } from "./nftLoan";
 
@@ -85,7 +85,7 @@ export const getWhitelistedNFTsByWallet = async (owner: PublicKey): Promise<NFTM
   return nfts;
 };
 
-export const getTokensByPubKey = async (user: string): Promise<IOfferData[]> => {
+export const getTokensByPubKey = async (user: string): Promise<NftCoreData[]> => {
   const USER_PUBKEY = new PublicKey(user);
   const { value: tokens } = await SOLANA_CONNECTION.getParsedTokenAccountsByOwner(USER_PUBKEY, {
     programId: TOKEN_PROGRAM_ID,
