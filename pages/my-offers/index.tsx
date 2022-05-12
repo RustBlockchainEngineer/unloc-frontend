@@ -1,4 +1,4 @@
-import React, { useEffect, useContext, useState } from "react";
+import React, { useEffect, useContext, useState, useCallback } from "react";
 import type { NextPage } from "next";
 import { observer } from "mobx-react";
 import { PublicKey } from "@solana/web3.js";
@@ -17,7 +17,7 @@ const MyOffers: NextPage = observer(() => {
   const { connected, walletKey } = store.Wallet;
   const { activeHideable, depositedHideable } = store.MyOffers;
 
-  const refreshSubOffers = async (walletKey: PublicKey) => {
+  const refreshSubOffers = useCallback(async (walletKey: PublicKey) => {
     try {
       if (walletKey) {
         await store.MyOffers.getOffersByWallet(walletKey);
@@ -28,7 +28,7 @@ const MyOffers: NextPage = observer(() => {
       // eslint-disable-next-line no-console
       console.log(e);
     }
-  };
+  }, [store.MyOffers]);
 
   const handleActiveVisibility = () => {
     if (!activeHideable) return;
@@ -46,7 +46,7 @@ const MyOffers: NextPage = observer(() => {
     if (connected && walletKey) {
       refreshSubOffers(walletKey);
     }
-  }, [connected, walletKey]);
+  }, [connected, walletKey, refreshSubOffers]);
 
   return (
     <StoreDataAdapter>
