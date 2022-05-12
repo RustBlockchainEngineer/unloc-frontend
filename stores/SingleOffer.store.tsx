@@ -51,23 +51,26 @@ export class SingleOfferStore {
       const data = await getSubOfferList(undefined, subOfferKey, 0);
       const loansArr: Array<LoanInterface> = [];
       data.forEach((element) => {
+        const { publicKey, account } = element;
+        const { offerAmount, offerMint, loanDuration, aprNumerator, state } = account;
+
         const amountConvered = getDecimalsForLoanAmount(
-          element.account.offerAmount.toNumber(),
-          element.account.offerMint.toBase58(),
+          offerAmount.toNumber(),
+          offerMint.toBase58(),
         );
 
-        const durationConverted = element.account.loanDuration.toNumber() / (3600 * 24);
-        const aprConverted = element.account.aprNumerator.toNumber();
+        const durationConverted = loanDuration.toNumber() / (3600 * 24);
+        const aprConverted = aprNumerator.toNumber();
 
         loansArr.push({
-          id: element.publicKey.toBase58(),
-          status: element.account.state,
+          id: publicKey.toBase58(),
+          status: state,
           amount: amountConvered.toString(),
           currency: currencyMints[element.account.offerMint.toBase58()],
           duration: durationConverted, // suspecting wrong type here, also we are showing loans with 0 day duration this is wrong
           apr: aprConverted,
-          offerMint: element.account.offerMint.toBase58(),
-          publicKey: element.publicKey,
+          offerMint: offerMint.toBase58(),
+          publicKey: publicKey,
           totalRepay: calculateRepayValue(
             Number(amountConvered),
             aprConverted,
