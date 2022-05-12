@@ -26,7 +26,7 @@ interface LoanInterface {
 export class SingleOfferStore {
   rootStore;
   nftData = {} as NftCoreData;
-  loansData: any[] = [];
+  loansData: LoanInterface[] = [];
   isYours: boolean = false;
 
   constructor(rootStore: any) {
@@ -53,43 +53,32 @@ export class SingleOfferStore {
 
       const data = await getSubOfferList(undefined, subOfferKey, 0);
       const loansArr: Array<LoanInterface> = [];
-      data.forEach(
-        (element: {
-          publicKey: PublicKey;
-          account: {
-            state: any;
-            offerAmount: { toNumber: () => number };
-            offerMint: { toBase58: () => string };
-            loanDuration: { toNumber: () => any };
-            aprNumerator: { toNumber: () => any };
-          };
-        }): void => {
-          const amountConvered = getDecimalsForLoanAmount(
-            element.account.offerAmount.toNumber(),
-            element.account.offerMint.toBase58(),
-          );
+      data.forEach((element) => {
+        const amountConvered = getDecimalsForLoanAmount(
+          element.account.offerAmount.toNumber(),
+          element.account.offerMint.toBase58(),
+        );
 
-          const durationConverted = element.account.loanDuration.toNumber() / (3600 * 24);
-          const aprConverted = asBigNumber(element.account.aprNumerator as any);
+        const durationConverted = element.account.loanDuration.toNumber() / (3600 * 24);
+        const aprConverted = asBigNumber(element.account.aprNumerator as any);
 
-          loansArr.push({
-            id: element.publicKey.toBase58(),
-            status: element.account.state,
-            amount: amountConvered.toString(),
-            currency: currencyMints[element.account.offerMint.toBase58()],
-            duration: durationConverted, // suspecting wrong type here, also we are showing loans with 0 day duration this is wrong
-            apr: aprConverted,
-            offerMint: element.account.offerMint.toBase58(),
-            publicKey: element.publicKey,
-            totalRepay: calculateRepayValue(
-              Number(amountConvered),
-              aprConverted,
-              durationConverted,
-              this.rootStore.GlobalState.denominator,
-            ),
-          });
-        },
-      );
+        loansArr.push({
+          id: element.publicKey.toBase58(),
+          status: element.account.state,
+          amount: amountConvered.toString(),
+          currency: currencyMints[element.account.offerMint.toBase58()],
+          duration: durationConverted, // suspecting wrong type here, also we are showing loans with 0 day duration this is wrong
+          apr: aprConverted,
+          offerMint: element.account.offerMint.toBase58(),
+          publicKey: element.publicKey,
+          totalRepay: calculateRepayValue(
+            Number(amountConvered),
+            aprConverted,
+            durationConverted,
+            this.rootStore.GlobalState.denominator,
+          ),
+        });
+      });
 
       this.setLoansData(loansArr);
     } catch (e) {
@@ -123,7 +112,7 @@ export class SingleOfferStore {
     this.nftData = data;
   };
 
-  @action.bound setLoansData = (data: any[]): void => {
+  @action.bound setLoansData = (data: LoanInterface[]): void => {
     this.loansData = data;
   };
 
