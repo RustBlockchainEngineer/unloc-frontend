@@ -124,6 +124,8 @@ $themes: (
     icon-theme-sun: url('/icons/theme-sun-icon-light.svg'),
     bg-dropdown-multiple: #9e6cff,
 
+    mobile-menu-header-bg: #482688,
+    mobile-menu-scrolldown-bg: rgba(72, 38, 136, 0.8),
     mobile-menu-highlight: #5d36a7,
   ),
   dark: (
@@ -251,6 +253,8 @@ $themes: (
     icon-theme-sun: url('/icons/theme-sun-icon-dark.svg'),
     bg-dropdown-multiple: #9e6cff,
 
+    mobile-menu-header-bg: #482688,
+    mobile-menu-scrolldown-bg: rgba(72, 38, 136, 0.8),
     mobile-menu-highlight: #5d36a7,
   ),
 );

@@ -26,8 +26,9 @@ export const UserToolbox = observer(() => {
 
   return (
     <div className="user-toolbox">
-      <WalletMultiButton />
 
+      <div className="mobile-only shadow-element" />
+      <WalletMultiButton />
       <div className="theme-switcher">
         <SwitchButton
           state={store.Interface.theme == "light"}
@@ -35,6 +36,7 @@ export const UserToolbox = observer(() => {
           onClick={handleThemeSet}
         />
       </div>
+
     </div>
   );
 });

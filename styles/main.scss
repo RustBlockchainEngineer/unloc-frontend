@@ -150,3 +150,9 @@ a {
   @include theme-aware('color', 'color-content');
   transition: color 0.5s;
 }
+
+@media (min-width: $bp-tablet) {
+  .mobile-only {
+    display: none;
+  }
+}
