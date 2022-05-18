@@ -29,22 +29,6 @@
       @include theme-aware('background-color', 'filter-btn-hover');
     }
   }
-
-  @media (max-width: $bp-tablet) {
-    padding-top: 100px;
-
-    .btn--filters {
-      margin-top: 0;
-      margin-bottom: -160px;
-      z-index: 0;
-
-      &.active {
-        border-radius: $brd-rds-lg;
-        margin-top: 40px;
-        margin-bottom: -18px;
-      }
-    }
-  }
 }
 
 .offers-top {

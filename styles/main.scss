@@ -18,9 +18,8 @@
 @import './walletAdapter';
 @import './layout';
 @import './layoutTop';
-@import './menuShowButton';
+@import './mobile/menuShowButton';
 @import './userToolbox';
-@import './layoutTopMobile';
 @import './filter';
 @import './blobLoader';
 @import './footer/footer';
@@ -47,6 +46,10 @@
 @import './loansGiven/myLendingList';
 @import './singleOffer/lendConfirmation';
 
+@import './mobile/footerMobile';
+@import './mobile/layoutTopMobile';
+@import './mobile/offersPage/offersTopMobile';
+
 body {
   @include theme-aware('background-color', 'color-background');
   @include theme-aware('background-image', 'bg-gradient-home');
@@ -69,6 +72,10 @@ body {
   width: $pg-col;
   margin: 0 auto;
   padding-top: $mr-lg;
+
+  @media (max-width: $bp-tablet) {
+    display: none;
+  }
 
   @media (max-width: $bp-tablet) {
     width: 100vw;
