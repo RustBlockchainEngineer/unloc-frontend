@@ -14,17 +14,17 @@ export const TopMenu = () => {
     <ul className="top-menu">
       <li>
         <Link href="/">
-          <a className={handleCurrent("/")}><div className={handleCurrent("/") + ' mobile-wrapper'}>{localesTop.home}</div></a>
+          <a className={handleCurrent("/")}>{localesTop.home}</a>
         </Link>
       </li>
       <li>
         <Link href="/my-offers">
-          <a className={handleCurrent("/my-offers")}><div className={handleCurrent("/my-offers") + ' mobile-wrapper'}>{localesTop.myOffers}</div></a>
+          <a className={handleCurrent("/my-offers")}>{localesTop.myOffers}</a>
         </Link>
       </li>
       <li>
         <Link href="/loans-given">
-          <a className={handleCurrent("/loans-given")}><div className={handleCurrent("/loans-given") + ' mobile-wrapper'}>{localesTop.loansGiven}</div></a>
+          <a className={handleCurrent("/loans-given")}>{localesTop.loansGiven}</a>
         </Link>
       </li>
     </ul>
