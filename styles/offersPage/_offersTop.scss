@@ -21,7 +21,10 @@
     }
 
     &.active {
-      @include theme-aware('background-color', 'color-accent');
+      @media (min-width: $bp-phone) {
+        @include theme-aware('background-color', 'color-accent');
+      }
+
       box-shadow: 0px 3px 0px rgba(33, 13, 72, 0.25);
     }
 

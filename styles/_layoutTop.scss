@@ -5,7 +5,6 @@
   justify-content: space-between;
   align-items: center;
 
-  
   @media (max-width: $bp-tablet) {
     flex-direction: column;
     padding-top: 10px;
@@ -49,8 +48,15 @@
     }
 
     &.active {
-      @include theme-aware('background-color', 'color-primary');
+      @media (min-width: $bp-phone) {
+        @include theme-aware('background-color', 'color-primary');
+      }
+
       @include theme-aware('color', 'lend-offer-button');
+    }
+
+    .mobile-wrapper {
+      background: rgba(0, 0, 0, 0);
     }
   }
 

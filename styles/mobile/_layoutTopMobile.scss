@@ -25,10 +25,28 @@
             border-radius: 0;
             text-align: center;
             line-height: 30px;
+            text-transform: uppercase;
+            font-size: 16px;
 
             &.active {
-                @include theme-aware('background-color', 'bg-table-hover');
+                background: transparent;
                 @include theme-aware('color', 'color-label');
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .mobile-wrapper.active {
+                margin: 0 auto;
+                width: 60%;
+                height: 40px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                @include theme-aware('background-color', 'mobile-menu-highlight');
+                @include theme-aware('color', 'color-label');
+                background-color: red;
+                border-radius: $brd-rds-sm;
             }
         }
     }
