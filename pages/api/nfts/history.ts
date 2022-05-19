@@ -3,7 +3,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 
 import { getHistory } from "@integration/nftIntegration";
 
-export const handler = async (
+const handler = async (
   req: NextApiRequest,
   res: NextApiResponse<ConfirmedSignatureInfo[]>,
 ): Promise<void> => {
@@ -26,3 +26,5 @@ export const handler = async (
     res.status(200).send(history);
   } else res.end(404);
 };
+
+export default handler;
