@@ -1,3 +1,4 @@
+# Folders to fix
 /@types
 /components
 /constants
@@ -6,3 +7,7 @@
 /methods
 /stores
 /utils
+
+# Config files
+package.json
+.lintstagedrc.json
