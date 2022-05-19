@@ -1,4 +1,4 @@
-export interface NavProps {
+export interface INavProps {
   page: "home" | "nfts" | "whitepaper" | "roadmap" | "about" | "wallet";
   theme: "light" | "dark";
   classNames?: string;

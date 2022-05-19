@@ -113,7 +113,7 @@ export const MyOffersNftList: React.FC<MyOffersNftListProps> = observer(({ type,
             state={offer.state}
           />
         );
-      }
+      } else return null;
     });
 
     return mappedOffers.length > 0 ? (

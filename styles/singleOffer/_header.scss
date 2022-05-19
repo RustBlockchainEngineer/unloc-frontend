@@ -39,7 +39,7 @@
   height: 96px;
   border: 8px solid;
   border-spacing: 4px;
-  @include theme-aware('border-color', 'color-accent');
+  @include theme-aware("border-color", "color-accent");
   margin-right: 11px;
   border-radius: $brd-rds-lg;
   -moz-box-shadow: 2px 3px 10px -1px rgba(19, 7, 43, 1);
@@ -57,7 +57,7 @@
     position: absolute;
     width: 32px;
     height: 32px;
-    @include theme-aware('background-color', 'color-primary');
+    @include theme-aware("background-color", "color-primary");
     border-radius: 50%;
     z-index: 10000;
     display: flex;
@@ -85,13 +85,13 @@
   p {
     font-size: 18px;
     font-weight: 400;
-    @include theme-aware('color', 'color-secondary');
+    @include theme-aware("color", "color-secondary");
     margin: 0;
     padding: 0;
   }
 
   h1 {
-    @include theme-aware('color', 'single-offer-heading');
+    @include theme-aware("color", "single-offer-heading");
     font-size: $tp-1xl;
     font-weight: 700;
     margin: 0;
@@ -114,8 +114,8 @@
 }
 
 .nft-info-metadata {
-  @include theme-aware('background-color', 'single-offer-meta-bg');
-  @include theme-aware('color', 'color-content');
+  @include theme-aware("background-color", "single-offer-meta-bg");
+  @include theme-aware("color", "color-content");
   border-radius: 9px;
   padding: 17px 10px;
 
@@ -138,7 +138,7 @@
 
     label {
       font-size: $tp-sm;
-      @include theme-aware('color', 'single-offer-meta-label');
+      @include theme-aware("color", "single-offer-meta-label");
       margin-bottom: 4px;
     }
 

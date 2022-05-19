@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
+
 import { observer } from "mobx-react";
 
 import { StoreContext } from "@pages/_app";
@@ -19,7 +20,6 @@ export const MyLendingList = observer(() => {
   const [isFetchingUserLended, setIsFetchingUserLended] = useState(true);
 
   const handleTimeLeft = (duration: number, startTime: number, formated: boolean) => {
-    let output: string | number;
     const currentDate = new Date();
     const startDate = new Date(startTime);
     const numberOfDays = Math.ceil(((startDate as any) - (currentDate as any)) / 8.64e7);
@@ -35,7 +35,7 @@ export const MyLendingList = observer(() => {
   };
 
   const canClaim = (duration: number, startTime: number) => {
-    let output = false;
+    let output;
 
     const currentDate = new Date();
     const startDate = new Date(startTime);
@@ -44,11 +44,7 @@ export const MyLendingList = observer(() => {
 
     const daysLeft = duration - numberOfDays * -1;
 
-    if (daysLeft > 0) {
-      output = false;
-    } else {
-      output = true;
-    }
+    output = daysLeft <= 0;
 
     return output;
   };
@@ -115,13 +111,13 @@ export const MyLendingList = observer(() => {
     if (status === "1") {
       return <p className={"loan-containers__status"}>Loan Offer Given</p>;
     }
+    return;
   };
 
   const renderLoansGiven = () => {
     return lendingList.map((offer) => {
-
       if (!offer?.nftData) {
-        return <></>
+        return <></>;
       }
 
       const daysDuration = offer.loanDuration.toNumber() / 60 / 60 / 24;

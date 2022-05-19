@@ -5,7 +5,7 @@ const { REDIS_URL = "" } = process.env;
 const client = new Redis(REDIS_URL);
 
 export const getCollections = async (): Promise<string[]> => {
-  return await client.hkeys("collections");
+  return client.hkeys("collections");
 };
 
 export const getCollectionFromNft = async (nft: string): Promise<string | null> => {

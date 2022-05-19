@@ -100,16 +100,17 @@ export const OffersGrid = observer(() => {
                 currency={currencyMints[offerData.offerMint.toBase58()]}
                 count={0}
                 isYours={walletKey?.equals(offerData.borrower)}
-                collection={offerData?.collection ?? ''}
+                collection={offerData?.collection ?? ""}
                 totalRepay={calculateRepayValue(
-                  offerData.offerAmount.toNumber() / getDecimalsForOfferMint(offerData.offerMint.toString()),
+                  offerData.offerAmount.toNumber() /
+                    getDecimalsForOfferMint(offerData.offerMint.toString()),
                   offerData.aprNumerator.toNumber(),
                   offerData.loanDuration.toNumber() / (3600 * 24),
                   store.GlobalState.denominator,
                 )}
               />
             );
-          }
+          } else return;
         })}
       </div>
       <div className="offers-pagination">

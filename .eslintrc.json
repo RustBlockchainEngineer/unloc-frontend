@@ -1,3 +1,14 @@
 {
-  "extends": "next/core-web-vitals"
+  "root": true,
+  "extends": "./node_modules/@unloc/eslint/.eslintrc.base",
+  "overrides": [
+    {
+      "files": ["**/*.ts?(x)"],
+      "extends": "./node_modules/@unloc/eslint/.eslintrc.addon.typescript"
+    },
+    {
+      "files": ["jest.setup.js", "**/*{spec,test}.{t,j}s?(x)"],
+      "extends": "./node_modules/@unloc/eslint/.eslintrc.addon.jest"
+    }
+  ]
 }

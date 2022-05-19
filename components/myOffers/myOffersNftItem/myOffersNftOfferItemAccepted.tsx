@@ -2,7 +2,6 @@ import React, { useContext } from "react";
 import { BN } from "@project-serum/anchor";
 import { compressAddress } from "@utils/stringUtils/compressAdress";
 import { PublicKey } from "@solana/web3.js";
-import { IsubOfferData } from "@stores/Lightbox.store";
 import { currencyMints } from "@constants/currency";
 import { StoreContext } from "@pages/_app";
 import { usePopperTooltip } from "react-popper-tooltip";
@@ -31,7 +30,6 @@ export const MyOffersNftOfferItemAccepted: React.FC<MyOffersNftOfferItemAccepted
   status,
   APR,
   duration,
-  repaid,
   offerMint,
   classNames,
   nftMint,
@@ -43,6 +41,7 @@ export const MyOffersNftOfferItemAccepted: React.FC<MyOffersNftOfferItemAccepted
     if (status === "1") {
       return <p className={"suboffer-containers__status active"}>Loan Offer Taken</p>;
     }
+    return;
   };
 
   const handleRepayLoan = async (subOfferKey: string) => {

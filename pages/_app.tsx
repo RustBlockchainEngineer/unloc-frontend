@@ -1,6 +1,4 @@
-import { FC, useMemo, createContext, useEffect } from "react";
-import type { AppProps } from "next/app";
-import { ToastContainer } from "react-toastify";
+import { useMemo, createContext, useEffect, ReactNode } from "react";
 
 import { WalletAdapterNetwork } from "@solana/wallet-adapter-base";
 import { ConnectionProvider, WalletProvider } from "@solana/wallet-adapter-react";
@@ -15,18 +13,24 @@ import {
   TorusWalletAdapter,
 } from "@solana/wallet-adapter-wallets";
 import { clusterApiUrl } from "@solana/web3.js";
+import type { AppProps } from "next/app";
+import { ToastContainer } from "react-toastify";
 
+import { Footer } from "@components/layout/footer";
 import { config } from "@constants/config";
 import { rootStore } from "@stores/Root.store";
+
 import "react-toastify/dist/ReactToastify.css";
 import "@styles/main.scss";
-import Footer from "@components/layout/footer";
 
 export const StoreContext = createContext(rootStore);
 
-const Unloc: FC<AppProps> = ({ Component, pageProps }) => {
+const Unloc = ({ Component, pageProps }: AppProps): ReactNode => {
   const network = config.devnet ? WalletAdapterNetwork.Devnet : WalletAdapterNetwork.Mainnet;
   const endpoint = useMemo(() => clusterApiUrl(network), [network]);
+  const {
+    Wallet: { handleWalletError },
+  } = rootStore;
   const wallets = useMemo(
     () => [
       new PhantomWalletAdapter(),
@@ -42,18 +46,19 @@ const Unloc: FC<AppProps> = ({ Component, pageProps }) => {
 
   useEffect(() => {
     document.documentElement.className = "";
-    document.documentElement.classList.add(`theme-dark`);
+    document.documentElement.classList.add("theme-dark");
   }, []);
 
   return (
     <ConnectionProvider endpoint={endpoint}>
-      <WalletProvider wallets={wallets} autoConnect onError={rootStore.Wallet.handleWalletError}>
+      <WalletProvider wallets={wallets} autoConnect onError={handleWalletError}>
         <WalletModalProvider>
           <StoreContext.Provider value={rootStore}>
             {config.devnet ? (
               <div className="devnet-container">
                 <span className="devnet">
-                  <i className="icon icon--smd icon--info"></i>Devnet Version
+                  <i className="icon icon--smd icon--info" />
+                  Devnet Version
                 </span>
               </div>
             ) : (

@@ -72,13 +72,7 @@ interface CollectionList extends ICollection {
   setHidden: (state: boolean) => any;
 }
 
-export const CollectionList = ({
-  options,
-  values,
-  disabled,
-  onCheck,
-  setHidden,
-}: CollectionList) => {
+export const CollectionList = ({ options, values, disabled, onCheck }: CollectionList) => {
   const handleCheckedItem = (itemValue: string): boolean => {
     if (values) {
       return values.includes(itemValue);

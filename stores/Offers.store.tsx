@@ -223,30 +223,29 @@ export class OffersStore {
 
   private handleFilters = (data: SubOfferData[]) => {
     return data.filter((offer) => {
-      if (offer.offerAmount) {
-        const currencyCheck =
-          this.filterCurrency === "All" || currencyMints[offer.offerMint.toString()] === this.filterCurrency;
+      const currencyCheck =
+        this.filterCurrency === "All" ||
+        currencyMints[offer.offerMint.toString()] === this.filterCurrency;
 
-        const amountCheck = this.inRange(
-          offer.offerAmount.toNumber() / getDecimalsForOfferMint(offer.offerMint.toString()),
-          this.filterAmountMin,
-          this.filterAmountMax,
-        );
+      const amountCheck = this.inRange(
+        offer.offerAmount.toNumber() / getDecimalsForOfferMint(offer.offerMint.toString()),
+        this.filterAmountMin,
+        this.filterAmountMax,
+      );
 
-        const durationCheck = this.inRange(
-          offer.loanDuration.toNumber() / (3600 * 24),
-          this.filterDurationMin,
-          this.filterDurationMax,
-        );
+      const durationCheck = this.inRange(
+        offer.loanDuration.toNumber() / (3600 * 24),
+        this.filterDurationMin,
+        this.filterDurationMax,
+      );
 
-        const aprCheck = this.inRange(
-          offer.aprNumerator.toNumber(),
-          this.filterAprMin,
-          this.filterAprMax,
-        );
+      const aprCheck = this.inRange(
+        offer.aprNumerator.toNumber(),
+        this.filterAprMin,
+        this.filterAprMax,
+      );
 
-        return currencyCheck && aprCheck && amountCheck && durationCheck;
-      }
+      return currencyCheck && aprCheck && amountCheck && durationCheck;
     });
   };
 

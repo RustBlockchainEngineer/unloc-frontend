@@ -1,7 +1,4 @@
-import React, { useContext } from "react";
 import Link from "next/link";
-import { calculateRepayValue } from "@utils/calculateRepayValue";
-import { StoreContext } from "@pages/_app";
 
 interface IProps {
   visible: boolean;

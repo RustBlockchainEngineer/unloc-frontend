@@ -10,13 +10,13 @@
   align-items: center;
   justify-content: center;
   border-radius: $brd-rds-md;
-  @include theme-aware('background-color', 'color-accent');
+  @include theme-aware("background-color", "color-accent");
   padding: 21px;
   margin: 0 0 16px 0;
   height: 156px;
 
   .connect-info {
-    @include theme-aware('color', 'color-content');
+    @include theme-aware("color", "color-content");
     font-size: 20px;
     font-weight: 400;
     padding-bottom: 19px;

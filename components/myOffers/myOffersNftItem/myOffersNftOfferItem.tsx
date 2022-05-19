@@ -1,6 +1,6 @@
 import React from "react";
 import { BN } from "@project-serum/anchor";
-import { compressAddress } from "@utils/stringUtils/compressAdress";
+import { compressAddress } from "../../../utils/stringUtils/compressAdress";
 import { PublicKey } from "@solana/web3.js";
 import { IsubOfferData } from "@stores/Lightbox.store";
 import { currencyMints } from "@constants/currency";
@@ -42,6 +42,7 @@ export const MyOffersNftOfferItem = ({
     if (status === "0" || status === "6") {
       return <p className={"suboffer-containers__status"}>Proposed</p>;
     }
+    return;
   };
 
   let offerClassNames = (classNames ? classNames : "") + " " + (disabled ? "disabled" : "");

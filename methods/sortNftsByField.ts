@@ -1,6 +1,6 @@
-import { ArweaveMetadata } from "../@types/nft";
+import { IArweaveMetadata } from "nft";
 
-const sortNftsByField = (nfts: any[], field: keyof ArweaveMetadata): any[] => {
+const sortNftsByField = (nfts: any[], field: keyof IArweaveMetadata): any[] => {
   return nfts.sort((a: any, b: any) => {
     if (
       !(a && a.nftMeta && a.nftMeta.arweaveMetadata && b && b.nftMeta && b.nftMeta.arweaveMetadata)

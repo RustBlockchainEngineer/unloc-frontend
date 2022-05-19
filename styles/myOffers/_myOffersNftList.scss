@@ -24,7 +24,7 @@
   flex-direction: column;
   border-radius: 50px;
   height: 80px;
-  @include theme-aware('background-color', 'myOffers-nftName-bg');
+  @include theme-aware("background-color", "myOffers-nftName-bg");
 
   .nft-item {
     display: flex;
@@ -63,7 +63,7 @@
 
       .info-name {
         font-size: 18px;
-        @include theme-aware('color', 'myOffers-nftName-color');
+        @include theme-aware("color", "myOffers-nftName-color");
         width: 260px;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -76,13 +76,13 @@
         color: #ffffff;
 
         :first-child {
-          @include theme-aware('color', 'myOffers-nftName-color');
+          @include theme-aware("color", "myOffers-nftName-color");
         }
 
         :last-child {
           margin-left: 4px;
           font-weight: 700;
-          @include theme-aware('color', 'myOffers-collectionName-color');
+          @include theme-aware("color", "myOffers-collectionName-color");
         }
       }
     }
@@ -104,20 +104,20 @@
       height: 30px;
       width: 30px;
       padding: 0;
-      line-height: 0px;
+      line-height: 0;
       font-size: 20px;
       font-weight: 700;
 
       &:first-child {
         margin-left: 0;
-        @include theme-aware('color', 'lend-offer-button');
+        @include theme-aware("color", "lend-offer-button");
       }
     }
 
     .btn--disabled {
       cursor: auto;
-      @include theme-aware('background-color', 'color-button-disabled');
-      @include theme-aware('color', 'color-label');
+      @include theme-aware("background-color", "color-button-disabled");
+      @include theme-aware("color", "color-label");
     }
   }
 
@@ -127,7 +127,7 @@
 }
 
 .offers-list {
-  @include theme-aware('background', 'myOffers-multipleSubOffers-bg');
+  @include theme-aware("background", "myOffers-multipleSubOffers-bg");
   width: 100%;
   margin-top: -40px;
   display: flex;
@@ -140,7 +140,6 @@
   font-size: 14px;
   font-weight: 700;
   transition: max-height 0.5s;
-  border-radius: $brd-rds-1md;
 
   .offers-list-headbar {
     @media (max-width: $bp-tablet) {
@@ -162,7 +161,7 @@
 
       &.loan--late {
         padding: 10px;
-        @include theme-aware('background-color', 'info-red');
+        @include theme-aware("background-color", "info-red");
       }
 
       span {
@@ -196,17 +195,17 @@
   @media (max-width: $bp-tablet) {
     width: 90vw;
     margin: -40px 2.5vh 20px 2.5vh;
-    padding: 0px;
+    padding: 0;
     min-height: 60px;
   }
 
   .my-offers-nft__offer {
-    @include theme-aware('background-color', 'myOffers-subOffer-bg');
-    @include theme-aware('background-image', 'myOffers-subOffer-gradient');
+    @include theme-aware("background-color", "myOffers-subOffer-bg");
+    @include theme-aware("background-image", "myOffers-subOffer-gradient");
     width: 49%;
     margin-bottom: 10px;
     backdrop-filter: blur(4px);
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
     margin-top: 8px;
     padding: 20px;
     display: grid;
@@ -215,15 +214,15 @@
     border-radius: $brd-rds-2tn;
 
     &.green {
-      @include theme-aware('background-image', 'time-offer-green');
+      @include theme-aware("background-image", "time-offer-green");
     }
 
     &.yellow {
-      @include theme-aware('background-image', 'time-offer-yellow');
+      @include theme-aware("background-image", "time-offer-yellow");
     }
 
     &.red {
-      @include theme-aware('background-image', 'time-offer-red');
+      @include theme-aware("background-image", "time-offer-red");
     }
 
     @media (max-width: $bp-tablet) {
@@ -247,7 +246,7 @@
         padding: 0 8px;
         display: inline-flex;
         justify-content: center;
-  
+
         i {
           margin: 0;
         }
@@ -256,7 +255,7 @@
           padding: 0;
         }
       }
-  
+
       &--item {
         display: flex;
         flex-direction: column;
@@ -267,30 +266,30 @@
         }
 
         &.green p {
-          @include theme-aware('color', 'time-green');
+          @include theme-aware("color", "time-green");
         }
 
         &.yellow p {
-          @include theme-aware('color', 'time-yellow');
+          @include theme-aware("color", "time-yellow");
         }
 
         &.red p {
-          @include theme-aware('color', 'time-red');
+          @include theme-aware("color", "time-red");
         }
 
         &.yellow.status p {
-          @include theme-aware('background', 'time-yellow-btn');
+          @include theme-aware("background", "time-yellow-btn");
         }
 
         &.red.status p {
-          @include theme-aware('background', 'time-red-btn');
+          @include theme-aware("background", "time-red-btn");
         }
       }
 
       &.details {
-        @include theme-aware('background', 'myOffers-subOffer-info-bg');
-        @include theme-aware('color', 'myOffers-nftName-color');
-        box-shadow: inset 0px 2px 2px rgba(0, 0, 0, 0.25);
+        @include theme-aware("background", "myOffers-subOffer-info-bg");
+        @include theme-aware("color", "myOffers-nftName-color");
+        box-shadow: inset 0 2px 2px rgba(0, 0, 0, 0.25);
         border-radius: $brd-rds-2tn;
         justify-content: space-around;
         align-items: center;
@@ -318,17 +317,17 @@
 
       .repay-loan--button {
         margin: 0 auto;
-        border: 0px;
+        border: 0;
       }
 
       button:last-child {
-        @include theme-aware('color', 'lend-offer-button');
+        @include theme-aware("color", "lend-offer-button");
       }
 
       .loan-expired--button {
         margin: 0 auto;
-        border: 0px;
-        @include theme-aware('background', 'myOffers-subOffer-info-bg');
+        border: 0;
+        @include theme-aware("background", "myOffers-subOffer-info-bg");
         color: #cdc5e4 !important;
       }
     }
@@ -337,24 +336,24 @@
       .offer__row--item div,
       .offer__row--item p,
       .offer__row button {
-        @include theme-aware('color', 'disabled-color');
-        @include theme-aware('background', 'disabled-bg');
+        @include theme-aware("color", "disabled-color");
+        @include theme-aware("background", "disabled-bg");
       }
 
       .offer__row--item h4 {
-        @include theme-aware('color', 'disabled-color');
+        @include theme-aware("color", "disabled-color");
       }
 
       .offer__row button {
         pointer-events: none;
         cursor: not-allowed;
-        border: 0px;
+        border: 0;
       }
     }
   }
 
   .my-offers-no__offers {
-    @include theme-aware('background-color', 'color-loan');
+    @include theme-aware("background-color", "color-loan");
     margin-top: 8px;
     padding: 20px;
     display: flex;
@@ -387,16 +386,16 @@
   }
 
   &__mint {
-    @include theme-aware('background', 'myOffers-mint-bg');
+    @include theme-aware("background", "myOffers-mint-bg");
   }
 
   &__id {
-    @include theme-aware('background', 'myOffers-id-bg');
+    @include theme-aware("background", "myOffers-id-bg");
   }
 
   &__status {
-    @include theme-aware('background-color', 'status-proposed-bg');
-    @include theme-aware('color', 'status-proposed-color');
+    @include theme-aware("background-color", "status-proposed-bg");
+    @include theme-aware("color", "status-proposed-color");
   }
 }
 
@@ -426,15 +425,15 @@
   @media (max-width: $bp-tablet) {
     flex-direction: column;
     align-items: center;
-    padding: 0px 20px;
+    padding: 0 20px;
   }
 }
 
 .nft-deposited-item {
-  @include theme-aware('background-color', 'myOffers-subOffer-bg');
-  @include theme-aware('background-image', 'myOffers-subOffer-gradient');
+  @include theme-aware("background-color", "myOffers-subOffer-bg");
+  @include theme-aware("background-image", "myOffers-subOffer-gradient");
   transition: background 0.8s ease-in-out;
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
   backdrop-filter: blur(4px);
   border-radius: $brd-rds-2tn;
   width: 49%;
@@ -446,7 +445,7 @@
   }
 
   &__row {
-    @include theme-aware('color', 'myOffers-nftName-color');
+    @include theme-aware("color", "myOffers-nftName-color");
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -468,8 +467,8 @@
     }
 
     button:last-child {
-      border: 0px;
-      @include theme-aware('color', 'lend-offer-button');
+      border: 0;
+      @include theme-aware("color", "lend-offer-button");
     }
   }
 
@@ -520,26 +519,30 @@
       overflow: hidden;
       text-overflow: ellipsis;
       border-radius: $brd-rds-sm;
-      @include theme-aware('color', 'lend-offer-button');
+      @include theme-aware("color", "lend-offer-button");
     }
 
     .mint,
     .collection {
-      @include theme-aware('background', 'myOffers-mint-bg');
+      @include theme-aware("background", "myOffers-mint-bg");
     }
 
     .id {
-      @include theme-aware('background', 'myOffers-id-bg');
-      
+      @include theme-aware("background", "myOffers-id-bg");
     }
   }
 }
 
 .deposited--scrolldown,
 .active-offers--scrolldown {
-  h1 {
+  & > button {
     margin-left: 20px;
     user-select: none;
+    border: 0;
+    background: transparent;
+    color: #ffffff;
+    font-size: 2em;
+    font-weight: bold;
 
     :last-child {
       margin-left: 20px;

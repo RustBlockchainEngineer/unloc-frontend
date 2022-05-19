@@ -4,5 +4,7 @@ export const setOfferStatus = (status: string) => {
       return "PROPOSAL";
     case "1":
       return "ACTIVE";
+    default:
+      throw new Error("Unpredictable offer status");
   }
 };

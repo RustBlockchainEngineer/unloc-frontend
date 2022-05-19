@@ -4,7 +4,8 @@
 }
 
 .footer {
-  @include theme-aware('border-color', color-primary);width: $pg-col;
+  @include theme-aware("border-color", color-primary);
+  width: $pg-col;
 
   display: flex;
   align-items: center;

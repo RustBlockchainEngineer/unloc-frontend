@@ -1,14 +1,13 @@
 import * as anchor from "@project-serum/anchor";
 import { bool, publicKey, struct, u32, u64, u8 } from "@project-serum/borsh";
 import { NATIVE_MINT, Token, TOKEN_PROGRAM_ID } from "@solana/spl-token";
-import { IDL as idl, UnlocNftLoan } from "../integration/unloc_nft_loan";
+import { IDL as idl, UnlocNftLoan } from "./unloc_nft_loan";
 import { NFT_LOAN_PID, RPC_ENDPOINT } from "@constants/config";
 import {
   Connection,
   Keypair,
   MemcmpFilter,
   PublicKey,
-  SystemInstruction,
   SystemProgram,
   TransactionInstruction,
 } from "@solana/web3.js";
@@ -21,7 +20,8 @@ import {
   MetadataKey,
 } from "@metaplex-foundation/mpl-token-metadata";
 import axios from "axios";
-import { ArweaveMetadata, IMasterEdition, IMetadata, OnChainMetadata } from "../@types/nft";
+
+import { IArweaveMetadata, IMasterEdition, IMetadata, IOnChainMetadata } from "nft";
 
 const SOLANA_CONNECTION = new Connection(RPC_ENDPOINT, {
   disableRetryOnRateLimit: true,
@@ -779,7 +779,6 @@ export const logObject = (title: string, obj: any) => {
 export const getOfferBalance = async (
   subOffer: anchor.web3.PublicKey,
   connection: anchor.web3.Connection = program.provider.connection,
-  walletPubkey: anchor.web3.PublicKey = program.provider.wallet.publicKey,
 ) => {
   try {
     const tokenAccount = await pda([OFFER_VAULT_TAG, subOffer.toBuffer()], programId);
@@ -808,7 +807,7 @@ export class MultipleNFT {
       }
       let i = 0;
       const metaInfos = await Metadata.getInfos(program.provider.connection, metadataPDAs);
-      metaInfos.forEach((value: anchor.web3.AccountInfo<Buffer>, key: any, map: any) => {
+      metaInfos.forEach((value: anchor.web3.AccountInfo<Buffer>) => {
         const metadata = MetadataData.deserialize(value.data);
         const nftMetadata = new NFTMetadata(this.mints[i], metadataPDAs[i], metadata);
         this.metadatas.push(nftMetadata);
@@ -834,13 +833,13 @@ export class MultipleNFT {
 export class NFTMetadata implements IMetadata {
   mint = "";
   metadataPDA = "";
-  onChainMetadata: OnChainMetadata = null as any;
-  arweaveMetadata: ArweaveMetadata = null as any;
+  onChainMetadata: IOnChainMetadata = null as any;
+  arweaveMetadata: IArweaveMetadata = null as any;
   masterEdition: IMasterEdition = null as any;
   constructor(
     mint: anchor.web3.PublicKey,
     metadataPDA: anchor.web3.PublicKey,
-    onChainMetadata: OnChainMetadata,
+    onChainMetadata: IOnChainMetadata,
   ) {
     this.mint = mint.toBase58();
     this.metadataPDA = metadataPDA.toBase58();

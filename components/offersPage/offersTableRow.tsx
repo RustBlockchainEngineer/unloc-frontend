@@ -1,7 +1,7 @@
 import { useCallback, useContext, FormEvent } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { calculateRepayValue } from "@utils/calculateRepayValue";
+import { calculateRepayValue } from "../../utils/calculateRepayValue";
 import { StoreContext } from "@pages/_app";
 
 interface OffersTableItemInterface {
@@ -29,7 +29,6 @@ export const OffersTableRow = ({
   amount,
   duration,
   currency,
-  count,
   isYours,
   collection,
 }: OffersTableItemInterface) => {

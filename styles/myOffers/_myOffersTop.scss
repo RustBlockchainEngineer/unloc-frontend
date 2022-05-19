@@ -7,7 +7,7 @@
   &__heading {
     .wallet-label {
       font-size: $tp-sm;
-      @include theme-aware('color', 'color-secondary');
+      @include theme-aware("color", "color-secondary");
 
       @media (max-width: $bp-tablet) {
         display: inline-block;
@@ -109,8 +109,8 @@
       }
 
       &.active {
-        @include theme-aware('background-color', 'color-primary');
-        @include theme-aware('color', 'color-label');
+        @include theme-aware("background-color", "color-primary");
+        @include theme-aware("color", "color-label");
       }
     }
   }

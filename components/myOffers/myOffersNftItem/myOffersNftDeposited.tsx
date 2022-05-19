@@ -8,8 +8,6 @@ import { compressAddress } from "@utils/stringUtils/compressAdress";
 import { ShowOnHover } from "@components/layout/showOnHover";
 import { SolscanExplorerIcon } from "@components/layout/solscanExplorerIcon";
 import { ClipboardButton } from "@components/layout/clipboardButton";
-import { MyOffersNftItemOffers } from "./myOffersNftItemOffers";
-import { IsubOfferData } from "@stores/Lightbox.store";
 
 interface MyOffersNftDepositedProps {
   offerKey: string;
@@ -22,7 +20,7 @@ interface MyOffersNftDepositedProps {
 }
 
 export const MyOffersNftDeposited: React.FC<MyOffersNftDepositedProps> = observer(
-  ({ nftMint, name, image, offers, state, classNames, offerKey }) => {
+  ({ nftMint, name, image, offerKey }) => {
     const { getTooltipProps, setTooltipRef, setTriggerRef, visible } = usePopperTooltip();
     const store = useContext(StoreContext);
 

@@ -34,33 +34,33 @@
   }
 
   &--primary {
-    @include theme-aware('background-color', 'color-primary');
-    @include theme-aware('color', 'color-white');
+    @include theme-aware("background-color", "color-primary");
+    @include theme-aware("color", "color-white");
 
     &:hover {
-      @include theme-aware('background-color', 'color-primary-dark');
+      @include theme-aware("background-color", "color-primary-dark");
     }
   }
 
   &--secondary {
-    @include theme-aware('background-color', 'color-secondary');
-    @include theme-aware('color', 'color-label');
+    @include theme-aware("background-color", "color-secondary");
+    @include theme-aware("color", "color-label");
 
     &:hover {
-      @include theme-aware('background-color', 'color-secondary-dark');
+      @include theme-aware("background-color", "color-secondary-dark");
     }
   }
 
   &--bordered {
     background-color: transparent;
     border: 2px solid;
-    @include theme-aware('border-color', 'color-primary');
-    @include theme-aware('background-color', 'color-background');
-    @include theme-aware('color', 'color-primary');
+    @include theme-aware("border-color", "color-primary");
+    @include theme-aware("background-color", "color-background");
+    @include theme-aware("color", "color-primary");
 
     &:hover {
-      @include theme-aware('background-color', 'color-primary-dark');
-      @include theme-aware('color', 'color-label');
+      @include theme-aware("background-color", "color-primary-dark");
+      @include theme-aware("color", "color-label");
     }
   }
 }

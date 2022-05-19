@@ -10,23 +10,23 @@
     z-index: 2;
     display: flex;
     align-items: center;
-    @include theme-aware('color', 'color-label');
+    @include theme-aware("color", "color-label");
 
     span {
-      margin: 0px 40px;
+      margin: 0 40px;
     }
 
     .filter--icon {
-      margin: 0px -15px;
+      margin: 0 -15px;
     }
 
     &.active {
-      @include theme-aware('background-color', 'color-accent');
-      box-shadow: 0px 3px 0px rgba(33, 13, 72, 0.25);
+      @include theme-aware("background-color", "color-accent");
+      box-shadow: 0 3px 0 rgba(33, 13, 72, 0.25);
     }
 
     &:hover {
-      @include theme-aware('background-color', 'filter-btn-hover');
+      @include theme-aware("background-color", "filter-btn-hover");
     }
   }
 
@@ -77,16 +77,16 @@
   }
 
   button.active {
-    @include theme-aware('background-color', 'grid-table-button-bg');
-    @include theme-aware('color', 'switch-color');
+    @include theme-aware("background-color", "grid-table-button-bg");
+    @include theme-aware("color", "switch-color");
   }
 
   button {
-    @include theme-aware('color', 'grid-table-button-bg');
-    @include theme-aware('border-color', 'grid-table-button-bg');
+    @include theme-aware("color", "grid-table-button-bg");
+    @include theme-aware("border-color", "grid-table-button-bg");
 
     &:hover:not(.active) {
-      @include theme-aware('background-color', 'color-accent');
+      @include theme-aware("background-color", "color-accent");
     }
 
     :last-child {
@@ -116,7 +116,7 @@
   width: 100%;
   transform: scaleY(0);
   transition: transform 0.3s ease-in-out, padding 0.3s ease-in-out, margin 0.3s ease-in-out;
-  @include theme-aware('background-color', 'color-accent');
+  @include theme-aware("background-color", "color-accent");
   padding: 0;
   height: auto;
   border-radius: $brd-rds-md;
@@ -128,13 +128,13 @@
     transform: scaleY(1);
     height: auto;
     padding: 30px;
-    box-shadow: 0px 9px 10px 0px rgba(19, 7, 43, 1);
+    box-shadow: 0 9px 10px 0 rgba(19, 7, 43, 1);
   }
 
   .filter-generic {
     padding-right: 20px;
     margin-left: 20px;
-    @include theme-aware('border-color', 'color-secondary');
+    @include theme-aware("border-color", "color-secondary");
 
     &:first-child {
       padding-left: 0;
@@ -164,7 +164,7 @@
         padding: 0 0 15px;
         border-right: none;
         border-bottom: 1px dotted;
-        @include theme-aware('border-color', 'color-secondary');
+        @include theme-aware("border-color", "color-secondary");
       }
     }
   }

@@ -1,24 +1,32 @@
-import React, { useContext } from "react";
+import { useCallback, useContext, FC } from "react";
+
 import { observer } from "mobx-react";
 import { usePopperTooltip } from "react-popper-tooltip";
-import { StoreContext } from "@pages/_app";
-import { ShowOnHover } from "@components/layout/showOnHover";
+
+import { ConnectWallet } from "@components/connectWallet/ConnectWallet";
 import { ClipboardButton } from "@components/layout/clipboardButton";
+import { ShowOnHover } from "@components/layout/showOnHover";
 import { SolscanExplorerIcon } from "@components/layout/solscanExplorerIcon";
-import ConnectWallet from "@components/connectWallet/ConnectWallet";
+import { StoreContext } from "@pages/_app";
 import { compressAddress } from "@utils/stringUtils/compressAdress";
 
-export const MyOffersTop: React.FC = observer(() => {
+export const MyOffersTop: FC = observer(() => {
   const store = useContext(StoreContext);
-  const { wallet, walletKey, connected } = store.Wallet as any;
+  const { wallet, walletKey, connected } = store.Wallet;
 
   const { getTooltipProps, setTooltipRef, setTriggerRef, visible } = usePopperTooltip();
 
-  const handleWalletDisconnect = () => {
-    if (wallet && wallet.adapter) {
+  const handleWalletDisconnect = (): void => {
+    // TODO: adapter prop is missing on wallet.
+    if (wallet /*&& wallet.adapter*/) {
       store.Wallet.handleDisconnect();
     }
   };
+
+  const handleDeposit = useCallback(() => {
+    store.Lightbox.setContent("collateral");
+    store.Lightbox.setVisible(true);
+  }, []);
 
   return connected ? (
     <div className="my-offers-top">
@@ -29,7 +37,7 @@ export const MyOffersTop: React.FC = observer(() => {
             <h2>
               <ShowOnHover label={`${compressAddress(4, walletKey.toBase58())}`}>
                 <ClipboardButton data={walletKey.toBase58()} />
-                <SolscanExplorerIcon type={"account"} address={walletKey.toBase58()} />
+                <SolscanExplorerIcon type="account" address={walletKey.toBase58()} />
               </ShowOnHover>
             </h2>
           </>
@@ -38,13 +46,7 @@ export const MyOffersTop: React.FC = observer(() => {
         )}
       </div>
       <div className="my-offers-top__toolbox">
-        <button
-          ref={setTriggerRef}
-          className="btn btn--md btn--primary"
-          onClick={() => {
-            store.Lightbox.setContent("collateral");
-            store.Lightbox.setVisible(true);
-          }}>
+        <button ref={setTriggerRef} className="btn btn--md btn--primary" onClick={handleDeposit}>
           Deposit NFT
         </button>
         {visible && (
@@ -52,7 +54,7 @@ export const MyOffersTop: React.FC = observer(() => {
             Create a new Collateral from a NFT
           </div>
         )}
-        {wallet && wallet.adapter ? (
+        {wallet /*&& wallet.adapter*/ ? (
           <button className="btn btn--md btn--bordered" onClick={() => handleWalletDisconnect()}>
             Disconnect
           </button>

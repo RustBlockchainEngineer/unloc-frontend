@@ -1,30 +1,30 @@
 .switch--button {
-    display: inline-block;
-    border-radius: 50px;
-    width: 60px;
-    height: 26px;
-    border: 1px solid;
-    box-shadow: inset 0px 2px 2px rgba(0, 0, 0, 0.25);
-    @include theme-aware('background-color', 'switch-bg');
-    @include theme-aware('border-color', 'switch-knob');
-    position: relative;
-    &:hover {
-        cursor: pointer;
-    }
+  display: inline-block;
+  border-radius: 50px;
+  width: 60px;
+  height: 26px;
+  border: 1px solid;
+  box-shadow: inset 0 2px 2px rgba(0, 0, 0, 0.25);
+  @include theme-aware("background-color", "switch-bg");
+  @include theme-aware("border-color", "switch-knob");
+  position: relative;
+  &:hover {
+    cursor: pointer;
+  }
 }
 
 .switch--button--knob {
-    @include theme-aware('background-color', 'switch-knob');
-    height: 22px;
-    width: 22px;
-    border-radius: 50%;
-    position: absolute;
-    top: 1px;
-    transition: left 0.2s ease-in-out;
-    &.left {
-        left: 1px;
-    }
-    &.right {
-        left: calc(100% - 24px);
-    }
+  @include theme-aware("background-color", "switch-knob");
+  height: 22px;
+  width: 22px;
+  border-radius: 50%;
+  position: absolute;
+  top: 1px;
+  transition: left 0.2s ease-in-out;
+  &.left {
+    left: 1px;
+  }
+  &.right {
+    left: calc(100% - 24px);
+  }
 }

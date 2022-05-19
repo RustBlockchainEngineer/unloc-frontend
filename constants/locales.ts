@@ -8,21 +8,21 @@ export const localesTop = {
   loansGiven: "Loans Given",
 };
 
-export const localesFooterCommunity: { [x: string]: string } = {
+export const localesFooterCommunity: { [key: string]: string } = {
   discord: "https://discord.gg/UnlocNFT",
   telegram: "https://t.me/UnlocNFT",
   twitter: "https://twitter.com/UnlocNFT",
   medium: "https://unlocnft.medium.com/",
 };
 
-export const localesFooterLegal: { [x: string]: string } = {
+export const localesFooterLegal: { [key: string]: string } = {
   whitepaper: "",
   roadmap: "",
   "terms & conditions": "",
   "privacy policy": "",
 };
 
-export const localesFooterCompany: { [x: string]: string } = {
+export const localesFooterCompany: { [key: string]: string } = {
   careers: "",
   "about us": "",
 };

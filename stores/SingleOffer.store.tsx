@@ -2,7 +2,7 @@ import { action, makeAutoObservable, flow } from "mobx";
 import axios from "axios";
 import * as anchor from "@project-serum/anchor";
 import { getSubOfferList, getOffersBy } from "@integration/nftLoan";
-import { NftCoreData } from "../@types/nft";
+import { INftCoreData } from "nft";
 import { getMetadata } from "@integration/nftIntegration";
 import { getDecimalsForLoanAmount } from "@integration/getDecimalForLoanAmount";
 import { calculateRepayValue } from "@utils/calculateRepayValue";
@@ -18,12 +18,12 @@ interface LoanInterface {
   apr: number;
   offerMint: string;
   publicKey: anchor.web3.PublicKey;
-  totalRepay?: any;
+  totalRepay: string;
 }
 
 export class SingleOfferStore {
   rootStore;
-  nftData = {} as NftCoreData;
+  nftData = {} as INftCoreData;
   loansData: LoanInterface[] = [];
   isYours: boolean = false;
 
@@ -112,7 +112,7 @@ export class SingleOfferStore {
     this.setIsYours(isYours);
   };
 
-  @action.bound setNftData = (data: NftCoreData): void => {
+  @action.bound setNftData = (data: INftCoreData): void => {
     this.nftData = data;
   };
 

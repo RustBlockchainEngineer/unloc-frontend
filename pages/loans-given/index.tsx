@@ -1,12 +1,14 @@
-import React, { useContext } from "react";
-import type { NextPage } from "next";
+import { useContext } from "react";
+
 import { observer } from "mobx-react";
-import { StoreContext } from "@pages/_app";
-import { StoreDataAdapter } from "@components/storeDataAdapter";
+import type { NextPage } from "next";
+
 import { LayoutTop } from "@components/layout/layoutTop";
 import { LayoutTopMobile } from "@components/layout/layoutTopMobile";
-import { MyOffersTop } from "@components/myOffers/myOffersTop";
 import { MyLendingList } from "@components/myOffers/myLendingList";
+import { MyOffersTop } from "@components/myOffers/myOffersTop";
+import { StoreDataAdapter } from "@components/storeDataAdapter";
+import { StoreContext } from "@pages/_app";
 
 const MyOffers: NextPage = observer(() => {
   const store = useContext(StoreContext);

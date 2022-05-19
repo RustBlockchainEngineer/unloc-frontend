@@ -1,12 +1,9 @@
-import React from "react";
-import {
-  localesFooterCommunity,
-  localesFooterCompany,
-  localesFooterLegal,
-} from "@constants/locales";
+import { memo, ReactNode } from "react";
 
-const Footer: React.FC = () => {
-  const createList = (data: { [x: string]: string }) => {
+import { localesFooterCommunity } from "@constants/locales";
+
+export const Footer = memo(() => {
+  const createList = (data: { [key: string]: string }): ReactNode => {
     return Object.entries(data).map(([key, value]) => (
       <li className="list-item" key={key}>
         <a href={value}>{key}</a>
@@ -23,6 +20,4 @@ const Footer: React.FC = () => {
       </div>
     </div>
   );
-};
-
-export default Footer;
+});
