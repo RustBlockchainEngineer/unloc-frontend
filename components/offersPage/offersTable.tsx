@@ -11,7 +11,7 @@ export const OffersTable = observer(() => {
   const { pageNFTData, currentPage, maxPage } = store.Offers;
 
   const [list, updateList] = useState(CollectedOffersData());
-  const [, setInc] = useState(0);
+  const [inc, setInc] = useState(0);
   const [label, setLabel] = useState<string>("");
   const [order, switchOrder] = useState(true);
 
@@ -121,7 +121,7 @@ export const OffersTable = observer(() => {
         />
       );
     });
-  }, [list, HandleAcceptOffer]);
+  }, [list, HandleAcceptOffer, inc]);
 
   return pageNFTData.length > 0 && list.length ? (
     <>
