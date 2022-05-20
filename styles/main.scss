@@ -46,6 +46,7 @@
 @import "./connectWallet";
 @import "./loansGiven/myLendingList";
 @import "./singleOffer/lendConfirmation";
+@import "./singleOffer/acceptOffer";
 
 body {
   @include theme-aware("background-color", "color-background");

@@ -38,8 +38,8 @@ const SingleNftPage: NextPage = observer(() => {
 
   const handleConfirmOffer = useCallback((offer: any): void => {
     try {
-      store.Lightbox.setLendConfirmationData(offer);
-      store.Lightbox.setContent("lendConfirmation");
+      store.Lightbox.setAcceptOfferData(offer);
+      store.Lightbox.setContent("acceptOffer");
       store.Lightbox.setCanClose(true);
       store.Lightbox.setVisible(true);
     } catch (e) {
