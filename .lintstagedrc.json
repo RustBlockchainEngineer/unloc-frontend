@@ -1,3 +1,4 @@
 {
-  "*.{css,scss,ts,tsx,html,json}": ["yarn lint:prettier", "yarn lint:eslint"]
+  "*.{css,scss,ts,tsx,html,json}": ["yarn lint:prettier"],
+  "*.{ts,tsx}": ["yarn lint:eslint"]
 }

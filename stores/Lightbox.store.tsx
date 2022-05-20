@@ -5,7 +5,8 @@ type LightboxContent =
   | "loanUpdate"
   | "collateral"
   | "processing"
-  | "lendConfirmation";
+  | "lendConfirmation"
+  | "acceptOffer";
 
 export interface IsubOfferData {
   offerAmount: number;
@@ -30,6 +31,7 @@ export class LightboxStore {
   };
 
   lendConfirmationData: any = {};
+  acceptOfferData: any = {};
 
   constructor(rootStore: any) {
     makeAutoObservable(this);
@@ -58,5 +60,9 @@ export class LightboxStore {
 
   @action.bound setLendConfirmationData(offer: any) {
     this.lendConfirmationData = offer;
+  }
+
+  @action.bound setAcceptOfferData(offer: any) {
+    this.acceptOfferData = offer;
   }
 }

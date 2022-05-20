@@ -5,13 +5,13 @@ import { toast } from "react-toastify";
 
 import { StoreContext } from "@pages/_app";
 
-export const LendConfirmation = observer(() => {
+export const AcceptOffer = observer(() => {
   const store = useContext(StoreContext);
-  const { lendConfirmationData } = store.Lightbox;
+  const { acceptOfferData } = store.Lightbox;
   const { nftData } = store.SingleOffer;
-  const { amount, duration, APR, totalRepay, currency, offerPublicKey } = lendConfirmationData;
+  const { amount, duration, APR, totalRepay, currency, offerPublicKey } = acceptOfferData;
 
-  const handleAcceptOffer = async (offerPublicKey: string) => {
+  const handleAcceptOffer = async (offerPublicKey: string): Promise<void> => {
     try {
       store.Lightbox.setContent("processing");
       store.Lightbox.setCanClose(false);
@@ -57,37 +57,35 @@ export const LendConfirmation = observer(() => {
   };
 
   return (
-    <div className="lend-confirmation">
-      <h2>Lend Funds</h2>
-      <div className="collateral">
-        <div className="label">Collateral:</div>
-        <div className="nft-pill">
-          <div className="nft-image-circled">
-            <Image alt="NFT Image" src={nftData.image} width={38} height={38} />
-          </div>
-          <div className="nft-name">{nftData.name}</div>
+    <div className="accept-offer">
+      <h2>Lend Tokens</h2>
+      <div className="collection">
+        <div className="nft-image-circled">
+          <Image alt="NFT Image" src={nftData.image} width={46} height={46} />
         </div>
+        <p className="nft-name">{nftData.name}</p>
       </div>
-      <div className="offer-data">
-        <div className="offer-data-top">Loan terms:</div>
-        <div className="offer-data-liner">
-          <div className="title">Amount</div>
+      <div className="collateral">
+        <div className="nft-pill">
           <div className="data">
-            {amount} {currency}
+            <p>Amount</p>
+            <span>
+              {amount} {currency}
+            </span>
           </div>
-        </div>
-        <div className="offer-data-liner">
-          <div className="title">APR</div>
-          <div className="data">{APR}</div>
-        </div>
-        <div className="offer-data-liner">
-          <div className="title">Duration</div>
-          <div className="data">{duration}</div>
-        </div>
-        <div className="offer-data-liner">
-          <div className="title">Total Repay Amount</div>
           <div className="data">
-            {totalRepay} {currency}
+            <p>APR</p>
+            <span>{APR}</span>
+          </div>
+          <div className="data">
+            <p>Duration</p>
+            <span>{duration}</span>
+          </div>
+          <div className="data">
+            <p>Total Repay Amount</p>
+            <span>
+              {totalRepay} {currency}
+            </span>
           </div>
         </div>
       </div>
