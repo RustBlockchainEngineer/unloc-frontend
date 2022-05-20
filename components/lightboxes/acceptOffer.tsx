@@ -75,11 +75,11 @@ export const AcceptOffer = observer(() => {
           </div>
           <div className="data">
             <p>APR</p>
-            <span>{APR}</span>
+            <span>{APR} %</span>
           </div>
           <div className="data">
             <p>Duration</p>
-            <span>{duration}</span>
+            <span>{duration} days</span>
           </div>
           <div className="data">
             <p>Total Repay Amount</p>
