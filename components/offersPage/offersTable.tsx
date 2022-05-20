@@ -1,19 +1,27 @@
-import { useContext, useMemo, useState, useCallback } from "react";
+import { useContext, useMemo, useState, useCallback, useEffect } from "react";
 import { observer } from "mobx-react";
 import { StoreContext } from "@pages/_app";
 import { OffersTableRow } from "./offersTableRow";
 import { BlobLoader } from "@components/layout/blobLoader";
 import { toast } from "react-toastify";
-import { CollectedOffersData } from "@components/offersPage/CollectedOffersData";
+import { ITransformedOffer, transformOffersData } from "@methods/transformOffersData";
 
 export const OffersTable = observer(() => {
   const store = useContext(StoreContext);
-  const { pageNFTData, currentPage, maxPage } = store.Offers;
+  const { pageNFTData, currentPage, maxPage, pageOfferData } = store.Offers;
+  const { walletKey } = store.Wallet;
+  const { denominator } = store.GlobalState;
 
-  const [list, updateList] = useState(CollectedOffersData());
+  const [list, updateList] = useState<ITransformedOffer[]>([]);
   const [inc, setInc] = useState(0);
   const [label, setLabel] = useState<string>("");
   const [order, switchOrder] = useState(true);
+
+  useEffect(() => {
+    if (walletKey) {
+      updateList(transformOffersData(pageOfferData, walletKey, denominator));
+    }
+  }, [pageOfferData, walletKey, denominator]);
 
   const Sort = (row: EventTarget, type = "string") => {
     const element = row as Element;
