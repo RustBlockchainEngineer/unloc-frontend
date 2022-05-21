@@ -51,17 +51,17 @@
       },
       {
         "selector": "classProperty",
-        "format": ["StrictPascalCase", "strictCamelCase"]
+        "format": ["StrictPascalCase", "camelCase"]
       },
       {
         "selector": ["classProperty", "classMethod"],
         "modifiers": ["private"],
-        "format": ["StrictPascalCase", "strictCamelCase"],
+        "format": ["StrictPascalCase", "camelCase"],
         "leadingUnderscore": "require"
       },
       {
         "selector": ["parameter", "property"],
-        "format": ["StrictPascalCase", "strictCamelCase"],
+        "format": ["StrictPascalCase", "camelCase"],
         "leadingUnderscore": "allow"
       },
       {
@@ -76,17 +76,22 @@
       },
       {
         "selector": "variable",
-        "format": ["StrictPascalCase", "strictCamelCase"]
+        "format": ["StrictPascalCase", "camelCase", "UPPER_CASE"]
       },
       {
         "selector": "variable",
         "types": ["boolean", "number", "string"],
-        "format": ["UPPER_CASE", "strictCamelCase"]
+        "format": ["UPPER_CASE", "camelCase"]
       },
       {
         "selector": ["interface"],
         "format": ["StrictPascalCase"],
         "prefix": ["I"]
+      },
+      {
+        "selector": ["objectLiteralProperty"],
+        "format": ["camelCase"],
+        "modifiers": ["requiresQuotes"]
       }
     ],
     "@typescript-eslint/no-dupe-class-members": "error",

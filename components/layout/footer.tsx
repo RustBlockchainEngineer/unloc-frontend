@@ -1,9 +1,10 @@
 import { memo, ReactNode } from "react";
 
 import { localesFooterCommunity } from "@constants/locales";
+import { IDynamicKeyStringPair } from "@constants/most-used-structures";
 
 export const Footer = memo(() => {
-  const createList = (data: { [key: string]: string }): ReactNode => {
+  const createList = (data: IDynamicKeyStringPair): ReactNode => {
     return Object.entries(data).map(([key, value]) => (
       <li className="list-item" key={key}>
         <a href={value}>{key}</a>
