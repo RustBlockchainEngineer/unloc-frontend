@@ -4,7 +4,7 @@ export const config = {
   devnet: true,
   devnetEndpoint: "https://api.devnet.solana.com",
   mainnetEndpoint: "https://solana-api.projectserum.com",
-  //TODO: properties below has newer used. I think we should remove them
+  //TODO: properties below is never used. I think we should remove them
 
   // pagiPrev: 2,
   // pagiNext: 2,
