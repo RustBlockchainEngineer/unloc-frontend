@@ -1,26 +1,36 @@
+import {
+  CurrencyTypes,
+  SOL,
+  SOL_MINT,
+  SOL_MINT_DEVNET,
+  USDC,
+  USDC_MINT,
+  USDC_MINT_DEVNET,
+} from "@constants/currency-constants";
+
 import { config } from "./config";
-
-export const currencyMints: Record<string, string> = config.devnet
-  ? {
-      ExW7Yek3vsRJcapsdRKcxF9XRRS8zigLZ8nqqdqnWgQi: "USDC",
-      So11111111111111111111111111111111111111112: "SOL",
-    }
-  : {
-      EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v: "USDC",
-      So11111111111111111111111111111111111111112: "SOL",
-    };
-
-export const currencies: Record<string, CurrencyInfo> = config.devnet
-  ? {
-      USDC: { mint: "ExW7Yek3vsRJcapsdRKcxF9XRRS8zigLZ8nqqdqnWgQi", decimals: 6 },
-      SOL: { mint: "So11111111111111111111111111111111111111112", decimals: 9 },
-    }
-  : {
-      USDC: { mint: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v", decimals: 6 },
-      SOL: { mint: "So11111111111111111111111111111111111111112", decimals: 9 },
-    };
 
 type CurrencyInfo = {
   mint: string;
   decimals: number;
 };
+
+export const currencyMints: Record<string, CurrencyTypes> = config.devnet
+  ? {
+      [USDC_MINT_DEVNET]: USDC,
+      [SOL_MINT_DEVNET]: SOL,
+    }
+  : {
+      [USDC_MINT]: USDC,
+      [SOL_MINT]: SOL,
+    };
+
+export const currencies: Record<CurrencyTypes, CurrencyInfo> = config.devnet
+  ? {
+      [USDC]: { mint: USDC_MINT_DEVNET, decimals: 6 },
+      [SOL]: { mint: SOL_MINT_DEVNET, decimals: 9 },
+    }
+  : {
+      [USDC]: { mint: USDC_MINT, decimals: 6 },
+      [SOL]: { mint: SOL_MINT, decimals: 9 },
+    };

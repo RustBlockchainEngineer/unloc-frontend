@@ -1,8 +1,6 @@
 # Folders to fix
 /@types
 /components
-/constants
-/hooks
 /integration
 /methods
 /stores
