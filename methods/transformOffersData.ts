@@ -23,14 +23,14 @@ export interface ITransformedOffer {
  * This is used to transform the offer data in a shape more appropriate for the offers table view
  *
  * @param {SubOfferData[]} pageOfferData
- * @param {PublicKey} walletKey
  * @param {number} denominator
+ * @param {PublicKey|undefined} walletKey Optional to indicate offers that are created by the user
  * @returns {ITransformedOffer[]}
  */
 export const transformOffersData = (
   pageOfferData: SubOfferData[],
-  walletKey: PublicKey,
   denominator: number,
+  walletKey?: PublicKey,
 ): ITransformedOffer[] => {
   // In pageOfferData, nftData and collection properties are lazy loaded,
   // so it's possible they're not initialized.We need to filter for those,

@@ -8,18 +8,20 @@ import { ITransformedOffer, transformOffersData } from "@methods/transformOffers
 
 export const OffersTable = observer(() => {
   const store = useContext(StoreContext);
-  const { pageNFTData, currentPage, maxPage, pageOfferData } = store.Offers;
+  const { currentPage, maxPage, pageOfferData } = store.Offers;
   const { walletKey } = store.Wallet;
   const { denominator } = store.GlobalState;
 
-  const [list, updateList] = useState<ITransformedOffer[]>([]);
+  const [list, updateList] = useState<ITransformedOffer[]>(
+    transformOffersData(pageOfferData, denominator, walletKey),
+  );
   const [inc, setInc] = useState(0);
   const [label, setLabel] = useState<string>("");
   const [order, switchOrder] = useState(true);
 
   useEffect(() => {
     if (walletKey) {
-      updateList(transformOffersData(pageOfferData, walletKey, denominator));
+      updateList(transformOffersData(pageOfferData, denominator, walletKey));
     }
   }, [pageOfferData, walletKey, denominator]);
 
@@ -131,7 +133,7 @@ export const OffersTable = observer(() => {
     });
   }, [list, HandleAcceptOffer, inc]);
 
-  return pageNFTData.length > 0 && list.length ? (
+  return list.length ? (
     <>
       <div className="offers-table">
         <div className="offers-table-heading">
