@@ -1,12 +1,11 @@
-import { useContext } from "react";
-import { StoreContext } from "@pages/_app";
 import { getDecimalsForLoanAmountAsString } from "@integration/getDecimalForLoanAmount";
 
 import { currencyMints } from "@constants/currency";
 import { calculateRepayValue } from "@utils/calculateRepayValue";
 import { SubOfferData } from "@stores/Offers.store";
+import { PublicKey } from "@solana/web3.js";
 
-export interface ICollectedOffersData {
+export interface ITransformedOffer {
   subOfferKey: string;
   nftMint: string;
   image: string;
@@ -16,24 +15,29 @@ export interface ICollectedOffersData {
   duration: number;
   currency: string;
   count: number;
-  isYours: boolean;
+  isYours?: boolean;
   collection: string;
 }
 
-// Oof
-const isNftDataLoaded = (offer: SubOfferData): offer is Required<SubOfferData> => {
-  return !!offer.nftData && !!offer.collection;
-};
+/**
+ * This is used to transform the offer data in a shape more appropriate for the offers table view
+ *
+ * @param {SubOfferData[]} pageOfferData
+ * @param {number} denominator
+ * @param {PublicKey|undefined} walletKey Optional to indicate offers that are created by the user
+ * @returns {ITransformedOffer[]}
+ */
+export const transformOffersData = (
+  pageOfferData: SubOfferData[],
+  denominator: number,
+  walletKey?: PublicKey,
+): ITransformedOffer[] => {
+  // In pageOfferData, nftData and collection properties are lazy loaded,
+  // so it's possible they're not initialized.We need to filter for those,
+  // unfortunately this confuses typescript so we need a helper function.
+  // TODO: if the collection field is not loaded, we could handle that
+  // silently maybe? The nftData is more important.
 
-export const CollectedOffersData = () => {
-  const store = useContext(StoreContext);
-  const { denominator } = store.GlobalState;
-  const { walletKey } = store.Wallet;
-  const { pageOfferData } = store.Offers;
-
-  // In pageOfferData, nftData and collection properties are lazy loaded, so it's possible they're not initialized.
-  // We need to filter for those, unfortunately this confuses typescript so we need a helper function.
-  // TODO: if the collection field is not loaded, we could handle that silently maybe? The nftData is more important.
   return pageOfferData.filter(isNftDataLoaded).map((offerData) => {
     const amount = getDecimalsForLoanAmountAsString(
       offerData.offerAmount.toNumber(),
@@ -58,4 +62,9 @@ export const CollectedOffersData = () => {
       repayAmount: calculateRepayValue(Number(amount), apr, duration, denominator),
     };
   });
+};
+
+// Oof
+const isNftDataLoaded = (offer: SubOfferData): offer is Required<SubOfferData> => {
+  return !!offer.nftData && !!offer.collection;
 };
