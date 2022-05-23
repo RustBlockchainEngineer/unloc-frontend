@@ -6,6 +6,23 @@ import { BlobLoader } from "@components/layout/blobLoader";
 import { toast } from "react-toastify";
 import { ITransformedOffer, transformOffersData } from "@methods/transformOffersData";
 
+type CompareType = "string" | "number";
+
+const comparatorFactory = (label: string, type: CompareType) => {
+  return (a: any, b: any): number => {
+    if (type === "string")
+      return a[label]
+        .toString()
+        .replace(/\s+/g, "")
+        .localeCompare(b[label].toString().replace(/\s+/g, ""), undefined, {
+          numeric: true,
+          sensitivity: "base",
+        });
+    else if (type === "number") return a[label] - b[label];
+    else return 0;
+  };
+};
+
 export const OffersTable = observer(() => {
   const store = useContext(StoreContext);
   const { currentPage, maxPage, pageOfferData } = store.Offers;
@@ -18,40 +35,29 @@ export const OffersTable = observer(() => {
   const [inc, setInc] = useState(0);
   const [label, setLabel] = useState<string>("");
   const [order, switchOrder] = useState(true);
+  const [compareType, setCompareType] = useState<CompareType>();
 
   useEffect(() => {
     if (walletKey) {
       const newList = transformOffersData(pageOfferData, denominator, walletKey);
-      if (label) {
-        newList.sort((a, b) => {
-          const compare = a[label]
-            .toString()
-            .replace(/\s+/g, "")
-            .localeCompare(b[label].toString().replace(/\s+/g, ""), undefined, {
-              numeric: true,
-              sensitivity: "base",
-            });
-          return order ? compare : compare * -1;
-        });
+
+      if (label && compareType) {
+        const compare = comparatorFactory(label, compareType);
+        newList.sort(compare);
+
+        if (!order) {
+          newList.reverse();
+        }
       }
       updateList(newList);
     }
   }, [pageOfferData, walletKey, denominator]);
 
-  const Sort = (row: EventTarget, type = "string") => {
+  const Sort = (row: EventTarget, type: CompareType = "string") => {
     const element = row as Element;
 
-    function compare(a: any, b: any) {
-      if (type === "string")
-        return a[element.id]
-          .toString()
-          .replace(/\s+/g, "")
-          .localeCompare(b[element.id].replace(/\s+/g, ""), undefined, {
-            numeric: true,
-            sensitivity: "base",
-          });
-      else if (type === "number") return a[element.id] - b[element.id];
-    }
+    const compare = comparatorFactory(element.id, type);
+
     let sorted;
     if (element.id !== label) {
       setLabel(element.id);
@@ -63,6 +69,7 @@ export const OffersTable = observer(() => {
       sorted = list.reverse();
     }
     updateList(sorted);
+    setCompareType(type);
     setInc((i) => i + 1);
   };
 
