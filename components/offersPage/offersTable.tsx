@@ -21,7 +21,20 @@ export const OffersTable = observer(() => {
 
   useEffect(() => {
     if (walletKey) {
-      updateList(transformOffersData(pageOfferData, denominator, walletKey));
+      const newList = transformOffersData(pageOfferData, denominator, walletKey);
+      if (label) {
+        newList.sort((a, b) => {
+          const compare = a[label]
+            .toString()
+            .replace(/\s+/g, "")
+            .localeCompare(b[label].toString().replace(/\s+/g, ""), undefined, {
+              numeric: true,
+              sensitivity: "base",
+            });
+          return order ? compare : compare * -1;
+        });
+      }
+      updateList(newList);
     }
   }, [pageOfferData, walletKey, denominator]);
 
