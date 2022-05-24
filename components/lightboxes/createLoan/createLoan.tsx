@@ -46,6 +46,8 @@ export const CreateLoan: React.FC<CreateLoanProps> = observer(({ mode }) => {
 
   const onSubmit = async (_values: SubOfferInterface) => {
     if (connected && wallet && walletKey) {
+      console.log(amountRef.current, durationRef.current, aprRef.current, accruedRef.current)
+
       if (!(amountRef.current && durationRef.current && aprRef.current && accruedRef.current)) {
         return;
       }
@@ -439,7 +441,7 @@ export const CreateLoan: React.FC<CreateLoanProps> = observer(({ mode }) => {
                 </p>
               </div>
             </div>
-            <button type="submit" className="btn-content" disabled={submitting || pristine}>
+            <button type="submit" className="btn-content" disabled={submitting}>
               <i className="icon icon--nft" />
               {mode === "new" ? `Create` : `Save Changes`}
             </button>
