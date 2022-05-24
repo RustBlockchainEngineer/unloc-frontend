@@ -9,11 +9,10 @@ export const LayoutTopMobile = () => {
 
   return (
     <>
-      <div className={`layout-top-mobile ${menuVisible ? "" : "hidden"}`}>
-        <UserToolbox />
+      <div className={`layout-top-mobile`}>
+        <UserToolbox hideMenu={setMenuVisibility} isMenuHidden={menuVisible}/>
         <TopMenu />
       </div>
-      <MenuShowButton menuVisibleState={menuVisible} changeMenuVisibility={setMenuVisibility} />
     </>
   );
 };

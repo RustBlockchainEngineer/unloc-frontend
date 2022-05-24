@@ -3,8 +3,9 @@ import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import { observer } from "mobx-react";
 import { StoreContext } from "@pages/_app";
 import { SwitchButton } from "./switchButton";
+import { MenuShowButton } from "./menuShowButton";
 
-export const UserToolbox = observer(() => {
+export const UserToolbox = observer((hideMenu, isMenuHidden) => {
   const store = useContext(StoreContext);
   const { theme } = store.Interface;
 
@@ -23,7 +24,7 @@ export const UserToolbox = observer(() => {
   return (
     <div className="user-toolbox">
 
-      <div className="mobile-only shadow-element" />
+      <MenuShowButton menuVisibleState={isMenuHidden} changeMenuVisibility={hideMenu} />
       <WalletMultiButton />
       <div className="theme-switcher">
         <SwitchButton
