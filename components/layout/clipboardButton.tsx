@@ -1,5 +1,3 @@
-import React, { useEffect } from "react";
-
 import { useClipboard } from "@hooks/useClipboard";
 
 interface ClipboardButtonProps {
@@ -8,11 +6,7 @@ interface ClipboardButtonProps {
   state?: boolean;
 }
 
-export const ClipboardButton: React.FC<ClipboardButtonProps> = ({
-  data,
-  classNames,
-  state,
-}: ClipboardButtonProps) => {
+export const ClipboardButton = ({ data, classNames, state }: ClipboardButtonProps) => {
   const [visible, setVisible] = useClipboard(data);
 
   return (

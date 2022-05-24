@@ -1,33 +1,36 @@
-.input--number--buttons{
-    width: 20px;
-    margin-left: -40px;
+.input--number--buttons {
+  width: 20px;
+  margin-left: -40px;
+  display: flex;
+  flex-direction: column;
+
+  &_up,
+  &_down {
+    width: 100%;
+    height: 14px;
     display: flex;
-    flex-direction: column;
+    justify-content: center;
+    border: 0;
+    background: transparent;
+    i {
+      display: block;
+    }
+  }
+  &_up {
+    border-radius: 0 $brd-rds-tn 0 0;
+  }
+  &_down {
+    border-radius: 0 0 $brd-rds-tn 0;
+  }
 
-    &_up, &_down{
-        width: 100%;
-        height: 14px;
-        display: flex;
-        justify-content: center;
-        i {
-            display: block;
-        }
-    }
-    &_up{
-        border-radius: 0 $brd-rds-tn 0 0;
-    }
-    &_down{
-        border-radius: 0 0 $brd-rds-tn 0;
-    }
-
-    &_up:hover, &_down:hover{
-        @include theme-aware('background-color', 'input-number-button-bg');
-    }
+  &_up:hover,
+  &_down:hover {
+    @include theme-aware("background-color", "input-number-button-bg");
+  }
 }
 
-
 @media (max-width: $bp-tablet) {
-    .input--number--buttons{
-        display: none;
-    }
+  .input--number--buttons {
+    display: none;
+  }
 }

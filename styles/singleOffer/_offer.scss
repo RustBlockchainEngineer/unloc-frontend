@@ -3,11 +3,11 @@
   padding: 2px;
 
   &:hover {
-    -moz-box-shadow: 0px 0px 14px rgba(0, 0, 0, 0.15);
-    box-shadow: 0px 0px 14px rgba(0, 0, 0, 0.15);
+    -moz-box-shadow: 0 0 14px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 0 14px rgba(0, 0, 0, 0.15);
 
     .offer-container {
-      @include theme-aware('background', 'single-offer-offer-bg-hover');
+      @include theme-aware("background", "single-offer-offer-bg-hover");
     }
   }
 
@@ -17,21 +17,26 @@
 }
 
 .offer-root--add-new {
-  @include theme-aware('background', 'yourNFT-offer-bg');
+  @include theme-aware("background", "yourNFT-offer-bg");
   cursor: pointer;
   height: 200px;
   width: 406px;
   border-radius: $brd-rds-2tn;
-  box-shadow: inset 0px 0px 14px rgba(0, 0, 0, 0.15);
+  box-shadow: inset 0 0 14px rgba(0, 0, 0, 0.15);
   display: flex;
   align-items: center;
   justify-content: center;
 
+  button {
+    border: 0;
+    background: transparent;
+  }
+
   &__plus {
-    @include theme-aware('background', 'yourNFT-offer-plus-bg');
-    @include theme-aware('color', 'yourNFT-offer-plus-color');
+    @include theme-aware("background", "yourNFT-offer-plus-bg");
+    @include theme-aware("color", "yourNFT-offer-plus-color");
     cursor: pointer;
-    box-shadow: 0px -4px 4px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 -4px 4px rgba(0, 0, 0, 0.25);
     border-radius: 50%;
     width: 64px;
     height: 64px;
@@ -41,7 +46,7 @@
     align-items: center;
 
     &:hover {
-      @include theme-aware('background', 'yourNFT-offer-plus-bg-hover');
+      @include theme-aware("background", "yourNFT-offer-plus-bg-hover");
     }
     .tooltip-container {
       font-size: 14px;
@@ -57,8 +62,8 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  @include theme-aware('background', 'single-offer-offer-bg');
-  @include theme-aware('color', 'nft-offers-color');
+  @include theme-aware("background", "single-offer-offer-bg");
+  @include theme-aware("color", "nft-offers-color");
   padding: 16px;
   border-radius: $brd-rds-2tn $brd-rds-2tn 0 0;
   cursor: pointer;
@@ -101,7 +106,7 @@
 
     div {
       margin-left: 2px;
-      @include theme-aware('color', 'lightbox-currency-color');
+      @include theme-aware("color", "lightbox-currency-color");
       .show-on-hover__elements__wrap {
         i {
           width: 16px;
@@ -116,7 +121,7 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: 1fr 1fr;
-  gap: 20px 0px;
+  gap: 20px 0;
   width: 70%;
 }
 
@@ -132,22 +137,22 @@
 .lend-btn {
   width: 100%;
   height: 50px;
-  @include theme-aware('background-color', 'color-primary');
+  @include theme-aware("background-color", "color-primary");
   font-weight: $wg-hv;
-  @include theme-aware('color', 'lend-offer-button');
+  @include theme-aware("color", "lend-offer-button");
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  transition: background 0.3 ease-in-out;
-  padding: 20px 0px;
+  transition: background 0.3s ease-in-out;
+  padding: 20px 0;
   &:hover {
-    @include theme-aware('background-color', 'color-primary-dark');
+    @include theme-aware("background-color", "color-primary-dark");
   }
 
   &.deactivated {
     pointer-events: none;
     cursor: not-allowed;
-    @include theme-aware('background-color', 'disabled-bg');
-    @include theme-aware('color', 'disabled-color');
+    @include theme-aware("background-color", "disabled-bg");
+    @include theme-aware("color", "disabled-color");
   }
 }

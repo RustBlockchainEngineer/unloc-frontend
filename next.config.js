@@ -2,15 +2,20 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    domains: ['www.arweave.net', 'arweave.net', 'ipfs.io', 'cdn.blastctrl.com', 's3.eu-central-1.amazonaws.com']
+    domains: [
+      "www.arweave.net",
+      "arweave.net",
+      "ipfs.io",
+      "cdn.blastctrl.com",
+      "s3.eu-central-1.amazonaws.com",
+    ],
   },
   webpack5: true,
   webpack: (config, { isServer }) => {
-    if (!isServer) {
-      config.resolve.fallback.fs = false
-    }
-    return config
-  }
-}
+    if (!isServer) config.resolve.fallback.fs = false;
 
-module.exports = nextConfig
+    return config;
+  },
+};
+
+module.exports = nextConfig;

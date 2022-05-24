@@ -35,7 +35,6 @@ export const StoreDataAdapter: React.FC<Props> = observer(({ children }: Props) 
             progress: undefined,
           });
           disconnect();
-          return;
         }
 
         initLoanProgram(wallet.adapter);

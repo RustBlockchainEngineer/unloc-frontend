@@ -1,13 +1,15 @@
-import React, { useEffect, useContext, useState, useCallback } from "react";
-import type { NextPage } from "next";
-import { observer } from "mobx-react";
+import { useEffect, useContext, useState, useCallback } from "react";
+
 import { PublicKey } from "@solana/web3.js";
-import { StoreContext } from "@pages/_app";
-import { StoreDataAdapter } from "@components/storeDataAdapter";
+import { observer } from "mobx-react";
+import type { NextPage } from "next";
+
 import { LayoutTop } from "@components/layout/layoutTop";
 import { LayoutTopMobile } from "@components/layout/layoutTopMobile";
-import { MyOffersTop } from "@components/myOffers/myOffersTop";
 import { MyOffersNftList } from "@components/myOffers/myOffersNftList";
+import { MyOffersTop } from "@components/myOffers/myOffersTop";
+import { StoreDataAdapter } from "@components/storeDataAdapter";
+import { StoreContext } from "@pages/_app";
 
 const MyOffers: NextPage = observer(() => {
   const [activeVisible, setActiveVisible] = useState(true);
@@ -17,35 +19,36 @@ const MyOffers: NextPage = observer(() => {
   const { connected, walletKey } = store.Wallet;
   const { activeHideable, depositedHideable } = store.MyOffers;
 
-  const refreshSubOffers = useCallback(async (walletKey: PublicKey) => {
-    try {
-      if (walletKey) {
-        await store.MyOffers.getOffersByWallet(walletKey);
-        await store.MyOffers.getNFTsData();
-        await store.MyOffers.getSubOffersByOffers();
+  const refreshSubOffers = useCallback(
+    async (walletKeyProp: PublicKey) => {
+      try {
+        if (walletKeyProp) {
+          await store.MyOffers.getOffersByWallet(walletKeyProp);
+          await store.MyOffers.getNFTsData();
+          await store.MyOffers.getSubOffersByOffers();
+        }
+      } catch (e) {
+        // eslint-disable-next-line no-console
+        console.log(e);
       }
-    } catch (e) {
-      // eslint-disable-next-line no-console
-      console.log(e);
-    }
-  }, [store.MyOffers]);
+    },
+    [store.MyOffers],
+  );
 
-  const handleActiveVisibility = () => {
+  const handleActiveVisibility = useCallback((): void => {
     if (!activeHideable) return;
 
     setActiveVisible(!activeVisible);
-  };
+  }, [activeHideable, activeVisible]);
 
-  const handleDepositedVisibility = () => {
+  const handleDepositedVisibility = useCallback((): void => {
     if (!depositedHideable) return;
 
     setDepositedVisible(!depositedVisible);
-  };
+  }, [depositedHideable, depositedVisible]);
 
   useEffect(() => {
-    if (connected && walletKey) {
-      refreshSubOffers(walletKey);
-    }
+    if (connected && walletKey) void refreshSubOffers(walletKey);
   }, [connected, walletKey, refreshSubOffers]);
 
   return (
@@ -56,18 +59,18 @@ const MyOffers: NextPage = observer(() => {
         {connected ? (
           <div>
             <div className="active-offers--scrolldown">
-              <h1 onClick={handleActiveVisibility}>
+              <button onClick={handleActiveVisibility}>
                 Active Offers
                 {activeHideable && (
                   <i
                     className={`icon icon--sm icon--filter--${activeVisible ? "striped" : "down"}`}
                   />
                 )}
-              </h1>
+              </button>
               <MyOffersNftList type="active" listVisible={activeVisible} />
             </div>
             <div className="deposited--scrolldown">
-              <h1 onClick={handleDepositedVisibility}>
+              <button onClick={handleDepositedVisibility}>
                 My Vault
                 {depositedHideable && (
                   <i
@@ -76,7 +79,7 @@ const MyOffers: NextPage = observer(() => {
                     }`}
                   />
                 )}
-              </h1>
+              </button>
               <MyOffersNftList type="deposited" listVisible={depositedVisible} />
             </div>
           </div>

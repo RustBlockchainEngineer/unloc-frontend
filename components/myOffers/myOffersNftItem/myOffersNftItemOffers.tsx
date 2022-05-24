@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { IsubOfferData } from "@stores/Lightbox.store";
 
 import { MyOffersNftOfferItem } from "./myOffersNftOfferItem";
-import { currencyMints } from "@constants/currency";
 import { MyOffersNftOfferItemAccepted } from "./myOffersNftOfferItemAccepted";
 
 interface myOffersNftItemOffersProps {
@@ -95,6 +94,8 @@ export const MyOffersNftItemOffers: React.FC<myOffersNftItemOffersProps> = ({
                   offers={data}
                 />
               );
+            } else {
+              return null;
             }
           })}
         </div>

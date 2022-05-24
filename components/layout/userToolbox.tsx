@@ -1,14 +1,10 @@
-import React, { useContext, useEffect, useState } from "react";
-import { usePopperTooltip } from "react-popper-tooltip";
+import { useContext, useEffect } from "react";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import { observer } from "mobx-react";
 import { StoreContext } from "@pages/_app";
 import { SwitchButton } from "./switchButton";
 
 export const UserToolbox = observer(() => {
-  const { getArrowProps, getTooltipProps, setTooltipRef, setTriggerRef, visible } =
-    usePopperTooltip();
-
   const store = useContext(StoreContext);
   const { theme } = store.Interface;
 

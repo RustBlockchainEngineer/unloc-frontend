@@ -1,13 +1,8 @@
 import React, { useContext } from "react";
 import { observer } from "mobx-react";
 import Image from "next/image";
-import { usePopperTooltip } from "react-popper-tooltip";
 import { toast } from "react-toastify";
 import { StoreContext } from "@pages/_app";
-import { compressAddress } from "@utils/stringUtils/compressAdress";
-import { ShowOnHover } from "@components/layout/showOnHover";
-import { SolscanExplorerIcon } from "@components/layout/solscanExplorerIcon";
-import { ClipboardButton } from "@components/layout/clipboardButton";
 import { MyOffersNftItemOffers } from "./myOffersNftItemOffers";
 import { IsubOfferData } from "@stores/Lightbox.store";
 
@@ -24,7 +19,6 @@ interface MyOffersNftItemProps {
 export const MyOffersNftItem: React.FC<MyOffersNftItemProps> = observer(
   ({ nftMint, name, image, offers, state, classNames, offerKey }) => {
     const store = useContext(StoreContext);
-    const { getTooltipProps, setTooltipRef, setTriggerRef, visible } = usePopperTooltip();
 
     const handleCancelOffer = async (subOfferKey: string) => {
       store.Lightbox.setContent("processing");
@@ -181,6 +175,7 @@ export const MyOffersNftItem: React.FC<MyOffersNftItemProps> = observer(
       if (status === 1) {
         return <div className={"nft-info-space"} />;
       }
+      return;
     };
 
     return (

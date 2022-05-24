@@ -4,12 +4,14 @@ export const config = {
   devnet: true,
   devnetEndpoint: "https://api.devnet.solana.com",
   mainnetEndpoint: "https://solana-api.projectserum.com",
-  pagiPrev: 2,
-  pagiNext: 2,
-  nftBulkMax: 20,
-  loanValueMin: 1,
-  loanAPRMin: 1,
-  loanMinRepayMin: 1,
+  //TODO: properties below is never used. I think we should remove them
+
+  // pagiPrev: 2,
+  // pagiNext: 2,
+  // nftBulkMax: 20,
+  // loanValueMin: 1,
+  // loanAprMin: 1,
+  // loanMinRepayMin: 1,
 };
 
 export const NFT_LOAN_PID = new PublicKey(

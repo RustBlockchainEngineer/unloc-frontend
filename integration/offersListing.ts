@@ -17,5 +17,6 @@ export const getSubOffersKeysByState = async (state: SubOfferState[]) => {
     return data.map((offer) => offer.pubkey);
   } catch (e) {
     console.log(e);
+    return;
   }
 };

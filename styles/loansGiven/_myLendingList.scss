@@ -29,9 +29,9 @@
 .loan-given {
   width: 49%;
   margin-bottom: 10px;
-  @include theme-aware('background', 'myOffers-subOffer-bg');
+  @include theme-aware("background", "myOffers-subOffer-bg");
   backdrop-filter: blur(4px);
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
   margin-top: 8px;
   padding: 20px;
   display: grid;
@@ -40,15 +40,15 @@
   border-radius: $brd-rds-2tn;
 
   &.green {
-    @include theme-aware('background', 'timeLoan-offer-green');
+    @include theme-aware("background", "timeLoan-offer-green");
   }
 
   &.yellow {
-    @include theme-aware('background', 'timeLoan-offer-yellow');
+    @include theme-aware("background", "timeLoan-offer-yellow");
   }
 
   &.red {
-    @include theme-aware('background', 'timeLoan-offer-red');
+    @include theme-aware("background", "timeLoan-offer-red");
   }
 
   @media (max-width: $bp-tablet) {
@@ -79,25 +79,25 @@
 
       &.green p,
       &.green span {
-        @include theme-aware('color', 'timeLoan-green');
+        @include theme-aware("color", "timeLoan-green");
       }
 
       &.yellow p,
       &.yellow span {
-        @include theme-aware('color', 'timeLoan-yellow');
+        @include theme-aware("color", "timeLoan-yellow");
       }
 
       &.red p,
       &.red span {
-        @include theme-aware('color', 'timeLoan-red');
+        @include theme-aware("color", "timeLoan-red");
       }
 
       &.yellow.status p {
-        @include theme-aware('background', 'timeLoan-yellow-btn');
+        @include theme-aware("background", "timeLoan-yellow-btn");
       }
 
       &.red.status p {
-        @include theme-aware('background', 'timeLoan-red-btn');
+        @include theme-aware("background", "timeLoan-red-btn");
       }
 
       h4 {
@@ -110,9 +110,9 @@
     }
 
     &.details {
-      @include theme-aware('background', 'myOffers-subOffer-info-bg');
-      @include theme-aware('color', 'myOffers-nftName-color');
-      box-shadow: inset 0px 2px 2px rgba(0, 0, 0, 0.25);
+      @include theme-aware("background", "myOffers-subOffer-info-bg");
+      @include theme-aware("color", "myOffers-nftName-color");
+      box-shadow: inset 0 2px 2px rgba(0, 0, 0, 0.25);
       border-radius: $brd-rds-2tn;
       justify-content: space-around;
       align-items: center;
@@ -131,14 +131,14 @@
 
     .claim-nft--button {
       margin: 0 auto;
-      border: 0px;
+      border: 0;
     }
 
     .loan-not-repaid-button {
       margin: 0 auto;
-      border: 0px;
-      @include theme-aware('background', 'myOffers-subOffer-info-bg');
-      @include theme-aware('color', 'timeLoanDisabled-color');
+      border: 0;
+      @include theme-aware("background", "myOffers-subOffer-info-bg");
+      @include theme-aware("color", "timeLoanDisabled-color");
     }
 
     .item__title {
@@ -150,7 +150,7 @@
 
       .name,
       .collection {
-        @include theme-aware('color', 'myLoan-header-color');
+        @include theme-aware("color", "myLoan-header-color");
       }
     }
 
@@ -163,18 +163,18 @@
     .loan__row--item div,
     .loan__row--item p,
     .loan__row button {
-      @include theme-aware('color', 'timeLoanDiabled-color');
-      @include theme-aware('background', 'disabled-bg');
+      @include theme-aware("color", "timeLoanDiabled-color");
+      @include theme-aware("background", "disabled-bg");
     }
 
     .loan__row--item h4 {
-      @include theme-aware('color', 'timeLoanDiabled-color');
+      @include theme-aware("color", "timeLoanDiabled-color");
     }
 
     .loan__row button {
       pointer-events: none;
       cursor: not-allowed;
-      border: 0px;
+      border: 0;
     }
   }
 }
@@ -191,10 +191,11 @@
     overflow: hidden;
     text-overflow: ellipsis;
     border-radius: $brd-rds-sm;
-    justify-content: center
+    justify-content: center;
   }
 
-  &__mint, &__id {
+  &__mint,
+  &__id {
     color: white;
     &.show-on-hover:hover {
       padding: 0;
@@ -207,15 +208,15 @@
   }
 
   &__mint {
-    @include theme-aware('background', 'myLoan-mint-bg');
+    @include theme-aware("background", "myLoan-mint-bg");
   }
 
   &__id {
-    @include theme-aware('background', 'myLoan-id-bg');
+    @include theme-aware("background", "myLoan-id-bg");
   }
 
   &__status {
-    @include theme-aware('color', 'timeLoan-green');
+    @include theme-aware("color", "timeLoan-green");
     background: rgba(0, 215, 86, 0.25);
   }
 }

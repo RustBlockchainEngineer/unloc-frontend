@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import { useContext } from "react";
 import { observer } from "mobx-react";
 import Image from "next/image";
 import { toast } from "react-toastify";
@@ -85,7 +85,7 @@ export const LendConfirmation = observer(() => {
           <div className="data">{duration}</div>
         </div>
         <div className="offer-data-liner">
-          <div className="title">Total Repay Amount </div>
+          <div className="title">Total Repay Amount</div>
           <div className="data">
             {totalRepay} {currency}
           </div>

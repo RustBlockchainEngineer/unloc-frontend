@@ -1,4 +1,5 @@
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, FC } from "react";
+
 import { observer } from "mobx-react";
 import { toast } from "react-toastify";
 import { NFTMetadata } from "@integration/nftLoan";
@@ -15,7 +16,7 @@ export interface INFTCollateral {
   NFTImage: string;
 }
 
-export const CreateCollateral: React.FC = observer(() => {
+export const CreateCollateral: FC = observer(() => {
   const store = useContext(StoreContext);
   const myOffers = store.MyOffers;
   const { wallet, connection, walletKey } = store.Wallet;

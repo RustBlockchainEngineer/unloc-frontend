@@ -3,9 +3,9 @@ import { useState } from "react";
 export const useClipboard = (clipboardData: string): [boolean, () => void] => {
   const [visible, setVisible] = useState(false);
 
-  const setClipboard = () => {
+  const setClipboard = (): void => {
     setVisible(true);
-    navigator.clipboard.writeText(clipboardData);
+    void navigator.clipboard.writeText(clipboardData);
 
     const t = setTimeout(() => {
       setVisible(false);

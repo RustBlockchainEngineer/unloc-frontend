@@ -1,0 +1,11 @@
+# Folders to fix
+/@types
+/components
+/integration
+/methods
+/stores
+/utils
+
+# Config files
+package.json
+.lintstagedrc.json

@@ -1,10 +1,10 @@
-import React from "react";
+import { memo } from "react";
 
-interface BlobLoaderProps {
+interface IBlobLoaderProps {
   classNames?: string;
 }
 
-export const BlobLoader: React.FC<BlobLoaderProps> = ({ classNames }: BlobLoaderProps) => {
+export const BlobLoader = memo(({ classNames }: IBlobLoaderProps) => {
   return (
     <div className={`blob-loader ${classNames ? classNames : ""}`}>
       <div className="blobs">
@@ -32,4 +32,4 @@ export const BlobLoader: React.FC<BlobLoaderProps> = ({ classNames }: BlobLoader
       </svg>
     </div>
   );
-};
+});

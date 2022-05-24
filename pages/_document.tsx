@@ -1,6 +1,8 @@
+import { ReactNode } from "react";
+
 import { Html, Head, Main, NextScript } from "next/document";
 
-export default function Document() {
+export default function Document(): ReactNode {
   return (
     <Html>
       <Head>
@@ -16,14 +18,11 @@ export default function Document() {
           href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@300;400;700&display=optional"
           rel="stylesheet"
         />
-
         <meta name="msapplication.TileColor" content="#e00a7f" />
         <meta name="theme-color" content="#e00a7f" />
-
         <meta name="robots" content="all" />
         <meta name="google" content="nositelinksearchbox" />
         <meta name="google" content="notranslate" key="notranslate" />
-
         <meta property="og:type" content="website" />
         <meta name="twitter:card" content="summary_large_image" />
       </Head>

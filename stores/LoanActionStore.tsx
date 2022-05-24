@@ -1,44 +1,17 @@
 import { action, makeAutoObservable } from "mobx";
 import BN from "bn.js";
 import { PublicKey } from "@solana/web3.js";
-import { config } from "@constants/config";
 import { getDurationForContractData } from "@utils/getDuration";
 import { createSubOffer, updateSubOffer } from "@integration/nftLoan";
-
-export type Ticker = "USDC" | "SOL";
+import { CurrencyTypes } from "@constants/currency-constants";
+import { currencies } from "@constants/currency";
 
 export interface SubOfferInterface {
   loanvalue: number;
-  currency: Ticker;
+  currency: CurrencyTypes;
   duration: number;
   apr: number;
 }
-
-export interface CurrencyInfo {
-  mint: string;
-  decimals: number;
-}
-
-export const currencyMints: Record<string, Ticker> = config.devnet
-  ? {
-      ExW7Yek3vsRJcapsdRKcxF9XRRS8zigLZ8nqqdqnWgQi: "USDC",
-      So11111111111111111111111111111111111111112: "SOL",
-    }
-  : {
-      EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v: "USDC",
-      So11111111111111111111111111111111111111112: "SOL",
-    };
-
-export const currencies: Record<Ticker, CurrencyInfo> = config.devnet
-  ? {
-      USDC: { mint: "ExW7Yek3vsRJcapsdRKcxF9XRRS8zigLZ8nqqdqnWgQi", decimals: 6 },
-      SOL: { mint: "So11111111111111111111111111111111111111112", decimals: 9 },
-    }
-  : {
-      USDC: { mint: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v", decimals: 6 },
-      SOL: { mint: "So11111111111111111111111111111111111111112", decimals: 9 },
-    };
-
 export class LoanActionsStore {
   rootStore;
 
@@ -71,7 +44,7 @@ export class LoanActionsStore {
 
   @action.bound async handleEditSubOffer(
     data: {
-      currency: Ticker;
+      currency: CurrencyTypes;
       loanvalue: number;
       duration: number;
       apr: string | number | BN | number[] | Uint8Array | Buffer;

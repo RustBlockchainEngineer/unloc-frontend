@@ -34,7 +34,7 @@
 
   li a {
     display: inline-block;
-    @include theme-aware('color', 'color-content');
+    @include theme-aware("color", "color-content");
     text-decoration: none;
     font-size: $tp-lg;
     padding: 4px 8px 5px 8px;
@@ -44,7 +44,7 @@
     height: 31px;
 
     &:hover {
-      @include theme-aware('background-color', 'color-accent');
+      @include theme-aware("background-color", "color-accent");
     }
 
     &.active {

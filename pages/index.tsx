@@ -1,23 +1,25 @@
 import { useContext, useEffect } from "react";
+
+import { observer } from "mobx-react";
 import type { NextPage } from "next";
 import Head from "next/head";
-import { observer } from "mobx-react";
-import { StoreContext } from "@pages/_app";
-import { localesHome } from "@constants/locales";
-import { StoreDataAdapter } from "@components/storeDataAdapter";
+
 import { LayoutTop } from "@components/layout/layoutTop";
 import { LayoutTopMobile } from "@components/layout/layoutTopMobile";
-import { OffersTop } from "@components/offersPage/offersTop";
 import { OffersGrid } from "@components/offersPage/offersGrid";
 import { OffersTable } from "@components/offersPage/offersTable";
-import Footer from "@components/layout/footer";
+import { OffersTop } from "@components/offersPage/offersTop";
+import { StoreDataAdapter } from "@components/storeDataAdapter";
+import { localesHome } from "@constants/locales";
+
+import { StoreContext } from "./_app";
 
 const Home: NextPage = observer(() => {
   const store = useContext(StoreContext);
   const { wallet, connected } = store.Wallet;
   const { viewType } = store.Offers;
 
-  const handleOffers = async () => {
+  const handleOffers = async (): Promise<void> => {
     try {
       if (connected && wallet) {
         await store.Offers.refetchOffers();
@@ -25,14 +27,13 @@ const Home: NextPage = observer(() => {
         store.Offers.buildFilterCollection();
       }
     } catch (e) {
+      // eslint-disable-next-line no-console
       console.log(e);
     }
   };
 
   useEffect(() => {
-    if (wallet && connected) {
-      handleOffers();
-    }
+    if (wallet && connected) void handleOffers();
   }, [wallet, connected]);
 
   return (

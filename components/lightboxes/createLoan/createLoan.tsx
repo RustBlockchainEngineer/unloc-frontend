@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useState, useEffect, FormEvent } from "react";
+import React, { useContext, useRef, useState, FormEvent } from "react";
 import { observer } from "mobx-react";
 import { toast } from "react-toastify";
 import { Form, Field } from "react-final-form";
@@ -10,7 +10,6 @@ import { getDecimalsForLoanAmount } from "@integration/getDecimalForLoanAmount";
 import { currencyMints } from "@constants/currency";
 import { calculateAprFromRepayValue } from "@utils/calculateAprFromRepayValue";
 import { SwitchButton } from "@components/layout/switchButton";
-import { calculateAprFromTotalRepayAndApr } from "@utils/calculateAmountFromTotalRepayAndApr";
 import { CustomSelect } from "@components/layout/customSelect";
 import { getDurationFromContractData } from "@utils/timeUtils/timeUtils";
 
@@ -254,7 +253,7 @@ export const CreateLoan: React.FC<CreateLoanProps> = observer(({ mode }) => {
     }
   };
 
-  const onInterestInput = (e: FormEvent<HTMLInputElement>) => {
+  const onInterestInput = () => {
     if (!(accruedRef.current && amountRef.current && durationRef.current && aprRef.current)) {
       return;
     }
@@ -276,7 +275,7 @@ export const CreateLoan: React.FC<CreateLoanProps> = observer(({ mode }) => {
     );
   };
 
-  const onAprInput = (e: FormEvent<HTMLInputElement>) => {
+  const onAprInput = () => {
     if (!(accruedRef.current && amountRef.current && durationRef.current && aprRef.current)) {
       return;
     }
@@ -296,6 +295,7 @@ export const CreateLoan: React.FC<CreateLoanProps> = observer(({ mode }) => {
     if (activeSubOfferData) {
       return getDecimalsForLoanAmount(activeSubOfferData.offerAmount, activeSubOfferData.offerMint);
     }
+    return;
   };
 
   return processing ? (
@@ -307,7 +307,7 @@ export const CreateLoan: React.FC<CreateLoanProps> = observer(({ mode }) => {
     <Form
       className="create-offer-container"
       onSubmit={onSubmit}
-      render={({ handleSubmit, submitting, pristine, values }) => (
+      render={({ handleSubmit, submitting, pristine }) => (
         <form className="create-offer" onSubmit={handleSubmit}>
           <h1>{mode === "new" ? `Create a Loan Offer` : `Update Loan Offer`}</h1>
           <div className="offer-form">

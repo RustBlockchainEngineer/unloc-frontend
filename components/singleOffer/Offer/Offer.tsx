@@ -4,7 +4,7 @@ import { usePopperTooltip } from "react-popper-tooltip";
 import { ShowOnHover } from "@components/layout/showOnHover";
 import { ClipboardButton } from "@components/layout/clipboardButton";
 import { SolscanExplorerIcon } from "@components/layout/solscanExplorerIcon";
-import { compressAddress } from "@utils/stringUtils/compressAdress";
+import { compressAddress } from "../../../utils/stringUtils/compressAdress";
 import { currencyMints } from "@constants/currency";
 import { statuses } from "@constants/offerStatuses";
 

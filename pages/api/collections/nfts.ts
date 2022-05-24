@@ -1,8 +1,8 @@
-import { getWhitelisted } from "@integration/db";
-
 import type { NextApiRequest, NextApiResponse } from "next";
 
-const handler = async (req: NextApiRequest, res: NextApiResponse<string[]>) => {
+import { getWhitelisted } from "@integration/db";
+
+const handler = async (req: NextApiRequest, res: NextApiResponse<string[]>): Promise<void> => {
   if (req.method === "GET") {
     const data = await getWhitelisted();
 
@@ -12,9 +12,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<string[]>) => {
     }
 
     res.status(200).json(data);
-  } else {
-    res.status(404).end();
-  }
+  } else res.status(404).end();
 };
 
 export default handler;

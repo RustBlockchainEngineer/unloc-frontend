@@ -52,7 +52,7 @@ export const OffersGridItem = ({
   const getSheets = (count: number) => {
     let tick = 0;
     if (count) {
-      [...Array(count)].forEach((page, index) => {
+      [...Array(count)].forEach(() => {
         tick++;
       });
 

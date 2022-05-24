@@ -9,7 +9,7 @@
 
     h5 {
       font-size: $tp-lg;
-      @include theme-aware('color', 'input-number-color');
+      @include theme-aware("color", "input-number-color");
       margin: 0;
       text-transform: capitalize;
       display: flex;
@@ -30,7 +30,7 @@
       width: 100%;
       line-height: 24px;
       margin-bottom: 12px;
-      @include theme-aware('color', 'color-label');
+      @include theme-aware("color", "color-label");
 
       .checkbox-label {
         margin-right: 8px;
@@ -40,7 +40,7 @@
 
   .filter-minmax {
     .filter-line {
-      @include theme-aware('color', 'input-number-color');
+      @include theme-aware("color", "input-number-color");
       display: flex;
       justify-content: space-between;
       width: 100%;
@@ -48,31 +48,30 @@
     }
 
     span {
-      @include theme-aware('color', 'input-number-color');
+      @include theme-aware("color", "input-number-color");
     }
 
-    input[type='number'] {
-      @include theme-aware('background-color', 'input-number-bg');
-      @include theme-aware('color', 'input-number-color');
+    input[type="number"] {
+      @include theme-aware("background-color", "input-number-bg");
+      @include theme-aware("color", "input-number-color");
       height: 28px;
       width: 80%;
       border-radius: $brd-rds-tn;
-      border: 0px;
+      border: 0;
       margin-bottom: 10px;
       padding: 4px 8px;
       transition: all 0.3s ease-in-out;
 
       &:focus {
-        @include theme-aware('outline-color', 'color-label');
+        @include theme-aware("outline-color", "color-label");
         outline-width: 1px;
       }
     }
 
-    input[type=number]::-webkit-inner-spin-button,
-    input[type=number]::-webkit-outer-spin-button {
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
       opacity: 0;
     }
-
   }
 }
 
@@ -94,22 +93,22 @@
 
 .checkbox-label .checkbox-custom {
   position: absolute;
-  top: 0px;
-  left: 0px;
+  top: 0;
+  left: 0;
   height: 24px;
   width: 24px;
-  @include theme-aware('background-color', 'input-number-bg');
+  @include theme-aware("background-color", "input-number-bg");
   border-radius: $brd-rds-tn;
   transition: all 0.3s ease-out;
   -webkit-transition: all 0.3s ease-out;
   -moz-transition: all 0.3s ease-out;
   -ms-transition: all 0.3s ease-out;
   -o-transition: all 0.3s ease-out;
-  @include theme-aware('border-color', 'color-label');
+  @include theme-aware("border-color", "color-label");
 }
 
-.checkbox-label input:checked~.checkbox-custom {
-  @include theme-aware('background-color', 'checkbox-checked-bg');
+.checkbox-label input:checked ~ .checkbox-custom {
+  @include theme-aware("background-color", "checkbox-checked-bg");
   border-radius: $brd-rds-tn;
   -webkit-transform: rotate(0deg) scale(1);
   -ms-transform: rotate(0deg) scale(1);
@@ -121,14 +120,14 @@
 
 .checkbox-label .checkbox-custom::after {
   position: absolute;
-  content: '';
+  content: "";
   left: 12px;
   top: 12px;
-  height: 0px;
-  width: 0px;
+  height: 0;
+  width: 0;
   border-radius: 5px;
   border: solid;
-  @include theme-aware('border-color', 'color-label');
+  @include theme-aware("border-color", "color-label");
   border-width: 0 3px 3px 0;
   -webkit-transform: rotate(0deg) scale(0);
   -ms-transform: rotate(0deg) scale(0);
@@ -141,7 +140,7 @@
   -o-transition: all 0.3s ease-out;
 }
 
-.checkbox-label input:checked~.checkbox-custom::after {
+.checkbox-label input:checked ~ .checkbox-custom::after {
   -webkit-transform: rotate(45deg) scale(1);
   -ms-transform: rotate(45deg) scale(1);
   transform: rotate(45deg) scale(1);
@@ -151,7 +150,7 @@
   width: 6px;
   height: 12px;
   border: solid;
-  @include theme-aware('border-color', 'color-label');
+  @include theme-aware("border-color", "color-label");
   border-width: 0 4px 4px 0;
   background-color: transparent;
   border-radius: 0;
@@ -160,21 +159,21 @@
 /* For Ripple Effect */
 .checkbox-label .checkbox-custom::before {
   position: absolute;
-  content: '';
+  content: "";
   left: 10px;
   top: 10px;
-  width: 0px;
-  height: 0px;
+  width: 0;
+  height: 0;
   border-radius: 5px;
   border: 2px solid;
-  @include theme-aware('border-color', 'color-label');
+  @include theme-aware("border-color", "color-label");
   -webkit-transform: scale(0);
   -ms-transform: scale(0);
   transform: scale(0);
   pointer-events: none;
 }
 
-.checkbox-label input:checked~.checkbox-custom::before {
+.checkbox-label input:checked ~ .checkbox-custom::before {
   left: -3px;
   top: -3px;
   width: 24px;

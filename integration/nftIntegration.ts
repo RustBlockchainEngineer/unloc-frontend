@@ -1,10 +1,11 @@
+import { Metadata } from "@metaplex-foundation/mpl-token-metadata";
 import { TOKEN_PROGRAM_ID } from "@solana/spl-token";
 import { Connection, PublicKey } from "@solana/web3.js";
-import { Metadata } from "@metaplex-foundation/mpl-token-metadata";
 import axios from "axios";
+import { IMetadata } from "nft";
 
-import { IMetadata, NftCoreData } from "../@types/nft";
 import { RPC_ENDPOINT } from "@constants/config";
+
 import { MultipleNFT, NFTMetadata } from "./nftLoan";
 
 // Uncomment next line if using Solana cluster

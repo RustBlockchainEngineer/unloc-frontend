@@ -1,15 +1,15 @@
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&family=Red+Hat+Display:wght@400;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&family=Red+Hat+Display:wght@400;700&display=swap");
 
-@import './normalize';
-@import './mixins';
-@import './variables';
-@import './themes';
-@import './toasters';
+@import "./normalize";
+@import "./mixins";
+@import "./variables";
+@import "./themes";
+@import "./toasters";
 
-@import './_inputNumberArrows';
-@import './switchButton';
-@import './currencyChanger';
-@import './_selects';
+@import "./inputNumberArrows";
+@import "./switchButton";
+@import "./currencyChanger";
+@import "./selects";
 
 @import './animations';
 @import './icons';
@@ -27,39 +27,40 @@
 @import './solscanExplorer';
 @import './popups';
 
-@import './singleOffer/header';
-@import './singleOffer/offer';
-@import './singleOffer/page';
+@import "./singleOffer/header";
+@import "./singleOffer/offer";
+@import "./singleOffer/page";
 
-@import './offersPage/offersTop';
-@import './offersPage/offersGrid';
-@import './offersPage/offersTable';
-@import './offersPage/offersPagination';
+@import "./offersPage/offersTop";
+@import "./offersPage/offersGrid";
+@import "./offersPage/offersTable";
+@import "./offersPage/offersPagination";
 
-@import './myOffers/_myOffersTop';
-@import './myOffers/myOffersNftList';
+@import "./myOffers/myOffersTop";
+@import "./myOffers/myOffersNftList";
 
-@import './lightboxBase';
-@import './NFTCollateral';
-@import './createLoan';
-@import './connectWallet';
-@import './loansGiven/myLendingList';
-@import './singleOffer/lendConfirmation';
+@import "./lightboxBase";
+@import "./NFTCollateral";
+@import "./createLoan";
+@import "./connectWallet";
+@import "./loansGiven/myLendingList";
+@import "./singleOffer/lendConfirmation";
+@import "./singleOffer/acceptOffer";
 
 @import './mobile/footerMobile';
 @import './mobile/layoutTopMobile';
 @import './mobile/offersPage/offersTopMobile';
 
 body {
-  @include theme-aware('background-color', 'color-background');
-  @include theme-aware('background-image', 'bg-gradient-home');
-  @include theme-aware('color', 'color-primary');
+  @include theme-aware("background-color", "color-background");
+  @include theme-aware("background-image", "bg-gradient-home");
+  @include theme-aware("color", "color-primary");
   background-size: 100vw 100vh;
-  font-family: 'Red Hat Display', sans-serif;
+  font-family: "Red Hat Display", sans-serif;
   background-attachment: fixed;
   box-sizing: border-box;
-  padding: 0px;
-  margin: 0px;
+  padding: 0;
+  margin: 0;
   width: 100%;
   transition: background-color 0.8s ease-in-out;
 }
@@ -82,8 +83,8 @@ body {
   }
 
   .devnet {
-    @include theme-aware('color', 'color-white');
-    @include theme-aware('background-color', 'color-primary');
+    @include theme-aware("color", "color-white");
+    @include theme-aware("background-color", "color-primary");
     display: inline-flex;
     align-items: center;
     border-radius: 12px;
@@ -108,12 +109,12 @@ body {
 }
 
 .home-bg-bottom {
-  @include theme-aware('background-image', 'bg-home-bottom');
+  @include theme-aware("background-image", "bg-home-bottom");
   background-position: bottom left;
 }
 
 .home-bg-top {
-  @include theme-aware('background-image', 'bg-home');
+  @include theme-aware("background-image", "bg-home");
   background-position: top right;
 }
 
@@ -143,11 +144,11 @@ h3,
 h4,
 h5,
 h6 {
-  @include theme-aware('color', 'color-content');
+  @include theme-aware("color", "color-content");
 }
 
 a {
-  @include theme-aware('color', 'color-content');
+  @include theme-aware("color", "color-content");
   transition: color 0.5s;
 }
 

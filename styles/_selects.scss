@@ -1,6 +1,6 @@
 .custom-select {
-  @include theme-aware('background-color', 'input-number-bg');
-  @include theme-aware('color', 'color-content');
+  @include theme-aware("background-color", "input-number-bg");
+  @include theme-aware("color", "color-content");
 
   transition: all 0.3s ease-in-out;
   padding: 0;
@@ -19,9 +19,9 @@
   }
 
   ul.custom-select__options {
-    @include theme-aware('background-color', 'input-number-bg');
+    @include theme-aware("background-color", "input-number-bg");
 
-    box-shadow: 0px 4px 6px rgba(45, 26, 81, 0.3);
+    box-shadow: 0 4px 6px rgba(45, 26, 81, 0.3);
     width: 100%;
     position: absolute;
     margin-top: 40px;
@@ -46,19 +46,19 @@
       transition: all 0.3s ease-in-out;
 
       &.selected {
-        @include theme-aware('background-color', 'selected-option-bg');
+        @include theme-aware("background-color", "selected-option-bg");
       }
 
       &:not(.selected):hover {
-        @include theme-aware('background-color', 'hover-option-bg');
+        @include theme-aware("background-color", "hover-option-bg");
       }
     }
   }
 }
 
 .custom-multi-select {
-  @include theme-aware('background-color', 'bg-dropdown-multiple');
-  @include theme-aware('color', 'color-white');
+  @include theme-aware("background-color", "bg-dropdown-multiple");
+  @include theme-aware("color", "color-white");
 
   transition: all 0.1s ease;
   padding: $mr-sm $mr-sm $mr-sm $mr-md;
@@ -77,7 +77,7 @@
       margin-right: $mr-sm;
     }
   }
-  
+
   &__reset {
     display: flex;
     justify-content: center;
@@ -87,19 +87,19 @@
       display: inline-block;
       width: 100%;
       text-align: center;
-      @include theme-aware('background-color', 'color-accent');
-      @include theme-aware('border-color', 'color-secondary');
-      @include theme-aware('color', 'color-secondary');
+      @include theme-aware("background-color", "color-accent");
+      @include theme-aware("border-color", "color-secondary");
+      @include theme-aware("color", "color-secondary");
 
       &:hover {
-        @include theme-aware('background-color', 'color-secondary');
+        @include theme-aware("background-color", "color-secondary");
       }
     }
   }
 
   .custom-multi-select__options {
-    @include theme-aware('background-color', 'color-accent');
-    box-shadow: 0px 0px 10px rgba(45, 26, 81, 0.9);
+    @include theme-aware("background-color", "color-accent");
+    box-shadow: 0 0 10px rgba(45, 26, 81, 0.9);
     position: absolute;
     top: 100%;
     left: 50%;
@@ -126,7 +126,7 @@
       position: relative;
 
       &.selected {
-        @include theme-aware('background-color', 'selected-option-bg');
+        @include theme-aware("background-color", "selected-option-bg");
       }
 
       & .checkbox-title {

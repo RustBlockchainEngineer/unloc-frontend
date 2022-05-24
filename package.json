@@ -1,15 +1,24 @@
 {
   "name": "unloc",
   "version": "0.1.0",
+  "description": "UNLOC the full potential of your NFTs.",
   "private": true,
+  "workspaces": {
+    "packages": [
+      "packages/eslint"
+    ]
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
     "pretty": "prettier --write .",
     "prepare": "husky install",
-    "all": "yarn pretty && yarn lint && yarn build"
+    "clean": "yarn clean:coverage && lerna run clean",
+    "clean:coverage": "rm -rf coverage",
+    "lint": "yarn lint:prettier && yarn lint:package-json && yarn lint:eslint",
+    "lint:prettier": "prettier --loglevel warn --check \"**/*.{scss,css,js,jsx,ts,tsx,html}\"",
+    "lint:eslint": "eslint \"**/*.{ts,tsx}\""
   },
   "dependencies": {
     "@metaplex-foundation/mpl-token-metadata": "^1.1.0",
@@ -35,23 +44,33 @@
     "react-toastify": "^8.2.0"
   },
   "devDependencies": {
+    "@commitlint/cli": "^17.0.0",
+    "@commitlint/config-conventional": "^17.0.0",
+    "@next/eslint-plugin-next": "^12.1.6",
+    "@tsconfig/next": "^1.0.2",
     "@types/node": "17.0.23",
     "@types/react": "17.0.43",
     "@types/react-dom": "17.0.14",
+    "@typescript-eslint/eslint-plugin": "^5.23.0",
+    "@typescript-eslint/parser": "^5.23.0",
     "eslint": "8.12.0",
-    "eslint-config-next": "12.1.2",
+    "eslint-config-next": "^12.1.6",
     "eslint-config-prettier": "^8.5.0",
-    "husky": "^7.0.4",
-    "prettier": "^2.6.1",
+    "eslint-import-resolver-typescript": "^2.7.1",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-jsdoc": "^39.2.9",
+    "eslint-plugin-no-cyrillic-string": "^1.0.5",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-react-memo": "^0.0.3",
+    "husky": "^8.0.0",
+    "lerna": "^4.0.0",
+    "lint-staged": "^12.4.1",
+    "prettier": "^2.6.2",
     "prettier-eslint-cli": "^5.0.1",
     "pretty-quick": "^3.1.3",
+    "resolve-url-loader": "^5.0.0",
     "sass": "^1.49.9",
     "tsconfig-paths-webpack-plugin": "^3.5.2",
     "typescript": "4.6.3"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "pretty-quick"
-    }
   }
 }

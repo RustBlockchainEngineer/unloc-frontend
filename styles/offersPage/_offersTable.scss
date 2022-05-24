@@ -13,16 +13,16 @@
   }
 
   :last-child a {
-    border-radius: 0px 0px $brd-rds-sm $brd-rds-sm;
+    border-radius: 0 0 $brd-rds-sm $brd-rds-sm;
   }
 }
 
 .offers-table-heading {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr .5fr 0.5fr .5fr .5fr 1fr;
+  grid-template-columns: 2fr 1fr 1fr 0.5fr 0.5fr 0.5fr 0.5fr 1fr;
   padding: 10px 0;
-  @include theme-aware('background-color', 'color-accent');
-  @include theme-aware('color', 'color-label');
+  @include theme-aware("background-color", "color-accent");
+  @include theme-aware("color", "color-label");
   font-size: $tp-sm;
   font-weight: $wg-bd;
   border-radius: $brd-rds-sm $brd-rds-sm 0 0;
@@ -39,7 +39,7 @@
       font-weight: inherit;
       cursor: pointer;
 
-      .icon--sm{
+      .icon--sm {
         width: 8px;
         height: 5px;
         margin-left: 5px;
@@ -52,43 +52,43 @@
   width: 100%;
   a {
     display: grid;
-    grid-template-columns: 2fr 1fr 1fr .5fr 0.5fr .5fr .5fr 1fr;
+    grid-template-columns: 2fr 1fr 1fr 0.5fr 0.5fr 0.5fr 0.5fr 1fr;
     align-content: center;
     width: 100%;
-    @include theme-aware('background-color', 'bg-table');
-    @include theme-aware('color', 'color-label');
+    @include theme-aware("background-color", "bg-table");
+    @include theme-aware("color", "color-label");
     text-decoration: none;
     transition: background-color 0.3s ease-in-out;
     backdrop-filter: blur(21px);
 
     &:hover {
-      @include theme-aware('background-color', 'bg-table-hover');
+      @include theme-aware("background-color", "bg-table-hover");
       & button {
         opacity: 1;
-        @include theme-aware('color', 'lend-offer-button');
+        @include theme-aware("color", "lend-offer-button");
       }
     }
     & button {
       transition: 0.3s ease-in-out;
       opacity: 0;
-      @include theme-aware('background-color', 'color-primary');
+      @include theme-aware("background-color", "color-primary");
       border: none;
       border-radius: 6px;
       padding: 8px 0;
-      @include theme-aware('color', 'color-label');
+      @include theme-aware("color", "color-label");
       font-weight: 700;
       width: 75%;
       cursor: pointer;
 
       &:hover {
-        @include theme-aware('background-color', 'color-primary-dark');
+        @include theme-aware("background-color", "color-primary-dark");
       }
 
       &.deactivated {
         pointer-events: none;
         cursor: not-allowed;
-        @include theme-aware('background-color', 'disabled-bg');
-        @include theme-aware('color', 'disabled-color');
+        @include theme-aware("background-color", "disabled-bg");
+        @include theme-aware("color", "disabled-color");
       }
     }
 
@@ -98,7 +98,7 @@
       position: absolute;
       width: 32px;
       height: 32px;
-      @include theme-aware('background-color', 'color-primary');
+      @include theme-aware("background-color", "color-primary");
       border-radius: 50%;
       z-index: 10000;
       display: flex;
@@ -126,7 +126,7 @@
         text-overflow: ellipsis;
         overflow: hidden;
         white-space: nowrap;
-        &.collection{
+        &.collection {
           width: 145px;
         }
       }

@@ -18,7 +18,7 @@
   .blob-center {
     transform-style: preserve-3d;
     position: absolute;
-    @include theme-aware('background-color', 'color-primary');
+    @include theme-aware("background-color", "color-primary");
     top: 50%;
     left: 50%;
     width: 30px;
@@ -33,7 +33,7 @@
 // Blob item
 .blob {
   position: absolute;
-  @include theme-aware('background-color', 'color-primary');
+  @include theme-aware("background-color", "color-primary");
   top: 50%;
   left: 50%;
   width: 30px;
