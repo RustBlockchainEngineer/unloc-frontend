@@ -46,7 +46,7 @@ export const CreateLoan: React.FC<CreateLoanProps> = observer(({ mode }) => {
 
   const onSubmit = async (_values: SubOfferInterface) => {
     if (connected && wallet && walletKey) {
-      console.log(amountRef.current, durationRef.current, aprRef.current, accruedRef.current)
+      console.log(amountRef.current, durationRef.current, aprRef.current, accruedRef.current);
 
       if (!(amountRef.current && durationRef.current && aprRef.current && accruedRef.current)) {
         return;
@@ -309,7 +309,7 @@ export const CreateLoan: React.FC<CreateLoanProps> = observer(({ mode }) => {
     <Form
       className="create-offer-container"
       onSubmit={onSubmit}
-      render={({ handleSubmit, submitting, pristine }) => (
+      render={({ handleSubmit, submitting }) => (
         <form className="create-offer" onSubmit={handleSubmit}>
           <h1>{mode === "new" ? `Create a Loan Offer` : `Update Loan Offer`}</h1>
           <div className="offer-form">
