@@ -3,7 +3,11 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { localesTop } from "@constants/locales";
 
-export const TopMenu = () => {
+interface TopMenuProps {
+  mobileVisible: boolean
+}
+
+export const TopMenu = ({mobileVisible}: TopMenuProps) => {
   const router = useRouter();
 
   const handleCurrent = (path: string): string => {
@@ -11,7 +15,7 @@ export const TopMenu = () => {
   };
 
   return (
-    <ul className="top-menu">
+    <ul className={`top-menu ${mobileVisible?'':'mobile-hide'}`}>
       <li>
         <Link href="/">
           <a className={handleCurrent("/")}>{localesTop.home}</a>

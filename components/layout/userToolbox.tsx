@@ -5,7 +5,12 @@ import { StoreContext } from "@pages/_app";
 import { SwitchButton } from "./switchButton";
 import { MenuShowButton } from "./menuShowButton";
 
-export const UserToolbox = observer((hideMenu, isMenuHidden) => {
+interface UserToolboxProps {
+  isMenuHidden: boolean;
+  hideMenu: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+export const UserToolbox = observer(({hideMenu, isMenuHidden}:UserToolboxProps) => {
   const store = useContext(StoreContext);
   const { theme } = store.Interface;
 
