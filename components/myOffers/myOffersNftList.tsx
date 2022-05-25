@@ -21,6 +21,7 @@ export const MyOffersNftList: React.FC<MyOffersNftListProps> = observer(({ type,
     const sanitized: any[] = offers
       .map((offer) => {
         let offerSanitized: any = {
+          collection: offer.collection,
           offerKey: offer.publicKey.toBase58(),
           nftMint: offer.account.nftMint.toBase58(),
           state: offer.account.state,
@@ -83,7 +84,6 @@ export const MyOffersNftList: React.FC<MyOffersNftListProps> = observer(({ type,
     } else if (type === "deposited") {
       store.MyOffers.setDepositedHideable(sanitized.length > 0);
     }
-
     setSanitizedOffers(sanitized);
   }, [offers, nftData, subOffers]);
 
@@ -99,6 +99,7 @@ export const MyOffersNftList: React.FC<MyOffersNftListProps> = observer(({ type,
             nftMint={offer.nftMint}
             offers={offer}
             state={offer.state}
+            collection={offer.collection}
           />
         );
       } else if (type === "active") {
@@ -111,6 +112,7 @@ export const MyOffersNftList: React.FC<MyOffersNftListProps> = observer(({ type,
             nftMint={offer.nftMint}
             offers={offer.subOffers}
             state={offer.state}
+            collection={offer.collection}
           />
         );
       } else return null;
@@ -143,7 +145,7 @@ export const MyOffersNftList: React.FC<MyOffersNftListProps> = observer(({ type,
   return (
     <div
       className={`${type == "active" ? "my-offers-nft-list" : "nft-deposited"} ${
-        !listVisible ? "hidden" : ""
+        !listVisible && "hidden"
       }`}>
       {renderOffers()}
     </div>
