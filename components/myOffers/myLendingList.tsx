@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { ReactNode, useContext, useEffect, useState } from "react";
 
 import { observer } from "mobx-react";
 
@@ -13,40 +13,53 @@ import Image from "next/image";
 import { compressAddress } from "@utils/stringUtils/compressAdress";
 import { getDecimalsForLoanAmountAsString } from "@integration/getDecimalForLoanAmount";
 import { BlobLoader } from "@components/layout/blobLoader";
+import { Duration } from "dayjs/plugin/duration";
+import { getDurationColor, getTimeLeft } from "@utils/timeUtils/timeUtils";
 
 export const MyLendingList = observer(() => {
   const store = useContext(StoreContext);
   const { lendingList } = store.MyOffers;
   const [isFetchingUserLended, setIsFetchingUserLended] = useState(true);
 
-  const handleTimeLeft = (duration: number, startTime: number, formated: boolean) => {
-    const currentDate = new Date();
-    const startDate = new Date(startTime);
-    const numberOfDays = Math.ceil(((startDate as any) - (currentDate as any)) / 8.64e7);
-    const daysLeft = duration - numberOfDays * -1;
-
-    if (daysLeft > 0 && formated) {
-      return `${daysLeft} Day(s)`;
-    } else if (formated) {
-      return `${daysLeft * -1} Day(s) late!`;
-    }
-
-    return daysLeft;
+  const canClaim = (timeLeft: Duration) => {
+    return timeLeft.asSeconds() <= 0;
   };
 
-  const canClaim = (duration: number, startTime: number) => {
-    let output;
+  const loanStatus = (timeLeft: Duration) => {
+    const color = getDurationColor(timeLeft);
+    const statusText = color === "red" ? "Defaulted" : "Loan Offer Given";
 
-    const currentDate = new Date();
-    const startDate = new Date(startTime);
+    return <p className={`loan-containers__status ${color}`}>{statusText}</p>;
+  };
 
-    const numberOfDays = Math.ceil(((startDate as any) - (currentDate as any)) / 8.64e7);
+  const formatTimeLeft = (timeLeft: Duration): ReactNode => {
+    const [days, hours, minutes, seconds] = [
+      timeLeft.days(),
+      timeLeft.hours(),
+      timeLeft.minutes(),
+      timeLeft.seconds(),
+    ];
 
-    const daysLeft = duration - numberOfDays * -1;
+    if (timeLeft.asSeconds() <= 0) {
+      return <>0</>;
+    }
 
-    output = daysLeft <= 0;
+    const format = (...durations: [number, string][]) => {
+      return durations.map(([len, name], i) => (
+        <span key={i}>
+          {len}
+          <span className="loan-time--left__sub">{name}</span>{" "}
+        </span>
+      ));
+    };
 
-    return output;
+    if (days > 0) {
+      return format([days, "d"], [hours, "h"]);
+    } else if (hours > 0) {
+      return format([hours, "h"], [minutes, "m"]);
+    } else {
+      return format([minutes, "m"], [seconds, "s"]);
+    }
   };
 
   const handleClaimCollateral = async (offerKey: PublicKey) => {
@@ -107,34 +120,24 @@ export const MyLendingList = observer(() => {
     }
   };
 
-  const setStatus = (status: string) => {
-    if (status === "1") {
-      return <p className={"loan-containers__status"}>Loan Offer Given</p>;
-    }
-    return;
-  };
-
   const renderLoansGiven = () => {
     return lendingList.map((offer) => {
       if (!offer?.nftData) {
         return <></>;
       }
-
-      const daysDuration = offer.loanDuration.toNumber() / 60 / 60 / 24;
-      //const daysDuration = 0 //css testing
-      const timeClassNames = `${daysDuration <= 0 ? "red" : ""}${
-        daysDuration > 0 && daysDuration <= 3 ? "yellow" : ""
-      }${daysDuration > 3 ? "green" : ""}`;
+      const duration = getTimeLeft(offer.loanDuration.toNumber(), offer.loanStartedTime.toNumber());
+      const timeClassName = getDurationColor(duration);
 
       return (
-        <div key={offer.subOfferKey.toString()} className={`loan-given ${timeClassNames}`}>
+        <div key={offer.subOfferKey.toString()} className={`loan-given ${timeClassName}`}>
           <div className="loan__row">
             <div className={`loan__row--item header`}>
               <Image
                 src={offer.nftData.arweaveMetadata.image}
+                className="item__image"
                 alt="NFT Picture"
-                width={50}
-                height={50}
+                width={52}
+                height={52}
               />
               <div className={`item__title`}>
                 <div className="name"> {offer.nftData.arweaveMetadata.name}</div>
@@ -145,11 +148,9 @@ export const MyLendingList = observer(() => {
               </div>
             </div>
 
-            <div className={`loan__row--item loan-time ${timeClassNames}`}>
+            <div className={`loan__row--item loan-time ${timeClassName}`}>
               <span> Time left </span>
-              <p className="loan-time--left">
-                {handleTimeLeft(daysDuration, offer.loanStartedTime.toNumber() * 1000, true)}
-              </p>
+              <p className="loan-time--left">{formatTimeLeft(duration)}</p>
             </div>
           </div>
 
@@ -163,9 +164,9 @@ export const MyLendingList = observer(() => {
                 <SolscanExplorerIcon type={"token"} address={offer.borrower.toString()} />
               </ShowOnHover>
             </div>
-            <div className={`loan__row--item ${timeClassNames} status`}>
+            <div className={`loan__row--item ${timeClassName} status`}>
               <h4>Status</h4>
-              {setStatus(offer.state.toString())}
+              {loanStatus(duration)}
             </div>
             <div className="loan__row--item">
               <h4>NFT Mint</h4>
@@ -199,10 +200,7 @@ export const MyLendingList = observer(() => {
             </div> */}
           </div>
 
-          {canClaim(
-            offer.loanDuration.toNumber() / 60 / 60 / 24,
-            offer.loanStartedTime.toNumber() * 1000,
-          ) ? (
+          {canClaim(duration) ? (
             <div className="loan__row">
               <button
                 className="btn btn--md btn--primary claim-nft--button"
@@ -241,12 +239,10 @@ export const MyLendingList = observer(() => {
     );
   }
 
-  return lendingList && lendingList.length ? (
+  return lendingList?.length ? (
     <div className="my-lending-nft-list">
       <h1>Loans given</h1>
-      <div className="my-lending-nft-list__inner">
-        {lendingList && lendingList.length ? renderLoansGiven() : <></>}
-      </div>
+      <div className="my-lending-nft-list__inner">{renderLoansGiven()}</div>
     </div>
   ) : (
     <div className="my-lending-nft-list empty">

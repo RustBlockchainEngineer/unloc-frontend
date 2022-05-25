@@ -36,7 +36,7 @@
   padding: 20px;
   display: grid;
   grid-template-columns: 1fr;
-  grid-template-rows: 1fr 1fr 1fr;
+  gap: $mr-md 0;
   border-radius: $brd-rds-2tn;
 
   &.green {
@@ -56,17 +56,14 @@
   }
 
   .loan__row:first-child {
-    margin-bottom: 25px;
-  }
-
-  .loan__row:last-child {
-    margin-top: 25px;
+    margin-bottom: -$mr-sm;
   }
 
   .loan__row {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    gap: $mr-md;
 
     &--item {
       display: flex;
@@ -106,6 +103,7 @@
 
       &.header {
         flex-direction: row;
+        flex: 1 1 calc(70% - $mr-md/2);
       }
     }
 
@@ -116,9 +114,13 @@
       border-radius: $brd-rds-2tn;
       justify-content: space-around;
       align-items: center;
+      padding: $mr-sm 8px;
 
       .loan__row--item {
         min-width: 20%;
+        & p {
+          font-weight: 700;
+        }
       }
     }
 
@@ -141,8 +143,13 @@
       @include theme-aware("color", "timeLoanDisabled-color");
     }
 
+    .item__image {
+      flex: 0 1 30%;
+    }
+
     .item__title {
-      margin-left: 10px;
+      flex: 1 1 70%;
+      margin-left: 16px;
 
       .name {
         font-weight: 700;
@@ -192,6 +199,16 @@
     text-overflow: ellipsis;
     border-radius: $brd-rds-sm;
     justify-content: center;
+
+    &.green {
+      background: rgba(0, 215, 86, 0.25);
+    }
+    &.yellow {
+      @include theme-aware("background", "timeLoan-yellow-btn");
+    }
+    &.red {
+      @include theme-aware("background", "timeLoan-red-btn");
+    }
   }
 
   &__mint,
@@ -214,15 +231,11 @@
   &__id {
     @include theme-aware("background", "myLoan-id-bg");
   }
-
-  &__status {
-    @include theme-aware("color", "timeLoan-green");
-    background: rgba(0, 215, 86, 0.25);
-  }
 }
 
 .loan-time {
   line-height: 16px;
+  flex: 1 1 calc(30% - $mr-md/2);
 
   span {
     width: 100%;
@@ -230,7 +243,14 @@
   }
 
   &--left {
-    font-size: 30px;
+    font-size: 32px;
     font-weight: 700;
+    text-align: right;
+    width: 100%;
+    line-height: 1;
+
+    &__sub {
+      font-size: 20px;
+    }
   }
 }

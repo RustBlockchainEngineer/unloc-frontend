@@ -13,6 +13,8 @@ import {
   TorusWalletAdapter,
 } from "@solana/wallet-adapter-wallets";
 import { clusterApiUrl } from "@solana/web3.js";
+import { extend } from "dayjs";
+import duration from "dayjs/plugin/duration";
 import type { AppProps } from "next/app";
 import { ToastContainer } from "react-toastify";
 
@@ -23,6 +25,7 @@ import { rootStore } from "@stores/Root.store";
 import "react-toastify/dist/ReactToastify.css";
 import "@styles/main.scss";
 
+extend(duration);
 export const StoreContext = createContext(rootStore);
 
 const Unloc = ({ Component, pageProps }: AppProps): ReactNode => {
