@@ -10,15 +10,13 @@ import { SolscanExplorerIcon } from "@components/layout/solscanExplorerIcon";
 import { StoreContext } from "@pages/_app";
 import { compressAddress } from "@utils/stringUtils/compressAdress";
 
-export const MyOffersTop: FC = observer(() => {
+export const WalletActions: FC = observer(() => {
   const store = useContext(StoreContext);
   const { wallet, walletKey, connected } = store.Wallet;
-
   const { getTooltipProps, setTooltipRef, setTriggerRef, visible } = usePopperTooltip();
 
   const handleWalletDisconnect = (): void => {
-    // TODO: adapter prop is missing on wallet.
-    if (wallet /*&& wallet.adapter*/) {
+    if (wallet) {
       store.Wallet.handleDisconnect();
     }
   };
@@ -31,7 +29,7 @@ export const MyOffersTop: FC = observer(() => {
   return connected ? (
     <div className="my-offers-top">
       <div className="my-offers-top__heading">
-        {walletKey ? (
+        {walletKey && (
           <>
             <span className="wallet-label">Your wallet address:</span>
             <h2>
@@ -41,8 +39,6 @@ export const MyOffersTop: FC = observer(() => {
               </ShowOnHover>
             </h2>
           </>
-        ) : (
-          ""
         )}
       </div>
       <div className="my-offers-top__toolbox">
@@ -54,12 +50,10 @@ export const MyOffersTop: FC = observer(() => {
             Create a new Collateral from a NFT
           </div>
         )}
-        {wallet /*&& wallet.adapter*/ ? (
+        {wallet && (
           <button className="btn btn--md btn--bordered" onClick={() => handleWalletDisconnect()}>
             Disconnect
           </button>
-        ) : (
-          ""
         )}
       </div>
     </div>

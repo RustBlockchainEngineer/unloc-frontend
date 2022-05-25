@@ -14,8 +14,6 @@ export const InputNumberArrows = memo(
   ({ arrowType, value, onChange }: IInputNumberArrowsInterface) => {
     const handler = useCallback(
       (event: SyntheticEvent<HTMLButtonElement, Event>): void => {
-        // eslint-disable-next-line no-console
-        console.log(event.currentTarget.name);
         (event.currentTarget as EventTargetNameProp)?.name === "up"
           ? onChange(arrowType, value + 1)
           : onChange(arrowType, value - 1);

@@ -14,10 +14,11 @@ interface MyOffersNftItemProps {
   offers?: any;
   state: number;
   classNames?: string;
+  collection?: string;
 }
 
 export const MyOffersNftItem: React.FC<MyOffersNftItemProps> = observer(
-  ({ nftMint, name, image, offers, state, classNames, offerKey }) => {
+  ({ nftMint, name, image, offers, state, classNames, offerKey, collection }) => {
     const store = useContext(StoreContext);
 
     const handleCancelOffer = async (subOfferKey: string) => {
@@ -196,7 +197,7 @@ export const MyOffersNftItem: React.FC<MyOffersNftItemProps> = observer(
                     <p className="info-name">{name}</p>
                     <div className="nft-metadata">
                       <p>Collection:</p>
-                      <p>Example</p>
+                      <p>{collection}</p>
                     </div>
                   </div>
                   {setNFTActions(state)}

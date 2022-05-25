@@ -63,7 +63,6 @@ export const OffersTable = observer(() => {
       setLabel(element.id);
       switchOrder(true);
       sorted = list.sort(compare);
-      console.log("setLabel, switchOrder");
     } else {
       switchOrder(!order);
       sorted = list.reverse();
