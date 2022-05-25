@@ -32,16 +32,16 @@ export class OffersStore {
 
   readyToFilter = true;
   filterAprMin = 1;
-  filterAprMax = 10000;
+  filterAprMax = 99999;
   filterAmountMin = 1;
-  filterAmountMax = 10000;
+  filterAmountMax = 99999;
   filterDurationMin = 1;
   filterDurationMax = 90;
   filtersVisible = true;
   filterAprValidatorMin = 1;
-  filterAprValidatorMax = 10000;
+  filterAprValidatorMax = 99999;
   filterAmountValidatorMin = 1;
-  filterAmountValidatorMax = 10000;
+  filterAmountValidatorMax = 99999;
   filterDurationValidatorMin = 1;
   filterDurationValidatorMax = 90;
   filterCurrency = "All";
@@ -350,6 +350,12 @@ export class OffersStore {
         }
 
         this.setMaxPage(Math.ceil(this.offersRef.length / this.itemsPerPage));
+
+        if (this.pageOfferData?.length === 0) {
+          // This stops the home page from showing an infinite loading loop
+          this.setPageNFTData([]);
+          this.setOffersEmpty(true);
+        }
       }
     } else {
       this.setPageOfferData([]);
@@ -374,7 +380,6 @@ export class OffersStore {
     if (this.readyToFilter) {
       console.log("filter run");
 
-      this.waitForNextAction();
       this.setOffersData([]);
       this.setPageNFTData([]);
       this.setPageOfferData([]);
@@ -386,16 +391,5 @@ export class OffersStore {
     this.filterCollectionSelected = [];
     // this.filterCollection = []
     this.refetchOffers();
-  };
-
-  @action.bound waitForNextAction = () => {
-    if (this.readyToFilter) {
-      this.readyToFilter = false;
-      let waiting = setTimeout(() => {
-        this.readyToFilter = true;
-        console.log("end");
-        clearInterval(waiting);
-      }, 3000);
-    }
   };
 }

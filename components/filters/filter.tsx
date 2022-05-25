@@ -2,7 +2,6 @@ import {
   ReactNode,
   useState,
   useCallback,
-  useEffect,
   ChangeEvent,
   memo,
   ReactElement,
@@ -45,13 +44,8 @@ export const Filter = memo(
     values,
     valuesRange,
   }: IFilterOffersInterface): ReactElement => {
-    const [min, setMin] = useState(valuesRange?.min);
-    const [max, setMax] = useState(valuesRange?.max);
-
-    useEffect(() => {
-      setMin(valuesRange?.min);
-      setMax(valuesRange?.max);
-    }, [valuesRange]);
+    const [min, setMin] = useState<number>();
+    const [max, setMax] = useState<number>();
 
     const debounce = (
       func: (val: number) => void,
@@ -105,7 +99,7 @@ export const Filter = memo(
     const handleRangeAction = useCallback(
       (event: ChangeEvent<HTMLInputElement>): void => {
         const rangeType = event.target.name;
-        const inputValue = Number(event.target.value);
+        const inputValue = parseFloat(event.target.value);
         rangeType === "min" ? setMin(inputValue) : setMax(inputValue);
         let actionValidator, isValid;
         if (rangeType === "min") {
@@ -117,9 +111,9 @@ export const Filter = memo(
         }
 
         if (rangeType === "min") {
-          inputValue && isValid ? debounceMin(inputValue) : debounceMin(actionValidator);
+          isValid ? debounceMin(inputValue) : debounceMin(actionValidator);
         } else {
-          inputValue && isValid ? debounceMax(inputValue) : debounceMax(actionValidator);
+          isValid ? debounceMax(inputValue) : debounceMax(actionValidator);
         }
       },
       [actionValidatorMax, actionValidatorMin, debounceMax, debounceMin],
@@ -178,14 +172,10 @@ export const Filter = memo(
                 className="min"
                 name="min"
                 type="number"
-                value={min}
+                value={min || ""}
                 onChange={handleRangeAction}
               />
-              <InputNumberArrows
-                arrowType="min"
-                value={min ? min : valuesRange.min}
-                onChange={handleArrows}
-              />
+              <InputNumberArrows arrowType="min" value={min ? min : 0} onChange={handleArrows} />
             </div>
             <div className="filter-line">
               <span>Max: </span>
@@ -193,14 +183,10 @@ export const Filter = memo(
                 className="max"
                 name="max"
                 type="number"
-                value={max}
+                value={max || ""}
                 onChange={handleRangeAction}
               />
-              <InputNumberArrows
-                arrowType="max"
-                value={max ? max : valuesRange.max}
-                onChange={handleArrows}
-              />
+              <InputNumberArrows arrowType="max" value={max ? max : 0} onChange={handleArrows} />
             </div>
           </div>
         </div>
