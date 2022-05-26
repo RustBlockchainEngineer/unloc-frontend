@@ -1,5 +1,5 @@
 .footer {
-  @include theme-aware('border-color', color-primary);
+  @include theme-aware("border-color", color-primary);
   width: $pg-col;
 
   display: flex;

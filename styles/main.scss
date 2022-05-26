@@ -11,21 +11,21 @@
 @import "./currencyChanger";
 @import "./selects";
 
-@import './animations';
-@import './icons';
-@import './buttons';
-@import './tooltip';
-@import './walletAdapter';
-@import './layout';
-@import './layoutTop';
-@import './mobile/menuShowButton';
-@import './userToolbox';
-@import './filter';
-@import './blobLoader';
-@import './footer/footer';
-@import './showOnHover';
-@import './solscanExplorer';
-@import './popups';
+@import "./animations";
+@import "./icons";
+@import "./buttons";
+@import "./tooltip";
+@import "./walletAdapter";
+@import "./layout";
+@import "./layoutTop";
+@import "./mobile/menuShowButton";
+@import "./userToolbox";
+@import "./filter";
+@import "./blobLoader";
+@import "./footer/footer";
+@import "./showOnHover";
+@import "./solscanExplorer";
+@import "./popups";
 
 @import "./singleOffer/header";
 @import "./singleOffer/offer";
@@ -47,9 +47,9 @@
 @import "./singleOffer/lendConfirmation";
 @import "./singleOffer/acceptOffer";
 
-@import './mobile/footerMobile';
-@import './mobile/layoutTopMobile';
-@import './mobile/offersPage/offersTopMobile';
+@import "./mobile/footerMobile";
+@import "./mobile/layoutTopMobile";
+@import "./mobile/offersPage/offersTopMobile";
 
 body {
   @include theme-aware("background-color", "color-background");

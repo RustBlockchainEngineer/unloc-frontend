@@ -1,105 +1,104 @@
 @media (max-width: $bp-phone) {
-    .layout-top-mobile {
-        //@include theme-aware('background-color', 'mobile-menu-header-bg');
-        //background-size: ;
-        //@include theme-aware('background-color', 'bg-table-hover');
-        position: fixed;
-        box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-        backdrop-filter: blur(7px);
-        border-radius: 0px 0px 8px 8px;
-        width: 100vw;
-        top: 0;
-        &.hidden {
-            top: -300px;
-        }
+  .layout-top-mobile {
+    position: fixed;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    backdrop-filter: blur(7px);
+    border-radius: 0px 0px 8px 8px;
+    width: 100vw;
+    top: 0;
+
+    &.hidden {
+      top: -300px;
     }
+  }
 
-    .top-menu {
-        @include theme-aware('background-color', 'mobile-menu-scrolldown-bg');
-        flex-direction: column;
-        width: 100vw;
-        margin: 0;
-        padding: 10px 0 0 0;
-        transition: top 0.25s ease;
-        position: absolute;
-        top: 70px;
-        li a {
-            height: 50px;
-            width: 100%;
-            border-radius: 0;
-            text-align: center;
-            line-height: 30px;
-            text-transform: uppercase;
-            font-size: 16px;
+  .top-menu {
+    @include theme-aware("background-color", "mobile-menu-scrolldown-bg");
+    flex-direction: column;
+    width: 100vw;
+    margin: 0;
+    padding: 10px 0 0 0;
+    transition: top 0.25s ease;
+    position: absolute;
+    top: 70px;
 
-            &.active {
-                margin: 0 auto;
-                width: 90%;
-                height: 40px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                @include theme-aware('background-color', 'mobile-menu-highlight');
-                @include theme-aware('color', 'color-label');
-                background-color: red;
-                border-radius: $brd-rds-sm;
-            }
-        }
+    li a {
+      height: 50px;
+      width: 100%;
+      border-radius: 0;
+      text-align: center;
+      line-height: 30px;
+      text-transform: uppercase;
+      font-size: 16px;
+      @include theme-aware("color", "mobile-menu-color");
 
-        &.mobile-hide{
-            top: -400px;
-        }
-    }
-
-    .user-toolbox {
-        @include theme-aware('background-color', 'mobile-menu-header-bg');
-        width: 100%;
-        height: 70px;
-        justify-content: space-between;
+      &.active {
+        margin: 0 auto;
+        width: 90%;
+        height: 40px;
         display: flex;
-        flex-direction: row-reverse;
         align-items: center;
-        padding: 0 20px;
-        margin: 0;
-
-        .shadow-element {
-            width: 50px;
-            height: 50px;
-        }
-    }
-
-    .wallet-adapter-button-trigger {
-        //@include theme-aware('background-color', 'color-primary');
-
-        @include theme-aware('border-color', 'color-primary');
-        @include theme-aware('box-shadow', 'wallet-button-box-shadow');
-        width: 150px;
-        height: 41px;
-        background-color: rgba(0, 0, 0, 0);
-        box-sizing: border-box;
-        border: 1px solid;
-        border-radius: 8px;
-        font-weight: $wg-lt;
-        font-size: $tp-1md;
-        text-align: center;
-        padding: 16px;
         justify-content: center;
+        @include theme-aware("background-color", "mobile-menu-highlight");
+        background-color: red;
+        border-radius: $brd-rds-sm;
+      }
     }
 
-    .wallet-adapter-button-trigger:not([disabled]):hover {
-        @include theme-aware('background-color', 'color-primary');
-        @include theme-aware('border-color', 'color-primary');
-        @include theme-aware('box-shadow', 'wallet-button-box-shadow');
-        border: 1px solid;
+    &.mobile-hide {
+      top: -400px;
     }
+  }
 
-    .theme-switcher {
-        margin: 0 0 0 10px;
+  .user-toolbox {
+    @include theme-aware("background-color", "mobile-menu-header-bg");
+    width: 100%;
+    height: 70px;
+    justify-content: space-between;
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: center;
+    padding: 0 20px;
+    margin: 0;
+
+    .shadow-element {
+      width: 50px;
+      height: 50px;
     }
+  }
+
+  .wallet-adapter-button-trigger {
+    @include theme-aware("color", "mobile-menu-wallet-color");
+    @include theme-aware("border-color", "color-primary");
+    @include theme-aware("box-shadow", "wallet-button-box-shadow");
+    width: 150px;
+    height: 41px;
+    background-color: rgba(0, 0, 0, 0);
+    box-sizing: border-box;
+    border: 1px solid;
+    border-radius: 8px;
+    font-weight: $wg-lt;
+    font-size: $tp-1md;
+    text-align: center;
+    padding: 16px;
+    justify-content: center;
+  }
+
+  .wallet-adapter-button-trigger:not([disabled]):hover {
+    @include theme-aware("color", "mobile-menu-wallet-color");
+    @include theme-aware("background-color", "color-primary");
+    @include theme-aware("border-color", "color-primary");
+    @include theme-aware("box-shadow", "wallet-button-box-shadow");
+    border: 1px solid;
+  }
+
+  .theme-switcher {
+    margin: 0 0 0 10px;
+  }
 }
 
 @media (min-width: calc($bp-phone + 1px)) {
-    .layout-top-mobile {
-        display: none;
-    }
+  .layout-top-mobile {
+    display: none;
+  }
 }

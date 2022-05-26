@@ -49,10 +49,10 @@
 
     &.active {
       @media (min-width: $bp-phone) {
-        @include theme-aware('background-color', 'color-primary');
+        @include theme-aware("background-color", "color-primary");
       }
 
-      @include theme-aware('color', 'lend-offer-button');
+      @include theme-aware("color", "lend-offer-button");
     }
 
     .mobile-wrapper {

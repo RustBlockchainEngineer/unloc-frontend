@@ -1,21 +1,21 @@
 .offers-filters-wrapper {
-    @media (max-width: $bp-tablet) {
-        z-index: 0;
+  @media (max-width: $bp-tablet) {
+    z-index: 0;
+  }
+
+  @media (max-width: $bp-tablet) {
+    padding-top: 100px;
+
+    .btn--filters {
+      margin-top: 0;
+      margin-bottom: -100px;
+      z-index: 1;
+
+      &.active {
+        border-radius: $brd-rds-lg;
+        margin-top: -50px;
+        margin-bottom: -18px;
+      }
     }
-
-    @media (max-width: $bp-tablet) {
-        padding-top: 100px;
-
-        .btn--filters {
-            margin-top: 0;
-            margin-bottom: -100px;
-            z-index: 1;
-
-            &.active {
-                border-radius: $brd-rds-lg;
-                margin-top: -50px;
-                margin-bottom: -18px;
-            }
-        }
-    }
+  }
 }

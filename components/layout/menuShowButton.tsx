@@ -10,7 +10,9 @@ export const MenuShowButton: React.FC<MenuShowButtonProps> = ({
   changeMenuVisibility,
 }: MenuShowButtonProps) => {
   return (
-    <div className="menu-show-button" onClick={() => changeMenuVisibility(!menuVisibleState)}>
+    <div
+      className="menu-show-button mobile-only"
+      onClick={() => changeMenuVisibility(!menuVisibleState)}>
       <div className={`menu-show-button-hamburger ${menuVisibleState ? "clicked" : ""}`}>
         <div className="menu-show-button-hamburger_strips">
           <div className="strip" />

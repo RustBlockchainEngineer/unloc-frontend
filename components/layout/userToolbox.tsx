@@ -10,7 +10,7 @@ interface UserToolboxProps {
   hideMenu: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export const UserToolbox = observer(({hideMenu, isMenuHidden}:UserToolboxProps) => {
+export const UserToolbox = observer(({ hideMenu, isMenuHidden }: UserToolboxProps) => {
   const store = useContext(StoreContext);
   const { theme } = store.Interface;
 
@@ -28,7 +28,6 @@ export const UserToolbox = observer(({hideMenu, isMenuHidden}:UserToolboxProps) 
 
   return (
     <div className="user-toolbox">
-
       <MenuShowButton menuVisibleState={isMenuHidden} changeMenuVisibility={hideMenu} />
       <WalletMultiButton />
       <div className="theme-switcher">
@@ -38,7 +37,6 @@ export const UserToolbox = observer(({hideMenu, isMenuHidden}:UserToolboxProps) 
           onClick={handleThemeSet}
         />
       </div>
-
     </div>
   );
 });

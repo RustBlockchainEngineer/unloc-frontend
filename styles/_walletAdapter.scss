@@ -5,7 +5,6 @@
   cursor: pointer;
   background-color: transparent;
   border: none;
-  color: #fff;
   display: flex;
   align-items: center;
   font-family: "Open Sans", "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -16,6 +15,10 @@
   line-height: 48px;
   padding: 0 24px;
   border-radius: 4px;
+
+  @media (min-width: calc($bp-phone + 1px)) {
+    color: #fff;
+  }
 }
 
 .wallet-adapter-button-trigger {
@@ -28,7 +31,7 @@
 }
 
 .wallet-adapter-button:not([disabled]):hover {
-  @include theme-aware('background-color', 'wallet-adapter-bg-hover');
+  @include theme-aware("background-color", "wallet-adapter-bg-hover");
 }
 
 .wallet-adapter-button[disabled] {
@@ -75,7 +78,7 @@
   padding: 6px;
   top: 100%;
   list-style: none;
-  @include theme-aware('background-color', 'wallet-adapter-bg');
+  @include theme-aware("background-color", "wallet-adapter-bg");
   border-radius: $brd-rds-1md;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
   opacity: 0;
@@ -105,11 +108,11 @@
   font-size: 14px;
   font-weight: 600;
   height: 24px;
-  @include theme-aware('color', 'wallet-adapter-color');
+  @include theme-aware("color", "wallet-adapter-color");
 }
 
 .wallet-adapter-dropdown-list-item:not([disabled]):hover {
-  @include theme-aware('background-color', 'wallet-adapter-bg-hover');
+  @include theme-aware("background-color", "wallet-adapter-bg-hover");
 }
 
 .wallet-adapter-modal-collapse-button svg {
