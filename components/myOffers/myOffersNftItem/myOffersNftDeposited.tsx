@@ -17,10 +17,11 @@ interface MyOffersNftDepositedProps {
   offers?: any;
   state: number;
   classNames?: string;
+  collection?: string;
 }
 
 export const MyOffersNftDeposited: React.FC<MyOffersNftDepositedProps> = observer(
-  ({ nftMint, name, image, offerKey }) => {
+  ({ nftMint, name, image, offerKey, collection }) => {
     const { getTooltipProps, setTooltipRef, setTriggerRef, visible } = usePopperTooltip();
     const store = useContext(StoreContext);
 
@@ -111,7 +112,7 @@ export const MyOffersNftDeposited: React.FC<MyOffersNftDepositedProps> = observe
           </div>
           <div className="row--item">
             <p>Collection</p>
-            <div className="collection">Example</div>
+            <div className="collection">{collection}</div>
           </div>
         </div>
         <div className="nft-deposited-item__row">

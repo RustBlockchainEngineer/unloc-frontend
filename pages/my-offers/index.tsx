@@ -7,7 +7,7 @@ import type { NextPage } from "next";
 import { LayoutTop } from "@components/layout/layoutTop";
 import { LayoutTopMobile } from "@components/layout/layoutTopMobile";
 import { MyOffersNftList } from "@components/myOffers/myOffersNftList";
-import { MyOffersTop } from "@components/myOffers/myOffersTop";
+import { WalletActions } from "@components/myOffers/walletActions";
 import { StoreDataAdapter } from "@components/storeDataAdapter";
 import { StoreContext } from "@pages/_app";
 
@@ -55,8 +55,8 @@ const MyOffers: NextPage = observer(() => {
     <StoreDataAdapter>
       <div className="page my-offers">
         <LayoutTop />
-        <MyOffersTop />
-        {connected ? (
+        <WalletActions />
+        {connected && (
           <div>
             <div className="active-offers--scrolldown">
               <button onClick={handleActiveVisibility}>
@@ -83,8 +83,6 @@ const MyOffers: NextPage = observer(() => {
               <MyOffersNftList type="deposited" listVisible={depositedVisible} />
             </div>
           </div>
-        ) : (
-          ""
         )}
       </div>
       <LayoutTopMobile />

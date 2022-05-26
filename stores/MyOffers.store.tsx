@@ -22,10 +22,12 @@ import { getDurationForContractData } from "@utils/getDuration";
 import { getSubOffersKeysByState } from "@integration/offersListing";
 import { Offer, SubOffer } from "../@types/loans";
 import { SubOfferData } from "./Offers.store";
+import axios from "axios";
 
 export interface OfferAccount {
   publicKey: PublicKey;
   account: Offer;
+  collection?: string;
 }
 
 export interface SubOfferAccount {
@@ -56,6 +58,28 @@ export class MyOffersStore {
   @action.bound setOffers(offers: OfferAccount[]): void {
     this.offers = offers;
   }
+
+  @action.bound fetchCollectionForNfts = flow(function* (this: MyOffersStore) {
+    try {
+      const requests = this.offers.map((item, index) => {
+        return {
+          request: axios.post("/api/collections/nft", { id: item.account.nftMint.toBase58() }),
+          index,
+        };
+      });
+
+      const responses = yield axios.all(requests.map((request) => request.request));
+
+      for (const el of requests) {
+        if (this.offers[el.index] && !this.offers[el.index].hasOwnProperty("collection")) {
+          this.offers[el.index].collection = responses[el.index].data;
+        }
+      }
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.log(e);
+    }
+  });
 
   @action.bound async getOffersByWallet(wallet: PublicKey): Promise<void> {
     const offersData = await getOffersBy(wallet, undefined, undefined);
@@ -105,6 +129,7 @@ export class MyOffersStore {
 
   @action.bound getNFTsData = flow(function* (this: MyOffersStore) {
     if (this.offers && this.offers.length > 0) {
+      this.fetchCollectionForNfts();
       const data: NFTMetadata[] = [];
       const nftMintKeys: PublicKey[] = [];
 
