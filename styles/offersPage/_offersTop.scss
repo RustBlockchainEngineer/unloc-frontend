@@ -34,16 +34,17 @@
     padding-top: 100px;
 
     .btn--filters {
-      margin-top: 0;
-      margin-bottom: -160px;
-      z-index: 0;
+      margin-top: $mr-md;
 
       &.active {
         border-radius: $brd-rds-lg;
-        margin-top: 40px;
-        margin-bottom: -18px;
+        margin-top: $mr-tn;
       }
     }
+  }
+
+  @media (max-width: $bp-tablet) {
+    padding-top: 0;
   }
 }
 
@@ -61,9 +62,11 @@
     flex-direction: column;
     width: 100vw;
     position: relative;
+    padding: 0 $mr-md;
 
     h1 {
-      text-align: center;
+      text-align: left;
+      font-size: 32px;
     }
   }
 }
@@ -115,7 +118,8 @@
   align-items: flex-start;
   width: 100%;
   transform: scaleY(0);
-  transition: transform 0.3s ease-in-out, padding 0.3s ease-in-out, margin 0.3s ease-in-out;
+  transition: transform 0.3s ease-in-out, padding 0.3s ease-in-out, margin 0.3s ease-in-out,
+    height 0.3s ease-in-out;
   @include theme-aware("background-color", "color-accent");
   padding: 0;
   height: auto;
@@ -126,7 +130,6 @@
     margin-top: -20px;
     margin-bottom: 0;
     transform: scaleY(1);
-    height: auto;
     padding: 30px;
     box-shadow: 0 9px 10px 0 rgba(19, 7, 43, 1);
   }
@@ -153,18 +156,25 @@
 
   @media (max-width: $bp-tablet) {
     margin-bottom: 0;
+    flex-direction: column;
+    height: 0;
+    width: 95vw;
+    padding: 15px;
     &.active {
       width: 95vw;
-      flex-direction: column;
       padding: 15px;
-      margin: 0 2.5vw;
+      margin: -$mr-sm 2.5vw 0;
+      height: 612px; /* TODO: This could be a problem */
 
       .filter-generic {
         margin: 5px 0 15px 0;
         padding: 0 0 15px;
+      }
+
+      .filter-generic:not(:last-child) {
+        @include theme-aware("border-color", "color-secondary");
         border-right: none;
         border-bottom: 1px dotted;
-        @include theme-aware("border-color", "color-secondary");
       }
     }
   }

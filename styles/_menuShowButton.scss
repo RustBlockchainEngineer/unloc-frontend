@@ -1,7 +1,8 @@
 .menu-show-button {
   position: fixed;
-  top: 0;
-  right: 0;
+  top: 0px;
+  right: 0px;
+  z-index: 999;
 
   @media (min-width: calc($bp-phone + 1px)) {
     display: none;
