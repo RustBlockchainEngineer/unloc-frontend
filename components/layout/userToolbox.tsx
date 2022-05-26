@@ -6,8 +6,8 @@ import { SwitchButton } from "./switchButton";
 import { MenuShowButton } from "./menuShowButton";
 
 interface UserToolboxProps {
-  isMenuHidden: boolean;
-  hideMenu: React.Dispatch<React.SetStateAction<boolean>>;
+  isMenuHidden: boolean | undefined;
+  hideMenu: React.Dispatch<React.SetStateAction<boolean>> | undefined;
 }
 
 export const UserToolbox = observer(({ hideMenu, isMenuHidden }: UserToolboxProps) => {
@@ -28,7 +28,10 @@ export const UserToolbox = observer(({ hideMenu, isMenuHidden }: UserToolboxProp
 
   return (
     <div className="user-toolbox">
-      <MenuShowButton menuVisibleState={isMenuHidden} changeMenuVisibility={hideMenu} />
+      <MenuShowButton
+        menuVisibleState={isMenuHidden ? isMenuHidden : false}
+        changeMenuVisibility={hideMenu ? hideMenu : undefined}
+      />
       <WalletMultiButton />
       <div className="theme-switcher">
         <SwitchButton
