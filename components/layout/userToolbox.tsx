@@ -29,6 +29,7 @@ export const UserToolbox = observer(() => {
           state={store.Interface.theme == "light"}
           classNames={"theme-switcher--switch"}
           onClick={handleThemeSet}
+          theme={true}
         />
       </div>
     </div>

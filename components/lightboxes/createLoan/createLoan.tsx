@@ -407,7 +407,7 @@ export const CreateLoan: React.FC<CreateLoanProps> = observer(({ mode }) => {
                   disabled={interestMode}
                 />
               </div>
-              <SwitchButton state={!interestMode} onClick={() => handleInterestModeChange()} />
+              <SwitchButton state={interestMode} onClick={handleInterestModeChange} />
               <div>
                 <span>Interest</span>
                 <input

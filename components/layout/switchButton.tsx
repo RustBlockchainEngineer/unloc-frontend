@@ -3,16 +3,19 @@ interface SwitchButtonInterface {
   state: boolean;
   onClick: (state: boolean) => void;
   classNames?: string;
+  theme?: boolean;
 }
 
-export const SwitchButton = ({ state, onClick, classNames }: SwitchButtonInterface) => {
+export const SwitchButton = ({ state, onClick, classNames, theme }: SwitchButtonInterface) => {
+  const onButtonClick = () => {
+    onClick(!state);
+  };
+
   return (
-    <div
-      className={`switch--button ${classNames}`}
-      onClick={() => {
-        onClick(!state);
-      }}>
-      <div className={`switch--button--knob ${state ? "left" : "right"}`} />
-    </div>
+    <a className={`switch--button ${classNames}`} onClick={onButtonClick}>
+      {theme ? <i className="icon icon--sm icon--theme icon--theme--moon" /> : ""}
+      <div className={`switch--button--knob ${state ? "right" : "left"}`} />
+      {theme ? <i className="icon icon--sm icon--theme icon--theme--sun" /> : ""}
+    </a>
   );
 };
