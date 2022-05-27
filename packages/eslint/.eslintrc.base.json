@@ -23,10 +23,9 @@
     "eslint:recommended",
     "plugin:react/recommended",
     "plugin:jsx-a11y/recommended",
-    "plugin:prettier/recommended",
     "plugin:jsdoc/recommended",
     "plugin:import/recommended",
-    "plugin:@next/next/recommended"
+    "plugin:prettier/recommended"
   ],
   "settings": {
     "react": {

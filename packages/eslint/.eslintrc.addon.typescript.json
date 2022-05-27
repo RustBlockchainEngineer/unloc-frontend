@@ -7,13 +7,12 @@
       "jsx": true
     },
     "warnOnUnsupportedTypeScriptVersion": true,
-    "project": ["./tsconfig.json", "./services/*/tsconfig.json", "./packages/*/tsconfig.json"]
+    "project": ["./tsconfig.json"]
   },
   "plugins": ["@typescript-eslint"],
   "extends": [
     "plugin:@typescript-eslint/recommended",
-    "plugin:@typescript-eslint/recommended-requiring-type-checking",
-    "plugin:@next/next/recommended"
+    "plugin:@typescript-eslint/recommended-requiring-type-checking"
   ],
   "rules": {
     "no-underscore-dangle": "off",

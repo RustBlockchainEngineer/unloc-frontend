@@ -17,8 +17,8 @@
     "clean": "yarn clean:coverage && lerna run clean",
     "clean:coverage": "rm -rf coverage",
     "lint": "yarn lint:prettier && yarn lint:package-json && yarn lint:eslint",
-    "lint:prettier": "prettier --loglevel warn --check \"**/*.{scss,css,js,jsx,ts,tsx,html}\"",
-    "lint:eslint": "eslint \"**/*.{ts,tsx}\""
+    "lint:prettier": "prettier --loglevel warn --check --write \"**/*.{scss,css,js,jsx,ts,tsx,html}\"",
+    "lint:eslint": "eslint \"**/*.{ts,tsx}\" --cache"
   },
   "dependencies": {
     "@metaplex-foundation/mpl-token-metadata": "^1.1.0",

@@ -1,4 +1,4 @@
-import React, { ReactNode, useContext, useEffect, useState } from "react";
+import { ReactNode, useContext, useEffect, useState } from "react";
 
 import { observer } from "mobx-react";
 
@@ -16,14 +16,24 @@ import { BlobLoader } from "@components/layout/blobLoader";
 import { Duration } from "dayjs/plugin/duration";
 import { getDurationColor, getTimeLeft } from "@utils/timeUtils/timeUtils";
 
-export const MyLendingList = observer(() => {
+export const LoansList = observer(() => {
   const store = useContext(StoreContext);
   const { lendingList } = store.MyOffers;
   const [isFetchingUserLended, setIsFetchingUserLended] = useState(true);
-
   const canClaim = (timeLeft: Duration) => {
     return timeLeft.asSeconds() <= 0;
   };
+
+  useEffect(() => {
+    const fetchUserLended = async () => {
+      if (store.Wallet.connected && store.Wallet.wallet) {
+        setIsFetchingUserLended(true);
+        await store.MyOffers.fetchUserLendedOffers();
+        setIsFetchingUserLended(false);
+      }
+    };
+    fetchUserLended();
+  }, [store.Wallet.connected, store.Wallet.wallet]);
 
   const loanStatus = (timeLeft: Duration) => {
     const color = getDurationColor(timeLeft);
@@ -143,7 +153,7 @@ export const MyLendingList = observer(() => {
                 <div className="name"> {offer.nftData.arweaveMetadata.name}</div>
                 <div className="collection">
                   {" "}
-                  Collection: <b>{offer.nftData.arweaveMetadata.description}</b>
+                  Collection: <b>{offer.collection}</b>
                 </div>
               </div>
             </div>
@@ -219,17 +229,6 @@ export const MyLendingList = observer(() => {
       );
     });
   };
-
-  useEffect(() => {
-    const fetchUserLended = async () => {
-      if (store.Wallet.connected && store.Wallet.wallet) {
-        setIsFetchingUserLended(true);
-        await store.MyOffers.fetchUserLendedOffers();
-        setIsFetchingUserLended(false);
-      }
-    };
-    fetchUserLended();
-  }, [store.Wallet.connected, store.Wallet.wallet]);
 
   if (isFetchingUserLended) {
     return (
