@@ -16,7 +16,7 @@ import { BlobLoader } from "@components/layout/blobLoader";
 import { Duration } from "dayjs/plugin/duration";
 import { getDurationColor, getTimeLeft } from "@utils/timeUtils/timeUtils";
 
-export const MyLendingList = observer(() => {
+export const LoansList = observer(() => {
   const store = useContext(StoreContext);
   const { lendingList } = store.MyOffers;
   const [isFetchingUserLended, setIsFetchingUserLended] = useState(true);

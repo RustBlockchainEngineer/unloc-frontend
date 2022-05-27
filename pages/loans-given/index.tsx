@@ -5,7 +5,7 @@ import type { NextPage } from "next";
 
 import { LayoutTop } from "@components/layout/layoutTop";
 import { LayoutTopMobile } from "@components/layout/layoutTopMobile";
-import { MyLendingList } from "@components/loans-given/myLendingList";
+import { LoansList } from "@components/loans-given/loansList";
 import { WalletActions } from "@components/myOffers/walletActions";
 import { StoreDataAdapter } from "@components/storeDataAdapter";
 import { StoreContext } from "@pages/_app";
@@ -19,7 +19,7 @@ const MyOffers: NextPage = observer(() => {
       <div className="page my-offers">
         <LayoutTop />
         <WalletActions />
-        {connected ? <MyLendingList /> : ""}
+        {connected ? <LoansList /> : ""}
       </div>
       <LayoutTopMobile />
     </StoreDataAdapter>
