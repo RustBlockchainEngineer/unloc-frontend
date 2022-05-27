@@ -84,7 +84,6 @@ export class MyOffersStore {
   });
 
   private fetchCollectionsForLendingOffers() {
-    console.log("this.lendingList", this.lendingList);
     return this.lendingList.map((item, index) => {
       return {
         request: axios.post("/api/collections/nft", { id: item.nftMint.toBase58() }),
@@ -252,7 +251,6 @@ export class MyOffersStore {
   @action.bound fetchUserLendedOffers = async () => {
     const activeOffersKeys = await getSubOffersKeysByState([1]);
     if (activeOffersKeys && activeOffersKeys.length) {
-      console.log("fetchUserLendedOffers");
       const offersData: SubOfferData[] = await getSubOfferMultiple(activeOffersKeys);
 
       const lendedLoans = offersData.filter((offer) =>
@@ -267,8 +265,6 @@ export class MyOffersStore {
       nftsData.metadatas.forEach((nft, index) => {
         lendedLoans[index].nftData = nft;
       });
-
-      this.lendingList = lendedLoans;
 
       await this.setLendingListData(lendedLoans);
 
