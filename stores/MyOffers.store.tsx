@@ -59,20 +59,22 @@ export class MyOffersStore {
     this.offers = offers;
   }
 
-  @action.bound fetchCollectionForNfts = flow(function* (this: MyOffersStore) {
+  @action.bound fetchCollections = flow(function* (this: MyOffersStore, type: string = "offers") {
     try {
-      const requests = this.offers.map((item, index) => {
-        return {
-          request: axios.post("/api/collections/nft", { id: item.account.nftMint.toBase58() }),
-          index,
-        };
-      });
+      let requests;
+      if (type === "lendingList") {
+        requests = this.fetchCollectionsForLendingOffers();
+      } else {
+        requests = this.fetchCollectionForNfts();
+      }
 
-      const responses = yield axios.all(requests.map((request) => request.request));
+      if (requests) {
+        const responses = yield axios.all(requests.map((request) => request.request));
 
-      for (const el of requests) {
-        if (this.offers[el.index] && !this.offers[el.index].hasOwnProperty("collection")) {
-          this.offers[el.index].collection = responses[el.index].data;
+        for (const el of requests) {
+          if (this[type][el.index] && !this[type][el.index].hasOwnProperty("collection")) {
+            this[type][el.index].collection = responses[el.index].data;
+          }
         }
       }
     } catch (e) {
@@ -80,6 +82,25 @@ export class MyOffersStore {
       console.log(e);
     }
   });
+
+  private fetchCollectionsForLendingOffers() {
+    console.log("this.lendingList", this.lendingList);
+    return this.lendingList.map((item, index) => {
+      return {
+        request: axios.post("/api/collections/nft", { id: item.nftMint.toBase58() }),
+        index,
+      };
+    });
+  }
+
+  private fetchCollectionForNfts() {
+    return this.offers.map((item, index) => {
+      return {
+        request: axios.post("/api/collections/nft", { id: item.account.nftMint.toBase58() }),
+        index,
+      };
+    });
+  }
 
   @action.bound async getOffersByWallet(wallet: PublicKey): Promise<void> {
     const offersData = await getOffersBy(wallet, undefined, undefined);
@@ -129,7 +150,7 @@ export class MyOffersStore {
 
   @action.bound getNFTsData = flow(function* (this: MyOffersStore) {
     if (this.offers && this.offers.length > 0) {
-      this.fetchCollectionForNfts();
+      this.fetchCollections();
       const data: NFTMetadata[] = [];
       const nftMintKeys: PublicKey[] = [];
 
@@ -231,6 +252,7 @@ export class MyOffersStore {
   @action.bound fetchUserLendedOffers = async () => {
     const activeOffersKeys = await getSubOffersKeysByState([1]);
     if (activeOffersKeys && activeOffersKeys.length) {
+      console.log("fetchUserLendedOffers");
       const offersData: SubOfferData[] = await getSubOfferMultiple(activeOffersKeys);
 
       const lendedLoans = offersData.filter((offer) =>
@@ -247,7 +269,17 @@ export class MyOffersStore {
       });
 
       this.lendingList = lendedLoans;
+
+      await this.setLendingListData(lendedLoans);
+
+      this.fetchCollections("lendingList");
     }
+  };
+
+  @action.bound setLendingListData = async (data: SubOfferData[]): Promise<void> => {
+    runInAction(() => {
+      this.lendingList = data;
+    });
   };
 
   @action.bound handleClaimCollateral = async (subOffer: PublicKey) => {

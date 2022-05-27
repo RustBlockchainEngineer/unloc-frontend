@@ -5,7 +5,7 @@ import type { NextPage } from "next";
 
 import { LayoutTop } from "@components/layout/layoutTop";
 import { LayoutTopMobile } from "@components/layout/layoutTopMobile";
-import { MyLendingList } from "@components/myOffers/myLendingList";
+import { MyLendingList } from "@components/loans-given/myLendingList";
 import { WalletActions } from "@components/myOffers/walletActions";
 import { StoreDataAdapter } from "@components/storeDataAdapter";
 import { StoreContext } from "@pages/_app";
