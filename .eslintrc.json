@@ -1,14 +1,13 @@
 {
   "root": true,
-  "extends": "./node_modules/@unloc/eslint/.eslintrc.base",
+  "extends": ["./node_modules/@unloc/eslint/.eslintrc.base"],
   "overrides": [
     {
       "files": ["**/*.ts?(x)"],
-      "extends": "./node_modules/@unloc/eslint/.eslintrc.addon.typescript"
-    },
-    {
-      "files": ["jest.setup.js", "**/*{spec,test}.{t,j}s?(x)"],
-      "extends": "./node_modules/@unloc/eslint/.eslintrc.addon.jest"
+      "extends": [
+        "./node_modules/@unloc/eslint/.eslintrc.addon.typescript",
+        "plugin:@next/next/recommended"
+      ]
     }
   ]
 }
