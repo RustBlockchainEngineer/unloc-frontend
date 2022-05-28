@@ -15,16 +15,19 @@
 
 .switch--button--knob {
   @include theme-aware("background-color", "switch-knob");
-  height: 22px;
-  width: 22px;
+  height: 21px !important;
+  width: 21px !important;
   border-radius: 50%;
   position: absolute;
   top: 1px;
   transition: left 0.2s ease-in-out;
+  z-index: 2;
+
   &.left {
-    left: 1px;
+    left: 2px;
   }
+
   &.right {
-    left: calc(100% - 24px);
+    left: calc(100% - 23px);
   }
 }

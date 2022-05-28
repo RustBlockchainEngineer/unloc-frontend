@@ -55,7 +55,7 @@ body {
   @include theme-aware("background-color", "color-background");
   @include theme-aware("background-image", "bg-gradient-home");
   @include theme-aware("color", "color-primary");
-  background-size: 100vw 100vh;
+  // background-size: 100vw 100vh;
   font-family: "Red Hat Display", sans-serif;
   background-attachment: fixed;
   box-sizing: border-box;

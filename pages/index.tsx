@@ -2,7 +2,6 @@ import { useContext, useEffect } from "react";
 
 import { observer } from "mobx-react";
 import type { NextPage } from "next";
-import Head from "next/head";
 
 import { LayoutTop } from "@components/layout/layoutTop";
 import { LayoutTopMobile } from "@components/layout/layoutTopMobile";
@@ -10,7 +9,6 @@ import { OffersGrid } from "@components/offersPage/offersGrid";
 import { OffersTable } from "@components/offersPage/offersTable";
 import { OffersTop } from "@components/offersPage/offersTop";
 import { StoreDataAdapter } from "@components/storeDataAdapter";
-import { localesHome } from "@constants/locales";
 
 import { StoreContext } from "./_app";
 
@@ -39,10 +37,6 @@ const Home: NextPage = observer(() => {
   return (
     <StoreDataAdapter>
       <div className="page offers">
-        <Head>
-          <title>{localesHome.pageTitle}</title>
-          <meta name="viewport" content="initial-scale=1, maximum-scale=1" />
-        </Head>
         <main>
           <LayoutTop />
           <OffersTop />

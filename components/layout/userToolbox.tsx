@@ -38,6 +38,7 @@ export const UserToolbox = observer(({ hideMenu, isMenuHidden }: UserToolboxProp
           state={store.Interface.theme == "light"}
           classNames={"theme-switcher--switch"}
           onClick={handleThemeSet}
+          theme={true}
         />
       </div>
     </div>

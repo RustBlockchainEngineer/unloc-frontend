@@ -16,10 +16,12 @@ import { clusterApiUrl } from "@solana/web3.js";
 import { extend } from "dayjs";
 import duration from "dayjs/plugin/duration";
 import type { AppProps } from "next/app";
+import Head from "next/head";
 import { ToastContainer } from "react-toastify";
 
 import { Footer } from "@components/layout/footer";
 import { config } from "@constants/config";
+import { localesHome } from "@constants/locales";
 import { rootStore } from "@stores/Root.store";
 
 import "react-toastify/dist/ReactToastify.css";
@@ -57,15 +59,17 @@ const Unloc = ({ Component, pageProps }: AppProps): ReactNode => {
       <WalletProvider wallets={wallets} autoConnect onError={handleWalletError}>
         <WalletModalProvider>
           <StoreContext.Provider value={rootStore}>
-            {config.devnet ? (
+            <Head>
+              <title>{localesHome.pageTitle}</title>
+              <meta name="viewport" content="initial-scale=1, maximum-scale=1" />
+            </Head>
+            {config.devnet && (
               <div className="devnet-container">
                 <span className="devnet">
                   <i className="icon icon--smd icon--info" />
                   Devnet Version
                 </span>
               </div>
-            ) : (
-              ""
             )}
             <div className="home-bg-top" />
             <div className="home-bg-bottom" />
