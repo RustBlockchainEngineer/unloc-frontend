@@ -1,20 +1,48 @@
-.offers-filters-wrapper {
-  @media (max-width: $bp-tablet) {
-    z-index: 0;
+@media (max-width: $bp-tablet) {
+  .btn--filters {
+    position: static;
+    z-index: 0 !important;
   }
 
-  @media (max-width: $bp-tablet) {
-    padding-top: 100px;
+  .offers-filters-wrapper {
+    position: static;
+    margin-top: 100px;
+    margin-bottom: -550px;
 
-    .btn--filters {
-      margin-top: 0;
-      margin-bottom: -100px;
-      z-index: 1;
+    &.active {
+      margin-bottom: 0px;
+    }
+  }
 
-      &.active {
-        border-radius: $brd-rds-lg;
-        margin-top: -50px;
-        margin-bottom: -18px;
+  .offers-filters {
+    position: static;
+    margin: 100px 2.5vw 0;
+    flex-direction: column;
+
+    &.active {
+      width: 95vw;
+      padding: 15px 20px;
+      margin: -$mr-sm 2.5vw 0;
+      height: 100%;
+
+      .filter-generic {
+        margin: 5px 0 15px 0;
+        padding: 0 0 15px;
+
+        &:first-child {
+          display: flex;
+          flex-direction: column;
+
+          div {
+            justify-content: center;
+          }
+        }
+      }
+
+      .filter-generic:not(:last-child) {
+        @include theme-aware("border-color", "color-secondary");
+        border-right: none;
+        border-bottom: 1px dotted;
       }
     }
   }
