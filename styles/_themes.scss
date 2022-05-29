@@ -125,6 +125,12 @@ $themes: (
     icon-theme-moon: url("/icons/theme-moon-icon-light.svg"),
     icon-theme-sun: url("/icons/theme-sun-icon-light.svg"),
     bg-dropdown-multiple: #9e6cff,
+
+    mobile-menu-color: #ffffff,
+    mobile-menu-header-bg: #d1c1f3,
+    mobile-menu-scrolldown-bg: rgba(147, 119, 199, 0.8),
+    mobile-menu-highlight: #7752be,
+    mobile-menu-wallet-color: #e00a7f,
   ),
   dark: (
     color-white: #fff,
@@ -252,5 +258,11 @@ $themes: (
     icon-theme-moon: url("/icons/theme-moon-icon-dark.svg"),
     icon-theme-sun: url("/icons/theme-sun-icon-dark.svg"),
     bg-dropdown-multiple: #9e6cff,
+
+    mobile-menu-color: #ffffff,
+    mobile-menu-header-bg: #482688,
+    mobile-menu-scrolldown-bg: rgba(72, 38, 136, 0.8),
+    mobile-menu-highlight: #5d36a7,
+    mobile-menu-wallet-color: #e00a7f,
   ),
 );

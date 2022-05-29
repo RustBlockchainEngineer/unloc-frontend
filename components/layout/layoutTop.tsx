@@ -20,8 +20,8 @@ export const LayoutTop = observer(() => {
     <>
       <div className="layout-top">
         <UnlocLogo />
-        <TopMenu />
-        <UserToolbox />
+        <TopMenu mobileVisible={true} />
+        <UserToolbox hideMenu={undefined} isMenuHidden={undefined} />
       </div>
       {visible ? (
         <Lightbox>

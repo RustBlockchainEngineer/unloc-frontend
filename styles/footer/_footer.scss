@@ -1,8 +1,3 @@
-* {
-  padding: 0;
-  margin: 0;
-}
-
 .footer {
   @include theme-aware("border-color", color-primary);
   width: $pg-col;
