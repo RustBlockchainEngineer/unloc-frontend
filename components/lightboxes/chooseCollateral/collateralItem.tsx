@@ -18,7 +18,8 @@ export const CollateralItem: React.FC<IProps> = ({ data, onClick, choosen }) => 
         <div className="list-collection-name">
           <p>Collection</p>
           <p>
-            {data.arweaveMetadata.collection === undefined
+            {data.arweaveMetadata.collection === undefined ||
+            data.arweaveMetadata.collection === null
               ? data.arweaveMetadata.name.slice(0, data.arweaveMetadata.name.lastIndexOf("#"))
               : typeof data.arweaveMetadata.collection === "string"
               ? data.arweaveMetadata.collection
