@@ -17,10 +17,12 @@
     flex-direction: column;
     width: 100vw;
     margin: 0;
-    padding: 10px 0 0 0;
+    padding: 10px 0 10px 0;
     transition: top 0.25s ease;
     position: absolute;
     top: 70px;
+    border-bottom-left-radius: $brd-rds-sm;
+    border-bottom-right-radius: $brd-rds-sm;
 
     li a {
       height: 50px;
@@ -51,6 +53,8 @@
   }
 
   .user-toolbox {
+    position: fixed;
+    top: 0;
     @include theme-aware("background-color", "mobile-menu-header-bg");
     width: 100%;
     height: 70px;
