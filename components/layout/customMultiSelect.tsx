@@ -51,7 +51,7 @@ export const CustomMultiSelect = ({
     (event: SyntheticEvent<HTMLInputElement, Event>): void => {
       const searchString = event.currentTarget.value;
       const result = options.filter(
-        (el) => !el.value.toUpperCase().indexOf(searchString.toUpperCase()),
+        (el) => el.value.toUpperCase().indexOf(searchString.toUpperCase()) >= 0,
       );
       updateCollectionsList(searchString.length ? result : options);
     },
