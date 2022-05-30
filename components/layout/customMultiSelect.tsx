@@ -19,8 +19,12 @@ export const CustomMultiSelect = ({
   onCheck,
 }: CustomMultiSelectProps) => {
   const [hidden, setHidden] = useState(true);
-  const [collectionsList, updateCollectionsList] = useState(options);
+  const [collectionsList, updateCollectionsList] = useState<{ label: string; value: string }[]>();
   const container = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    updateCollectionsList(options);
+  }, [options]);
 
   const uncheckAll = () => {
     clearFilters && clearFilters();
@@ -69,13 +73,15 @@ export const CustomMultiSelect = ({
             Reset
           </button>
         </div>
-        <CollectionList
-          options={collectionsList}
-          values={values}
-          disabled={disabled}
-          onCheck={onCheck}
-          setHidden={setHidden}
-        />
+        {collectionsList && (
+          <CollectionList
+            options={collectionsList}
+            values={values}
+            disabled={disabled}
+            onCheck={onCheck}
+            setHidden={setHidden}
+          />
+        )}
       </div>
     </div>
   );
