@@ -37,7 +37,6 @@ const SingleNftPage: NextPage = observer(() => {
     }
   }, [connected, store.SingleOffer, router.query.id, wallet]);
 
-
   const handleConfirmOffer = useCallback(
     (offer: ILightboxOffer): void => {
       try {
