@@ -52,7 +52,7 @@
     }
 
     input[type="number"] {
-      @include theme-aware("background-color", "input-number-bg");
+      @include theme-aware("background-color", "input-bg");
       @include theme-aware("color", "input-number-color");
       height: 28px;
       width: 80%;
@@ -98,7 +98,7 @@
   left: 0;
   height: 24px;
   width: 24px;
-  @include theme-aware("background-color", "input-number-bg");
+  @include theme-aware("background-color", "input-bg");
   border-radius: $brd-rds-tn;
   transition: all 0.3s ease-out;
   -webkit-transition: all 0.3s ease-out;

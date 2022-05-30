@@ -16,6 +16,15 @@ export interface IsubOfferData {
   offerMint: string;
 }
 
+export interface ILightboxOffer {
+  offerPublicKey: string;
+  amount: string;
+  APR: number;
+  duration: string;
+  totalRepay: string;
+  currency: string;
+}
+
 export class LightboxStore {
   rootStore;
   visible: boolean = false;
@@ -31,7 +40,7 @@ export class LightboxStore {
   };
 
   lendConfirmationData: any = {};
-  acceptOfferData: any = {};
+  acceptOfferData: {} = {};
 
   constructor(rootStore: any) {
     makeAutoObservable(this);
@@ -62,7 +71,7 @@ export class LightboxStore {
     this.lendConfirmationData = offer;
   }
 
-  @action.bound setAcceptOfferData(offer: any) {
+  @action.bound setAcceptOfferData(offer: ILightboxOffer) {
     this.acceptOfferData = offer;
   }
 }

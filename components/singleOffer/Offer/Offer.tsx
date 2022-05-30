@@ -7,6 +7,7 @@ import { SolscanExplorerIcon } from "@components/layout/solscanExplorerIcon";
 import { compressAddress } from "../../../utils/stringUtils/compressAdress";
 import { currencyMints } from "@constants/currency";
 import { statuses } from "@constants/offerStatuses";
+import { ILightboxOffer } from "@stores/Lightbox.store";
 
 type IProps = {
   offerID: string;
@@ -19,7 +20,7 @@ type IProps = {
   APR: number;
   totalRepay: string;
   btnMessage: string;
-  handleConfirmOffer: (offer: any) => void;
+  handleConfirmOffer: (offer: ILightboxOffer) => void;
   offerPublicKey: string;
   isYours: boolean;
 };

@@ -5,9 +5,9 @@ import type { NextPage } from "next";
 
 import { LayoutTop } from "@components/layout/layoutTop";
 import { LayoutTopMobile } from "@components/layout/layoutTopMobile";
+import { FiltersRow } from "@components/offersPage/filtersRow";
 import { OffersGrid } from "@components/offersPage/offersGrid";
 import { OffersTable } from "@components/offersPage/offersTable";
-import { OffersTop } from "@components/offersPage/offersTop";
 import { StoreDataAdapter } from "@components/storeDataAdapter";
 
 import { StoreContext } from "./_app";
@@ -32,14 +32,14 @@ const Home: NextPage = observer(() => {
 
   useEffect(() => {
     if (wallet && connected) void handleOffers();
-  }, [wallet, connected]);
+  }, [wallet, connected, handleOffers]);
 
   return (
     <StoreDataAdapter>
       <div className="page offers">
         <main>
           <LayoutTop />
-          <OffersTop />
+          <FiltersRow />
           {viewType === "grid" ? <OffersGrid /> : <OffersTable />}
         </main>
         <LayoutTopMobile />
