@@ -55,10 +55,12 @@ const SingleNftPage: NextPage = observer(() => {
         progress: undefined,
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     void handleData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.query.id, connected, wallet]);
 
   useEffect(() => {

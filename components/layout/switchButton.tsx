@@ -13,9 +13,9 @@ export const SwitchButton = ({ state, onClick, classNames, theme }: SwitchButton
 
   return (
     <a className={`switch--button ${classNames}`} onClick={onButtonClick}>
-      {theme ? <i className="icon icon--sm icon--theme icon--theme--moon" /> : ""}
+      {theme && state ? <i className="icon icon--sm icon--theme icon--theme--moon" /> : ""}
       <div className={`switch--button--knob ${state ? "right" : "left"}`} />
-      {theme ? <i className="icon icon--sm icon--theme icon--theme--sun" /> : ""}
+      {theme && !state ? <i className="icon icon--sm icon--theme icon--theme--sun" /> : ""}
     </a>
   );
 };
