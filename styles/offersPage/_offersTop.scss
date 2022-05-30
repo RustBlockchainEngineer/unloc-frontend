@@ -114,8 +114,10 @@
 }
 
 .offers-filters {
-  margin-top: -20px;
-  margin-bottom: -200px;
+  @media (min-width: $bp-tablet) {
+    margin-top: -20px;
+    margin-bottom: -200px;
+  }
   display: flex;
   justify-items: center;
   align-items: flex-start;
@@ -154,31 +156,6 @@
     &__top {
       display: inline-flex;
       justify-content: space-between;
-    }
-  }
-
-  @media (max-width: $bp-tablet) {
-    margin-bottom: 0;
-    flex-direction: column;
-    height: 0;
-    width: 95vw;
-    padding: 15px;
-    &.active {
-      width: 95vw;
-      padding: 15px;
-      margin: -$mr-sm 2.5vw 0;
-      height: 612px; /* TODO: This could be a problem */
-
-      .filter-generic {
-        margin: 5px 0 15px 0;
-        padding: 0 0 15px;
-      }
-
-      .filter-generic:not(:last-child) {
-        @include theme-aware("border-color", "color-secondary");
-        border-right: none;
-        border-bottom: 1px dotted;
-      }
     }
   }
 }

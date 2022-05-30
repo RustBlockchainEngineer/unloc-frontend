@@ -31,7 +31,7 @@ export const OffersTop = observer(() => {
 
   return (
     <div className="layout-line">
-      <div className="offers-filters-wrapper">
+      <div className={`offers-filters-wrapper ${filtersVisible ? "active" : ""}`}>
         <div className={`offers-filters ${filtersVisible ? "active" : ""}`}>
           <Filter
             title="COLLECTIONS"
