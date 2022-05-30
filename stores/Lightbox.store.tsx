@@ -40,7 +40,14 @@ export class LightboxStore {
   };
 
   lendConfirmationData: any = {};
-  acceptOfferData: {} = {};
+  acceptOfferData: ILightboxOffer = {
+    offerPublicKey: "",
+    amount: "",
+    APR: 0,
+    duration: "",
+    totalRepay: "",
+    currency: "",
+  };
 
   constructor(rootStore: any) {
     makeAutoObservable(this);
