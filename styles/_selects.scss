@@ -89,11 +89,13 @@
       width: 100%;
       text-align: center;
       @include theme-aware("background-color", "color-accent");
-      @include theme-aware("border-color", "color-secondary");
-      @include theme-aware("color", "color-secondary");
+      border: 2px solid #9e6cff;
+      line-height: 35px;
+      color: #9e6cff;
 
       &:hover {
-        @include theme-aware("background-color", "color-secondary");
+        background-color: #9e6cff;
+        color: #ffffff;
       }
     }
   }

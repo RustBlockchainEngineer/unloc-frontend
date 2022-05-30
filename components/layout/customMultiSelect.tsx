@@ -69,7 +69,7 @@ export const CustomMultiSelect = ({
           <input type="text" placeholder="Search for collection" onChange={searchFilterHandler} />
         </div>
         <div className={`custom-multi-select__reset`}>
-          <button onClick={uncheckAll} className="btn btn--md btn--bordered">
+          <button onClick={uncheckAll} className="btn btn--md">
             Reset
           </button>
         </div>
