@@ -12,6 +12,7 @@ import { Offer } from "@components/singleOffer/Offer/Offer";
 import { StoreDataAdapter } from "@components/storeDataAdapter";
 import { currencyMints } from "@constants/currency";
 import { StoreContext } from "@pages/_app";
+import { ILightboxOffer } from "@stores/Lightbox.store";
 import { getQueryParamAsString } from "@utils/getQueryParamsAsString";
 
 const SingleNftPage: NextPage = observer(() => {
@@ -23,7 +24,7 @@ const SingleNftPage: NextPage = observer(() => {
 
   const [hasActive, setHasActive] = useState(false);
 
-  const handleData = async (): Promise<void> => {
+  const handleData = useCallback(async (): Promise<void> => {
     try {
       if (connected && wallet && router.query.id) {
         await store.SingleOffer.fetchNft(getQueryParamAsString(router.query.id));
@@ -34,34 +35,35 @@ const SingleNftPage: NextPage = observer(() => {
       // eslint-disable-next-line no-console
       console.log(e);
     }
-  };
+  }, [connected, store.SingleOffer, router.query.id, wallet]);
 
-  const handleConfirmOffer = useCallback((offer: any): void => {
-    try {
-      store.Lightbox.setAcceptOfferData(offer);
-      store.Lightbox.setContent("acceptOffer");
-      store.Lightbox.setCanClose(true);
-      store.Lightbox.setVisible(true);
-    } catch (e) {
-      // eslint-disable-next-line no-console
-      console.log(e);
-      toast.error("Something went wrong", {
-        autoClose: 3000,
-        position: "top-center",
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const handleConfirmOffer = useCallback(
+    (offer: ILightboxOffer): void => {
+      try {
+        store.Lightbox.setAcceptOfferData(offer);
+        store.Lightbox.setContent("acceptOffer");
+        store.Lightbox.setCanClose(true);
+        store.Lightbox.setVisible(true);
+      } catch (e) {
+        // eslint-disable-next-line no-console
+        console.log(e);
+        toast.error("Something went wrong", {
+          autoClose: 3000,
+          position: "top-center",
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      }
+    },
+    [store.Lightbox],
+  );
 
   useEffect(() => {
     void handleData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [router.query.id, connected, wallet]);
+  }, [router.query.id, connected, wallet, handleData]);
 
   useEffect(() => {
     router.events.on("routeChangeStart", () => {

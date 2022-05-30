@@ -7,7 +7,7 @@ import { CustomMultiSelect } from "@components/layout/customMultiSelect";
 import { CustomSelect } from "@components/layout/customSelect";
 import { StoreContext } from "@pages/_app";
 
-export const OffersTop = observer(() => {
+export const FiltersRow = observer(() => {
   const store = useContext(StoreContext);
 
   const {

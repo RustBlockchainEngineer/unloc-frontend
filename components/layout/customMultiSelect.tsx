@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useMemo, SyntheticEvent } from "react";
+import { useState, useEffect, useRef, useMemo, SyntheticEvent, useCallback } from "react";
 
 interface CustomMultiSelectProps {
   classNames?: string;
@@ -19,7 +19,12 @@ export const CustomMultiSelect = ({
   onCheck,
 }: CustomMultiSelectProps) => {
   const [hidden, setHidden] = useState(true);
+  const [collectionsList, updateCollectionsList] = useState<{ label: string; value: string }[]>();
   const container = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    updateCollectionsList(options);
+  }, [options]);
 
   const uncheckAll = () => {
     clearFilters && clearFilters();
@@ -42,6 +47,17 @@ export const CustomMultiSelect = ({
     };
   }, []);
 
+  const searchFilterHandler = useCallback(
+    (event: SyntheticEvent<HTMLInputElement, Event>): void => {
+      const searchString = event.currentTarget.value;
+      const result = options.filter(
+        (el) => el.value.toUpperCase().indexOf(searchString.toUpperCase()) >= 0,
+      );
+      updateCollectionsList(searchString.length ? result : options);
+    },
+    [collectionsList],
+  );
+
   return (
     <div ref={container} className={`custom-multi-select ${disabled ? "disabled" : ""}`}>
       <div className="custom-multi-select__title" onClick={toggleOptions}>
@@ -49,18 +65,23 @@ export const CustomMultiSelect = ({
         <i className="icon icon--sm icon--filter--down" />
       </div>
       <div className={`custom-multi-select__options ${hidden ? "hidden" : ""}`}>
+        <div className="custom-multi-select__input">
+          <input type="text" placeholder="Search for collection" onChange={searchFilterHandler} />
+        </div>
         <div className={`custom-multi-select__reset`}>
-          <button onClick={uncheckAll} className="btn btn--md btn--bordered">
+          <button onClick={uncheckAll} className="btn btn--md">
             Reset
           </button>
         </div>
-        <CollectionList
-          options={options}
-          values={values}
-          disabled={disabled}
-          onCheck={onCheck}
-          setHidden={setHidden}
-        />
+        {collectionsList && (
+          <CollectionList
+            options={collectionsList}
+            values={values}
+            disabled={disabled}
+            onCheck={onCheck}
+            setHidden={setHidden}
+          />
+        )}
       </div>
     </div>
   );
@@ -105,7 +126,7 @@ export const CollectionList = ({ options, values, disabled, onCheck }: Collectio
           ))}
         </ul>
       );
-    }, [values]);
+    }, [options]);
 
   return <MemoizedList />;
 };

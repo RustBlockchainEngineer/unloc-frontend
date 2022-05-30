@@ -1,5 +1,5 @@
 .custom-select {
-  @include theme-aware("background-color", "input-number-bg");
+  @include theme-aware("background-color", "input-bg");
   @include theme-aware("color", "color-content");
 
   transition: all 0.3s ease-in-out;
@@ -19,7 +19,7 @@
   }
 
   ul.custom-select__options {
-    @include theme-aware("background-color", "input-number-bg");
+    @include theme-aware("background-color", "input-bg");
 
     box-shadow: 0 4px 6px rgba(45, 26, 81, 0.3);
     width: 100%;
@@ -89,11 +89,49 @@
       width: 100%;
       text-align: center;
       @include theme-aware("background-color", "color-accent");
-      @include theme-aware("border-color", "color-secondary");
-      @include theme-aware("color", "color-secondary");
+      border: 2px solid #9e6cff;
+      line-height: 35px;
+      color: #9e6cff;
 
       &:hover {
-        @include theme-aware("background-color", "color-secondary");
+        background-color: #9e6cff;
+        color: #ffffff;
+      }
+    }
+  }
+
+  &__input {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    border-radius: $brd-rds-lg;
+    position: relative;
+    background: #210d48;
+    @include theme-aware("background-color", "input-bg");
+    padding: 0 $mr-sm;
+    margin-bottom: $mr-2rem;
+
+    &::before {
+      display: inline-block;
+      content: "";
+      width: 15px;
+      height: 15px;
+      position: relative;
+      background-image: url("/icons/search-icon.svg");
+    }
+
+    input {
+      width: 100%;
+      border: none;
+      color: #9e6cff;
+      font-size: $tp-md;
+      background: transparent;
+      line-height: 35px;
+      margin-left: calc($mr-tn * 2);
+      outline: none;
+
+      &::placeholder {
+        color: #9e6cff;
       }
     }
   }
@@ -140,6 +178,7 @@
         width: auto;
         font-size: inherit;
         line-height: inherit;
+
         & .checkbox-custom.rectangular {
           top: 6px;
         }
