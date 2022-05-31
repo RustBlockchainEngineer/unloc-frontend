@@ -8,6 +8,8 @@ const nextConfig = {
       "ipfs.io",
       "cdn.blastctrl.com",
       "s3.eu-central-1.amazonaws.com",
+      "cdn-unloc-devnet.s3.amazonaws.com",
+      "cdn-unloc-devnet.s3.eu-central-1.amazonaws.com",
     ],
   },
   webpack5: true,
