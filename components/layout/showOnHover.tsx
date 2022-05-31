@@ -2,7 +2,7 @@ import React, { useState } from "react";
 
 interface ShowOnHoverProps {
   label: React.ReactNode;
-  children: React.ReactNode;
+  children?: React.ReactNode;
   labelClassName?: string;
   classNames?: string;
 }

@@ -62,8 +62,8 @@
       color: #ffffff;
 
       .info-name {
-        font-size: 18px;
         @include theme-aware("color", "myOffers-nftName-color");
+        font-size: $tp-lg;
         width: 260px;
         overflow: hidden;
         text-overflow: ellipsis;

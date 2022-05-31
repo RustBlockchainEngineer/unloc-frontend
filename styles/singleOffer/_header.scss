@@ -83,9 +83,9 @@
   padding-top: 10px;
 
   p {
-    font-size: 18px;
-    font-weight: 400;
     @include theme-aware("color", "color-secondary");
+    font-size: $tp-lg;
+    font-weight: 400;
     margin: 0;
     padding: 0;
   }

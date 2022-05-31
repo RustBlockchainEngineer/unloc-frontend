@@ -3,7 +3,7 @@ import { observer } from "mobx-react";
 import { StoreContext } from "@pages/_app";
 
 interface LightboxProps {
-  children: JSX.Element;
+  children?: JSX.Element;
   classNames?: string;
 }
 

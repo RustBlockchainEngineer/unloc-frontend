@@ -1,9 +1,9 @@
 import { useContext, useEffect } from "react";
-import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import { observer } from "mobx-react";
 import { StoreContext } from "@pages/_app";
 import { SwitchButton } from "./switchButton";
 import { MenuShowButton } from "./menuShowButton";
+import { WalletCustomButton } from "@components/walletButton/WalletCustomButton";
 
 interface UserToolboxProps {
   isMenuHidden: boolean | undefined;
@@ -32,7 +32,7 @@ export const UserToolbox = observer(({ hideMenu, isMenuHidden }: UserToolboxProp
         menuVisibleState={isMenuHidden ? isMenuHidden : false}
         changeMenuVisibility={hideMenu ? hideMenu : undefined}
       />
-      <WalletMultiButton />
+      <WalletCustomButton />
       <div className="theme-switcher">
         <SwitchButton
           state={store.Interface.theme == "light"}

@@ -43,7 +43,7 @@ export const Filter = memo(
     actionValidatorMax,
     values,
     valuesRange,
-  }: IFilterOffersInterface): ReactElement => {
+  }: IFilterOffersInterface) => {
     const [min, setMin] = useState<number>();
     const [max, setMax] = useState<number>();
 

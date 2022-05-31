@@ -34,11 +34,19 @@
 }
 
 .icon--copy {
-  background-image: url("../constants/icons/svg/copy.svg");
+  @include theme-aware("background-image", "icon-copy");
 }
 
 .icon--cross {
   @include theme-aware("background-image", "icon-cross");
+}
+
+.icon--switch {
+  @include theme-aware("background-image", "icon-switch");
+}
+
+.icon--disconnect {
+  @include theme-aware("background-image", "icon-disconnect");
 }
 
 .icon--cross--black {
@@ -133,35 +141,10 @@
 
 .icon--telegram {
   background-image: url("/icons/telegram-icon.svg");
-  background-size: contain;
-  background-repeat: no-repeat;
-}
-
-//TODO: absent icon
-.icon--twitter--circle {
-  background-image: url("/icons/twitter-circle.svg");
-  background-size: contain;
-  background-repeat: no-repeat;
-}
-
-//TODO: absent icon
-.icon--discord--circle {
-  background-image: url("/icons/discord-circle.svg");
-  background-size: contain;
-  background-repeat: no-repeat;
-}
-
-//TODO: absent icon
-.icon--telegram--circle {
-  background-image: url("/icons/telegram-circle.svg");
-  background-size: contain;
-  background-repeat: no-repeat;
 }
 
 .icon--twitter--small {
   background-image: url("/icons/twitter-icon.svg");
-  background-size: contain;
-  background-repeat: no-repeat;
 }
 
 .icon--paginator {
@@ -214,6 +197,7 @@
   width: 25px;
   height: 25px;
 }
+
 .icon--smd {
   width: 40px;
   height: 40px;
