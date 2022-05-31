@@ -35,3 +35,9 @@
   transition: all 0.55s cubic-bezier(0.075, 0.82, 0.165, 1);
   width: 20px;
 }
+
+@media (min-width: $bp-phone) {
+  .menu-show-button-hamburger {
+    display: none;
+  }
+}

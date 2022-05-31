@@ -50,6 +50,7 @@
 @import "./mobile/footerMobile";
 @import "./mobile/layoutTopMobile";
 @import "./mobile/offersPage/offersTopMobile";
+@import "./mobile/offersPage/offersGridMobile";
 
 body {
   @include theme-aware("background-color", "color-background");

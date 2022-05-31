@@ -1,0 +1,136 @@
+@media (max-width: $bp-tablet) {
+  .offers-grid {
+    display: flex;
+    width: 100vw;
+    flex-wrap: wrap;
+    align-items: center;
+    transform: scale(1);
+    gap: 0;
+    justify-content: center;
+
+    &--empty {
+      width: 100vw;
+    }
+
+    .offers-grid-item {
+      width: 40vw;
+      height: 40vw;
+      margin: 2vw 2.5vw 2vw 2.5vw;
+
+      a {
+        display: inline-block;
+      }
+
+      .hover-data {
+        display: none;
+      }
+
+      .onHover-data.hide {
+        opacity: 1;
+      }
+
+      .onHover-data {
+        opacity: 1;
+        padding: 24px;
+
+        .data-item {
+          padding-bottom: 8px;
+
+          .item-name {
+            font-size: $tp-lg;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            word-wrap: break-word;
+            white-space: nowrap;
+          }
+
+          .label {
+            font-size: $tp-md;
+          }
+
+          .content {
+            font-size: $tp-md;
+          }
+        }
+
+        button {
+          width: 100%;
+          height: 6vw;
+          padding: 1vw;
+          font-size: $tp-lg;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: $bp-tablet) {
+  .offers-grid {
+    grid-gap: 15px;
+
+    .offers-grid-item {
+      .onHover-data {
+        padding: 0;
+
+        .data-item {
+          padding-bottom: 6px;
+
+          .item-name {
+            font-size: 2.6vw;
+          }
+
+          .label {
+            font-size: 2.6vw;
+          }
+
+          .content {
+            font-size: 2.6vw;
+          }
+        }
+
+        button {
+          font-size: 2.6vw;
+          border-top-left-radius: 0px;
+          border-top-right-radius: 0px;
+        }
+      }
+
+      .onHover-link {
+        padding: 15px 15px 0 15px;
+      }
+    }
+  }
+
+  .onHover-link {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(1fr, 1fr);
+    grid-column-gap: 0px;
+    grid-row-gap: 0px;
+  }
+
+  .data-item:first-child {
+    grid-area: 1 / 1 / 2 / 3;
+  }
+
+  .data-item:nth-child(2) {
+    grid-area: 2 / 2 / 3 / 3;
+    align-items: flex-end;
+  }
+
+  .data-item:nth-child(3) {
+    grid-area: 2 / 1 / 3 / 2;
+  }
+
+  .data-item:nth-child(4) {
+    grid-area: 3 / 1 / 4 / 3;
+  }
+
+  .data-item:nth-child(5) {
+    display: none !important;
+  }
+
+  .data-item:nth-child(6) {
+    grid-area: 4 / 1 / 5 / 3;
+  }
+}
