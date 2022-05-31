@@ -41,3 +41,15 @@ export interface SubOffer {
   minRepaidNumerator: BN;
   aprNumerator: BN;
 }
+
+// Requests made using Anchor (fetchMultiple) can return data in this shape
+export interface OfferAccount {
+  publicKey: PublicKey;
+  account: Offer;
+  collection?: string;
+}
+
+export interface SubOfferAccount {
+  publicKey: PublicKey;
+  account: SubOffer;
+}

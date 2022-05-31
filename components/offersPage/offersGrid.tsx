@@ -84,8 +84,8 @@ export const OffersGrid = observer(() => {
             return (
               <OffersGridItem
                 key={`offer-${offerData.subOfferKey.toString()}-${index}`}
-                nftMint={offerData.nftData.mint}
                 subOfferKey={offerData.subOfferKey.toString()}
+                offerKey={offerData.offer.toString()}
                 image={offerData.nftData.arweaveMetadata.image}
                 amount={getDecimalsForLoanAmountAsString(
                   offerData.offerAmount.toNumber(),

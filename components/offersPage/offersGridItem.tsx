@@ -5,7 +5,7 @@ import Link from "next/link";
 
 interface OffersGridItemInterface {
   subOfferKey: string;
-  nftMint: string;
+  offerKey: string;
   image: string;
   apr: number;
   name: string;
@@ -21,7 +21,7 @@ interface OffersGridItemInterface {
 
 export const OffersGridItem = ({
   subOfferKey,
-  nftMint,
+  offerKey,
   image,
   apr,
   name,
@@ -83,12 +83,12 @@ export const OffersGridItem = ({
         duration={duration}
         currency={currency}
         subOfferKey={subOfferKey}
-        nftMint={nftMint}
+        offerKey={offerKey}
         count={count}
         collection={collection}
         isYours={isYours}
       />
-      <Link href={`/offers/${nftMint}`}>
+      <Link href={`/offers/${offerKey}`}>
         <a>
           <div className="hover-data" style={{ visibility: `${hover ? "hidden" : "visible"}` }}>
             <div className="hover-data-item">

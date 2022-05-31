@@ -22,6 +22,7 @@ import {
 import axios from "axios";
 
 import { IArweaveMetadata, IMasterEdition, IMetadata, IOnChainMetadata } from "nft";
+import { SubOffer, SubOfferAccount } from "../@types/loans";
 
 const SOLANA_CONNECTION = new Connection(RPC_ENDPOINT, {
   disableRetryOnRateLimit: true,
@@ -136,65 +137,30 @@ export const getSubOffer = async (key: anchor.web3.PublicKey) => {
   return subOffer;
 };
 
-export const getSubOfferList = async (
-  offer?: anchor.web3.PublicKey,
-  nftMint?: anchor.web3.PublicKey,
-  state?: SubOfferState,
-) => {
-  const accountName = "subOffer";
-  const discriminator = anchor.AccountsCoder.accountDiscriminator(accountName);
-  const filters: any[] = [];
-  if (offer) {
-    const filter: MemcmpFilter = {
-      memcmp: {
-        offset: discriminator.length + 97,
-        bytes: offer.toBase58(),
-      },
-    };
-    filters.push(filter);
-  }
-  if (nftMint) {
-    const filter: MemcmpFilter = {
-      memcmp: {
-        offset: discriminator.length + 32,
-        bytes: nftMint.toBase58(),
-      },
-    };
-    filters.push(filter);
-  }
-  if (state) {
-    const filter: MemcmpFilter = {
-      memcmp: {
-        offset: discriminator.length + 96,
-        bytes: bs58.encode([state]),
-      },
-    };
-    filters.push(filter);
-  }
+export const getSubOffersInRange = async (
+  offer: PublicKey,
+  range: number[],
+  state?: number,
+): Promise<SubOfferAccount[]> => {
+  const subOfferAddresses = await Promise.all(
+    range.map(async (num) => {
+      return pda(
+        [SUB_OFFER_TAG, offer.toBuffer(), new anchor.BN(num).toArrayLike(Buffer, "be", 8)],
+        program.programId,
+      );
+    }),
+  );
 
-  const subOffers = await program.account.subOffer.all(filters);
-  const result = [];
-  for (let i = 0; i < subOffers.length; i++) {
-    const offerKey = subOffers[i].account.offer;
-    const offerData = await program.account.offer.fetch(offerKey);
-    if (offerData.startSubOfferNum.toNumber() <= subOffers[i].account.subOfferNumber.toNumber()) {
-      result.push(subOffers[i]);
+  const data = await program.account.subOffer.fetchMultiple(subOfferAddresses);
+  return subOfferAddresses.reduce<SubOfferAccount[]>((list, publicKey, i) => {
+    const account = data[i] as SubOffer;
+    if (account) {
+      state
+        ? account.state === state && list.push({ publicKey, account })
+        : list.push({ publicKey, account });
     }
-  }
-  return result;
-};
-
-export const getAllSubOffers = async () => {
-  const subOffers = await program.account.subOffer.all();
-  const result = [];
-  for (let i = 0; i < subOffers.length; i++) {
-    const offerKey = subOffers[i].account.offer;
-    const offerData = await program.account.offer.fetch(offerKey);
-    if (offerData.startSubOfferNum.toNumber() <= subOffers[i].account.subOfferNumber.toNumber()) {
-      result.push(subOffers[i]);
-    }
-  }
-  return result;
+    return list;
+  }, []);
 };
 
 export const getSubOfferMultiple = async (keys: anchor.web3.PublicKey[], offerState?: number) => {

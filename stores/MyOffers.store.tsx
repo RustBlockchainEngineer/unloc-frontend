@@ -5,7 +5,6 @@ import { BN } from "bn.js";
 import { getWhitelistedNFTsByWallet } from "@integration/nftIntegration";
 import {
   getOffersBy,
-  getSubOfferList,
   MultipleNFT,
   NFTMetadata,
   createSubOffer,
@@ -16,24 +15,15 @@ import {
   cancelOffer,
   getSubOfferMultiple,
   claimCollateral,
+  getSubOffersInRange,
 } from "@integration/nftLoan";
 import { currencies, currencyMints } from "@constants/currency";
 import { getDurationForContractData } from "@utils/getDuration";
 import { getSubOffersKeysByState } from "@integration/offersListing";
-import { Offer, SubOffer } from "../@types/loans";
+import { OfferAccount, SubOfferAccount } from "../@types/loans";
 import { SubOfferData } from "./Offers.store";
 import axios from "axios";
-
-export interface OfferAccount {
-  publicKey: PublicKey;
-  account: Offer;
-  collection?: string;
-}
-
-export interface SubOfferAccount {
-  publicKey: PublicKey;
-  account: SubOffer;
-}
+import { range } from "@utils/range";
 
 export class MyOffersStore {
   rootStore;
@@ -138,8 +128,10 @@ export class MyOffersStore {
     if (this.offers && this.offers.length > 0) {
       const data: SubOfferAccount[] = [];
       for (const offer of this.offers) {
-        if (offer && offer.publicKey) {
-          const subOfferData = yield getSubOfferList(offer.publicKey);
+        if (offer) {
+          const { startSubOfferNum, subOfferCount } = offer.account;
+          const subOfferRange = range(startSubOfferNum.toNumber(), subOfferCount.toNumber());
+          const subOfferData = yield getSubOffersInRange(offer.publicKey, subOfferRange);
           data.push(subOfferData);
         }
       }

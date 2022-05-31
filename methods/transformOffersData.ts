@@ -7,6 +7,7 @@ import { PublicKey } from "@solana/web3.js";
 
 export interface ITransformedOffer {
   subOfferKey: string;
+  offerKey: string;
   nftMint: string;
   image: string;
   name: string;
@@ -49,6 +50,7 @@ export const transformOffersData = (
     const duration = Math.floor(offerData.loanDuration.toNumber() / (3600 * 24));
     return {
       subOfferKey: offerData.subOfferKey.toString(),
+      offerKey: offerData.offer.toString(),
       nftMint: offerData.nftData.mint.toString(),
       image: offerData.nftData.arweaveMetadata.image,
       name: offerData.nftData.arweaveMetadata.name,

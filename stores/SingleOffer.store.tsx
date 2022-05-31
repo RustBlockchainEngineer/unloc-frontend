@@ -1,7 +1,7 @@
 import { action, makeAutoObservable, flow } from "mobx";
 import axios from "axios";
 import * as anchor from "@project-serum/anchor";
-import { getSubOfferList, getOffersBy } from "@integration/nftLoan";
+import { getOffer, getSubOffersInRange } from "@integration/nftLoan";
 import { INftCoreData } from "nft";
 import { getMetadata } from "@integration/nftIntegration";
 import { getDecimalsForLoanAmount } from "@integration/getDecimalForLoanAmount";
@@ -9,6 +9,9 @@ import { calculateRepayValue } from "@utils/calculateRepayValue";
 import { currencyMints } from "@constants/currency";
 import { toast } from "react-toastify";
 import { getDurationFromContractData } from "@utils/getDuration";
+import { OfferAccount, Offer } from "../@types/loans";
+import { range } from "@utils/range";
+
 interface LoanInterface {
   id: string;
   status: number;
@@ -23,6 +26,7 @@ interface LoanInterface {
 
 export class SingleOfferStore {
   rootStore;
+  offer = {} as OfferAccount;
   nftData = {} as INftCoreData;
   loansData: LoanInterface[] = [];
   isYours: boolean = false;
@@ -32,26 +36,38 @@ export class SingleOfferStore {
     this.rootStore = rootStore;
   }
 
-  @action.bound fetchNft = flow(function* (this: SingleOfferStore, id: string) {
-    const subOfferKey = new anchor.web3.PublicKey(id);
-    const metadata = yield getMetadata(subOfferKey);
-    const collection = yield axios.post("/api/collections/nft", { id: subOfferKey.toBase58() });
+  @action.bound fetchOffer = flow(function* (
+    this: SingleOfferStore,
+    id: string,
+    walletAddress?: string,
+  ) {
+    const pubkey = new anchor.web3.PublicKey(id);
+    const offer: Offer = yield getOffer(pubkey);
+    this.offer = { publicKey: pubkey, account: offer };
+    this.isYours = offer.borrower.toString() === walletAddress;
+
+    const metadata = yield getMetadata(offer.nftMint);
+    const collection = yield axios.post("/api/collections/nft", { id: offer.nftMint.toString() });
     if (collection && metadata && metadata.arweaveMetadata) {
-      this.setNftData({
+      this.nftData = {
         ...metadata.arweaveMetadata,
         collection: collection.data,
-        mint: subOfferKey.toBase58(),
-      });
+        mint: offer.nftMint.toString(),
+      };
     }
   });
 
-  @action.bound fetchSubOffers = async (id: string): Promise<void> => {
-    try {
-      const subOfferKey = new anchor.web3.PublicKey(id);
+  @action.bound fetchSubOffers = async (): Promise<void> => {
+    if (!this.offer) return;
 
-      const data = await getSubOfferList(undefined, subOfferKey, 0);
+    // We need to find the suboffer PDAs
+    const { startSubOfferNum, subOfferCount } = this.offer.account;
+    const subOfferRange = range(startSubOfferNum.toNumber(), subOfferCount.toNumber());
+
+    try {
+      const subOffers = await getSubOffersInRange(this.offer.publicKey, subOfferRange);
       const loansArr: Array<LoanInterface> = [];
-      data.forEach((element) => {
+      subOffers.forEach((element) => {
         const { publicKey, account } = element;
         const { offerAmount, offerMint, loanDuration, aprNumerator, state } = account;
 
@@ -70,7 +86,7 @@ export class SingleOfferStore {
           id: publicKey.toBase58(),
           status: state,
           amount: amountConvered.toString(),
-          currency: currencyMints[element.account.offerMint.toBase58()],
+          currency: currencyMints[offerMint.toBase58()],
           duration: durationConverted, // suspecting wrong type here, also we are showing loans with 0 day duration this is wrong
           apr: aprConverted,
           offerMint: offerMint.toBase58(),
@@ -83,7 +99,6 @@ export class SingleOfferStore {
           ),
         });
       });
-
       this.setLoansData(loansArr);
     } catch (e) {
       if ((e as Error).message.includes("503 Service Unavailable")) {
@@ -102,25 +117,11 @@ export class SingleOfferStore {
     }
   };
 
-  @action.bound async getOffersByWallet(): Promise<void> {
-    const offersData = await getOffersBy(this.rootStore.Wallet.walletKey, undefined, undefined);
-    this.checkIfYours(offersData);
-  }
-
-  @action.bound checkIfYours = (data: any[]): void => {
-    const isYours = data.some((item) => item.account.nftMint.toBase58() === this.nftData.mint);
-    this.setIsYours(isYours);
-  };
-
   @action.bound setNftData = (data: INftCoreData): void => {
     this.nftData = data;
   };
 
   @action.bound setLoansData = (data: LoanInterface[]): void => {
     this.loansData = data;
-  };
-
-  @action.bound setIsYours = (isYours: boolean): void => {
-    this.isYours = isYours;
   };
 }

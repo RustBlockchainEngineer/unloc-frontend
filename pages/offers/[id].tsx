@@ -19,23 +19,26 @@ const SingleNftPage: NextPage = observer(() => {
   const router = useRouter();
   const store = useContext(StoreContext);
 
-  const { connected, wallet } = store.Wallet;
+  const { connected, walletKey } = store.Wallet;
   const { nftData, loansData, isYours } = store.SingleOffer;
 
   const [hasActive, setHasActive] = useState(false);
 
   const handleData = useCallback(async (): Promise<void> => {
     try {
-      if (connected && wallet && router.query.id) {
-        await store.SingleOffer.fetchNft(getQueryParamAsString(router.query.id));
-        await store.SingleOffer.fetchSubOffers(getQueryParamAsString(router.query.id));
-        await store.SingleOffer.getOffersByWallet();
+      if (connected && walletKey && router.query.id) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+        await store.SingleOffer.fetchOffer(
+          getQueryParamAsString(router.query.id),
+          walletKey?.toString(),
+        );
+        await store.SingleOffer.fetchSubOffers();
       }
     } catch (e) {
       // eslint-disable-next-line no-console
       console.log(e);
     }
-  }, [connected, store.SingleOffer, router.query.id, wallet]);
+  }, [connected, walletKey, router.query.id, store.SingleOffer]);
 
   const handleConfirmOffer = useCallback(
     (offer: ILightboxOffer): void => {
@@ -63,7 +66,7 @@ const SingleNftPage: NextPage = observer(() => {
 
   useEffect(() => {
     void handleData();
-  }, [router.query.id, connected, wallet, handleData]);
+  }, [router.query.id, connected, handleData]);
 
   useEffect(() => {
     router.events.on("routeChangeStart", () => {
@@ -77,9 +80,8 @@ const SingleNftPage: NextPage = observer(() => {
         external_url: "",
       });
       store.SingleOffer.setLoansData([]);
-      store.Offers.clearFilters();
     });
-  }, [router.events, store.Offers, store.SingleOffer]);
+  }, [router.events, store.SingleOffer]);
 
   useEffect(() => {
     if (loansData && loansData.length)
@@ -109,7 +111,7 @@ const SingleNftPage: NextPage = observer(() => {
             isYours={isYours}
           />
         );
-      else return <div />;
+      else return null;
     });
   }, [handleConfirmOffer, isYours, loansData]);
 
