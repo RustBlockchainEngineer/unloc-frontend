@@ -1,0 +1,47 @@
+.circular-progress-bar {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  margin: 10px;
+
+  &__info {
+    transform: rotate(-90deg);
+    width: 62px;
+    height: 62px;
+    @include theme-aware("background-color", "circular-progress-label-bgcolor");
+    @include theme-aware("color", "circular-progress-color");
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+
+    .info--value {
+      font-size: $tp-md;
+      font-weight: $wg-hv;
+      margin-bottom: 5px;
+    }
+
+    .info--label {
+      font-size: $tp-sm;
+    }
+  }
+
+  &__circle {
+    @include theme-aware("background-color", "circular-progress-line-bgcolor");
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transform: rotate(90deg);
+  }
+}
+
+@for $i from 1 through 360 {
+  .progress-#{$i} {
+    background-image: linear-gradient(0deg, #2f175d 50%, transparent 50%),
+      linear-gradient($i + deg, transparent 50%, #2f175d 50%);
+  }
+}

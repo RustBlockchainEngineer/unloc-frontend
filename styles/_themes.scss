@@ -133,6 +133,11 @@ $themes: (
     mobile-menu-scrolldown-bg: rgba(147, 119, 199, 0.8),
     mobile-menu-highlight: #7752be,
     mobile-menu-wallet-color: #e00a7f,
+
+    circular-progress-label-bgcolor: #482688,
+    circular-progress-line-bgcolor: #e0097e,
+    circular-progress-emptyLine-bgcolor: #2f175d,
+    circular-progress-color: #ffffff,
   ),
   dark: (
     color-white: #fff,
@@ -268,5 +273,10 @@ $themes: (
     mobile-menu-scrolldown-bg: rgba(72, 38, 136, 0.8),
     mobile-menu-highlight: #5d36a7,
     mobile-menu-wallet-color: #e00a7f,
+
+    circular-progress-label-bgcolor: #482688,
+    circular-progress-line-bgcolor: #e0097e,
+    circular-progress-emptyLine-bgcolor: #2f175d,
+    circular-progress-color: #ffffff,
   ),
 );
