@@ -13,11 +13,12 @@ export interface ITransformedOffer {
   name: string;
   apr: number;
   amount: string;
-  duration: number;
+  duration: string;
   currency: string;
   count: number;
   isYours?: boolean;
   collection: string;
+  repayAmount: string;
 }
 
 /**
@@ -47,7 +48,7 @@ export const transformOffersData = (
       2,
     ).toString();
     const apr = offerData.aprNumerator.toNumber();
-    const duration = Math.floor(offerData.loanDuration.toNumber() / (3600 * 24));
+    const duration = Math.floor(offerData.loanDuration.toNumber() / (3600 * 24)).toString();
     return {
       subOfferKey: offerData.subOfferKey.toString(),
       offerKey: offerData.offer.toString(),
@@ -61,7 +62,7 @@ export const transformOffersData = (
       count: 0,
       isYours: walletKey?.equals(offerData.borrower),
       collection: offerData.collection,
-      repayAmount: calculateRepayValue(Number(amount), apr, duration, denominator),
+      repayAmount: calculateRepayValue(Number(amount), apr, Number(duration), denominator),
     };
   });
 };

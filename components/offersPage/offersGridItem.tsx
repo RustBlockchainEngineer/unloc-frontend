@@ -2,17 +2,18 @@ import React, { useState } from "react";
 import OffersGridItemHover from "./offersGridItemHover";
 import Image from "next/image";
 import Link from "next/link";
+import { ILightboxOffer } from "@stores/Lightbox.store";
 
 interface OffersGridItemInterface {
   subOfferKey: string;
   offerKey: string;
   image: string;
-  apr: number;
+  APR: number;
   name: string;
-  onLend: (pubkey: string) => Promise<void>;
+  handleConfirmOffer: (offer: ILightboxOffer) => void;
   totalRepay: any;
   amount: string;
-  duration: number;
+  duration: string;
   currency: string;
   count?: number;
   collection: string;
@@ -23,9 +24,9 @@ export const OffersGridItem = ({
   subOfferKey,
   offerKey,
   image,
-  apr,
+  APR,
   name,
-  onLend,
+  handleConfirmOffer,
   totalRepay,
   amount,
   duration,
@@ -75,11 +76,11 @@ export const OffersGridItem = ({
       )}
       <OffersGridItemHover
         visible={hover}
-        apr={apr}
+        APR={APR}
         name={name}
         totalRepay={totalRepay}
         amount={amount}
-        onLend={onLend}
+        handleConfirmOffer={handleConfirmOffer}
         duration={duration}
         currency={currency}
         subOfferKey={subOfferKey}
@@ -93,7 +94,7 @@ export const OffersGridItem = ({
           <div className="hover-data" style={{ visibility: `${hover ? "hidden" : "visible"}` }}>
             <div className="hover-data-item">
               <span className="label">APR</span>
-              <span className="content">{apr} %</span>
+              <span className="content">{APR} %</span>
             </div>
             <div className="hover-data-item">
               <span className="label">Amount</span>

@@ -9,7 +9,7 @@ import { currencies } from "@constants/currency";
 export interface SubOfferInterface {
   loanvalue: number;
   currency: CurrencyTypes;
-  duration: number;
+  duration: string;
   apr: number;
 }
 export class LoanActionsStore {
@@ -29,7 +29,7 @@ export class LoanActionsStore {
 
       await createSubOffer(
         new BN(data.loanvalue * 10 ** currencyInfo.decimals),
-        new BN(getDurationForContractData(data.duration, "days")),
+        new BN(getDurationForContractData(Number(data.duration), "days")),
         // minRepaidNumerator
         new BN(1),
         new BN(data.apr),
@@ -46,7 +46,7 @@ export class LoanActionsStore {
     data: {
       currency: CurrencyTypes;
       loanvalue: number;
-      duration: number;
+      duration: string;
       apr: string | number | BN | number[] | Uint8Array | Buffer;
     },
     subOffer: PublicKey,
@@ -56,7 +56,7 @@ export class LoanActionsStore {
 
       await updateSubOffer(
         new BN(data.loanvalue * 10 ** currencyInfo.decimals),
-        new BN(getDurationForContractData(data.duration, "days")),
+        new BN(getDurationForContractData(Number(data.duration), "days")),
         // minRepaidNumerator
         new BN(1),
         new BN(data.apr),

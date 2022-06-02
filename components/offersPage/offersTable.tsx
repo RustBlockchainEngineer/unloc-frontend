@@ -5,6 +5,7 @@ import { OffersTableRow } from "./offersTableRow";
 import { BlobLoader } from "@components/layout/blobLoader";
 import { toast } from "react-toastify";
 import { ITransformedOffer, transformOffersData } from "@methods/transformOffersData";
+import { ILightboxOffer } from "@stores/Lightbox.store";
 
 type CompareType = "string" | "number";
 
@@ -72,22 +73,13 @@ export const OffersTable = observer(() => {
     setInc((i) => i + 1);
   };
 
-  const HandleAcceptOffer = useCallback(
-    async (offerPublicKey: string) => {
+  const handleConfirmOffer = useCallback(
+    async (offer: ILightboxOffer) => {
       try {
-        store.Lightbox.setContent("processing");
-        store.Lightbox.setCanClose(false);
+        store.Lightbox.setAcceptOfferData(offer);
+        store.Lightbox.setContent("acceptOffer");
+        store.Lightbox.setCanClose(true);
         store.Lightbox.setVisible(true);
-        await store.Offers.handleAcceptOffer(offerPublicKey);
-        toast.success(`Loan Accepted`, {
-          autoClose: 3000,
-          position: "top-center",
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
       } catch (e: any) {
         console.log(e);
 
@@ -122,9 +114,6 @@ export const OffersTable = observer(() => {
             progress: undefined,
           });
         }
-      } finally {
-        store.Lightbox.setCanClose(true);
-        store.Lightbox.setVisible(false);
       }
     },
     [store.Lightbox, store.Offers],
@@ -140,17 +129,18 @@ export const OffersTable = observer(() => {
           image={item.image}
           amount={item.amount}
           name={item.name}
-          onLend={HandleAcceptOffer}
-          apr={item.apr}
+          handleConfirmOffer={handleConfirmOffer}
+          APR={item.apr}
           duration={item.duration}
           currency={item.currency}
           count={item.count}
           isYours={item.isYours}
           collection={item.collection ?? ""}
+          totalRepay={item.repayAmount}
         />
       );
     });
-  }, [list, HandleAcceptOffer, inc]);
+  }, [list, handleConfirmOffer, inc]);
 
   return list.length ? (
     <>

@@ -1,13 +1,16 @@
 import Link from "next/link";
+import { ILightboxOffer } from "@stores/Lightbox.store";
+import { SyntheticEvent, useCallback, useContext } from "react";
+import { StoreContext } from "@pages/_app";
 
 interface IProps {
   visible: boolean;
-  apr: number;
+  APR: number;
   name: string;
   totalRepay: any;
   amount: string;
-  onLend: (Pubkey: string) => Promise<void>;
-  duration: number;
+  handleConfirmOffer: (offer: ILightboxOffer) => void;
+  duration: string;
   currency: string;
   subOfferKey: string;
   offerKey: string;
@@ -18,11 +21,11 @@ interface IProps {
 
 const OffersGridItemHover: React.FC<IProps> = ({
   visible,
-  apr,
+  APR,
   name,
   amount,
   totalRepay,
-  onLend,
+  handleConfirmOffer,
   duration,
   currency,
   subOfferKey,
@@ -31,6 +34,26 @@ const OffersGridItemHover: React.FC<IProps> = ({
   collection,
   isYours,
 }) => {
+  const store = useContext(StoreContext);
+  const handlePrevent = useCallback(
+    async (e: SyntheticEvent<HTMLButtonElement, Event>) => {
+      if (!isYours) {
+        e.stopPropagation();
+        e.preventDefault();
+        await store.SingleOffer.fetchOffer(offerKey);
+        handleConfirmOffer({
+          offerPublicKey: subOfferKey,
+          amount,
+          APR,
+          duration,
+          totalRepay,
+          currency,
+        });
+      }
+    },
+    [subOfferKey, handleConfirmOffer],
+  );
+
   return (
     <div className={`onHover-data ${visible ? "" : "hide"}`}>
       <Link passHref href={`/offers/${offerKey}`}>
@@ -49,7 +72,7 @@ const OffersGridItemHover: React.FC<IProps> = ({
 
           <div className="data-item">
             <span className="label">APR</span>
-            <span className="content">{apr} %</span>
+            <span className="content">{APR} %</span>
           </div>
           <div className="data-item">
             <span className="label">Amount</span>
@@ -73,13 +96,7 @@ const OffersGridItemHover: React.FC<IProps> = ({
           </div>
         </div>
       </Link>
-      <button
-        className={isYours ? "deactivated" : ""}
-        onClick={() => {
-          if (!isYours) {
-            onLend(subOfferKey);
-          }
-        }}>
+      <button className={isYours ? "deactivated" : ""} onClick={handlePrevent}>
         {isYours ? "Can't Lend" : `Lend ${currency}`}
       </button>
     </div>

@@ -1,22 +1,24 @@
-import { useCallback, useContext, FormEvent } from "react";
+import { useCallback, useContext, SyntheticEvent } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { calculateRepayValue } from "../../utils/calculateRepayValue";
+import { calculateRepayValue } from "@utils/calculateRepayValue";
 import { StoreContext } from "@pages/_app";
+import { ILightboxOffer } from "@stores/Lightbox.store";
 
 interface OffersTableItemInterface {
   subOfferKey: string;
   offerKey: string;
   image: string;
   name: string;
-  apr: number;
+  APR: number;
   amount: string;
-  duration: number;
+  duration: string;
   currency: string;
-  onLend: (pubkey: string) => Promise<void>;
+  handleConfirmOffer: (offer: ILightboxOffer) => void;
   count?: number;
   isYours?: boolean;
   collection: string;
+  totalRepay: string;
 }
 
 export const OffersTableRow = ({
@@ -24,24 +26,37 @@ export const OffersTableRow = ({
   offerKey,
   image,
   name,
-  apr,
-  onLend,
+  APR,
+  handleConfirmOffer,
   amount,
   duration,
   currency,
   isYours,
   collection,
+  totalRepay,
 }: OffersTableItemInterface) => {
-  const handlePrevent = useCallback(
-    (e: FormEvent<HTMLButtonElement>) => {
-      e.stopPropagation();
-      e.preventDefault();
-      onLend(subOfferKey);
-    },
-    [subOfferKey, onLend],
-  );
   const store = useContext(StoreContext);
   const { denominator } = store.GlobalState;
+
+  const handlePrevent = useCallback(
+    async (e: SyntheticEvent<HTMLButtonElement, Event>) => {
+      if (!isYours) {
+        e.stopPropagation();
+        e.preventDefault();
+        await store.SingleOffer.fetchOffer(offerKey);
+        handleConfirmOffer({
+          offerPublicKey: subOfferKey,
+          amount,
+          APR,
+          duration,
+          totalRepay,
+          currency,
+        });
+      }
+    },
+    [subOfferKey, handleConfirmOffer],
+  );
+
   return (
     <div className="offers-table-row" key={subOfferKey}>
       <Link href={`/offers/${offerKey}`}>
@@ -58,13 +73,7 @@ export const OffersTableRow = ({
             <span className="text-content">{name}</span>
           </div>
           <div className="row-cell">
-            <button
-              className={isYours ? "deactivated" : ""}
-              onClick={(e) => {
-                if (!isYours) {
-                  handlePrevent(e);
-                }
-              }}>
+            <button className={isYours ? "deactivated" : ""} onClick={handlePrevent}>
               {isYours ? "Can't lend" : `Lend ${currency}`}
             </button>
           </div>
@@ -80,14 +89,14 @@ export const OffersTableRow = ({
             </span>
           </div>
           <div className="row-cell">
-            <span className="text-content">{apr} %</span>
+            <span className="text-content">{APR} %</span>
           </div>
           <div className="row-cell">
             <span className="text-content">{duration} Days</span>
           </div>
           <div className="row-cell">
             <span className="text-content">
-              {calculateRepayValue(Number(amount), apr, duration, denominator)}
+              {calculateRepayValue(Number(amount), APR, Number(duration), denominator)}
             </span>
           </div>
         </a>

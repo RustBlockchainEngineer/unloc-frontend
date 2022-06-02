@@ -17,7 +17,7 @@ interface LoanInterface {
   status: number;
   amount: string;
   currency: string;
-  duration: number;
+  duration: string;
   apr: number;
   offerMint: string;
   publicKey: anchor.web3.PublicKey;
@@ -87,7 +87,7 @@ export class SingleOfferStore {
           status: state,
           amount: amountConvered.toString(),
           currency: currencyMints[offerMint.toBase58()],
-          duration: durationConverted, // suspecting wrong type here, also we are showing loans with 0 day duration this is wrong
+          duration: durationConverted.toString(), // suspecting wrong type here, also we are showing loans with 0 day duration this is wrong
           apr: aprConverted,
           offerMint: offerMint.toBase58(),
           publicKey: publicKey,

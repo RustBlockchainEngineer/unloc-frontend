@@ -10,27 +10,19 @@ import {
   getDecimalsForOfferMint,
 } from "@integration/getDecimalForLoanAmount";
 import { calculateRepayValue } from "@utils/calculateRepayValue";
+import { ILightboxOffer } from "@stores/Lightbox.store";
 
 export const OffersGrid = observer(() => {
   const store = useContext(StoreContext);
   const { walletKey } = store.Wallet;
   const { pageOfferData, currentPage, maxPage, offersEmpty } = store.Offers;
 
-  const handleAcceptOffer = async (offerPublicKey: string) => {
+  const handleAcceptOffer = async (offer: ILightboxOffer) => {
     try {
-      store.Lightbox.setContent("processing");
-      store.Lightbox.setCanClose(false);
+      store.Lightbox.setAcceptOfferData(offer);
+      store.Lightbox.setContent("acceptOffer");
+      store.Lightbox.setCanClose(true);
       store.Lightbox.setVisible(true);
-      await store.Offers.handleAcceptOffer(offerPublicKey);
-      toast.success(`Loan Accepted`, {
-        autoClose: 3000,
-        position: "top-center",
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
     } catch (e: any) {
       console.log(e);
 
@@ -65,10 +57,6 @@ export const OffersGrid = observer(() => {
           progress: undefined,
         });
       }
-    } finally {
-      await store.MyOffers.refetchStoreData();
-      store.Lightbox.setCanClose(true);
-      store.Lightbox.setVisible(false);
     }
   };
 
@@ -94,9 +82,9 @@ export const OffersGrid = observer(() => {
                   2,
                 )}
                 name={offerData.nftData.arweaveMetadata.name}
-                onLend={handleAcceptOffer}
-                apr={offerData.aprNumerator.toNumber()}
-                duration={Math.floor(offerData.loanDuration.toNumber() / (3600 * 24))}
+                handleConfirmOffer={handleAcceptOffer}
+                APR={offerData.aprNumerator.toNumber()}
+                duration={Math.floor(offerData.loanDuration.toNumber() / (3600 * 24)).toString()}
                 currency={currencyMints[offerData.offerMint.toBase58()]}
                 count={0}
                 isYours={walletKey?.equals(offerData.borrower)}
