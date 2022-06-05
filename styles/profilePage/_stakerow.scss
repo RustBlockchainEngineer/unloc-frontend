@@ -1,0 +1,128 @@
+.stakerow {
+  height: 120px;
+  @include theme-aware("background-color", "color-accent");
+  @include theme-aware("color", "color-content");
+  border-radius: $brd-rds-2tn;
+  display: flex;
+
+  & > *:not(:last-child) {
+    border-right: 1px solid;
+    @include theme-aware("border-color", "profile-separator");
+  }
+
+  // Id column has special padding
+  & > *:first-child {
+    padding: $mr-2rem $mr-tn;
+    flex: 0 1 50px;
+  }
+
+  & > *:nth-child(3) {
+    flex-grow: 1;
+  }
+  & > *:last-child {
+    flex: 0 1 460px;
+  }
+
+  &__col {
+    display: grid;
+    grid-template-rows: repeat(3, 1fr);
+    padding: $mr-2rem $mr-md 8px;
+
+    &.duration {
+      grid-template-rows: auto;
+      grid-template-columns: repeat(3, 1fr);
+      grid-auto-flow: column;
+      padding-left: $mr-sm;
+      padding-right: $mr-sm;
+
+      & > *.stakerow__title {
+        height: 100%;
+        display: grid;
+        grid-template-rows: repeat(3, 1fr);
+      }
+
+      .date {
+        display: flex;
+        align-items: center;
+        font-weight: $wg-hv;
+        font-size: $tp-md;
+      }
+
+      .circular-progress-bar {
+        margin: 0;
+      }
+    }
+  }
+
+  &__id,
+  &__title,
+  &__amount,
+  &__actions {
+    margin: 0 auto;
+  }
+
+  &__address,
+  &__apr {
+    margin: auto;
+  }
+
+  &__title {
+    text-transform: uppercase;
+    font-size: $tp-sm;
+    align-self: start;
+    justify-self: stretch;
+  }
+
+  &__id {
+    grid-row: 2 / 2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: $wg-hv;
+    @include theme-aware("color", "color-userLevel");
+    font-size: 24px;
+  }
+
+  &__address {
+    font-weight: $wg-hv;
+  }
+
+  &__amount {
+    display: flex;
+    font-weight: $wg-hv;
+    font-size: 24px;
+
+    .icon {
+      margin-left: 4px;
+    }
+  }
+
+  &__at-exit {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .sub {
+      text-align: center;
+      font-size: $tp-sm;
+      color: #997cd0;
+    }
+  }
+
+  &__apr {
+    font-weight: $wg-hv;
+  }
+
+  &__actions {
+    display: flex;
+    gap: $mr-md;
+    width: 90%;
+
+    .btn {
+      display: inline-block;
+      border-radius: $brd-rds-2tn;
+      flex: 1 1 50%;
+      max-width: 216px;
+    }
+  }
+}

@@ -15,6 +15,7 @@ $themes: (
     color-border: #d0e5f2,
     color-input-text: #210d48,
     color-orange: #ed8e19,
+    color-userLevel: #a07ce4,
     bg-home: url("/home_bg2-dark.png"),
     bg-home-bottom: url("/home_bg2-bottom-dark.png"),
     bg-overlay-bright: rgba(46, 19, 210, 0.8),
@@ -48,6 +49,7 @@ $themes: (
     grid-table-button-bg: #2e13d2,
     icon-SOL: url("/icons/SOL-icon-light.svg"),
     icon-USDC: url("/icons/USDC-icon-light.svg"),
+    icon-UNLOC: url("/icons/unloc-icon-light.svg"),
     wallet-adapter-bg: #ffffff,
     wallet-adapter-bg-hover: #d1c1f3,
     wallet-adapter-color: #210d48,
@@ -123,6 +125,8 @@ $themes: (
     yourNFT-offer-plus-bg-hover: #b7adf3,
     yourNFT-offer-plus-color: #2e13d1,
 
+    profile-separator: #e4dbf8,
+
     bg-gradient-home: linear-gradient(194.54deg, #e0d0ff -44.32%, rgba(150, 97, 255, 0.06) 44.37%),
     icon-theme-moon: url("/icons/theme-moon-icon-light.svg"),
     icon-theme-sun: url("/icons/theme-sun-icon-light.svg"),
@@ -155,6 +159,7 @@ $themes: (
     color-border: #d0e5f2,
     color-input-text: #210d48,
     color-orange: #ed8e19,
+    color-userLevel: #a07ce4,
     color-button-disabled: #371c6b,
     bg-home: url("/home_bg2-dark.png"),
     bg-home-bottom: url("/home_bg2-bottom-dark.png"),
@@ -189,6 +194,7 @@ $themes: (
     grid-table-button-bg: #9e6cff,
     icon-SOL: url("/icons/SOL-icon-dark.svg"),
     icon-USDC: url("/icons/USDC-icon-dark.svg"),
+    icon-UNLOC: url("/icons/unloc-icon-dark.svg"),
     wallet-adapter-bg: #210d48,
     wallet-adapter-bg-hover: #3e1f78,
     wallet-adapter-color: #ffffff,
@@ -262,6 +268,8 @@ $themes: (
     yourNFT-offer-plus-bg: #2e13d1,
     yourNFT-offer-plus-bg-hover: #1f08a7,
     yourNFT-offer-plus-color: #ffffff,
+
+    profile-separator: #6743aa,
 
     bg-gradient-home: linear-gradient(194.54deg, #482688 -44.32%, rgba(46, 19, 210, 0) 44.37%),
     icon-theme-moon: url("/icons/theme-moon-icon-dark.svg"),

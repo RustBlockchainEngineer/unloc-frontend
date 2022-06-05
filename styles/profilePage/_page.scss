@@ -1,0 +1,26 @@
+.profile {
+  &__layout {
+    display: flex;
+    flex-direction: column;
+    row-gap: $mr-xl;
+    margin: $mr-2xl 0 $mr-xl;
+  }
+
+  &__header {
+    display: flex;
+    width: 100%;
+    gap: 16px 20px;
+    flex-wrap: wrap;
+
+    & > .col {
+      @include theme-aware("background-color", "color-accent");
+      border-radius: $brd-rds-2tn;
+    }
+  }
+
+  &__stake-accounts {
+    display: flex;
+    flex-direction: column;
+    row-gap: 26px;
+  }
+}
