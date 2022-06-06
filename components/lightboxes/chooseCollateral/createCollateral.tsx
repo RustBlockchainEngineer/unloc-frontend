@@ -45,6 +45,7 @@ export const CreateCollateral: React.FC = observer(() => {
       setProcessing(true);
 
       await store.MyOffers.createCollateral(mint);
+      store.MyOffers.setActiveCategory("deposited");
 
       store.Lightbox.setVisible(false);
       setProcessing(false);

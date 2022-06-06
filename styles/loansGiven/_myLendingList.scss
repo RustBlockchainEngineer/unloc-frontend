@@ -3,6 +3,10 @@
   width: 100%;
   margin: 20px 0;
 
+  h1 {
+    margin: $mr-xl 0;
+  }
+
   &__inner {
     display: flex;
     width: 100%;

@@ -107,24 +107,26 @@ export const MyOffersNftOfferItem = ({
       </div>
 
       <div className="offer__row">
-        <button
-          className="btn btn--md btn--bordered"
-          onClick={() => handleOfferCancel(offerID.toBase58())}>
-          Cancel Offer
-        </button>
-        <button
-          className="btn btn--md btn--primary"
-          onClick={() =>
-            handleOfferEdit(offerID.toBase58(), {
-              offerAmount: Number(offerAmount),
-              loanDuration: Number(duration),
-              aprNumerator: Number(APR),
-              minRepaidNumerator: Number(repaid),
-              offerMint: offerMint.toBase58(),
-            })
-          }>
-          Edit Offer
-        </button>
+        <div className="buttons">
+          <button
+            className="btn btn--md btn--bordered"
+            onClick={() => handleOfferCancel(offerID.toBase58())}>
+            Cancel Offer
+          </button>
+          <button
+            className="btn btn--md btn--primary"
+            onClick={() =>
+              handleOfferEdit(offerID.toBase58(), {
+                offerAmount: Number(offerAmount),
+                loanDuration: Number(duration),
+                aprNumerator: Number(APR),
+                minRepaidNumerator: Number(repaid),
+                offerMint: offerMint.toBase58(),
+              })
+            }>
+            Edit Offer
+          </button>
+        </div>
       </div>
     </div>
   );

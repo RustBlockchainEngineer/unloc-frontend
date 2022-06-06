@@ -4,21 +4,25 @@ import { IsubOfferData } from "@stores/Lightbox.store";
 import { MyOffersNftOfferItem } from "./myOffersNftOfferItem";
 import { MyOffersNftOfferItemAccepted } from "./myOffersNftOfferItemAccepted";
 
-interface myOffersNftItemOffersProps {
+interface IMyOffersNftItemOffersProps {
   handleOfferEdit: (subOfferKey: string, values: IsubOfferData) => Promise<void>;
   handleOfferCancel: (subOfferKey: string) => Promise<void>;
+  handleAddOffer: () => void;
+  handleCancelCollateral: () => Promise<void>;
   status: number;
   data?: any[];
   nftMint: string;
 }
 
-export const MyOffersNftItemOffers: React.FC<myOffersNftItemOffersProps> = ({
+export const MyOffersNftItemOffers = ({
   handleOfferEdit,
   handleOfferCancel,
+  handleAddOffer,
+  handleCancelCollateral,
   status,
   data,
   nftMint,
-}) => {
+}: IMyOffersNftItemOffersProps) => {
   const [contentVisible, setContentVisible] = useState(true);
 
   const getOffersCount = () => {
@@ -48,7 +52,26 @@ export const MyOffersNftItemOffers: React.FC<myOffersNftItemOffersProps> = ({
     return <></>;
   };
 
-  return data && data.length <= 0 ? (
+  const renderNFTActions = () => {
+    if (status === 0) {
+      return (
+        <div className="nft-info-buttons__mobile">
+          <button
+            className="btn btn--md btn--primary active-offer--tooltip--parent"
+            onClick={handleAddOffer}>
+            +
+          </button>
+          <button
+            className="btn btn--md btn--primary active-offer--tooltip--parent"
+            onClick={handleCancelCollateral}>
+            &minus;
+          </button>
+        </div>
+      );
+    } else return null;
+  };
+
+  return data && data.length === 0 ? (
     <></>
   ) : (
     <div
@@ -59,6 +82,7 @@ export const MyOffersNftItemOffers: React.FC<myOffersNftItemOffersProps> = ({
         }
       }}>
       {renderHeadBar()}
+      {renderNFTActions()}
       {data && data.length && contentVisible ? (
         <div className="offers-list-content">
           {data.map((offer) => {
@@ -99,9 +123,7 @@ export const MyOffersNftItemOffers: React.FC<myOffersNftItemOffersProps> = ({
             }
           })}
         </div>
-      ) : (
-        <></>
-      )}
+      ) : null}
     </div>
   );
 };

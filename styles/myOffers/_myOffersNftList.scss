@@ -2,28 +2,38 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
   padding-bottom: 32px;
+  width: 100%;
+  max-width: 100vw;
+
+  @media (max-width: $bp-phone) {
+    padding-bottom: 0;
+  }
 }
 
 .my-offers-nft-list {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  margin: 40px 0 60px 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: $mr-lg $mr-xl;
+  margin-bottom: 60px;
 
   &.hidden {
     display: none;
   }
+
+  @media (max-width: $bp-tablet) {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
 }
 
 .my-offers-nft {
-  z-index: 100;
-  width: 450px;
+  z-index: 1;
   display: flex;
   flex-direction: column;
-  border-radius: 50px;
+  border-radius: $brd-rds-xl;
   height: 80px;
+  min-width: 300px;
   @include theme-aware("background-color", "myOffers-nftName-bg");
 
   .nft-item {
@@ -31,21 +41,23 @@
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    width: 450px;
   }
 
   .nft-wrapper {
     display: flex;
     align-items: center;
-    width: 450px;
   }
 
   .nft-info {
     width: 100%;
     height: 100%;
-    padding-right: 10px;
     display: flex;
     justify-content: space-between;
+    padding: 0;
+
+    @media (min-width: calc($bp-phone + 1px)) {
+      padding-right: 10px;
+    }
 
     @media (max-width: $bp-tablet) {
       flex-direction: row;
@@ -58,16 +70,14 @@
     .nft-info-inner {
       display: flex;
       flex-direction: column;
-      margin-left: 15px;
+      margin: 0 $mr-2rem;
       color: #ffffff;
 
       .info-name {
         @include theme-aware("color", "myOffers-nftName-color");
         font-size: $tp-lg;
-        width: 260px;
-        overflow: hidden;
         text-overflow: ellipsis;
-        white-space: nowrap;
+        font-weight: 700;
       }
 
       .nft-metadata {
@@ -97,7 +107,7 @@
 
     button {
       cursor: pointer;
-      border-radius: 6px;
+      border-radius: $brd-rds-2tn;
       border: none;
       text-align: center;
       margin-left: 20px;
@@ -112,6 +122,16 @@
         margin-left: 0;
         @include theme-aware("color", "lend-offer-button");
       }
+
+      @media (max-width: $bp-phone) {
+        display: none;
+      }
+    }
+
+    .tooltip-container {
+      font-size: $tp-md;
+      font-weight: 400;
+      line-height: normal;
     }
 
     .btn--disabled {
@@ -123,6 +143,9 @@
 
   .nft-info-space {
     width: 80px;
+    @media (max-width: $bp-phone) {
+      display: none;
+    }
   }
 }
 
@@ -134,8 +157,8 @@
   flex-direction: column;
   overflow-y: hidden;
   backdrop-filter: blur(21px);
-  border-radius: 0 0 8px 8px;
-  padding: 8px 16px 20px 16px;
+  border-radius: $brd-rds-1md;
+  padding: 8px 0 20px 0;
   color: #ffffff;
   font-size: 14px;
   font-weight: 700;
@@ -177,6 +200,25 @@
     }
   }
 
+  .nft-info-buttons__mobile {
+    display: none;
+
+    @media (max-width: $bp-phone) {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      column-gap: $mr-2rem;
+
+      .btn {
+        flex: 0 1 40%;
+        font-size: $tp-1xl;
+        height: 42px;
+        justify-content: center;
+        align-items: center;
+      }
+    }
+  }
+
   .offers-list-content {
     padding-top: 50px;
     display: flex;
@@ -190,6 +232,10 @@
         margin-left: 0;
       }
     }
+
+    @media (max-width: $bp-phone) {
+      padding-top: 0;
+    }
   }
 
   @media (max-width: $bp-tablet) {
@@ -202,7 +248,7 @@
   .my-offers-nft__offer {
     @include theme-aware("background-color", "myOffers-subOffer-bg");
     @include theme-aware("background-image", "myOffers-subOffer-gradient");
-    width: 49%;
+    width: 100%;
     margin-bottom: 10px;
     backdrop-filter: blur(4px);
     box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
@@ -211,7 +257,13 @@
     display: grid;
     grid-template-columns: 1fr;
     grid-template-rows: 1fr 1fr 1fr;
-    border-radius: $brd-rds-2tn;
+    // border-radius: $brd-rds-2tn; TODO
+    border-radius: $brd-rds-1md;
+
+    @media (max-width: $bp-phone) {
+      grid-template-rows: auto;
+      padding: 28px $mr-xl;
+    }
 
     &.green {
       @include theme-aware("background-image", "time-offer-green");
@@ -223,10 +275,6 @@
 
     &.red {
       @include theme-aware("background-image", "time-offer-red");
-    }
-
-    @media (max-width: $bp-tablet) {
-      width: 95%;
     }
 
     .offer__row:first-child {
@@ -253,6 +301,17 @@
 
         &:hover {
           padding: 0;
+        }
+      }
+
+      .buttons {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+
+        @media (max-width: $bp-phone) {
+          flex-direction: column-reverse;
+          row-gap: $mr-md;
         }
       }
 
@@ -302,13 +361,24 @@
             font-weight: 400;
           }
         }
+
+        @media (max-width: $bp-phone) {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          padding: $mr-sm;
+          row-gap: $mr-md;
+        }
       }
 
       button {
         border-radius: $brd-rds-2tn;
         width: 48%;
-        display: flex;
-        justify-content: center;
+        display: inline-block;
+
+        @media (max-width: $bp-phone) {
+          width: 100%;
+          display: block;
+        }
       }
 
       button:first-child:not(.repay-loan--button, .loan-expired--button) {
@@ -329,6 +399,11 @@
         border: 0;
         @include theme-aware("background", "myOffers-subOffer-info-bg");
         color: #cdc5e4 !important;
+      }
+
+      @media (max-width: $bp-phone) {
+        flex-direction: column;
+        row-gap: $mr-sm;
       }
     }
 
@@ -383,6 +458,10 @@
     overflow: hidden;
     text-overflow: ellipsis;
     border-radius: $brd-rds-sm;
+
+    @media (max-width: $bp-phone) {
+      width: 86%;
+    }
   }
 
   &__mint {
@@ -400,13 +479,24 @@
 }
 
 .nft-deposited {
-  $p: &;
   width: 100%;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   flex-wrap: wrap;
   margin: 40px 0 60px 0;
+
+  .offers-list .offers-list-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: $mr-lg $mr-xl;
+    padding: $mr-xl $mr-md 0;
+
+    @media (max-width: $bp-phone) {
+      padding: 0;
+      grid-template-columns: 1fr;
+    }
+  }
 
   .no-offers {
     margin: auto;
@@ -427,6 +517,20 @@
     align-items: center;
     padding: 0 20px;
   }
+
+  .mobile {
+    display: none;
+  }
+
+  @media (max-width: $bp-tablet) {
+    margin: 0 0 60px 0;
+
+    .btn.mobile {
+      display: inline-block;
+      margin: 0 0 $mr-lg;
+      min-width: 172px;
+    }
+  }
 }
 
 .nft-deposited-item {
@@ -441,7 +545,7 @@
   margin-bottom: 20px;
 
   @media (max-width: $bp-tablet) {
-    width: 90%;
+    width: 100%;
   }
 
   &__row {
@@ -451,6 +555,12 @@
     align-items: center;
     margin-bottom: 20px;
 
+    & .row--item {
+      @media (max-width: $bp-phone) {
+        width: 100%;
+      }
+    }
+
     img {
       border-radius: $brd-rds-sm;
     }
@@ -458,8 +568,7 @@
     button {
       border-radius: $brd-rds-2tn;
       width: 48%;
-      display: flex;
-      justify-content: center;
+      display: inline-block;
     }
 
     button:first-child {
@@ -470,6 +579,10 @@
       border: 0;
       @include theme-aware("color", "lend-offer-button");
     }
+
+    .info-name {
+      font-weight: 700;
+    }
   }
 
   &__row:first-child {
@@ -478,12 +591,33 @@
     p {
       margin-left: 15px;
     }
+
+    @media (max-width: $bp-phone) {
+      margin-bottom: $mr-tn;
+    }
+  }
+
+  &__row:nth-child(2) {
+    @media (max-width: $bp-phone) {
+      flex-direction: column;
+      row-gap: $mr-2rem;
+    }
   }
 
   .buttons {
     width: 100%;
     display: flex;
     justify-content: space-between;
+
+    @media (max-width: $bp-phone) {
+      flex-direction: column-reverse;
+      align-items: center;
+      row-gap: $mr-md;
+
+      .btn {
+        width: 90%;
+      }
+    }
   }
 
   .row--item {
@@ -520,6 +654,12 @@
       text-overflow: ellipsis;
       border-radius: $brd-rds-sm;
       @include theme-aware("color", "lend-offer-button");
+
+      @media (max-width: $bp-phone) {
+        display: inline-flex;
+        width: 76%;
+        justify-content: center;
+      }
     }
 
     .mint,

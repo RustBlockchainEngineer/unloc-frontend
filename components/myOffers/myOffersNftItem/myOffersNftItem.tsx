@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useCallback, useContext } from "react";
 import { observer } from "mobx-react";
 import Image from "next/image";
 import { toast } from "react-toastify";
@@ -21,7 +21,7 @@ export const MyOffersNftItem: React.FC<MyOffersNftItemProps> = observer(
   ({ nftMint, name, image, offers, state, classNames, offerKey, collection }) => {
     const store = useContext(StoreContext);
 
-    const handleCancelOffer = async (subOfferKey: string) => {
+    const handleCancelOffer = useCallback(async (subOfferKey: string) => {
       store.Lightbox.setContent("processing");
       store.Lightbox.setCanClose(false);
       store.Lightbox.setVisible(true);
@@ -77,17 +77,23 @@ export const MyOffersNftItem: React.FC<MyOffersNftItemProps> = observer(
         store.Lightbox.setCanClose(true);
         store.Lightbox.setVisible(false);
       }
-    };
+    }, []);
 
-    const handleEditOffer = async (subOfferKey: string, values: IsubOfferData) => {
+    const handleEditOffer = useCallback(async (subOfferKey: string, values: IsubOfferData) => {
       store.Lightbox.setActiveSubOffer(subOfferKey);
       store.Lightbox.setActiveSubOfferData(values);
       store.Lightbox.setContent("loanUpdate");
       store.Lightbox.setCanClose(true);
       store.Lightbox.setVisible(true);
-    };
+    }, []);
 
-    const handleCancelCollateral = async () => {
+    const handleAddOffer = useCallback(() => {
+      store.MyOffers.setActiveNftMint(nftMint);
+      store.Lightbox.setContent("loanCreate");
+      store.Lightbox.setVisible(true);
+    }, [nftMint]);
+
+    const handleCancelCollateral = useCallback(async () => {
       store.Lightbox.setContent("processing");
       store.Lightbox.setCanClose(false);
       store.Lightbox.setVisible(true);
@@ -143,7 +149,7 @@ export const MyOffersNftItem: React.FC<MyOffersNftItemProps> = observer(
         store.Lightbox.setCanClose(true);
         store.Lightbox.setVisible(false);
       }
-    };
+    }, [nftMint]);
 
     const setNFTActions = (status: number) => {
       if (status === 0) {
@@ -151,11 +157,7 @@ export const MyOffersNftItem: React.FC<MyOffersNftItemProps> = observer(
           <div className="nft-info-buttons">
             <button
               className="btn--md btn--primary active-offer--tooltip--parent"
-              onClick={() => {
-                store.MyOffers.setActiveNftMint(nftMint);
-                store.Lightbox.setContent("loanCreate");
-                store.Lightbox.setVisible(true);
-              }}>
+              onClick={handleAddOffer}>
               +
               <div className="tooltip-container active-offer--tooltip">
                 <span>Create a new Loan Offer with this NFT as Collateral</span>
@@ -213,6 +215,8 @@ export const MyOffersNftItem: React.FC<MyOffersNftItemProps> = observer(
           handleOfferEdit={handleEditOffer}
           status={state}
           handleOfferCancel={handleCancelOffer}
+          handleAddOffer={handleAddOffer}
+          handleCancelCollateral={handleCancelCollateral}
           nftMint={offerKey}
         />
       </div>

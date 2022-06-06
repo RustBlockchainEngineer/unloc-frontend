@@ -1,45 +1,47 @@
-import { useCallback, useContext, FC } from "react";
+import { useCallback, useContext, FC, MouseEvent } from "react";
 
 import { observer } from "mobx-react";
 import { usePopperTooltip } from "react-popper-tooltip";
 
 import { ConnectWallet } from "@components/connectWallet/ConnectWallet";
-import { ClipboardButton } from "@components/layout/clipboardButton";
-import { ShowOnHover } from "@components/layout/showOnHover";
-import { SolscanExplorerIcon } from "@components/layout/solscanExplorerIcon";
 import { StoreContext } from "@pages/_app";
-import { compressAddress } from "@utils/stringUtils/compressAdress";
+import { OfferCategory } from "@stores/MyOffers.store";
+
+const categories: { label: string; value: OfferCategory }[] = [
+  { label: "Active Loans", value: "active" },
+  { label: "Active Offers", value: "proposed" },
+  { label: "My Vault", value: "deposited" },
+];
 
 export const WalletActions: FC = observer(() => {
   const store = useContext(StoreContext);
-  const { wallet, walletKey, connected } = store.Wallet;
+  const { connected } = store.Wallet;
+  const { activeCategory } = store.MyOffers;
   const { getTooltipProps, setTooltipRef, setTriggerRef, visible } = usePopperTooltip();
-
-  const handleWalletDisconnect = (): void => {
-    if (wallet) {
-      store.Wallet.handleDisconnect();
-    }
-  };
 
   const handleDeposit = useCallback(() => {
     store.Lightbox.setContent("collateral");
     store.Lightbox.setVisible(true);
   }, []);
 
+  const handleCategoryClick = useCallback((event: MouseEvent<HTMLButtonElement>) => {
+    store.MyOffers.setActiveCategory(event.currentTarget.name as OfferCategory);
+  }, []);
+
   return connected ? (
     <div className="my-offers-top">
       <div className="my-offers-top__heading">
-        {walletKey && (
-          <>
-            <span className="wallet-label">Your wallet address:</span>
-            <h2>
-              <ShowOnHover label={`${compressAddress(4, walletKey.toBase58())}`}>
-                <ClipboardButton data={walletKey.toBase58()} />
-                <SolscanExplorerIcon type="account" address={walletKey.toBase58()} />
-              </ShowOnHover>
-            </h2>
-          </>
-        )}
+        {categories.map((category) => (
+          <button
+            key={category.value}
+            name={category.value}
+            className={`btn btn--md ${
+              activeCategory === category.value ? "btn--primary" : "btn--bordered"
+            }`}
+            onClick={handleCategoryClick}>
+            {category.label}
+          </button>
+        ))}
       </div>
       <div className="my-offers-top__toolbox">
         <button ref={setTriggerRef} className="btn btn--md btn--primary" onClick={handleDeposit}>
@@ -49,11 +51,6 @@ export const WalletActions: FC = observer(() => {
           <div ref={setTooltipRef} {...getTooltipProps({ className: "tooltip-container" })}>
             Create a new Collateral from a NFT
           </div>
-        )}
-        {wallet && (
-          <button className="btn btn--md btn--bordered" onClick={() => handleWalletDisconnect()}>
-            Disconnect
-          </button>
         )}
       </div>
     </div>

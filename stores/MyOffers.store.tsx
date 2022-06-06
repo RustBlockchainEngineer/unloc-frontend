@@ -25,6 +25,13 @@ import { SubOfferData } from "./Offers.store";
 import axios from "axios";
 import { range } from "@utils/range";
 
+/**
+ * Active: offer that was accepted by someone and needs to be repayed
+ * Proposed: offer that has 1 or multiple suboffers waiting to be accepted
+ * Deposited: a collateral was deposited, but no offers have been created yet
+ */
+export type OfferCategory = "active" | "proposed" | "deposited";
+
 export class MyOffersStore {
   rootStore;
   offers: OfferAccount[] = [];
@@ -33,8 +40,7 @@ export class MyOffersStore {
   nftData: NFTMetadata[] = [];
   activeNftMint: string = "";
   lendingList: SubOfferData[] = [];
-  activeHideable = false;
-  depositedHideable = false;
+  activeCategory: OfferCategory = "active";
 
   constructor(rootStore: any) {
     makeAutoObservable(this);
@@ -274,15 +280,9 @@ export class MyOffersStore {
     await claimCollateral(subOffer);
   };
 
-  @action.bound setActiveHideable(activeHideable: boolean) {
+  @action.bound setActiveCategory(category: OfferCategory): void {
     runInAction(() => {
-      this.activeHideable = activeHideable;
-    });
-  }
-
-  @action.bound setDepositedHideable(depositedHideable: boolean) {
-    runInAction(() => {
-      this.depositedHideable = depositedHideable;
+      this.activeCategory = category;
     });
   }
 }

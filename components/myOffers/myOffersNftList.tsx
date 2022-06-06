@@ -1,89 +1,83 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { observer } from "mobx-react";
 import { StoreContext } from "@pages/_app";
 import { MyOffersNftItem } from "./myOffersNftItem/myOffersNftItem";
 import { MyOffersNftDeposited } from "./myOffersNftItem/myOffersNftDeposited";
 import { usePopperTooltip } from "react-popper-tooltip";
+import { OfferCategory } from "@stores/MyOffers.store";
 
 type MyOffersNftListProps = {
-  type: "active" | "deposited";
-  listVisible: boolean;
+  type: OfferCategory;
 };
 
-export const MyOffersNftList: React.FC<MyOffersNftListProps> = observer(({ type, listVisible }) => {
+export const MyOffersNftList = observer(({ type }: MyOffersNftListProps) => {
   const store = useContext(StoreContext);
-  const { offers, nftData, subOffers } = store.MyOffers;
+  const { offers, nftData, subOffers, activeCategory } = store.MyOffers;
   const [sanitizedOffers, setSanitizedOffers] = useState<any[]>([]);
 
   const { getTooltipProps, setTooltipRef, setTriggerRef, visible } = usePopperTooltip();
 
+  const handleDepositClick = useCallback(() => {
+    store.Lightbox.setContent("collateral");
+    store.Lightbox.setVisible(true);
+  }, []);
+
+  const renderDepositButton = (isMobile?: boolean) => (
+    <>
+      <button
+        ref={setTriggerRef}
+        className={`btn btn--xl btn--primary ${isMobile ? "mobile" : ""}`}
+        onClick={handleDepositClick}>
+        Deposit NFT
+      </button>
+      {visible && (
+        <div ref={setTooltipRef} {...getTooltipProps({ className: "tooltip-container" })}>
+          Create a new Collateral from a NFT
+        </div>
+      )}
+    </>
+  );
+
   useEffect(() => {
-    const sanitized: any[] = offers
-      .map((offer) => {
-        let offerSanitized: any = {
-          collection: offer.collection,
-          offerKey: offer.publicKey.toBase58(),
-          nftMint: offer.account.nftMint.toBase58(),
-          state: offer.account.state,
-          subOffers: [],
-        };
+    const filtered = offers.filter((offer) => {
+      const { state, subOfferCount, startSubOfferNum } = offer.account;
 
-        nftData.forEach((nft) => {
-          if (nft.mint === offerSanitized.nftMint) {
-            const { description, external_url, image, name } = nft.arweaveMetadata;
-            offerSanitized = { ...offerSanitized, ...{ description, external_url, image, name } };
-          }
-        });
+      if (activeCategory === "active") {
+        return state === 1;
+      } else if (activeCategory === "proposed") {
+        return state === 0 && subOfferCount.gt(startSubOfferNum);
+      } else {
+        // Deposited condition
+        return state === 0 && subOfferCount.eq(startSubOfferNum);
+      }
+    });
 
-        subOffers.forEach((subOffer: any) => {
-          if (subOffer.account.offer.toBase58() === offerSanitized.offerKey) {
-            const {
-              aprNumerator,
-              borrower,
-              lender,
-              loanDuration,
-              minRepaidNumerator,
-              offerAmount,
-              offerMint,
-              offerVault,
-              state,
-              subOfferNumber,
-              loanStartedTime,
-            } = subOffer.account;
+    const sanitized: any[] = filtered.map((offer) => {
+      let offerSanitized: any = {
+        collection: offer.collection,
+        offerKey: offer.publicKey.toBase58(),
+        nftMint: offer.account.nftMint.toBase58(),
+        state: offer.account.state,
+        subOffers: [],
+      };
 
-            offerSanitized.subOffers.push({
-              subOfferKey: subOffer.publicKey,
-              aprNumerator,
-              borrower,
-              lender,
-              loanDuration,
-              minRepaidNumerator,
-              offerAmount,
-              offerMint,
-              offerVault,
-              state,
-              subOfferNumber,
-              loanStartedTime,
-            });
-          }
-        });
-
-        if (
-          (type == "active" && offerSanitized.subOffers.length > 0) ||
-          (type == "deposited" && offerSanitized.subOffers.length === 0)
-        ) {
-          return offerSanitized;
+      nftData.forEach((nft) => {
+        if (nft.mint === offerSanitized.nftMint) {
+          const { description, external_url, image, name } = nft.arweaveMetadata;
+          offerSanitized = { ...offerSanitized, ...{ description, external_url, image, name } };
         }
+      });
 
-        return null;
-      })
-      .filter((item) => item !== null);
-
-    if (type === "active") {
-      store.MyOffers.setActiveHideable(sanitized.length > 0);
-    } else if (type === "deposited") {
-      store.MyOffers.setDepositedHideable(sanitized.length > 0);
-    }
+      subOffers.forEach((subOffer) => {
+        if (subOffer.account.offer.toBase58() === offerSanitized.offerKey) {
+          offerSanitized.subOffers.push({
+            subOfferKey: subOffer.publicKey,
+            ...subOffer.account,
+          });
+        }
+      });
+      return offerSanitized;
+    });
     setSanitizedOffers(sanitized);
   }, [offers, nftData, subOffers]);
 
@@ -102,7 +96,7 @@ export const MyOffersNftList: React.FC<MyOffersNftListProps> = observer(({ type,
             collection={offer.collection}
           />
         );
-      } else if (type === "active") {
+      } else {
         return (
           <MyOffersNftItem
             key={offer.offerKey}
@@ -115,38 +109,23 @@ export const MyOffersNftList: React.FC<MyOffersNftListProps> = observer(({ type,
             collection={offer.collection}
           />
         );
-      } else return null;
+      }
     });
 
-    return mappedOffers.length > 0 ? (
-      mappedOffers
-    ) : type === "active" ? (
-      ""
-    ) : (
-      <div className="no-offers">
-        <button
-          ref={setTriggerRef}
-          className="btn btn--xl btn--rounded btn--primary"
-          onClick={() => {
-            store.Lightbox.setContent("collateral");
-            store.Lightbox.setVisible(true);
-          }}>
-          Deposit NFT
-        </button>
-        {visible && (
-          <div ref={setTooltipRef} {...getTooltipProps({ className: "tooltip-container" })}>
-            Create a new Collateral from a NFT
-          </div>
-        )}
-      </div>
+    if (mappedOffers.length === 0 && type === "deposited") {
+      return <div className="no-offers">{renderDepositButton()}</div>;
+    }
+
+    return (
+      <>
+        {type === "deposited" && renderDepositButton(true)}
+        {mappedOffers}
+      </>
     );
   };
 
   return (
-    <div
-      className={`${type == "active" ? "my-offers-nft-list" : "nft-deposited"} ${
-        !listVisible && "hidden"
-      }`}>
+    <div className={`${type == "active" ? "my-offers-nft-list" : "nft-deposited"}`}>
       {renderOffers()}
     </div>
   );
