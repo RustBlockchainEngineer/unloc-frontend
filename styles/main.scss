@@ -159,3 +159,25 @@ a {
     display: none;
   }
 }
+
+@media (max-width: $bp-tablet) {
+  .theme-light {
+    .home-bg-top {
+      background-size: 60%;
+    }
+
+    .home-bg-bottom {
+      background-size: 50%;
+    }
+  }
+
+  .theme-dark {
+    .home-bg-top {
+      background-size: 60%;
+    }
+
+    .home-bg-bottom {
+      background-size: 50%;
+    }
+  }
+}

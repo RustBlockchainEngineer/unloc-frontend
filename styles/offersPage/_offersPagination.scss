@@ -5,7 +5,7 @@
   margin-bottom: 100px;
 
   button {
-    @include theme-aware("background-color", "color-accent");
+    @include theme-aware("background-color", "pagination-bgcolor");
     @include theme-aware("color", "pagination-color");
     font-weight: $wg-lt;
     border: none;
@@ -21,7 +21,8 @@
 
     &:hover,
     &.active {
-      @include theme-aware("background-color", "color-secondary");
+      @include theme-aware("background-color", "pagination-active-bgcolor");
+      @include theme-aware("color", "pagination-active-color");
       box-shadow: 0 0 15px rgba(158, 108, 255, 0.4);
     }
 
@@ -50,10 +51,29 @@
   @media (max-width: $bp-tablet) {
     width: 100vw;
 
+    .mobile-hide {
+      display: none;
+    }
+
     &__pages {
       width: 100vw;
       display: flex;
       justify-content: center;
     }
+  }
+
+  .paginator-dots {
+    width: 40px;
+    height: 40px;
+    @include theme-aware("color", "pagination-active-bgcolor");
+
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+
+    padding: $mr-1sm;
+
+    font-size: 22px;
+    font-weight: $wg-lt;
   }
 }

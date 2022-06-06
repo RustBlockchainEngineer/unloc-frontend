@@ -64,6 +64,9 @@ $themes: (
     icon-paginator-left: url("/icons/page-left-icon-light.svg"),
     icon-paginator-right: url("/icons/page-right-icon-light.svg"),
     pagination-color: white,
+    pagination-bgcolor: #d1c1f3,
+    pagination-active-color: white,
+    pagination-active-bgcolor: #2e13d2,
 
     bg-input-disabled: #ebe2ff,
 
@@ -203,7 +206,10 @@ $themes: (
     hover-option-bg: rgba(76, 44, 135, 0.4),
     icon-paginator-left: url("/icons/page-left-icon-dark.svg"),
     icon-paginator-right: url("/icons/page-right-icon-dark.svg"),
-    pagination-color: white,
+    pagination-color: #9e6cff,
+    pagination-bgcolor: #482688,
+    pagination-active-color: white,
+    pagination-active-bgcolor: #9e6cff,
 
     lightbox-collection-border: #e00a7f,
     lightbox-collection-color: #9e6cff,

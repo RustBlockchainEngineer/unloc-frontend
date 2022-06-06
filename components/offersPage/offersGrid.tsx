@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { JSXElementConstructor, ReactElement, useContext } from "react";
 import { observer } from "mobx-react";
 import { StoreContext } from "@pages/_app";
 import { OffersGridItem } from "./offersGridItem";
@@ -60,6 +60,85 @@ export const OffersGrid = observer(() => {
     }
   };
 
+  const pageBtn = (
+    page: number,
+    current: number,
+    last: number,
+  ): ReactElement<NodeListOf<Element>> => {
+    const beforeLast = (page: number, last: number): boolean => {
+      return page + 1 === last;
+    };
+
+    const isNotCurrent = (page: number, current: number): boolean => {
+      return page + 1 !== current;
+    };
+
+    const isNecessary = (last: number): boolean => {
+      return last > 4;
+    };
+
+    const isBeggining = (page: number): boolean => {
+      return page === 0;
+    };
+
+    const getClassName = (page: number, current: number): string => {
+      if (page + 1 === current) {
+        return "active";
+      }
+
+      if (page + 3 === current || page === current + 1) {
+        return "mobile-hide";
+      }
+
+      return "";
+    };
+
+    return (
+      <>
+        {beforeLast(page, last) && isNotCurrent(page, current) && isNecessary(last) ? (
+          <div className="paginator-dots">...</div>
+        ) : (
+          ""
+        )}
+        <button
+          key={`${page}`}
+          className={`page ${getClassName(page, current)}`}
+          onClick={() => store.Offers.setCurrentPage(page + 1)}>
+          <b>{page + 1}</b>
+        </button>
+        {isBeggining(page) && isNotCurrent(page, current) && isNecessary(last) ? (
+          <div className="paginator-dots">...</div>
+        ) : (
+          ""
+        )}
+      </>
+    );
+  };
+
+  const renderPaginator = (
+    active: number,
+    last: number,
+  ): ReactElement<NodeListOf<Element>, string | JSXElementConstructor<any>>[] => {
+    const beforePages = (index: number, active: number): boolean => {
+      return index < active && index > active - 4;
+    };
+    const afterPages = (index: number, active: number): boolean => {
+      return index > active && index < active + 2;
+    };
+    const firstLastCurrent = (index: number, active: number, last: number): boolean => {
+      return index == last - 1 || index == active || index == 0;
+    };
+
+    return [...Array(last).keys()]
+      .filter(
+        (page) =>
+          beforePages(page, active) ||
+          afterPages(page, active) ||
+          firstLastCurrent(page, active, last),
+      )
+      .map((page) => pageBtn(page, active, last));
+  };
+
   return offersEmpty ? (
     <div className="offers-grid--empty">
       <h2 className="no-offers">No Offers Created yet</h2>
@@ -102,24 +181,15 @@ export const OffersGrid = observer(() => {
         })}
       </div>
       <div className="offers-pagination">
-        <div>
+        <div className="mobile-hide">
           <button
             disabled={currentPage === 1}
             onClick={() => store.Offers.setCurrentPage(currentPage - 1)}>
             <i className="icon icon--sm icon--paginator--left" />
           </button>
         </div>
-        <div className="offers-pagination__pages">
-          {[...Array(maxPage)].map((page, index) => (
-            <button
-              key={`${page}-${index}`}
-              className={`page ${index + 1 === currentPage ? "active" : ""}`}
-              onClick={() => store.Offers.setCurrentPage(index + 1)}>
-              <b>{index + 1}</b>
-            </button>
-          ))}
-        </div>
-        <div>
+        <div className="offers-pagination__pages">{renderPaginator(currentPage, maxPage)}</div>
+        <div className="mobile-hide">
           <button
             disabled={currentPage === maxPage}
             onClick={() => store.Offers.setCurrentPage(currentPage + 1)}>
