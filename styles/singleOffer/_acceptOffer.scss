@@ -84,3 +84,12 @@
     margin: $tp-xl auto 0;
   }
 }
+
+@media (max-width: $bp-tablet) {
+  .accept-offer {
+    width: 100%;
+    h2 {
+      text-align: center;
+    }
+  }
+}
