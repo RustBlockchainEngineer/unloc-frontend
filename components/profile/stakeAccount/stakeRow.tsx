@@ -1,6 +1,6 @@
 import { PublicKey } from "@solana/web3.js";
 import { compressAddress } from "@utils/stringUtils/compressAdress";
-import { memo, useCallback, useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import { DurationProgress } from "./durationProgress";
 
 export type stakeStatus = "flexi" | "unlocked" | "locked";
@@ -59,7 +59,7 @@ export const StakeRow = ({ id, address, uiAmount, APR, status, startDate, endDat
 
   return (
     <article className="stakerow">
-      <div className="stakerow__col col--id">
+      <div className="stakerow__col--id">
         <div className="stakerow__id">{id}</div>
       </div>
       <div className="stakerow__col">
@@ -78,7 +78,7 @@ export const StakeRow = ({ id, address, uiAmount, APR, status, startDate, endDat
         </div>
       </div>
       {startDate && endDate && (
-        <div className="stakerow__col duration">
+        <div className="stakerow__col--duration">
           <div className="stakerow__title">
             <p>Start date</p>
             <p className="date">01.05.22</p>
