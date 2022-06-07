@@ -44,10 +44,8 @@ export const CreateLoan: React.FC<CreateLoanProps> = observer(({ mode }) => {
   const aprRef = useRef<HTMLInputElement>(null);
   const accruedRef = useRef<HTMLInputElement>(null);
 
-  const onSubmit = async (_values: SubOfferInterface) => {
+  const onSubmit = async (_values: SubOfferInterface): Promise<void> => {
     if (connected && wallet && walletKey) {
-      console.log(amountRef.current, durationRef.current, aprRef.current, accruedRef.current);
-
       if (!(amountRef.current && durationRef.current && aprRef.current && accruedRef.current)) {
         return;
       }
@@ -196,7 +194,7 @@ export const CreateLoan: React.FC<CreateLoanProps> = observer(({ mode }) => {
     }
   };
 
-  const handleInterestModeChange = () => {
+  const handleInterestModeChange = (): void => {
     if (!(accruedRef.current && amountRef.current && durationRef.current && aprRef.current)) {
       return;
     }
@@ -223,7 +221,7 @@ export const CreateLoan: React.FC<CreateLoanProps> = observer(({ mode }) => {
     }
   };
 
-  const onValueInput = (e: FormEvent<HTMLInputElement>) => {
+  const onValueInput = (e: FormEvent<HTMLInputElement>): void => {
     if (!(accruedRef.current && amountRef.current && durationRef.current && aprRef.current)) {
       return;
     }
@@ -255,7 +253,7 @@ export const CreateLoan: React.FC<CreateLoanProps> = observer(({ mode }) => {
     }
   };
 
-  const onInterestInput = () => {
+  const onInterestInput = (): void => {
     if (!(accruedRef.current && amountRef.current && durationRef.current && aprRef.current)) {
       return;
     }
@@ -275,9 +273,11 @@ export const CreateLoan: React.FC<CreateLoanProps> = observer(({ mode }) => {
     setRepayValue(
       calculateRepayValue(amount, parseFloat(apr), duration, store.GlobalState.denominator),
     );
+
+    return;
   };
 
-  const onAprInput = () => {
+  const onAprInput = (): void => {
     if (!(accruedRef.current && amountRef.current && durationRef.current && aprRef.current)) {
       return;
     }
@@ -293,11 +293,11 @@ export const CreateLoan: React.FC<CreateLoanProps> = observer(({ mode }) => {
     setRepayValue(calculateRepayValue(amount, apr, duration, store.GlobalState.denominator));
   };
 
-  const getInitialValueOnUpdate = () => {
+  const getInitialValueOnUpdate = (): number => {
     if (activeSubOfferData) {
       return getDecimalsForLoanAmount(activeSubOfferData.offerAmount, activeSubOfferData.offerMint);
     }
-    return;
+    return 0;
   };
 
   return processing ? (

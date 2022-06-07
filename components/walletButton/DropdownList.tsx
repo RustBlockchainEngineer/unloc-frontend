@@ -1,20 +1,34 @@
-import { useCallback, useContext, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { StoreContext } from "@pages/_app";
 import { observer } from "mobx-react";
+import { SwitchButton } from "@components/layout/switchButton";
 
 interface DropdownListProps {
   refer: React.RefObject<HTMLUListElement>;
   active: boolean;
-  openModal: () => void;
   base58: string;
+  openModal: () => void;
 }
 
 export const DropdownList = observer(({ refer, active, openModal, base58 }: DropdownListProps) => {
   const store = useContext(StoreContext);
   const { solAmount, usdcAmount } = store.Wallet;
   const { disconnect } = useWallet();
+  const { theme } = store.Interface;
   const [copied, setCopied] = useState(false);
+
+  const handleThemeSet = () => {
+    store.Interface.setTheme(theme === "dark" ? "light" : "dark");
+    localStorage.setItem("unloc-theme", theme === "dark" ? "light" : "dark");
+  };
+
+  useEffect(() => {
+    const savedTheme = localStorage.getItem("unloc-theme");
+    if (savedTheme && savedTheme.length && (savedTheme === "dark" || savedTheme === "light")) {
+      store.Interface.setTheme(savedTheme);
+    }
+  });
 
   const copyAddress = useCallback(async (): Promise<void> => {
     if (base58) {
@@ -62,6 +76,16 @@ export const DropdownList = observer(({ refer, active, openModal, base58 }: Drop
           maximumFractionDigits: 5,
         })}
         <i className="icon icon--sm icon--currency--USDC" />
+      </li>
+      <span className="wallet-adapter-dropdown-list-item divider" />
+      <li className="wallet-adapter-dropdown-list-item theme" role="menuitem">
+        Select theme
+        <SwitchButton
+          state={store.Interface.theme == "light"}
+          classNames={"theme-switcher--switch"}
+          onClick={handleThemeSet}
+          theme={true}
+        />
       </li>
     </ul>
   );

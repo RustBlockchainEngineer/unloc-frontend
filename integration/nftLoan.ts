@@ -21,7 +21,7 @@ import {
 } from "@metaplex-foundation/mpl-token-metadata";
 import axios from "axios";
 
-import { IArweaveMetadata, IMasterEdition, IMetadata, IOnChainMetadata } from "nft";
+import { IArweaveMetadata, IMasterEdition, IMetadata, IOnChainMetadata } from "../@types/nfts/nft";
 import { SubOffer, SubOfferAccount } from "../@types/loans";
 
 const SOLANA_CONNECTION = new Connection(RPC_ENDPOINT, {

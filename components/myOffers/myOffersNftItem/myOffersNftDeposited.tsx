@@ -8,14 +8,15 @@ import { compressAddress } from "@utils/stringUtils/compressAdress";
 import { ShowOnHover } from "@components/layout/showOnHover";
 import { SolscanExplorerIcon } from "@components/layout/solscanExplorerIcon";
 import { ClipboardButton } from "@components/layout/clipboardButton";
+import { SubOffer } from "../../../@types/loans";
 
 interface MyOffersNftDepositedProps {
-  offerKey: string;
   nftMint: string;
+  state: number;
+  offerKey: string;
   name: string;
   image: string;
-  offers?: any;
-  state: number;
+  offers: SubOffer[];
   classNames?: string;
   collection?: string;
 }

@@ -20,7 +20,7 @@ const SingleNftPage: NextPage = observer(() => {
   const store = useContext(StoreContext);
 
   const { connected, walletKey } = store.Wallet;
-  const { nftData, loansData, isYours } = store.SingleOffer;
+  const { nftData, loansData, isYours, loansCount } = store.SingleOffer;
 
   const [hasActive, setHasActive] = useState(false);
 
@@ -81,7 +81,7 @@ const SingleNftPage: NextPage = observer(() => {
       });
       store.SingleOffer.setLoansData([]);
     });
-  }, [router.events, store.SingleOffer]);
+  }, [router.events, store.SingleOffer, loansCount]);
 
   useEffect(() => {
     if (loansData && loansData.length)
@@ -144,7 +144,7 @@ const SingleNftPage: NextPage = observer(() => {
       return (
         <div className="offer-grid">
           {LoanOffers}
-          {isYours && <PrivateTerms />}
+          {isYours && loansCount < 3 && <PrivateTerms />}
         </div>
       );
     else

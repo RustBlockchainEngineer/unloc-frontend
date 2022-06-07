@@ -1,25 +1,39 @@
-import React, { useCallback, useContext } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { observer } from "mobx-react";
 import Image from "next/image";
 import { toast } from "react-toastify";
 import { StoreContext } from "@pages/_app";
 import { MyOffersNftItemOffers } from "./myOffersNftItemOffers";
 import { IsubOfferData } from "@stores/Lightbox.store";
+import { SubOffer } from "../../../@types/loans";
 
 interface MyOffersNftItemProps {
-  offerKey: string;
+  state: number;
   nftMint: string;
+  offerKey: string;
   name: string;
   image: string;
-  offers?: any;
-  state: number;
+  offers: SubOffer[];
   classNames?: string;
   collection?: string;
 }
 
-export const MyOffersNftItem: React.FC<MyOffersNftItemProps> = observer(
-  ({ nftMint, name, image, offers, state, classNames, offerKey, collection }) => {
+export const MyOffersNftItem = observer(
+  ({
+    nftMint,
+    name,
+    image,
+    offers,
+    state,
+    classNames,
+    offerKey,
+    collection,
+  }: MyOffersNftItemProps) => {
     const store = useContext(StoreContext);
+    const [subOfferCount, setSubOfferCount] = useState(0);
+
+    useEffect(() => setSubOfferCount(offers.filter((o) => o.state !== 5).length), [offers]);
+    useEffect(() => console.log(offers), [offers]);
 
     const handleCancelOffer = useCallback(async (subOfferKey: string) => {
       store.Lightbox.setContent("processing");
@@ -155,14 +169,16 @@ export const MyOffersNftItem: React.FC<MyOffersNftItemProps> = observer(
       if (status === 0) {
         return (
           <div className="nft-info-buttons">
-            <button
-              className="btn--md btn--primary active-offer--tooltip--parent"
-              onClick={handleAddOffer}>
-              +
-              <div className="tooltip-container active-offer--tooltip">
-                <span>Create a new Loan Offer with this NFT as Collateral</span>
-              </div>
-            </button>
+            {subOfferCount < 3 && (
+              <button
+                className="btn--md btn--primary active-offer--tooltip--parent"
+                onClick={handleAddOffer}>
+                +
+                <div className="tooltip-container active-offer--tooltip">
+                  <span>Create a new Loan Offer with this NFT as Collateral</span>
+                </div>
+              </button>
+            )}
             <button
               className="btn--md btn--bordered active-offer--tooltip--parent"
               onClick={() => handleCancelCollateral()}>

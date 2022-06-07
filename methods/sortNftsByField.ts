@@ -1,4 +1,4 @@
-import { IArweaveMetadata } from "nft";
+import { IArweaveMetadata } from "../@types/nfts/nft";
 
 const sortNftsByField = (nfts: any[], field: keyof IArweaveMetadata): any[] => {
   return nfts.sort((a: any, b: any) => {

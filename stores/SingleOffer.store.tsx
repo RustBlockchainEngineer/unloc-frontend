@@ -2,7 +2,7 @@ import { action, makeAutoObservable, flow } from "mobx";
 import axios from "axios";
 import * as anchor from "@project-serum/anchor";
 import { getOffer, getSubOffersInRange } from "@integration/nftLoan";
-import { INftCoreData } from "nft";
+import { INftCoreData } from "../@types/nfts/nft";
 import { getMetadata } from "@integration/nftIntegration";
 import { getDecimalsForLoanAmount } from "@integration/getDecimalForLoanAmount";
 import { calculateRepayValue } from "@utils/calculateRepayValue";
@@ -30,6 +30,7 @@ export class SingleOfferStore {
   nftData = {} as INftCoreData;
   loansData: LoanInterface[] = [];
   isYours: boolean = false;
+  loansCount = 0;
 
   constructor(rootStore: any) {
     makeAutoObservable(this);
@@ -99,6 +100,8 @@ export class SingleOfferStore {
           ),
         });
       });
+
+      this.loansCount = subOffers.filter((s) => s.account.state !== 5).length;
       this.setLoansData(loansArr);
     } catch (e) {
       if ((e as Error).message.includes("503 Service Unavailable")) {
