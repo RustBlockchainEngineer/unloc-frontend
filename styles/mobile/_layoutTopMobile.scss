@@ -2,16 +2,10 @@
   .layout-top-mobile {
     position: fixed;
     box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
-    backdrop-filter: blur(7px);
     border-radius: 0 0 8px 8px;
     width: 100vw;
     top: 0;
-    bottom: 0;
     z-index: 2;
-
-    &.mobile-hide {
-      bottom: unset;
-    }
 
     &.hidden {
       top: -100%;
@@ -29,6 +23,7 @@
     top: 70px;
     border-bottom-left-radius: $brd-rds-sm;
     border-bottom-right-radius: $brd-rds-sm;
+    backdrop-filter: blur(7px);
 
     li a {
       height: 50px;
