@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 
 import { BlobLoader } from "@components/layout/blobLoader";
 import { LayoutTop } from "@components/layout/layoutTop";
+import { LayoutTopMobile } from "@components/layout/layoutTopMobile";
 import { Header } from "@components/singleOffer/Header/Header";
 import { Offer } from "@components/singleOffer/Offer/Offer";
 import { StoreDataAdapter } from "@components/storeDataAdapter";
@@ -157,6 +158,7 @@ const SingleNftPage: NextPage = observer(() => {
 
   return (
     <StoreDataAdapter>
+      <LayoutTopMobile />
       <div className="page my-offers">
         <LayoutTop />
         {nftData && (

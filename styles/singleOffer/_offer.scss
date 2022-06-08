@@ -1,6 +1,6 @@
 .offer-root {
   border-radius: 8px;
-  padding: 2px;
+  @include theme-aware("background", "single-offer-offer-bg");
 
   &:hover {
     -moz-box-shadow: 0 0 14px rgba(0, 0, 0, 0.15);
@@ -11,8 +11,10 @@
     }
   }
 
-  @media (max-width: $bp-tablet) {
-    padding: 0;
+  @media (max-width: $bp-phone) {
+    &:not(:last-child) {
+      margin-bottom: $mr-md;
+    }
   }
 }
 
@@ -62,7 +64,6 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  @include theme-aware("background", "single-offer-offer-bg");
   @include theme-aware("color", "nft-offers-color");
   padding: 16px;
   border-radius: $brd-rds-2tn $brd-rds-2tn 0 0;
@@ -71,7 +72,6 @@
   animation: fadeInAnimation ease 0.8s;
   animation-iteration-count: 1;
   animation-fill-mode: forwards;
-  margin-bottom: -6px;
 
   p {
     font-size: 12px;
@@ -113,6 +113,9 @@
           height: 16px;
         }
       }
+      & > .show-on-hover__label {
+        font-weight: $wg-hv;
+      }
     }
   }
 }
@@ -132,11 +135,14 @@
     width: 90vw;
     margin-bottom: 40px;
   }
+
+  @media (max-width: $bp-phone) {
+    margin: 0;
+  }
 }
 
 .lend-btn {
   width: 100%;
-  height: 50px;
   @include theme-aware("background-color", "color-primary");
   font-weight: $wg-hv;
   @include theme-aware("color", "lend-offer-button");
@@ -144,7 +150,8 @@
   border-radius: 6px;
   cursor: pointer;
   transition: background 0.3s ease-in-out;
-  padding: 20px 0;
+  padding: 7px 0;
+  font-size: $tp-md;
   &:hover {
     @include theme-aware("background-color", "color-primary-dark");
   }

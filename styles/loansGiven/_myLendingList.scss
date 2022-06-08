@@ -1,13 +1,13 @@
 .my-lending-nft-list {
   display: inline-block;
   width: 100%;
-  margin: 20px 0;
+  margin: 45px 0 20px;
 
   h1 {
     margin: $mr-xl 0;
 
     @media (max-width: $bp-phone) {
-      margin: $mr-2xl auto $mr-md;
+      margin: 0 auto $mr-md;
       text-align: center;
     }
   }

@@ -15,11 +15,11 @@ const MyOffers: NextPage = observer(() => {
 
   return (
     <StoreDataAdapter>
+      <LayoutTopMobile />
       <div className="page my-offers">
         <LayoutTop />
         {connected ? <LoansList /> : ""}
       </div>
-      <LayoutTopMobile />
     </StoreDataAdapter>
   );
 });

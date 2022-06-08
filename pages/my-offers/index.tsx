@@ -38,6 +38,7 @@ const MyOffers: NextPage = observer(() => {
 
   return (
     <StoreDataAdapter>
+      <LayoutTopMobile />
       <div className="page my-offers">
         <LayoutTop />
         <WalletActions />
@@ -45,7 +46,6 @@ const MyOffers: NextPage = observer(() => {
         {connected && activeCategory === "proposed" && <MyOffersNftList type="proposed" />}
         {connected && activeCategory === "deposited" && <MyOffersNftList type="deposited" />}
       </div>
-      <LayoutTopMobile />
     </StoreDataAdapter>
   );
 });

@@ -20,7 +20,7 @@
   }
 
   @media (max-width: $bp-phone) {
-    margin: 60px 0 0;
+    margin: 45px 0 0;
   }
 
   &__heading {
@@ -32,7 +32,7 @@
     }
 
     @media (max-width: $bp-phone) {
-      margin: $mr-lg $mr-sm;
+      margin: 0 $mr-sm;
       gap: 0;
       justify-content: space-between;
 

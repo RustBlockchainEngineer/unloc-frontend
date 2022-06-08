@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { useCallback, useContext, useEffect } from "react";
 
 import { observer } from "mobx-react";
 import type { NextPage } from "next";
@@ -17,7 +17,7 @@ const Home: NextPage = observer(() => {
   const { wallet, connected } = store.Wallet;
   const { viewType } = store.Offers;
 
-  const handleOffers = async (): Promise<void> => {
+  const handleOffers = useCallback(async () => {
     try {
       if (connected && wallet) {
         await store.Offers.refetchOffers();
@@ -28,7 +28,7 @@ const Home: NextPage = observer(() => {
       // eslint-disable-next-line no-console
       console.log(e);
     }
-  };
+  }, [connected, store.Offers, wallet]);
 
   useEffect(() => {
     if (wallet && connected) void handleOffers();
@@ -36,13 +36,13 @@ const Home: NextPage = observer(() => {
 
   return (
     <StoreDataAdapter>
+      <LayoutTopMobile />
       <div className="page offers">
         <main>
           <LayoutTop />
           <FiltersRow />
           {viewType === "grid" ? <OffersGrid /> : <OffersTable />}
         </main>
-        <LayoutTopMobile />
       </div>
     </StoreDataAdapter>
   );

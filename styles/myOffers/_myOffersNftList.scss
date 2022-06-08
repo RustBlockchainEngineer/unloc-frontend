@@ -25,6 +25,10 @@
     grid-template-columns: 1fr;
     gap: 0;
   }
+
+  @media (max-width: $bp-phone) {
+    margin-top: 35px;
+  }
 }
 
 .my-offers-nft {
@@ -530,6 +534,10 @@
       margin: 0 0 $mr-lg;
       min-width: 172px;
     }
+  }
+
+  @media (max-width: $bp-phone) {
+    margin-top: 35px;
   }
 }
 
