@@ -7,6 +7,9 @@
 
 .create-offer {
   padding: 0 20px 24px;
+  @media (max-width: $bp-tablet) {
+    padding: 0;
+  }
 }
 
 .offer-form {
@@ -23,24 +26,64 @@
     margin-bottom: 24px;
     justify-content: space-between;
 
+    & > div:nth-child(1),
+    & > div:nth-child(2) {
+      display: flex;
+      flex-direction: column;
+    }
+
     div:nth-child(1) {
       display: flex;
       flex-direction: column;
       width: 315px;
       margin-right: 15px;
+
+      @media (max-width: $bp-tablet) {
+        width: 100%;
+      }
     }
 
     div:nth-child(2) {
       width: 128px;
+
+      @media (max-width: $bp-tablet) {
+        width: 100%;
+      }
     }
 
     @media (max-width: $bp-tablet) {
       flex-direction: column;
+      margin-bottom: 0;
 
-      div:nth-child(1),
-      div:nth-child(2) {
+      & > div:nth-child(1),
+      & > div:nth-child(2) {
         width: 100%;
-        margin: 0 0 30px 0;
+        margin: unset;
+      }
+      &.form-amount {
+        & > div:nth-child(1),
+        & > div:nth-child(2) {
+          padding-bottom: $mr-md;
+          margin: unset;
+          margin-bottom: 14px;
+          @include theme-aware("border-bottom", "lightbox-loan-group-border-bottom");
+        }
+      }
+
+      &.form-duration {
+        & > div:nth-child(1) {
+          margin-bottom: 20px;
+        }
+        & > div:nth-child(2) {
+          padding-bottom: $mr-md;
+          margin-bottom: 14px;
+          @include theme-aware("border-bottom", "lightbox-loan-group-border-bottom");
+
+          input {
+            width: 75%;
+            margin: 0 auto;
+          }
+        }
       }
     }
 
@@ -57,12 +100,19 @@
   select {
     @include theme-aware("background-color", "lightbox-collection-select-bg");
     @include theme-aware("color", "lightbox-collection-select-color");
-    margin-top: 6px;
-    border: 0px;
+    margin-top: 8px;
+    border: 0;
     padding: 9px;
-    border-radius: 6px;
+    border-radius: 2px;
     height: 42px;
     width: 100%;
+
+    @media (max-width: $bp-tablet) {
+      font-size: $tp-md;
+      line-height: $tp-lg;
+      padding: 7px 10px;
+      height: unset;
+    }
   }
 
   p {
@@ -73,13 +123,12 @@
   }
 
   .loan-currency {
-    @include theme-aware("background-color", "lightbox-collection-select-bg");
-    @include theme-aware("color", "lightbox-collection-select-color");
-
-    margin-top: $mr-tn;
+    margin-top: 8px;
     border-radius: 6px;
 
     .custom-select__selected {
+      @include theme-aware("background-color", "lightbox-collection-select-bg");
+      @include theme-aware("color", "lightbox-collection-select-color");
       padding: 8.5px;
       margin-right: 0 !important;
       display: inline-flex !important;
@@ -87,7 +136,11 @@
     }
 
     .custom-select__options {
-      margin-top: 45px;
+      margin-top: 10px;
+
+      @media (max-width: $bp-tablet) {
+        margin-top: $mr-tn;
+      }
     }
 
     &.disabled {
@@ -101,34 +154,35 @@
   }
 
   .form-APR {
-    & > div:nth-child(1),
-    & > div:nth-child(3) {
-      width: 50%;
-    }
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 22px;
 
     & > div:nth-child(1) {
-      margin-right: $mr-md;
+      width: 100%;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      margin: 0;
     }
-
-    & > div:nth-child(3) {
-      margin-left: $mr-md;
-    }
-
-    & > div:nth-child(2) {
-      width: 50px;
-      position: relative;
-
-      div.switch--button--knob {
-        width: 22px;
-        margin: 0;
+    & > div:nth-child(1) {
+      justify-content: space-around;
+      margin-bottom: $mr-sm;
+      span {
+        width: 56px;
       }
     }
 
-    & span {
-      display: block;
-      text-align: center;
-      font-size: 24px;
+    & > div:nth-child(2) {
+      display: flex;
+      flex-direction: row;
+      column-gap: $mr-2rem;
       width: 100%;
+    }
+
+    & span {
+      text-align: center;
+      font-size: $tp-md;
     }
   }
 
@@ -141,6 +195,7 @@
 
     .amount {
       font-size: 20px;
+      font-weight: 700;
 
       span {
         margin-left: $mr-sm;
@@ -167,6 +222,10 @@
 
     &.btn-content {
       width: 100%;
+      font-size: $tp-md;
+      line-height: 19px;
+      font-weight: 700;
+      padding: 10px 0;
       text-align: center;
       justify-content: center;
       @include theme-aware("color", "lend-offer-button");
@@ -175,14 +234,13 @@
 
   input[type="range"] {
     -webkit-appearance: none;
-    margin-right: 15px;
     width: 100%;
     height: 7px;
     @include theme-aware("background-color", "lightbox-range-bg");
     border-radius: 5px;
     background-size: 70% 100%;
     background-repeat: no-repeat;
-    margin-top: 10px;
+    margin-top: 17px;
   }
 
   /* Input Thumb */

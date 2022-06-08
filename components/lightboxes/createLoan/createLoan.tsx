@@ -389,6 +389,10 @@ export const CreateLoan: React.FC<CreateLoanProps> = observer(({ mode }) => {
             <div className="form-line form-APR">
               <div>
                 <span>APR (%)</span>
+                <SwitchButton state={interestMode} onClick={handleInterestModeChange} />
+                <span>Interest</span>
+              </div>
+              <div>
                 <input
                   ref={aprRef}
                   onInput={onAprInput}
@@ -406,10 +410,6 @@ export const CreateLoan: React.FC<CreateLoanProps> = observer(({ mode }) => {
                   className={`input-text ${interestMode ? "disabled" : ""}`}
                   disabled={interestMode}
                 />
-              </div>
-              <SwitchButton state={interestMode} onClick={handleInterestModeChange} />
-              <div>
-                <span>Interest</span>
                 <input
                   ref={accruedRef}
                   onInput={onInterestInput}

@@ -32,17 +32,26 @@
   border-radius: 2px;
 
   &__selected {
+    background-color: inherit;
+    color: inherit;
+    border: 0;
     width: 100%;
     display: inline-flex;
     align-items: center;
     padding: $mr-tn $mr-tn $mr-tn $mr-sm;
     justify-content: space-between;
+    border-radius: $brd-rds-tn;
   }
 
   ul.custom-select__options {
     @include theme-aware("background-color", "input-bg");
     width: 100%;
     border-radius: 18px;
+    margin-top: 10px;
+
+    @media (max-width: $bp-tablet) {
+      margin-top: $mr-tn;
+    }
     padding: $mr-tn $mr-sm;
 
     li {
