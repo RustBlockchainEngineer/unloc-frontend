@@ -3,17 +3,35 @@ import { Duration } from "dayjs/plugin/duration";
 
 type TimeSplit = "milis" | "seconds" | "minutes" | "hours" | "days" | "weeks" | "months" | "years";
 
+/**
+ * Function to multiply data.
+ * @returns number
+ */
+
 function multi(a: number, b: number[]): number {
   let i = 1;
   b.map((time) => (i = i * time));
   return i * a;
 }
 
+/**
+ * Function to divide data.
+ * @returns number
+ */
+
 function division(a: number, b: number[]): number {
   let i = a;
   b.map((time) => (i = i / time));
   return i;
 }
+
+/**
+ * Converts time. Way of transformation defines by specific function.
+ * @param time time in seconds to be converted
+ * @param duration which unit of time should be used for conversion
+ * @param action defines which kind of time transformation we need
+ * @returns duration time in seconds or specified unit
+ */
 
 const getDuration = (
   time: number,
@@ -51,7 +69,7 @@ const getDuration = (
  * Converts time from seconds to any other unit
  * @param time time in seconds to be converted
  * @param duration which unit of time should be used for convertion
- * @returns duration time in specified unit
+ * @returns getDuration
  */
 export const getDurationFromContractData = (time: number, duration: TimeSplit): number => {
   return getDuration(time, duration, division);
@@ -61,7 +79,7 @@ export const getDurationFromContractData = (time: number, duration: TimeSplit): 
  * Converts time from any unit to seconds
  * @param time duration time for a loan
  * @param duration unit from which duration will be converted
- * @returns duration time in seconds
+ * @returns getDuration
  */
 export const getDurationForContractData = (time: number, duration: TimeSplit): number => {
   return getDuration(time, duration, multi);
