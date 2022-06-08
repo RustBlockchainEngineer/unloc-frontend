@@ -8,7 +8,7 @@ import { getDecimalsForLoanAmount } from "@integration/getDecimalForLoanAmount";
 import { calculateRepayValue } from "@utils/calculateRepayValue";
 import { currencyMints } from "@constants/currency";
 import { toast } from "react-toastify";
-import { getDurationFromContractData } from "@utils/getDuration";
+import { getDurationFromContractData } from "@utils/timeUtils/timeUtils";
 import { OfferAccount, Offer } from "../@types/loans";
 import { range } from "@utils/range";
 

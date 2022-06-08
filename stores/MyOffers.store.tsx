@@ -18,7 +18,7 @@ import {
   getSubOffersInRange,
 } from "@integration/nftLoan";
 import { currencies, currencyMints } from "@constants/currency";
-import { getDurationForContractData } from "@utils/getDuration";
+import { getDurationForContractData } from "@utils/timeUtils/timeUtils";
 import { getSubOffersKeysByState } from "@integration/offersListing";
 import { OfferAccount, SubOfferAccount } from "../@types/loans";
 import { SubOfferData } from "./Offers.store";
