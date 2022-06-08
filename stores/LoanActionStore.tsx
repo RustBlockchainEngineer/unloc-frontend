@@ -1,7 +1,7 @@
 import { action, makeAutoObservable } from "mobx";
 import BN from "bn.js";
 import { PublicKey } from "@solana/web3.js";
-import { getDurationForContractData } from "@utils/getDuration";
+import { getDurationForContractData } from "@utils/timeUtils/timeUtils";
 import { createSubOffer, updateSubOffer } from "@integration/nftLoan";
 import { CurrencyTypes } from "@constants/currency-constants";
 import { currencies } from "@constants/currency";

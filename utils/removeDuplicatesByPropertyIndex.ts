@@ -1,4 +1,7 @@
-export const removeDuplicatesByPropertyIndex = (originalArray: string | any[], objKey: string) => {
+export const removeDuplicatesByPropertyIndex = (
+  originalArray: string | any[],
+  objKey: string,
+): any[] => {
   const trimmedArray = [];
   const values = [];
   let value;
