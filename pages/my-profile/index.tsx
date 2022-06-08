@@ -1,5 +1,8 @@
-import { memo } from "react";
+import { observer } from "mobx-react";
+import { NextPage } from "next";
 
-export const MyProfile = memo(() => {
+const MyProfile: NextPage = observer(() => {
   return <div />;
 });
+
+export default MyProfile;
