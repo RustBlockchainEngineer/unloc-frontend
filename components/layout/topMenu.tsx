@@ -31,6 +31,11 @@ export const TopMenu = ({ mobileVisible }: TopMenuProps) => {
           <a className={handleCurrent("/loans-given")}>{localesTop.loansGiven}</a>
         </Link>
       </li>
+      <li>
+        <Link href="/my-profile">
+          <a className={handleCurrent("/my-profile")}>{localesTop.myProfile}</a>
+        </Link>
+      </li>
     </ul>
   );
 };
