@@ -8,6 +8,7 @@ import { getDecimalsForLoanAmountAsString } from "@integration/getDecimalForLoan
 import { ClipboardButton } from "@components/layout/clipboardButton";
 import { ShowOnHover } from "@components/layout/showOnHover";
 import { SolscanExplorerIcon } from "@components/layout/solscanExplorerIcon";
+import { getDurationFromContractData } from "@utils/timeUtils/timeUtils";
 
 interface MyOffersNftOfferItemProps {
   offerAmount: any;
@@ -97,8 +98,8 @@ export const MyOffersNftOfferItem = ({
           <p>{APR.toString()}%</p>
         </div>
         <div className="offer__row--item">
-          <h4>{status.toString() == "1" ? "Time left" : "Duration"} </h4>
-          <p>{Number(duration.toString()) / 60 / 60 / 24} Days</p>
+          <h4>{status === "1" ? "Time left" : "Duration"} </h4>
+          <p>{getDurationFromContractData(duration.toNumber(), "days")} Days</p>
         </div>
         {/* <div className='offer__row--item'>
           <h4>Min repaid value</h4>

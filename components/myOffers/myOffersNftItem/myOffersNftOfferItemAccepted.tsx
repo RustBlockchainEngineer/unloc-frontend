@@ -10,31 +10,34 @@ import { getDecimalsForLoanAmountAsString } from "@integration/getDecimalForLoan
 import { ShowOnHover } from "@components/layout/showOnHover";
 import { ClipboardButton } from "@components/layout/clipboardButton";
 import { SolscanExplorerIcon } from "@components/layout/solscanExplorerIcon";
+import { SubOfferAccount } from "../../../@types/loans";
 
 interface MyOffersNftOfferItemAcceptedProps {
   offerAmount: any;
   offerID: PublicKey;
   status: string;
   APR: string;
+  startTime: BN;
   duration: BN;
   repaid: string;
   offerMint: PublicKey;
   classNames?: string;
   nftMint: string;
-  offers: any[];
+  offers: SubOfferAccount[];
 }
 
-export const MyOffersNftOfferItemAccepted: React.FC<MyOffersNftOfferItemAcceptedProps> = ({
+export const MyOffersNftOfferItemAccepted = ({
   offerAmount,
   offerID,
   status,
   APR,
+  startTime,
   duration,
   offerMint,
   classNames,
   nftMint,
   offers,
-}) => {
+}: MyOffersNftOfferItemAcceptedProps) => {
   const store = useContext(StoreContext);
   const { getTooltipProps, setTooltipRef, setTriggerRef, visible } = usePopperTooltip();
   const setStatus = (status: string) => {
@@ -93,9 +96,9 @@ export const MyOffersNftOfferItemAccepted: React.FC<MyOffersNftOfferItemAccepted
 
   const getActiveSubOffer = () => {
     let output = "";
-    offers.forEach((offer: any) => {
-      if (offer.state === 1) {
-        output = offer.subOfferKey.toBase58();
+    offers.forEach((offer) => {
+      if (offer.account.state === 1) {
+        output = offer.publicKey.toBase58();
       }
     });
 

@@ -5,15 +5,28 @@ import { MyOffersNftItem } from "./myOffersNftItem/myOffersNftItem";
 import { MyOffersNftDeposited } from "./myOffersNftItem/myOffersNftDeposited";
 import { usePopperTooltip } from "react-popper-tooltip";
 import { OfferCategory } from "@stores/MyOffers.store";
+import { SubOfferAccount } from "../../@types/loans";
 
 type MyOffersNftListProps = {
   type: OfferCategory;
 };
 
+export type SanitizedOffer = {
+  offerKey: string;
+  collection: string;
+  nftMint: string;
+  description: string;
+  external_url: string;
+  state: number;
+  image: string;
+  name: string;
+  subOffers: SubOfferAccount[];
+};
+
 export const MyOffersNftList = observer(({ type }: MyOffersNftListProps) => {
   const store = useContext(StoreContext);
   const { offers, nftData, subOffers, activeCategory } = store.MyOffers;
-  const [sanitizedOffers, setSanitizedOffers] = useState<any[]>([]);
+  const [sanitizedOffers, setSanitizedOffers] = useState<SanitizedOffer[]>([]);
 
   const { getTooltipProps, setTooltipRef, setTriggerRef, visible } = usePopperTooltip();
 
@@ -70,10 +83,7 @@ export const MyOffersNftList = observer(({ type }: MyOffersNftListProps) => {
 
       subOffers.forEach((subOffer) => {
         if (subOffer.account.offer.toBase58() === offerSanitized.offerKey) {
-          offerSanitized.subOffers.push({
-            subOfferKey: subOffer.publicKey,
-            ...subOffer.account,
-          });
+          offerSanitized.subOffers.push(subOffer);
         }
       });
       return offerSanitized;
@@ -91,24 +101,12 @@ export const MyOffersNftList = observer(({ type }: MyOffersNftListProps) => {
             name={offer.name}
             image={offer.image}
             nftMint={offer.nftMint}
-            offers={offer}
             state={offer.state}
             collection={offer.collection}
           />
         );
       } else {
-        return (
-          <MyOffersNftItem
-            key={offer.offerKey}
-            offerKey={offer.offerKey}
-            name={offer.name}
-            image={offer.image}
-            nftMint={offer.nftMint}
-            offers={offer.subOffers}
-            state={offer.state}
-            collection={offer.collection}
-          />
-        );
+        return <MyOffersNftItem key={offer.offerKey} sanitized={offer} />;
       }
     });
 
