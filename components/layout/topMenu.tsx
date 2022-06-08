@@ -17,13 +17,13 @@ export const TopMenu = ({ mobileVisible }: TopMenuProps) => {
 
   const menuList = useCallback(() => {
     return Object.keys(localesTop).map((item) => {
-      const SnakeCaseName = localesTop[item].replace(/\s/, "-").toLowerCase();
+      const snakeCaseName = localesTop[item].replace(/\s/, "-").toLowerCase();
       return (
         //TODO: temporary statement
         item !== "myProfile" && (
           <li key={item}>
-            <Link href={item === "home" ? "/" : `/${SnakeCaseName}`}>
-              <a className={handleCurrent(item === "home" ? "/" : `/${SnakeCaseName}`)}>
+            <Link href={item === "home" ? "/" : `/${snakeCaseName}`}>
+              <a className={handleCurrent(item === "home" ? "/" : `/${snakeCaseName}`)}>
                 {localesTop[item]}
               </a>
             </Link>
