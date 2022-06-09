@@ -8,21 +8,18 @@ import { compressAddress } from "@utils/stringUtils/compressAdress";
 import { ShowOnHover } from "@components/layout/showOnHover";
 import { SolscanExplorerIcon } from "@components/layout/solscanExplorerIcon";
 import { ClipboardButton } from "@components/layout/clipboardButton";
+import { SanitizedOffer } from "../myOffersNftList";
 
 interface MyOffersNftDepositedProps {
-  nftMint: string;
-  state: number;
-  offerKey: string;
-  name: string;
-  image: string;
+  sanitized: SanitizedOffer;
   classNames?: string;
-  collection?: string;
 }
 
 export const MyOffersNftDeposited: React.FC<MyOffersNftDepositedProps> = observer(
-  ({ nftMint, name, image, offerKey, collection }) => {
+  ({ sanitized }) => {
     const { getTooltipProps, setTooltipRef, setTriggerRef, visible } = usePopperTooltip();
     const store = useContext(StoreContext);
+    const { nftMint, offerKey, name, image, collection } = sanitized;
 
     const handleCancelCollateral = async () => {
       store.Lightbox.setContent("processing");

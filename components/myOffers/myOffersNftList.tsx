@@ -94,17 +94,7 @@ export const MyOffersNftList = observer(({ type }: MyOffersNftListProps) => {
   const renderOffers = () => {
     const mappedOffers = sanitizedOffers.map((offer) => {
       if (type === "deposited") {
-        return (
-          <MyOffersNftDeposited
-            key={offer.offerKey}
-            offerKey={offer.offerKey}
-            name={offer.name}
-            image={offer.image}
-            nftMint={offer.nftMint}
-            state={offer.state}
-            collection={offer.collection}
-          />
-        );
+        return <MyOffersNftDeposited key={offer.offerKey} sanitized={offer} />;
       } else {
         return <MyOffersNftItem key={offer.offerKey} sanitized={offer} />;
       }
