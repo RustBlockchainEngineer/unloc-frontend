@@ -11,6 +11,7 @@ import { ShowOnHover } from "@components/layout/showOnHover";
 import { ClipboardButton } from "@components/layout/clipboardButton";
 import { SolscanExplorerIcon } from "@components/layout/solscanExplorerIcon";
 import { SubOfferAccount } from "../../../@types/loans";
+import { getTimeLeft, getDurationColor } from "@utils/timeUtils/timeUtils";
 
 interface MyOffersNftOfferItemAcceptedProps {
   offerAmount: any;
@@ -105,14 +106,17 @@ export const MyOffersNftOfferItemAccepted = ({
     return output;
   };
 
-  const timeLeft = Number(duration.toString()) / 60 / 60 / 24;
-  //const timeLeft = -2 //for css testing
-
-  let timeClassNames = "";
-  timeClassNames += (status.toString() == "1" && timeLeft > 3 ? "green" : "") + " ";
-  timeClassNames +=
-    (status.toString() == "1" && timeLeft <= 3 && timeLeft > 0 ? "yellow" : "") + " ";
-  timeClassNames += (status.toString() == "1" && timeLeft <= 0 ? "red" : "") + " ";
+  const timeLeft = getTimeLeft(duration.toNumber(), startTime.toNumber());
+  const timeClassName = getDurationColor(timeLeft);
+  const isExpired = timeLeft.asSeconds() <= 0;
+  const uiTimeLeft =
+    timeLeft.days() > 0
+      ? `${timeLeft.days()} Day(s)`
+      : timeLeft.hours() > 0
+      ? `${timeLeft.hours()} Hour(s)`
+      : timeLeft.minutes() > 0
+      ? `${timeLeft.minutes()} Minute(s)`
+      : "Expired";
 
   const stopOnClickPropagation = (e: React.MouseEvent<HTMLElement>) => {
     e.stopPropagation();
@@ -120,7 +124,7 @@ export const MyOffersNftOfferItemAccepted = ({
 
   return (
     <div
-      className={`my-offers-nft__offer ${(classNames ? classNames : "") + " "} ${timeClassNames}`}
+      className={`my-offers-nft__offer ${(classNames ? classNames : "") + " "} ${timeClassName}`}
       onClick={(e) => stopOnClickPropagation(e)}>
       <div className="offer__row">
         <div className="offer__row--item">
@@ -132,7 +136,7 @@ export const MyOffersNftOfferItemAccepted = ({
             <SolscanExplorerIcon type={"token"} address={offerID.toString()} />
           </ShowOnHover>
         </div>
-        <div className={`offer__row--item ${timeClassNames} status`}>
+        <div className={`offer__row--item ${timeClassName} status`}>
           <h4>Status</h4>
           {setStatus(status.toString())}
         </div>
@@ -159,9 +163,9 @@ export const MyOffersNftOfferItemAccepted = ({
           <h4>APR</h4>
           <p>{APR.toString()}%</p>
         </div>
-        <div className={`offer__row--item ${timeClassNames}`}>
+        <div className={`offer__row--item ${timeClassName}`}>
           <h4>{status.toString() == "1" ? "Time left" : "Duration"} </h4>
-          <p>{timeLeft} Days</p>
+          <p>{uiTimeLeft}</p>
         </div>
         {/* <div className='offer__row--item'>
           <h4>Min repaid value</h4>
@@ -169,7 +173,11 @@ export const MyOffersNftOfferItemAccepted = ({
         </div> */}
       </div>
 
-      {timeLeft > 0 ? (
+      {isExpired ? (
+        <div className="offer__row">
+          <button className="btn btn--md btn--primary loan-expired--button">Loan Expired</button>
+        </div>
+      ) : (
         <div className="offer__row">
           <button
             ref={setTriggerRef}
@@ -182,10 +190,6 @@ export const MyOffersNftOfferItemAccepted = ({
               Repay the Loan and get your NFT back
             </div>
           )}
-        </div>
-      ) : (
-        <div className="offer__row">
-          <button className="btn btn--md btn--primary loan-expired--button">Loan Expired</button>
         </div>
       )}
     </div>
