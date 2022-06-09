@@ -15,13 +15,12 @@ interface MyOffersNftItemProps {
 export const MyOffersNftItem = observer(({ sanitized, classNames }: MyOffersNftItemProps) => {
   const store = useContext(StoreContext);
   const [subOfferCount, setSubOfferCount] = useState(0);
-  const { nftMint, name, image, subOffers, state, offerKey, collection } = sanitized;
+  const { nftMint, name, image, subOffers, state, collection } = sanitized;
 
   useEffect(
     () => setSubOfferCount(subOffers.filter((o) => o.account.state !== 5).length),
     [subOffers],
   );
-  // useEffect(() => console.log(offers), [offers]);
 
   const handleCancelOffer = useCallback(async (subOfferKey: string) => {
     store.Lightbox.setContent("processing");
