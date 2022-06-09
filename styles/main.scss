@@ -52,6 +52,7 @@
 @import "./mobile/layoutTopMobile";
 @import "./mobile/offersPage/offersTopMobile";
 @import "./mobile/offersPage/offersGridMobile";
+@import "./mobile/lightboxBaseMobile";
 
 body {
   @include theme-aware("background-color", "color-background");

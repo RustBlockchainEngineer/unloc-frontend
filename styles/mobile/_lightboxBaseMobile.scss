@@ -1,0 +1,38 @@
+@media (max-width: $bp-tablet) {
+  .lightbox {
+    &__container {
+      width: 100%;
+      height: auto;
+      padding: 40px 40px 30px;
+      overflow-y: auto;
+      margin: 10px;
+    }
+  }
+
+  .nft-image-circled {
+    img {
+      border-radius: 50%;
+    }
+  }
+
+  .NFT-lb-collateral-list {
+    max-height: 60%;
+    overflow-y: scroll;
+    margin-bottom: 80px;
+  }
+
+  .collateral-lightbox {
+    width: 100%;
+    height: 100vh;
+    padding: 10px 0 0;
+    align-items: flex-start;
+    justify-content: flex-start;
+    max-height: 75vh;
+  }
+
+  .lb-collateral-button {
+    position: absolute;
+    bottom: 0;
+    margin: 0;
+  }
+}
