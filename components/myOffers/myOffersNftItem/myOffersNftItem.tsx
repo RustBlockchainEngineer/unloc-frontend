@@ -215,7 +215,7 @@ export const MyOffersNftItem = observer(({ sanitized, classNames }: MyOffersNftI
         handleOfferCancel={handleCancelOffer}
         handleAddOffer={handleAddOffer}
         handleCancelCollateral={handleCancelCollateral}
-        nftMint={offerKey}
+        nftMint={nftMint}
       />
     </div>
   );
