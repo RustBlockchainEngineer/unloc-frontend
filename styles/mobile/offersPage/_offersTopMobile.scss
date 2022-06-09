@@ -19,6 +19,16 @@
     margin: 100px 2.5vw 0;
     flex-direction: column;
 
+    @media (max-width: $bp-tablet) {
+      .filter-generic {
+        margin-left: 0;
+        padding: 0 20px;
+        &:first-child {
+          padding: 0 20px;
+        }
+      }
+    }
+
     &.active {
       width: 95vw;
       padding: 15px 20px;
@@ -26,7 +36,7 @@
       height: 100%;
 
       .filter-generic {
-        margin: 5px 0 15px 0;
+        margin: 5px 0 15px;
         padding: 0 0 15px;
 
         &:first-child {
