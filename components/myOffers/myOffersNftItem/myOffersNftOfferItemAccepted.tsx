@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useCallback, useContext, useMemo } from "react";
 import { BN } from "@project-serum/anchor";
 import { compressAddress } from "@utils/stringUtils/compressAdress";
 import { PublicKey } from "@solana/web3.js";
@@ -97,7 +97,7 @@ export const MyOffersNftOfferItemAccepted = observer(
       }
     };
 
-    const getActiveSubOffer = () => {
+    const activeSubOffer = useMemo(() => {
       let output = "";
       offers.forEach((offer) => {
         if (offer.account.state === 1) {
@@ -106,7 +106,7 @@ export const MyOffersNftOfferItemAccepted = observer(
       });
 
       return output;
-    };
+    }, [offers]);
 
     const timeLeft = getTimeLeft(duration.toNumber(), startTime.toNumber());
     const timeClassName = getDurationColor(timeLeft);
@@ -120,14 +120,14 @@ export const MyOffersNftOfferItemAccepted = observer(
         ? `${timeLeft.minutes()} Minute(s)`
         : "Expired";
 
-    const stopOnClickPropagation = (e: React.MouseEvent<HTMLElement>) => {
+    const stopOnClickPropagation = useCallback((e: React.MouseEvent<HTMLElement>) => {
       e.stopPropagation();
-    };
+    }, []);
 
     return (
       <div
-        className={`my-offers-nft__offer ${(classNames ? classNames : "") + " "} ${timeClassName}`}
-        onClick={(e) => stopOnClickPropagation(e)}>
+        className={`my-offers-nft__offer ${(classNames || "") + " "} ${timeClassName}`}
+        onClick={stopOnClickPropagation}>
         <div className="offer__row">
           <div className="offer__row--item">
             <h4>Collateral ID</h4>
@@ -166,7 +166,7 @@ export const MyOffersNftOfferItemAccepted = observer(
             <p>{APR.toString()}%</p>
           </div>
           <div className={`offer__row--item ${timeClassName}`}>
-            <h4>{status.toString() == "1" ? "Time left" : "Duration"} </h4>
+            <h4>{status === "1" ? "Time left" : "Duration"} </h4>
             <p>{uiTimeLeft}</p>
           </div>
           {/* <div className='offer__row--item'>
@@ -184,7 +184,7 @@ export const MyOffersNftOfferItemAccepted = observer(
             <button
               ref={setTriggerRef}
               className="btn btn--md btn--primary repay-loan--button"
-              onClick={() => handleRepayLoan(getActiveSubOffer())}>
+              onClick={() => handleRepayLoan(activeSubOffer)}>
               Repay Loan
             </button>
             {visible && (

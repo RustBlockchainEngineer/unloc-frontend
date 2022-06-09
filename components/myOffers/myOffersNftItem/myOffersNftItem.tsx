@@ -168,7 +168,7 @@ export const MyOffersNftItem = observer(({ sanitized, classNames }: MyOffersNftI
           )}
           <button
             className="btn--md btn--bordered active-offer--tooltip--parent"
-            onClick={() => handleCancelCollateral()}>
+            onClick={handleCancelCollateral}>
             &minus;
             <div className="tooltip-container active-offer--tooltip">
               <span>Return NFT to wallet</span>
