@@ -3,6 +3,7 @@ import { IsubOfferData } from "@stores/Lightbox.store";
 
 import { MyOffersNftOfferItem } from "./myOffersNftOfferItem";
 import { MyOffersNftOfferItemAccepted } from "./myOffersNftOfferItemAccepted";
+import { SubOfferAccount } from "../../../@types/loans";
 
 interface IMyOffersNftItemOffersProps {
   handleOfferEdit: (subOfferKey: string, values: IsubOfferData) => Promise<void>;
@@ -10,7 +11,7 @@ interface IMyOffersNftItemOffersProps {
   handleAddOffer: () => void;
   handleCancelCollateral: () => Promise<void>;
   status: number;
-  data?: any[];
+  data?: SubOfferAccount[];
   nftMint: string;
 }
 
@@ -28,7 +29,7 @@ export const MyOffersNftItemOffers = ({
   const getOffersCount = () => {
     let counter = 0;
     data?.forEach((offer) => {
-      if (offer.state === 0) {
+      if (offer.account.state === 0) {
         counter++;
       }
     });
@@ -86,34 +87,44 @@ export const MyOffersNftItemOffers = ({
       {data && data.length && contentVisible ? (
         <div className="offers-list-content">
           {data.map((offer) => {
-            if (offer.state === 0) {
+            const {
+              offerAmount,
+              aprNumerator,
+              state,
+              loanStartedTime,
+              loanDuration,
+              minRepaidNumerator,
+              offerMint,
+            } = offer.account;
+            if (state === 0) {
               return (
                 <MyOffersNftOfferItem
-                  key={offer.subOfferKey.toBase58()}
-                  offerAmount={offer.offerAmount}
-                  APR={offer.aprNumerator}
-                  status={offer.state}
-                  offerID={offer.subOfferKey}
-                  duration={offer.loanDuration}
-                  repaid={offer.minRepaidNumerator}
-                  offerMint={offer.offerMint}
+                  key={offer.publicKey.toBase58()}
+                  offerAmount={offerAmount}
+                  APR={aprNumerator.toString()}
+                  status={state.toString()}
+                  offerID={offer.publicKey}
+                  duration={loanDuration}
+                  repaid={minRepaidNumerator.toString()}
+                  offerMint={offerMint}
                   handleOfferEdit={handleOfferEdit}
                   handleOfferCancel={handleOfferCancel}
                   nftMint={nftMint}
                   disabled={status === 1}
                 />
               );
-            } else if (offer.state === 1) {
+            } else if (offer.account.state === 1) {
               return (
                 <MyOffersNftOfferItemAccepted
-                  key={offer.subOfferKey.toBase58()}
-                  offerAmount={offer.offerAmount}
-                  APR={offer.aprNumerator}
-                  status={offer.state}
-                  offerID={offer.subOfferKey}
-                  duration={offer.loanDuration}
-                  repaid={offer.minRepaidNumerator}
-                  offerMint={offer.offerMint}
+                  key={offer.publicKey.toBase58()}
+                  offerAmount={offerAmount}
+                  APR={aprNumerator.toString()}
+                  status={state.toString()}
+                  offerID={offer.publicKey}
+                  startTime={loanStartedTime}
+                  duration={loanDuration}
+                  repaid={minRepaidNumerator.toString()}
+                  offerMint={offerMint}
                   nftMint={nftMint}
                   offers={data}
                 />
