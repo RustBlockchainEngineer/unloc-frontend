@@ -12,6 +12,7 @@ import { ClipboardButton } from "@components/layout/clipboardButton";
 import { SolscanExplorerIcon } from "@components/layout/solscanExplorerIcon";
 import { SubOfferAccount } from "../../../@types/loans";
 import { getTimeLeft, getDurationColor } from "@utils/timeUtils/timeUtils";
+import { observer } from "mobx-react";
 
 interface MyOffersNftOfferItemAcceptedProps {
   offerAmount: any;
@@ -27,171 +28,173 @@ interface MyOffersNftOfferItemAcceptedProps {
   offers: SubOfferAccount[];
 }
 
-export const MyOffersNftOfferItemAccepted = ({
-  offerAmount,
-  offerID,
-  status,
-  APR,
-  startTime,
-  duration,
-  offerMint,
-  classNames,
-  nftMint,
-  offers,
-}: MyOffersNftOfferItemAcceptedProps) => {
-  const store = useContext(StoreContext);
-  const { getTooltipProps, setTooltipRef, setTriggerRef, visible } = usePopperTooltip();
-  const setStatus = (status: string) => {
-    if (status === "1") {
-      return <p className={"suboffer-containers__status active"}>Loan Offer Taken</p>;
-    }
-    return;
-  };
+export const MyOffersNftOfferItemAccepted = observer(
+  ({
+    offerAmount,
+    offerID,
+    status,
+    APR,
+    startTime,
+    duration,
+    offerMint,
+    classNames,
+    nftMint,
+    offers,
+  }: MyOffersNftOfferItemAcceptedProps) => {
+    const store = useContext(StoreContext);
+    const { getTooltipProps, setTooltipRef, setTriggerRef, visible } = usePopperTooltip();
+    const setStatus = (status: string) => {
+      if (status === "1") {
+        return <p className={"suboffer-containers__status active"}>Loan Offer Taken</p>;
+      }
+      return;
+    };
 
-  const handleRepayLoan = async (subOfferKey: string) => {
-    store.Lightbox.setContent("processing");
-    store.Lightbox.setCanClose(false);
-    store.Lightbox.setVisible(true);
+    const handleRepayLoan = async (subOfferKey: string) => {
+      store.Lightbox.setContent("processing");
+      store.Lightbox.setCanClose(false);
+      store.Lightbox.setVisible(true);
 
-    try {
-      await store.MyOffers.handleRepayLoan(subOfferKey);
+      try {
+        await store.MyOffers.handleRepayLoan(subOfferKey);
 
-      toast.success(`Loan Repayed, NFT is back in your wallet`, {
-        autoClose: 3000,
-        position: "top-center",
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
+        toast.success(`Loan Repayed, NFT is back in your wallet`, {
+          autoClose: 3000,
+          position: "top-center",
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      } catch (e: any) {
+        console.log(e);
+        if (e.message === "User rejected the request.") {
+          toast.error(`Transaction rejected`, {
+            autoClose: 3000,
+            position: "top-center",
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
+        } else {
+          toast.error(`Something went wrong`, {
+            autoClose: 3000,
+            position: "top-center",
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
+        }
+      } finally {
+        store.Lightbox.setCanClose(true);
+        store.Lightbox.setVisible(false);
+        store.MyOffers.refetchStoreData();
+      }
+    };
+
+    const getActiveSubOffer = () => {
+      let output = "";
+      offers.forEach((offer) => {
+        if (offer.account.state === 1) {
+          output = offer.publicKey.toBase58();
+        }
       });
-    } catch (e: any) {
-      console.log(e);
-      if (e.message === "User rejected the request.") {
-        toast.error(`Transaction rejected`, {
-          autoClose: 3000,
-          position: "top-center",
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-      } else {
-        toast.error(`Something went wrong`, {
-          autoClose: 3000,
-          position: "top-center",
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-      }
-    } finally {
-      store.Lightbox.setCanClose(true);
-      store.Lightbox.setVisible(false);
-      store.MyOffers.refetchStoreData();
-    }
-  };
 
-  const getActiveSubOffer = () => {
-    let output = "";
-    offers.forEach((offer) => {
-      if (offer.account.state === 1) {
-        output = offer.publicKey.toBase58();
-      }
-    });
+      return output;
+    };
 
-    return output;
-  };
+    const timeLeft = getTimeLeft(duration.toNumber(), startTime.toNumber());
+    const timeClassName = getDurationColor(timeLeft);
+    const isExpired = timeLeft.asSeconds() <= 0;
+    const uiTimeLeft =
+      timeLeft.days() > 0
+        ? `${timeLeft.days()} Day(s)`
+        : timeLeft.hours() > 0
+        ? `${timeLeft.hours()} Hour(s)`
+        : timeLeft.minutes() > 0
+        ? `${timeLeft.minutes()} Minute(s)`
+        : "Expired";
 
-  const timeLeft = getTimeLeft(duration.toNumber(), startTime.toNumber());
-  const timeClassName = getDurationColor(timeLeft);
-  const isExpired = timeLeft.asSeconds() <= 0;
-  const uiTimeLeft =
-    timeLeft.days() > 0
-      ? `${timeLeft.days()} Day(s)`
-      : timeLeft.hours() > 0
-      ? `${timeLeft.hours()} Hour(s)`
-      : timeLeft.minutes() > 0
-      ? `${timeLeft.minutes()} Minute(s)`
-      : "Expired";
+    const stopOnClickPropagation = (e: React.MouseEvent<HTMLElement>) => {
+      e.stopPropagation();
+    };
 
-  const stopOnClickPropagation = (e: React.MouseEvent<HTMLElement>) => {
-    e.stopPropagation();
-  };
-
-  return (
-    <div
-      className={`my-offers-nft__offer ${(classNames ? classNames : "") + " "} ${timeClassName}`}
-      onClick={(e) => stopOnClickPropagation(e)}>
-      <div className="offer__row">
-        <div className="offer__row--item">
-          <h4>Collateral ID</h4>
-          <ShowOnHover
-            label={compressAddress(4, offerID.toString())}
-            classNames="suboffer-containers__id">
-            <ClipboardButton data={offerID.toString()} />
-            <SolscanExplorerIcon type={"token"} address={offerID.toString()} />
-          </ShowOnHover>
-        </div>
-        <div className={`offer__row--item ${timeClassName} status`}>
-          <h4>Status</h4>
-          {setStatus(status.toString())}
-        </div>
-        <div className="offer__row--item">
-          <h4>NFT Mint</h4>
-          <ShowOnHover label={compressAddress(4, nftMint)} classNames="suboffer-containers__mint">
-            <ClipboardButton data={nftMint} />
-            <SolscanExplorerIcon type={"token"} address={nftMint} />
-          </ShowOnHover>
-        </div>
-      </div>
-
-      <div className="offer__row details">
-        <div className="offer__row--item">
-          <h4>Amount</h4>
-          <p>{`${getDecimalsForLoanAmountAsString(
-            offerAmount.toNumber(),
-            offerMint.toBase58(),
-            0,
-          )} ${currencyMints[offerMint.toBase58()]}`}</p>
+    return (
+      <div
+        className={`my-offers-nft__offer ${(classNames ? classNames : "") + " "} ${timeClassName}`}
+        onClick={(e) => stopOnClickPropagation(e)}>
+        <div className="offer__row">
+          <div className="offer__row--item">
+            <h4>Collateral ID</h4>
+            <ShowOnHover
+              label={compressAddress(4, offerID.toString())}
+              classNames="suboffer-containers__id">
+              <ClipboardButton data={offerID.toString()} />
+              <SolscanExplorerIcon type={"token"} address={offerID.toString()} />
+            </ShowOnHover>
+          </div>
+          <div className={`offer__row--item ${timeClassName} status`}>
+            <h4>Status</h4>
+            {setStatus(status.toString())}
+          </div>
+          <div className="offer__row--item">
+            <h4>NFT Mint</h4>
+            <ShowOnHover label={compressAddress(4, nftMint)} classNames="suboffer-containers__mint">
+              <ClipboardButton data={nftMint} />
+              <SolscanExplorerIcon type={"token"} address={nftMint} />
+            </ShowOnHover>
+          </div>
         </div>
 
-        <div className="offer__row--item">
-          <h4>APR</h4>
-          <p>{APR.toString()}%</p>
-        </div>
-        <div className={`offer__row--item ${timeClassName}`}>
-          <h4>{status.toString() == "1" ? "Time left" : "Duration"} </h4>
-          <p>{uiTimeLeft}</p>
-        </div>
-        {/* <div className='offer__row--item'>
+        <div className="offer__row details">
+          <div className="offer__row--item">
+            <h4>Amount</h4>
+            <p>{`${getDecimalsForLoanAmountAsString(
+              offerAmount.toNumber(),
+              offerMint.toBase58(),
+              0,
+            )} ${currencyMints[offerMint.toBase58()]}`}</p>
+          </div>
+
+          <div className="offer__row--item">
+            <h4>APR</h4>
+            <p>{APR.toString()}%</p>
+          </div>
+          <div className={`offer__row--item ${timeClassName}`}>
+            <h4>{status.toString() == "1" ? "Time left" : "Duration"} </h4>
+            <p>{uiTimeLeft}</p>
+          </div>
+          {/* <div className='offer__row--item'>
           <h4>Min repaid value</h4>
           <p>{repaid.toString()}</p>
         </div> */}
-      </div>
+        </div>
 
-      {isExpired ? (
-        <div className="offer__row">
-          <button className="btn btn--md btn--primary loan-expired--button">Loan Expired</button>
-        </div>
-      ) : (
-        <div className="offer__row">
-          <button
-            ref={setTriggerRef}
-            className="btn btn--md btn--primary repay-loan--button"
-            onClick={() => handleRepayLoan(getActiveSubOffer())}>
-            Repay Loan
-          </button>
-          {visible && (
-            <div ref={setTooltipRef} {...getTooltipProps({ className: "tooltip-container" })}>
-              Repay the Loan and get your NFT back
-            </div>
-          )}
-        </div>
-      )}
-    </div>
-  );
-};
+        {isExpired ? (
+          <div className="offer__row">
+            <button className="btn btn--md btn--primary loan-expired--button">Loan Expired</button>
+          </div>
+        ) : (
+          <div className="offer__row">
+            <button
+              ref={setTriggerRef}
+              className="btn btn--md btn--primary repay-loan--button"
+              onClick={() => handleRepayLoan(getActiveSubOffer())}>
+              Repay Loan
+            </button>
+            {visible && (
+              <div ref={setTooltipRef} {...getTooltipProps({ className: "tooltip-container" })}>
+                Repay the Loan and get your NFT back
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    );
+  },
+);
