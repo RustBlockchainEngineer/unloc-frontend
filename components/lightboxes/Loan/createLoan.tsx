@@ -12,7 +12,7 @@ import { calculateAprFromRepayValue } from "@utils/calculateAprFromRepayValue";
 import { SwitchButton } from "@components/layout/switchButton";
 import { CustomSelect } from "@components/layout/customSelect";
 import { getDurationFromContractData } from "@utils/timeUtils/timeUtils";
-import { USDC } from "@constants/currency-constants";
+import { SOL, USDC } from "@constants/currency-constants";
 import { errorCase, successCase } from "@methods/toast-error-handler";
 
 interface CreateLoanProps {
@@ -242,14 +242,14 @@ export const CreateLoan = observer(({ mode }: CreateLoanProps) => {
                   onInput={onValueInput}
                   type="number"
                   name="loanvalue"
-                  step={currency.toUpperCase() == "USDC" ? "0.01" : "0.001"}
-                  min={currency.toUpperCase() == "USDC" ? 0.1 : 0.01}
+                  step={currency.toUpperCase() == USDC ? "0.01" : "0.001"}
+                  min={currency.toUpperCase() == USDC ? 0.1 : 0.01}
                   placeholder="Amount"
                   className="input-text"
                   initialValue={
                     mode === "update"
                       ? getInitialValueOnUpdate()
-                      : currency.toUpperCase() === "USDC"
+                      : currency.toUpperCase() === USDC
                       ? 1000
                       : 10
                   }
@@ -258,7 +258,7 @@ export const CreateLoan = observer(({ mode }: CreateLoanProps) => {
               <div>
                 <span>Currency</span>
                 <CustomSelect
-                  options={["USDC", "SOL"]}
+                  options={[USDC, SOL]}
                   selectedOption={
                     mode === "update" && activeSubOfferData
                       ? currencyMints[activeSubOfferData.offerMint]

@@ -205,6 +205,25 @@ export class MyOffersStore {
     );
   };
 
+  @action.bound handleEditSubOffer = async (
+    offerAmount: number,
+    loanDuration: number,
+    aprNumerator: number,
+    minRepaidNumerator: number,
+    subOffer: string,
+  ) => {
+    const currencyInfo =
+      currencies[currencyMints[this.rootStore.Lightbox.activeSubOfferData.offerMint]];
+
+    await updateSubOffer(
+      new BN(offerAmount * 10 ** currencyInfo.decimals),
+      new BN(getDurationForContractData(loanDuration, "days")),
+      new BN(minRepaidNumerator),
+      new BN(aprNumerator),
+      new PublicKey(subOffer),
+    );
+  };
+
   @action.bound handleRepayLoan = async (subOfferKey: string) => {
     await repayLoan(new PublicKey(subOfferKey));
   };
@@ -229,25 +248,6 @@ export class MyOffersStore {
 
   @action.bound handleCancelSubOffer = async (subOfferKey: string) => {
     await cancelSubOffer(new PublicKey(subOfferKey));
-  };
-
-  @action.bound handleEditSubOffer = async (
-    offerAmount: number,
-    loanDuration: number,
-    aprNumerator: number,
-    minRepaidNumerator: number,
-    subOffer: string,
-  ) => {
-    const currencyInfo =
-      currencies[currencyMints[this.rootStore.Lightbox.activeSubOfferData.offerMint]];
-
-    await updateSubOffer(
-      new BN(offerAmount * 10 ** currencyInfo.decimals),
-      new BN(getDurationForContractData(loanDuration, "days")),
-      new BN(minRepaidNumerator),
-      new BN(aprNumerator),
-      new PublicKey(subOffer),
-    );
   };
 
   private initManyNfts = async (nftMintKeys: PublicKey[]) => {

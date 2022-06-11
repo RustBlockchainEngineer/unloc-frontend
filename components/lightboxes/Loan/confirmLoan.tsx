@@ -1,14 +1,12 @@
-import { memo, useCallback, useContext, useState } from "react";
+import { memo, useCallback, useContext } from "react";
 
 import Image from "next/image";
 import { StoreContext } from "@pages/_app";
-import { BlobLoader } from "@components/layout/blobLoader";
 import { errorCase, successCase } from "@methods/toast-error-handler";
 
 export const ConfirmLoan = memo(() => {
   const store = useContext(StoreContext);
   const { connected, wallet, walletKey } = store.Wallet;
-  const [processing, setProcessing] = useState(false);
   const {
     preparedOfferData: { amount, duration, currency, APR, repayValue },
     sanitized: { image, name },
@@ -16,9 +14,10 @@ export const ConfirmLoan = memo(() => {
 
   const confirm = useCallback(async (): Promise<void> => {
     if (connected && wallet && walletKey) {
+      store.Lightbox.setContent("processing");
+      store.Lightbox.setCanClose(false);
+      store.Lightbox.setVisible(true);
       try {
-        store.Lightbox.setVisible(false);
-        setProcessing(true);
         await store.MyOffers.handleCreateSubOffer(
           store.MyOffers.activeNftMint,
           Number(amount),
@@ -26,9 +25,6 @@ export const ConfirmLoan = memo(() => {
           Number(APR),
           currency,
         );
-        store.Lightbox.setVisible(false);
-        store.Lightbox.setCanClose(true);
-        setProcessing(false);
         successCase("Loan Offer Created");
       } catch (e: any) {
         errorCase(e);
@@ -43,18 +39,15 @@ export const ConfirmLoan = memo(() => {
   const edit = useCallback(async (): Promise<void> => {
     if (connected && wallet && walletKey) {
       try {
+        store.Lightbox.setContent("loanCreate");
+        store.Lightbox.setVisible(true);
       } catch (e: any) {
-      } finally {
+        errorCase(e);
       }
     }
   }, []);
 
-  return processing ? (
-    <div className="create-offer-processing">
-      <BlobLoader />
-      <span>Processing Transaction</span>
-    </div>
-  ) : (
+  return (
     <div className="confirm-offer-container">
       <div className="header">
         <h1>Offer Review</h1>

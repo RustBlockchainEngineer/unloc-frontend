@@ -24,6 +24,8 @@ export const errorCase = (err: any) => {
   switch (typeof err === "string" ? err : err.message) {
     case "User rejected the request.":
       return error("Transaction rejected");
+    case "Failed to sign transaction":
+      return error("Failed to sign transaction");
     case "You are not whitelisted!":
       return error("You are not whitelisted!");
     default:
