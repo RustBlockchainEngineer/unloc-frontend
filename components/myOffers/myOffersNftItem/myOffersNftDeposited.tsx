@@ -28,15 +28,6 @@ export const MyOffersNftDeposited = observer(({ sanitized }: MyOffersNftDeposite
 
     try {
       await store.MyOffers.handleCancelCollateral(nftMint);
-      // toast.success(`NFT ${name} returned to the wallet`, {
-      //   autoClose: 3000,
-      //   position: "top-center",
-      //   hideProgressBar: false,
-      //   closeOnClick: true,
-      //   pauseOnHover: true,
-      //   draggable: true,
-      //   progress: undefined,
-      // });
       successCase(`NFT ${name} returned to the wallet`, name);
       store.Lightbox.setCanClose(true);
       store.Lightbox.setVisible(false);
