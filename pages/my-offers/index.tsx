@@ -34,9 +34,6 @@ const MyOffers: NextPage = observer(() => {
 
   useEffect(() => {
     if (connected && walletKey) void refreshSubOffers(walletKey);
-    // store.Lightbox.setContent("loanConfirm");
-    // store.Lightbox.setVisible(true);
-    // console.log("qwe");
   }, [connected, walletKey, refreshSubOffers]);
 
   return (
