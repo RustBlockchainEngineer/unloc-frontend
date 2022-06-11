@@ -1,6 +1,6 @@
-import React, { useContext, useRef, useState, FormEvent } from "react";
+import { useContext, useRef, useState, FormEvent } from "react";
+
 import { observer } from "mobx-react";
-import { toast } from "react-toastify";
 import { Form, Field } from "react-final-form";
 import { StoreContext } from "@pages/_app";
 import { SubOfferInterface } from "@stores/LoanActionStore";
@@ -12,12 +12,14 @@ import { calculateAprFromRepayValue } from "@utils/calculateAprFromRepayValue";
 import { SwitchButton } from "@components/layout/switchButton";
 import { CustomSelect } from "@components/layout/customSelect";
 import { getDurationFromContractData } from "@utils/timeUtils/timeUtils";
+import { USDC } from "@constants/currency-constants";
+import { errorCase, successCase } from "@methods/toast-error-handler";
 
 interface CreateLoanProps {
   mode: "new" | "update";
 }
 
-export const CreateLoan: React.FC<CreateLoanProps> = observer(({ mode }) => {
+export const CreateLoan = observer(({ mode }: CreateLoanProps) => {
   const store = useContext(StoreContext);
   const { connected, wallet, walletKey } = store.Wallet;
   const { activeSubOffer, activeSubOfferData } = store.Lightbox;
@@ -36,7 +38,7 @@ export const CreateLoan: React.FC<CreateLoanProps> = observer(({ mode }) => {
 
   const [interestMode, setInterestMode] = useState(false);
   const [currency, setCurrency] = useState<string>(
-    mode === "update" ? currencyMints[activeSubOfferData.offerMint] : "USDC",
+    mode === "update" ? currencyMints[activeSubOfferData.offerMint] : USDC,
   );
 
   const amountRef = useRef<HTMLInputElement>(null);
@@ -70,66 +72,23 @@ export const CreateLoan: React.FC<CreateLoanProps> = observer(({ mode }) => {
       if (mode === "new") {
         try {
           if (store.Lightbox.content === "loanCreate" && store.MyOffers.activeNftMint) {
-            store.Lightbox.setCanClose(false);
+            store.Lightbox.setVisible(false);
             setProcessing(true);
 
-            await store.MyOffers.handleCreateSubOffer(
-              store.MyOffers.activeNftMint,
-              Number(amount),
-              Number(duration),
-              Number(apr),
-              currency,
-            );
-            store.Lightbox.setVisible(false);
-            store.Lightbox.setCanClose(true);
-            setProcessing(false);
-            toast.success(`Loan Offer Created`, {
-              autoClose: 3000,
-              position: "top-center",
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
+            await store.MyOffers.setPreparedOfferData({
+              nftMint: store.MyOffers.activeNftMint,
+              amount: Number(amount),
+              duration: Number(duration),
+              APR: Number(apr),
+              currency: currency,
+              repayValue: repayValue,
             });
+
+            store.Lightbox.setContent("loanConfirm");
+            store.Lightbox.setVisible(true);
           }
         } catch (e: any) {
-          if (e.message === "User rejected the request.") {
-            toast.error(`Transaction rejected`, {
-              autoClose: 3000,
-              position: "top-center",
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-            });
-          } else if ((e as Error).message.includes("503 Service Unavailable")) {
-            toast.error("Solana RPC currently unavailable, please try again in a moment", {
-              autoClose: 3000,
-              position: "top-center",
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-            });
-          } else {
-            toast.error(`Something went wrong`, {
-              autoClose: 3000,
-              position: "top-center",
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-            });
-          }
-          console.log(e);
-        } finally {
-          store.Lightbox.setVisible(false);
-          store.Lightbox.setCanClose(true);
-          await store.MyOffers.refetchStoreData();
+          errorCase(e);
         }
       } else if (mode === "update") {
         store.Lightbox.setCanClose(false);
@@ -143,48 +102,9 @@ export const CreateLoan: React.FC<CreateLoanProps> = observer(({ mode }) => {
             activeSubOffer,
           );
           setProcessing(false);
-          toast.success(`Changes Saved`, {
-            autoClose: 3000,
-            position: "top-center",
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-          });
+          successCase("Changes Saved");
         } catch (e: any) {
-          if (e.message === "User rejected the request.") {
-            toast.error(`Transaction rejected`, {
-              autoClose: 3000,
-              position: "top-center",
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-            });
-          } else if ((e as Error).message.includes("503 Service Unavailable")) {
-            toast.error("Solana RPC currently unavailable, please try again in a moment", {
-              autoClose: 3000,
-              position: "top-center",
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-            });
-          } else {
-            toast.error(`Something went wrong`, {
-              autoClose: 3000,
-              position: "top-center",
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-            });
-          }
-          console.log(e);
+          errorCase(e);
         } finally {
           store.Lightbox.setVisible(false);
           store.Lightbox.setCanClose(true);

@@ -1,0 +1,88 @@
+.confirm-offer-container {
+  width: 315px;
+  @media (max-width: $bp-tablet) {
+    max-width: 315px;
+    width: 100%;
+  }
+  h1 {
+    @include theme-aware("color", "lightbox-label-color");
+    padding: 0 0 16px 0;
+  }
+  & > div {
+    & > p {
+      @include theme-aware("color", "nft-headers-color");
+      font-size: $tp-md;
+      text-align: center;
+      max-width: 200px;
+      margin: 0 auto;
+    }
+  }
+  .collateral-info {
+    width: 100%;
+    margin-bottom: 17px;
+    & > p {
+      margin-bottom: 11px;
+    }
+    .collection {
+      width: 100%;
+      border-radius: $brd-rds-2lg;
+      @include theme-aware("background-color", "nft-pill-bg");
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 32px;
+      @media (max-width: $bp-tablet) {
+        width: calc(100% + 40px);
+        margin: 0 -20px;
+      }
+      img {
+        border-radius: 100%;
+      }
+      p {
+        font-size: $tp-2md;
+        @include theme-aware("color", "collateral-name");
+        font-weight: 700;
+        line-height: 21px;
+      }
+    }
+  }
+  .terms-info {
+    & > p {
+      padding-bottom: 10px;
+      margin-bottom: 17px;
+      @include theme-aware("border-bottom", "nft-headers-border");
+    }
+    & > div {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      &:not(:last-child) {
+        margin-bottom: 23px;
+      }
+      span {
+        @include theme-aware("color", "collateral-name");
+        &:first-child {
+          font-size: $tp-md;
+          margin-bottom: 11px;
+        }
+
+        &:last-child {
+          font-size: $tp-1lg;
+          font-weight: 700;
+        }
+      }
+    }
+  }
+  .actions {
+    display: flex;
+    flex-direction: column;
+    row-gap: 18px;
+    margin-top: 30px;
+    button {
+      justify-content: center;
+      width: 100%;
+      border-radius: $brd-rds-1tn;
+    }
+  }
+}

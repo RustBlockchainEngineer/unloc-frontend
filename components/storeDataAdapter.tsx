@@ -5,11 +5,11 @@ import axios from "axios";
 import { observer } from "mobx-react";
 
 import { StoreContext } from "@pages/_app";
-import { toast } from "react-toastify";
 
 import { initLoanProgram } from "@integration/nftLoan";
 import { config } from "@constants/config";
 import { USDC_MINT_DEVNET, USDC_MINT } from "@constants/currency-constants";
+import { errorCase } from "@methods/toast-error-handler";
 
 type Props = {
   children?: ReactNode;
@@ -32,15 +32,7 @@ export const StoreDataAdapter = observer(({ children }: Props) => {
         const { isWhitelisted } = response.data;
 
         if (!isWhitelisted) {
-          toast.error("You are not whitelisted!", {
-            autoClose: 3000,
-            position: "top-center",
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-          });
+          errorCase("You are not whitelisted!");
           disconnect();
           return;
         }

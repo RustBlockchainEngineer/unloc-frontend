@@ -1,16 +1,17 @@
-import React, { JSXElementConstructor, ReactElement, useContext } from "react";
+import { JSXElementConstructor, ReactElement, useContext } from "react";
+
 import { observer } from "mobx-react";
 import { StoreContext } from "@pages/_app";
 import { OffersGridItem } from "./offersGridItem";
 import { currencyMints } from "@constants/currency";
 import { BlobLoader } from "@components/layout/blobLoader";
-import { toast } from "react-toastify";
 import {
   getDecimalsForLoanAmountAsString,
   getDecimalsForOfferMint,
 } from "@integration/getDecimalForLoanAmount";
 import { calculateRepayValue } from "@utils/calculateRepayValue";
 import { ILightboxOffer } from "@stores/Lightbox.store";
+import { errorCase } from "@methods/toast-error-handler";
 
 export const OffersGrid = observer(() => {
   const store = useContext(StoreContext);
@@ -24,39 +25,7 @@ export const OffersGrid = observer(() => {
       store.Lightbox.setCanClose(true);
       store.Lightbox.setVisible(true);
     } catch (e: any) {
-      console.log(e);
-
-      if (e.message === "User rejected the request.") {
-        toast.error(`Transaction rejected`, {
-          autoClose: 3000,
-          position: "top-center",
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-      } else if ((e as Error).message.includes("503 Service Unavailable")) {
-        toast.error("Solana RPC currently unavailable, please try again in a moment", {
-          autoClose: 3000,
-          position: "top-center",
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-      } else {
-        toast.error(`Something went wrong`, {
-          autoClose: 3000,
-          position: "top-center",
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-      }
+      errorCase(e);
     }
   };
 

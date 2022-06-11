@@ -11,6 +11,7 @@ import { CreateLoan } from "@components/lightboxes/createLoan/createLoan";
 import { Processing } from "@components/lightboxes/processing";
 import { LendConfirmation } from "@components/lightboxes/lendConfirmation";
 import { AcceptOffer } from "@components/lightboxes/acceptOffer";
+import { ConfirmLoan } from "@components/lightboxes/createLoan/confirmLoan";
 
 export const LayoutTop = observer(() => {
   const store = useContext(StoreContext);
@@ -26,6 +27,7 @@ export const LayoutTop = observer(() => {
       {visible ? (
         <Lightbox>
           <>
+            {content === "loanConfirm" ? <ConfirmLoan /> : <></>}
             {content === "collateral" ? <CreateCollateral /> : <></>}
             {content === "loanCreate" ? <CreateLoan mode="new" /> : <></>}
             {content === "loanUpdate" ? <CreateLoan mode="update" /> : <></>}

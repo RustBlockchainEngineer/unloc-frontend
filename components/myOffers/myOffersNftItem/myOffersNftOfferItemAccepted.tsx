@@ -1,11 +1,10 @@
-import React, { useCallback, useContext, useMemo } from "react";
+import { useCallback, useContext, useMemo, MouseEvent } from "react";
 import { BN } from "@project-serum/anchor";
 import { compressAddress } from "@utils/stringUtils/compressAdress";
 import { PublicKey } from "@solana/web3.js";
 import { currencyMints } from "@constants/currency";
 import { StoreContext } from "@pages/_app";
 import { usePopperTooltip } from "react-popper-tooltip";
-import { toast } from "react-toastify";
 import { getDecimalsForLoanAmountAsString } from "@integration/getDecimalForLoanAmount";
 import { ShowOnHover } from "@components/layout/showOnHover";
 import { ClipboardButton } from "@components/layout/clipboardButton";
@@ -13,6 +12,7 @@ import { SolscanExplorerIcon } from "@components/layout/solscanExplorerIcon";
 import { SubOfferAccount } from "../../../@types/loans";
 import { getTimeLeft, getDurationColor } from "@utils/timeUtils/timeUtils";
 import { observer } from "mobx-react";
+import { errorCase, successCase } from "@methods/toast-error-handler";
 
 interface MyOffersNftOfferItemAcceptedProps {
   offerAmount: any;
@@ -57,39 +57,9 @@ export const MyOffersNftOfferItemAccepted = observer(
 
       try {
         await store.MyOffers.handleRepayLoan(subOfferKey);
-
-        toast.success(`Loan Repayed, NFT is back in your wallet`, {
-          autoClose: 3000,
-          position: "top-center",
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
+        successCase("Loan Repayed, NFT is back in your wallet");
       } catch (e: any) {
-        console.log(e);
-        if (e.message === "User rejected the request.") {
-          toast.error(`Transaction rejected`, {
-            autoClose: 3000,
-            position: "top-center",
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-          });
-        } else {
-          toast.error(`Something went wrong`, {
-            autoClose: 3000,
-            position: "top-center",
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-          });
-        }
+        errorCase(e);
       } finally {
         store.Lightbox.setCanClose(true);
         store.Lightbox.setVisible(false);
@@ -120,7 +90,7 @@ export const MyOffersNftOfferItemAccepted = observer(
         ? `${timeLeft.minutes()} Minute(s)`
         : "Expired";
 
-    const stopOnClickPropagation = useCallback((e: React.MouseEvent<HTMLElement>) => {
+    const stopOnClickPropagation = useCallback((e: MouseEvent<HTMLElement>) => {
       e.stopPropagation();
     }, []);
 
