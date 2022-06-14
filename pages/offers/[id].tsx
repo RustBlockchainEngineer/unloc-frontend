@@ -3,7 +3,6 @@ import { useContext, useEffect, useState, memo, useCallback, useMemo } from "rea
 import { observer } from "mobx-react";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
-import { toast } from "react-toastify";
 
 import { BlobLoader } from "@components/layout/blobLoader";
 import { LayoutTop } from "@components/layout/layoutTop";
@@ -12,6 +11,7 @@ import { Header } from "@components/singleOffer/Header/Header";
 import { Offer } from "@components/singleOffer/Offer/Offer";
 import { StoreDataAdapter } from "@components/storeDataAdapter";
 import { currencyMints } from "@constants/currency";
+import { errorCase } from "@methods/toast-error-handler";
 import { StoreContext } from "@pages/_app";
 import { ILightboxOffer } from "@stores/Lightbox.store";
 import { getQueryParamAsString } from "@utils/getQueryParamsAsString";
@@ -42,24 +42,14 @@ const SingleNftPage: NextPage = observer(() => {
   }, [connected, walletKey, router.query.id, store.SingleOffer]);
 
   const handleConfirmOffer = useCallback(
-    (offer: ILightboxOffer): void => {
+    (offer: ILightboxOffer) => {
       try {
         store.Lightbox.setAcceptOfferData(offer);
         store.Lightbox.setContent("acceptOffer");
         store.Lightbox.setCanClose(true);
         store.Lightbox.setVisible(true);
-      } catch (e) {
-        // eslint-disable-next-line no-console
-        console.log(e);
-        toast.error("Something went wrong", {
-          autoClose: 3000,
-          position: "top-center",
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
+      } catch (e: any) {
+        errorCase(e);
       }
     },
     [store.Lightbox],

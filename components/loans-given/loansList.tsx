@@ -8,13 +8,13 @@ import { ShowOnHover } from "@components/layout/showOnHover";
 import { ClipboardButton } from "@components/layout/clipboardButton";
 import { SolscanExplorerIcon } from "@components/layout/solscanExplorerIcon";
 import { PublicKey } from "@solana/web3.js";
-import { toast } from "react-toastify";
 import Image from "next/image";
 import { compressAddress } from "@utils/stringUtils/compressAdress";
 import { getDecimalsForLoanAmountAsString } from "@integration/getDecimalForLoanAmount";
 import { BlobLoader } from "@components/layout/blobLoader";
 import { Duration } from "dayjs/plugin/duration";
 import { getDurationColor, getTimeLeft } from "@utils/timeUtils/timeUtils";
+import { errorCase, successCase } from "@methods/toast-error-handler";
 
 export const LoansList = observer(() => {
   const store = useContext(StoreContext);
@@ -79,50 +79,9 @@ export const LoansList = observer(() => {
 
     try {
       await store.MyOffers.handleClaimCollateral(offerKey);
-      toast.success(`NFT Claimed`, {
-        autoClose: 3000,
-        position: "top-center",
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
-      store.Lightbox.setCanClose(true);
-      store.Lightbox.setVisible(false);
+      successCase("NFT Claimed");
     } catch (e: any) {
-      console.log(e);
-      if (e.message === "User rejected the request.") {
-        toast.error(`Transaction rejected`, {
-          autoClose: 3000,
-          position: "top-center",
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-      } else if ((e as Error).message.includes("503 Service Unavailable")) {
-        toast.error("Solana RPC currently unavailable, please try again in a moment", {
-          autoClose: 3000,
-          position: "top-center",
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-      } else {
-        toast.error(`Something went wrong`, {
-          autoClose: 3000,
-          position: "top-center",
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-      }
+      errorCase(e);
     } finally {
       store.MyOffers.refetchStoreData();
       store.Lightbox.setCanClose(true);

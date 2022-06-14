@@ -1,11 +1,12 @@
 import { useCallback, useContext, useEffect, useState } from "react";
+
 import { observer } from "mobx-react";
 import Image from "next/image";
-import { toast } from "react-toastify";
 import { StoreContext } from "@pages/_app";
 import { MyOffersNftItemOffers } from "./myOffersNftItemOffers";
 import { IsubOfferData } from "@stores/Lightbox.store";
 import { SanitizedOffer } from "../myOffersNftList";
+import { errorCase, successCase } from "@methods/toast-error-handler";
 
 interface MyOffersNftItemProps {
   sanitized: SanitizedOffer;
@@ -28,51 +29,9 @@ export const MyOffersNftItem = observer(({ sanitized, classNames }: MyOffersNftI
     store.Lightbox.setVisible(true);
     try {
       await store.MyOffers.handleCancelSubOffer(subOfferKey);
-
-      toast.success(`Offer canceled`, {
-        autoClose: 3000,
-        position: "top-center",
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
-      store.Lightbox.setCanClose(true);
-      store.Lightbox.setVisible(false);
+      successCase("Offer canceled");
     } catch (e: any) {
-      console.log(e);
-      if (e.message === "User rejected the request.") {
-        toast.error(`Transaction rejected`, {
-          autoClose: 3000,
-          position: "top-center",
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-      } else if ((e as Error).message.includes("503 Service Unavailable")) {
-        toast.error("Solana RPC currently unavailable, please try again in a moment", {
-          autoClose: 3000,
-          position: "top-center",
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-      } else {
-        toast.error(`Something went wrong`, {
-          autoClose: 3000,
-          position: "top-center",
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-      }
+      errorCase(e);
     } finally {
       store.MyOffers.refetchStoreData();
       store.Lightbox.setCanClose(true);
@@ -101,50 +60,9 @@ export const MyOffersNftItem = observer(({ sanitized, classNames }: MyOffersNftI
 
     try {
       await store.MyOffers.handleCancelCollateral(nftMint);
-      toast.success(`NFT ${name} returned to the wallet`, {
-        autoClose: 3000,
-        position: "top-center",
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
-      store.Lightbox.setCanClose(true);
-      store.Lightbox.setVisible(false);
+      successCase(`NFT ${name} returned to the wallet`, name);
     } catch (e: any) {
-      console.log(e);
-      if (e.message === "User rejected the request.") {
-        toast.error(`Transaction rejected`, {
-          autoClose: 3000,
-          position: "top-center",
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-      } else if ((e as Error).message.includes("503 Service Unavailable")) {
-        toast.error("Solana RPC currently unavailable, please try again in a moment", {
-          autoClose: 3000,
-          position: "top-center",
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-      } else {
-        toast.error(`Something went wrong`, {
-          autoClose: 3000,
-          position: "top-center",
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-      }
+      errorCase(e);
     } finally {
       store.MyOffers.refetchStoreData();
       store.Lightbox.setCanClose(true);

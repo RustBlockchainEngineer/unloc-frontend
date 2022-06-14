@@ -53,3 +53,17 @@ export interface SubOfferAccount {
   publicKey: PublicKey;
   account: SubOffer;
 }
+
+export interface SanitizedData {
+  name: string;
+  image: string;
+}
+
+export interface PreparedOfferData {
+  nftMint: string;
+  amount: number;
+  duration: number;
+  APR: number;
+  currency: string;
+  repayValue: string;
+}

@@ -1,13 +1,13 @@
 import { useContext, useEffect, useState } from "react";
 
 import { observer } from "mobx-react";
-import { toast } from "react-toastify";
 import { NFTMetadata } from "@integration/nftLoan";
 import { StoreContext } from "@pages/_app";
 import { StoreDataAdapter } from "@components/storeDataAdapter";
 import { CollateralItem } from "./collateralItem";
 import { BlobLoader } from "@components/layout/blobLoader";
 import { CustomSelect } from "@components/layout/customSelect";
+import { errorCase, successCase } from "@methods/toast-error-handler";
 
 export interface INFTCollateral {
   NFTAddress: string;
@@ -16,7 +16,7 @@ export interface INFTCollateral {
   NFTImage: string;
 }
 
-export const CreateCollateral: React.FC = observer(() => {
+export const CreateCollateral = observer(() => {
   const store = useContext(StoreContext);
   const myOffers = store.MyOffers;
   const { wallet, connection, walletKey } = store.Wallet;
@@ -51,41 +51,12 @@ export const CreateCollateral: React.FC = observer(() => {
       setProcessing(false);
       store.Lightbox.setCanClose(true);
 
-      toast.success(`Collateral Created`, {
-        autoClose: 3000,
-        position: "top-center",
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
-    } catch (e) {
+      successCase("Collateral Created");
+    } catch (e: any) {
+      errorCase(e);
+    } finally {
       setProcessing(false);
       store.Lightbox.setVisible(false);
-      console.log(e);
-
-      if ((e as Error).message.includes("503 Service Unavailable")) {
-        toast.error("Solana RPC currently unavailable, please try again in a moment", {
-          autoClose: 3000,
-          position: "top-center",
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-      } else {
-        toast.error(`Transaction rejected`, {
-          autoClose: 3000,
-          position: "top-center",
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-      }
     }
 
     store.MyOffers.refetchStoreData();
@@ -120,23 +91,11 @@ export const CreateCollateral: React.FC = observer(() => {
           await myOffers.getNFTsData();
           setData(myOffers.collaterables);
           setLoading(false);
-        } catch (e) {
-          // eslint-disable-next-line no-console
-          console.error(e);
+        } catch (e: any) {
+          errorCase(e);
+        } finally {
           setLoading(false);
           store.Lightbox.setVisible(false);
-
-          if ((e as Error).message.includes("503 Service Unavailable")) {
-            toast.error("Solana RPC currently unavailable, please try again in a moment", {
-              autoClose: 3000,
-              position: "top-center",
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-            });
-          }
         }
       };
 

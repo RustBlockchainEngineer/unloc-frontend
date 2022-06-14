@@ -7,10 +7,10 @@ import { getMetadata } from "@integration/nftIntegration";
 import { getDecimalsForLoanAmount } from "@integration/getDecimalForLoanAmount";
 import { calculateRepayValue } from "@utils/calculateRepayValue";
 import { currencyMints } from "@constants/currency";
-import { toast } from "react-toastify";
 import { getDurationFromContractData } from "@utils/timeUtils/timeUtils";
 import { OfferAccount, Offer } from "../@types/loans";
 import { range } from "@utils/range";
+import { errorCase } from "@methods/toast-error-handler";
 
 interface LoanInterface {
   id: string;
@@ -103,20 +103,8 @@ export class SingleOfferStore {
 
       this.loansCount = subOffers.filter((s) => s.account.state !== 5).length;
       this.setLoansData(loansArr);
-    } catch (e) {
-      if ((e as Error).message.includes("503 Service Unavailable")) {
-        toast.error("Solana RPC currently unavailable, please try again in a moment", {
-          autoClose: 3000,
-          position: "top-center",
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-      }
-
-      console.log(e);
+    } catch (e: any) {
+      errorCase(e);
     }
   };
 

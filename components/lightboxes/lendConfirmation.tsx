@@ -1,9 +1,10 @@
 import { useContext } from "react";
+
 import { observer } from "mobx-react";
 import Image from "next/image";
-import { toast } from "react-toastify";
 
 import { StoreContext } from "@pages/_app";
+import { errorCase, successCase } from "@methods/toast-error-handler";
 
 export const LendConfirmation = observer(() => {
   const store = useContext(StoreContext);
@@ -17,39 +18,9 @@ export const LendConfirmation = observer(() => {
       store.Lightbox.setCanClose(false);
       store.Lightbox.setVisible(true);
       await store.Offers.handleAcceptOffer(offerPublicKey);
-      toast.success(`Loan Accepted`, {
-        autoClose: 3000,
-        position: "top-center",
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      successCase("Loan Accepted");
     } catch (e: any) {
-      console.log(e);
-
-      if (e.message === "User rejected the request.") {
-        toast.error(`Transaction rejected`, {
-          autoClose: 3000,
-          position: "top-center",
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-      } else {
-        toast.error(`Something went wrong`, {
-          autoClose: 3000,
-          position: "top-center",
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-      }
+      errorCase(e);
     } finally {
       store.Lightbox.setCanClose(true);
       store.Lightbox.setVisible(false);

@@ -1,9 +1,6 @@
 @media (max-width: $bp-tablet) {
   .lightbox {
     &__container {
-      width: 100%;
-      height: auto;
-      padding: 40px 40px 30px;
       overflow-y: auto;
       margin: 10px;
     }

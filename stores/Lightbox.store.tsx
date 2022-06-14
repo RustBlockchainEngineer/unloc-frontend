@@ -3,6 +3,7 @@ import { action, makeAutoObservable } from "mobx";
 type LightboxContent =
   | "loanCreate"
   | "loanUpdate"
+  | "loanConfirm"
   | "collateral"
   | "processing"
   | "lendConfirmation"

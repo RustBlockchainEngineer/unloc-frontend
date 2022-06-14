@@ -20,7 +20,7 @@ import {
 import { currencies, currencyMints } from "@constants/currency";
 import { getDurationForContractData } from "@utils/timeUtils/timeUtils";
 import { getSubOffersKeysByState } from "@integration/offersListing";
-import { OfferAccount, SubOfferAccount } from "../@types/loans";
+import { OfferAccount, PreparedOfferData, SanitizedData, SubOfferAccount } from "../@types/loans";
 import { SubOfferData } from "./Offers.store";
 import axios from "axios";
 import { range } from "@utils/range";
@@ -41,6 +41,18 @@ export class MyOffersStore {
   activeNftMint: string = "";
   lendingList: SubOfferData[] = [];
   activeCategory: OfferCategory = "active";
+  preparedOfferData: PreparedOfferData = {
+    nftMint: "",
+    amount: 0,
+    duration: 0,
+    APR: 0,
+    currency: "",
+    repayValue: "0.00",
+  };
+  sanitized: SanitizedData = {
+    name: "",
+    image: "",
+  };
 
   constructor(rootStore: any) {
     makeAutoObservable(this);
@@ -193,6 +205,25 @@ export class MyOffersStore {
     );
   };
 
+  @action.bound handleEditSubOffer = async (
+    offerAmount: number,
+    loanDuration: number,
+    aprNumerator: number,
+    minRepaidNumerator: number,
+    subOffer: string,
+  ) => {
+    const currencyInfo =
+      currencies[currencyMints[this.rootStore.Lightbox.activeSubOfferData.offerMint]];
+
+    await updateSubOffer(
+      new BN(offerAmount * 10 ** currencyInfo.decimals),
+      new BN(getDurationForContractData(loanDuration, "days")),
+      new BN(minRepaidNumerator),
+      new BN(aprNumerator),
+      new PublicKey(subOffer),
+    );
+  };
+
   @action.bound handleRepayLoan = async (subOfferKey: string) => {
     await repayLoan(new PublicKey(subOfferKey));
   };
@@ -217,25 +248,6 @@ export class MyOffersStore {
 
   @action.bound handleCancelSubOffer = async (subOfferKey: string) => {
     await cancelSubOffer(new PublicKey(subOfferKey));
-  };
-
-  @action.bound handleEditSubOffer = async (
-    offerAmount: number,
-    loanDuration: number,
-    aprNumerator: number,
-    minRepaidNumerator: number,
-    subOffer: string,
-  ) => {
-    const currencyInfo =
-      currencies[currencyMints[this.rootStore.Lightbox.activeSubOfferData.offerMint]];
-
-    await updateSubOffer(
-      new BN(offerAmount * 10 ** currencyInfo.decimals),
-      new BN(getDurationForContractData(loanDuration, "days")),
-      new BN(minRepaidNumerator),
-      new BN(aprNumerator),
-      new PublicKey(subOffer),
-    );
   };
 
   private initManyNfts = async (nftMintKeys: PublicKey[]) => {
@@ -283,6 +295,18 @@ export class MyOffersStore {
   @action.bound setActiveCategory(category: OfferCategory): void {
     runInAction(() => {
       this.activeCategory = category;
+    });
+  }
+
+  @action.bound setPreparedOfferData(data: PreparedOfferData): void {
+    runInAction(() => {
+      this.preparedOfferData = data;
+    });
+  }
+
+  @action.bound setPreparedOfferImage(data: SanitizedData): void {
+    runInAction(() => {
+      this.sanitized = data;
     });
   }
 }
