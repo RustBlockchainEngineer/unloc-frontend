@@ -1,10 +1,12 @@
+import { Dispatch, SetStateAction } from "react";
+
 import { observer } from "mobx-react";
 import { MenuShowButton } from "./menuShowButton";
 import { WalletCustomButton } from "@components/walletButton/WalletCustomButton";
 
 interface UserToolboxProps {
   isMenuHidden: boolean | undefined;
-  hideMenu: React.Dispatch<React.SetStateAction<boolean>> | undefined;
+  hideMenu: Dispatch<SetStateAction<boolean>> | undefined;
 }
 
 export const UserToolbox = observer(({ hideMenu, isMenuHidden }: UserToolboxProps) => {
