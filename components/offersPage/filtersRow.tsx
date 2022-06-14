@@ -1,4 +1,4 @@
-import { useContext, useRef } from "react";
+import { useCallback, useContext, useRef } from "react";
 
 import { observer } from "mobx-react";
 
@@ -35,7 +35,7 @@ export const FiltersRow = observer(() => {
     store.Offers.setFilterCurrency(currency);
   };
 
-  const resetFilters = (): void => {
+  const resetFilters = useCallback((): void => {
     clearFilters();
     if (amountMinRef.current) amountMinRef.current.value = "";
     if (amountMaxRef.current) amountMaxRef.current.value = "";
@@ -43,7 +43,7 @@ export const FiltersRow = observer(() => {
     if (aprAprMax.current) aprAprMax.current.value = "";
     if (durationMinRef.current) durationMinRef.current.value = "";
     if (durationMaxRef.current) durationMaxRef.current.value = "";
-  };
+  }, [amountMinRef, amountMaxRef, aprMinRef, aprAprMax, durationMinRef, durationMaxRef]);
 
   return (
     <div className="layout-line">
