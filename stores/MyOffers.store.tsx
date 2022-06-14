@@ -304,7 +304,7 @@ export class MyOffersStore {
     });
   }
 
-  @action.bound setPreparedOfferImage(data: SanitizedData): void {
+  @action.bound setSanitizedOfferData(data: SanitizedData): void {
     runInAction(() => {
       this.sanitized = data;
     });

@@ -9,13 +9,6 @@ import { BlobLoader } from "@components/layout/blobLoader";
 import { CustomSelect } from "@components/layout/customSelect";
 import { errorCase, successCase } from "@methods/toast-error-handler";
 
-export interface INFTCollateral {
-  NFTAddress: string;
-  NFTCollection: string;
-  NFTId: string;
-  NFTImage: string;
-}
-
 export const CreateCollateral = observer(() => {
   const store = useContext(StoreContext);
   const myOffers = store.MyOffers;
@@ -90,12 +83,10 @@ export const CreateCollateral = observer(() => {
           await myOffers.getUserNFTs(walletKey);
           await myOffers.getNFTsData();
           setData(myOffers.collaterables);
-          setLoading(false);
         } catch (e: any) {
           errorCase(e);
         } finally {
           setLoading(false);
-          store.Lightbox.setVisible(false);
         }
       };
 

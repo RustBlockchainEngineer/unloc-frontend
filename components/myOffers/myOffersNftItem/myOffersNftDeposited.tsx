@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useCallback, useContext } from "react";
 
 import { observer } from "mobx-react";
 import Image from "next/image";
@@ -40,6 +40,13 @@ export const MyOffersNftDeposited = observer(({ sanitized }: MyOffersNftDeposite
     }
   };
 
+  const createOffersHandler = useCallback(() => {
+    store.MyOffers.setActiveNftMint(nftMint);
+    store.MyOffers.setSanitizedOfferData({ name, image });
+    store.Lightbox.setContent("loanCreate");
+    store.Lightbox.setVisible(true);
+  }, []);
+
   return (
     <div className="nft-deposited-item">
       <div className="nft-deposited-item__row">
@@ -80,12 +87,7 @@ export const MyOffersNftDeposited = observer(({ sanitized }: MyOffersNftDeposite
           <button
             ref={setTriggerRef}
             className="btn btn--md btn--primary"
-            onClick={() => {
-              store.MyOffers.setActiveNftMint(nftMint);
-              store.MyOffers.setPreparedOfferImage({ name, image });
-              store.Lightbox.setContent("loanCreate");
-              store.Lightbox.setVisible(true);
-            }}>
+            onClick={createOffersHandler}>
             Create Offer
           </button>
           {visible && (
