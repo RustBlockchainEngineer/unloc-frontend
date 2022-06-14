@@ -52,15 +52,6 @@ export const Filter = memo(
     const localMinRef = minRef || useRef<HTMLInputElement>(null);
     const localMaxRef = maxRef || useRef<HTMLInputElement>(null);
 
-    useEffect(() => {
-      if (minRef && minRef.current) {
-        console.log(minRef.current.value);
-      }
-      if (maxRef && maxRef.current) {
-        console.log(maxRef.current.value);
-      }
-    }, [minRef, maxRef]);
-
     const debounce = (
       func: (val: number) => void,
       timeout = 400,
