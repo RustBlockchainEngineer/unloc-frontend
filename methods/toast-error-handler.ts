@@ -16,11 +16,13 @@ const error = (string: string) => toast.error(string, options);
 const success = (string: string) => toast.success(string, options);
 
 export const errorCase = (err: any) => {
-  const serverErr = (err as Error).message.includes("503 Service Unavailable");
-  if (serverErr) {
-    return error("Solana RPC currently unavailable, please try again in a moment");
+  if (typeof err !== "string") {
+    const serverErr = (err as Error).message.includes("503 Service Unavailable");
+    if (serverErr) {
+      return error("Solana RPC currently unavailable, please try again in a moment");
+    }
   }
-  console.log(err);
+
   switch (typeof err === "string" ? err : err.message) {
     case "User rejected the request.":
       return error("Transaction rejected");
