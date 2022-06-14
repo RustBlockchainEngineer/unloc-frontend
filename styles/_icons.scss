@@ -183,6 +183,14 @@
   }
 }
 
+.icon--reset {
+  background-image: url("/icons/reset-icon.svg");
+
+  &:hover {
+    background-image: url("/icons/reset-icon-hover.svg");
+  }
+}
+
 .icon--tn {
   width: 12px;
   height: 12px;

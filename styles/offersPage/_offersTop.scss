@@ -114,10 +114,12 @@
 }
 
 .offers-filters {
+  @include theme-aware("background-color", "color-accent");
   @media (min-width: $bp-tablet) {
     margin-top: -20px;
     margin-bottom: -200px;
   }
+
   display: flex;
   justify-items: center;
   align-items: flex-start;
@@ -125,7 +127,6 @@
   transform: scaleY(0);
   transition: transform 0.3s ease-in-out, padding 0.3s ease-in-out, margin 0.3s ease-in-out,
     height 0.3s ease-in-out;
-  @include theme-aware("background-color", "color-accent");
   padding: 0;
   height: auto;
   border-radius: $brd-rds-md;
@@ -140,9 +141,9 @@
   }
 
   .filter-generic {
+    @include theme-aware("border-color", "color-secondary");
     padding-right: 20px;
     margin-left: 20px;
-    @include theme-aware("border-color", "color-secondary");
 
     &:first-child {
       padding-left: 0;
@@ -157,5 +158,11 @@
       display: inline-flex;
       justify-content: space-between;
     }
+  }
+
+  &__reset {
+    position: absolute;
+    top: $mr-sm;
+    right: $mr-sm;
   }
 }
