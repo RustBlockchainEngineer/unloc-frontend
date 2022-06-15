@@ -47,8 +47,6 @@ export const ConfirmLoan = memo(() => {
     }
   }, []);
 
-  console.log(image);
-
   return (
     <div className="confirm-offer-container">
       <div className="header">

@@ -52,6 +52,8 @@ export class MyOffersStore {
   sanitized: SanitizedData = {
     name: "",
     image: "",
+    collateralId: "",
+    nftMint: "",
   };
 
   constructor(rootStore: any) {

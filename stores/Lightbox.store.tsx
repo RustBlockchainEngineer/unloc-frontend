@@ -58,6 +58,7 @@ export class LightboxStore {
 
   @action.bound setVisible(visible: boolean) {
     this.visible = visible;
+    this.isAdditionalInfoOpened = false;
   }
 
   @action.bound setContent(content: LightboxContent) {
