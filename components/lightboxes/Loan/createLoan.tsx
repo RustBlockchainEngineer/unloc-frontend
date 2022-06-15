@@ -383,7 +383,7 @@ export const CreateLoan = observer(({ mode }: CreateLoanProps) => {
               </button>
             </div>
           </div>
-          <LoanDetails isDetails={isDetails} />
+          {isDetails && <LoanDetails isDetails={isDetails} />}
         </form>
       )}
     />

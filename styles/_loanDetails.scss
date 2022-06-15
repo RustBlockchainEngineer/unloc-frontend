@@ -1,9 +1,6 @@
 .details-box {
-  height: 0;
+  height: auto;
   overflow: hidden;
-  &.opened {
-    height: auto;
-  }
   margin-top: 3px;
 
   * {

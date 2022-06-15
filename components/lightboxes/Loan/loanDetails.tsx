@@ -3,8 +3,8 @@ import { memo, useContext, useEffect, useMemo, useState } from "react";
 import { StoreContext } from "@pages/_app";
 import Image from "next/image";
 import { compressAddress } from "@utils/stringUtils/compressAdress";
-// import { IArweaveMetadata } from "../../../@types/nfts/nft";
 import { NFTMetadata } from "@integration/nftLoan";
+import { BlobLoader } from "@components/layout/blobLoader";
 
 interface LoanDetails {
   isDetails: boolean;
@@ -19,8 +19,9 @@ export const LoanDetails = memo(({ isDetails }: LoanDetails) => {
 
   const [nftArweaveMetadata, setNftArweaveMetadata] = useState<NFTMetadata | undefined>();
 
+  const [loader, disableLoader] = useState(true);
+
   useEffect(() => {
-    console.log(nftData);
     const arweaveMetadata = nftData.find((item) => item.mint === nftMint);
     setNftArweaveMetadata(arweaveMetadata);
   }, []);
@@ -35,6 +36,12 @@ export const LoanDetails = memo(({ isDetails }: LoanDetails) => {
       );
     });
   }, [nftArweaveMetadata]);
+
+  useEffect(() => {
+    if (image) disableLoader(false);
+  }, [image]);
+
+  const renderImage = useMemo(() => <Image src={image} width={336} height={336} />, [image]);
 
   return (
     <div className={`details-box ${isDetails ? "opened" : ""}`}>
@@ -63,7 +70,7 @@ export const LoanDetails = memo(({ isDetails }: LoanDetails) => {
           </div>
         </div>
       </div>
-      <Image src={image} width={336} height={336} />
+      {loader ? <BlobLoader /> : renderImage}
     </div>
   );
 });
