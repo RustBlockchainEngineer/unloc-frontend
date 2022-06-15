@@ -37,9 +37,9 @@ const Home: NextPage = observer(() => {
   return (
     <StoreDataAdapter>
       <LayoutTopMobile />
+      <LayoutTop />
       <div className="page offers">
         <main>
-          <LayoutTop />
           <FiltersRow />
           {viewType === "grid" ? <OffersGrid /> : <OffersTable />}
         </main>

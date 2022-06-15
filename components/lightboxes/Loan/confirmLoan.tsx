@@ -47,6 +47,8 @@ export const ConfirmLoan = memo(() => {
     }
   }, []);
 
+  console.log(image);
+
   return (
     <div className="confirm-offer-container">
       <div className="header">
@@ -60,7 +62,7 @@ export const ConfirmLoan = memo(() => {
         </div>
       </div>
       <div className="terms-info">
-        <p></p>
+        <p>Your terms:</p>
         <div>
           <span>Loan</span>
           <span>

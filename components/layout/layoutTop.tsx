@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { observer } from "mobx-react";
 
 import { StoreContext } from "@pages/_app";
@@ -16,6 +16,12 @@ import { ConfirmLoan } from "@components/lightboxes/Loan/confirmLoan";
 export const LayoutTop = observer(() => {
   const store = useContext(StoreContext);
   const { visible, content } = store.Lightbox;
+
+  useEffect(() => {
+    visible
+      ? document.documentElement.classList.add("overflow-hidden")
+      : document.documentElement.classList.remove("overflow-hidden");
+  }, [visible]);
 
   return (
     <>

@@ -49,6 +49,7 @@ export class LightboxStore {
     totalRepay: "",
     currency: "",
   };
+  isAdditionalInfoOpened: boolean = false;
 
   constructor(rootStore: any) {
     makeAutoObservable(this);
@@ -81,5 +82,9 @@ export class LightboxStore {
 
   @action.bound setAcceptOfferData(offer: ILightboxOffer) {
     this.acceptOfferData = offer;
+  }
+
+  @action.bound setAdditionalInfoOpened(isOpened: boolean) {
+    this.isAdditionalInfoOpened = isOpened;
   }
 }

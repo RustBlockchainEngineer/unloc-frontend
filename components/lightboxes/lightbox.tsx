@@ -11,6 +11,7 @@ export const Lightbox: React.FC<LightboxProps> = observer(
   ({ children, classNames }: LightboxProps) => {
     const store = useContext(StoreContext);
     const container = useRef<HTMLDivElement>(null);
+    const { isAdditionalInfoOpened } = store.Lightbox;
 
     const closeWindow = (e: any, check: boolean) => {
       if (e.target !== e.currentTarget && check) {
@@ -30,7 +31,7 @@ export const Lightbox: React.FC<LightboxProps> = observer(
         }}
         className={`lightbox ${classNames ? classNames : ""}`}>
         <div
-          className="lightbox__container"
+          className={`lightbox__container ${isAdditionalInfoOpened ? "details" : ""}`}
           tabIndex={0}
           onKeyDown={(e) => {
             if (e.key == "Escape") {
