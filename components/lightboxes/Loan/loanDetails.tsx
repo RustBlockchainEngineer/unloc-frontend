@@ -64,10 +64,12 @@ export const LoanDetails = memo(({ isDetails }: LoanDetails) => {
             <span className="label">Collection</span>
             <span>{name}</span>
           </div>
-          <div className="info">
-            <span className="label">Artist royalties</span>
-            <span>{nftArweaveMetadata?.onChainMetadata.data.sellerFeeBasisPoints}%</span>
-          </div>
+          {nftArweaveMetadata && (
+            <div className="info">
+              <span className="label">Artist royalties</span>
+              <span>{nftArweaveMetadata?.onChainMetadata.data.sellerFeeBasisPoints * 0.01}%</span>
+            </div>
+          )}
         </div>
       </div>
       {loader ? <BlobLoader /> : renderImage}
