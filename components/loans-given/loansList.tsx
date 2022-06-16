@@ -43,7 +43,6 @@ export const LoansList = observer(() => {
   };
 
   const formatTimeLeft = (timeLeft: Duration): ReactNode => {
-    console.log(timeLeft);
     const [days, hours, minutes, seconds] = [
       timeLeft.days(),
       timeLeft.hours(),
