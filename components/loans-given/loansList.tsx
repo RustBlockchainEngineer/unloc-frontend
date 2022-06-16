@@ -43,6 +43,7 @@ export const LoansList = observer(() => {
   };
 
   const formatTimeLeft = (timeLeft: Duration): ReactNode => {
+    console.log(timeLeft);
     const [days, hours, minutes, seconds] = [
       timeLeft.days(),
       timeLeft.hours(),
@@ -64,7 +65,7 @@ export const LoansList = observer(() => {
     };
 
     if (days > 0) {
-      return format([days, "d"], [hours, "h"]);
+      return format([days, "d"], [hours, "h"], [minutes, "m"]);
     } else if (hours > 0) {
       return format([hours, "h"], [minutes, "m"]);
     } else {
@@ -109,17 +110,16 @@ export const LoansList = observer(() => {
                 height={52}
               />
               <div className={`item__title`}>
-                <div className="name"> {offer.nftData.arweaveMetadata.name}</div>
-                <div className="collection">
-                  {" "}
-                  Collection: <b>{offer.collection}</b>
-                </div>
+                <p className="name"> {offer.nftData.arweaveMetadata.name}</p>
+                <p className="collection">
+                  Collection: <span>{offer.collection}</span>
+                </p>
               </div>
             </div>
 
             <div className={`loan__row--item loan-time ${timeClassName}`}>
               <span> Time left </span>
-              <p className="loan-time--left">{formatTimeLeft(duration)}</p>
+              <div className="time-row">{formatTimeLeft(duration)}</div>
             </div>
           </div>
 
