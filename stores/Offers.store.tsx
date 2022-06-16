@@ -390,6 +390,7 @@ export class OffersStore {
   @action.bound clearFilters = () => {
     this.filterCollectionSelected = [];
     // this.filterCollection = []
+    this.setFilterCurrency("All");
     this.refetchOffers();
   };
 }

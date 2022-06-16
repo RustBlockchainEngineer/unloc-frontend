@@ -23,6 +23,7 @@
       .filter-generic {
         margin-left: 0;
         padding: 0 20px;
+
         &:first-child {
           padding: 0 20px;
         }
@@ -49,7 +50,7 @@
         }
       }
 
-      .filter-generic:not(:last-child) {
+      .filter-generic:nth-last-child(n + 3) {
         @include theme-aware("border-color", "color-secondary");
         border-right: none;
         border-bottom: 1px dotted;

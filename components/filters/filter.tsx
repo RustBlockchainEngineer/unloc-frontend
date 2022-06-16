@@ -1,6 +1,6 @@
 import {
   ReactNode,
-  useState,
+  useRef,
   useCallback,
   ChangeEvent,
   memo,
@@ -18,6 +18,8 @@ interface IFilterOffersInterface {
   titleComponent?: ReactNode;
   customComponent?: ReactNode;
   type: "single" | "multi" | "minmax" | "custom";
+  minRef?: React.MutableRefObject<HTMLInputElement | null>;
+  maxRef?: React.MutableRefObject<HTMLInputElement | null>;
   action?: (value: string) => void;
   actionMin?: (value: number) => void;
   actionMax?: (value: number) => void;
@@ -43,9 +45,11 @@ export const Filter = memo(
     actionValidatorMax,
     values,
     valuesRange,
+    minRef,
+    maxRef,
   }: IFilterOffersInterface) => {
-    const [min, setMin] = useState<number>();
-    const [max, setMax] = useState<number>();
+    const localMinRef = minRef || useRef<HTMLInputElement>(null);
+    const localMaxRef = maxRef || useRef<HTMLInputElement>(null);
 
     const debounce = (
       func: (val: number) => void,
@@ -91,6 +95,7 @@ export const Filter = memo(
       debounce((val) => actionMin && actionMin(val)),
       [valuesRange],
     );
+
     const debounceMax = useCallback(
       debounce((val) => actionMax && actionMax(val)),
       [valuesRange],
@@ -100,7 +105,13 @@ export const Filter = memo(
       (event: ChangeEvent<HTMLInputElement>): void => {
         const rangeType = event.target.name;
         const inputValue = parseFloat(event.target.value);
-        rangeType === "min" ? setMin(inputValue) : setMax(inputValue);
+
+        if (rangeType === "min" && localMinRef.current) {
+          localMinRef.current.value = inputValue !== 0 ? inputValue.toString() : "";
+        } else if (localMaxRef.current) {
+          localMaxRef.current.value = inputValue !== 0 ? inputValue.toString() : "";
+        }
+
         let actionValidator, isValid;
         if (rangeType === "min") {
           actionValidator = actionValidatorMin ? actionValidatorMin : 1;
@@ -120,11 +131,11 @@ export const Filter = memo(
     );
 
     const handleArrows = useCallback((arrowType: string, value: number): void => {
-      if (arrowType === "min") {
-        setMin(value);
+      if (arrowType === "min" && localMinRef.current) {
+        localMinRef.current.value = value !== 0 ? value.toString() : "";
         debounceMin(value);
-      } else {
-        setMax(value);
+      } else if (localMaxRef.current) {
+        localMaxRef.current.value = value !== 0 ? value.toString() : "";
         debounceMax(value);
       }
     }, []);
@@ -170,23 +181,31 @@ export const Filter = memo(
               <span>Min: </span>
               <input
                 className="min"
+                ref={minRef}
                 name="min"
                 type="number"
-                value={min || ""}
                 onChange={handleRangeAction}
               />
-              <InputNumberArrows arrowType="min" value={min ? min : 0} onChange={handleArrows} />
+              <InputNumberArrows
+                arrowType="min"
+                value={localMinRef.current ? Number(localMinRef.current.value) : 0}
+                onChange={handleArrows}
+              />
             </div>
             <div className="filter-line">
               <span>Max: </span>
               <input
                 className="max"
+                ref={maxRef}
                 name="max"
                 type="number"
-                value={max || ""}
                 onChange={handleRangeAction}
               />
-              <InputNumberArrows arrowType="max" value={max ? max : 0} onChange={handleArrows} />
+              <InputNumberArrows
+                arrowType="max"
+                value={localMaxRef.current ? Number(localMaxRef.current.value) : 0}
+                onChange={handleArrows}
+              />
             </div>
           </div>
         </div>

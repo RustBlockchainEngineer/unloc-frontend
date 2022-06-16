@@ -74,11 +74,18 @@
   }
 }
 
+.custom-multi-select-container {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
 .custom-multi-select {
   @include theme-aware("background-color", "bg-dropdown-multiple");
   @include theme-aware("color", "color-white");
   padding: $mr-sm $mr-sm $mr-sm $mr-md;
   border-radius: $brd-rds-2tn;
+  margin: 0 auto;
 
   &__title {
     display: inline-flex;
@@ -92,37 +99,15 @@
     }
   }
 
-  &__reset {
-    display: flex;
-    justify-content: center;
-    padding-bottom: $mr-tn;
-
-    button {
-      display: inline-block;
-      width: 100%;
-      text-align: center;
-      @include theme-aware("background-color", "color-accent");
-      border: 2px solid #9e6cff;
-      line-height: 35px;
-      color: #9e6cff;
-
-      &:hover {
-        background-color: #9e6cff;
-        color: #ffffff;
-      }
-    }
-  }
-
   &__input {
+    @include theme-aware("background-color", "input-bg");
     display: flex;
     align-items: center;
     width: 100%;
     border-radius: $brd-rds-lg;
     position: relative;
     background: #210d48;
-    @include theme-aware("background-color", "input-bg");
     padding: 0 $mr-sm;
-    margin-bottom: $mr-2rem;
 
     &::before {
       display: inline-block;
@@ -149,7 +134,7 @@
     }
   }
 
-  .custom-multi-select__options {
+  &__options {
     @include theme-aware("background-color", "color-accent");
     box-shadow: 0 0 10px rgba(45, 26, 81, 0.9);
     border-radius: $brd-rds-1md;
@@ -157,10 +142,10 @@
     min-width: 300px;
     z-index: 2;
 
-    li {
+    ul li {
       cursor: pointer;
       padding: 8px $mr-tn;
-      margin: 0;
+      margin: $mr-sm 0 0 0 !important;
       display: block;
       text-align: left;
       position: relative;

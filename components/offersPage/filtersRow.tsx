@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useCallback, useContext, useRef } from "react";
 
 import { observer } from "mobx-react";
 
@@ -9,6 +9,12 @@ import { StoreContext } from "@pages/_app";
 
 export const FiltersRow = observer(() => {
   const store = useContext(StoreContext);
+  const amountMinRef = useRef<HTMLInputElement>(null);
+  const amountMaxRef = useRef<HTMLInputElement>(null);
+  const aprMinRef = useRef<HTMLInputElement>(null);
+  const aprAprMax = useRef<HTMLInputElement>(null);
+  const durationMinRef = useRef<HTMLInputElement>(null);
+  const durationMaxRef = useRef<HTMLInputElement>(null);
 
   const {
     filterCollection,
@@ -29,6 +35,16 @@ export const FiltersRow = observer(() => {
     store.Offers.setFilterCurrency(currency);
   };
 
+  const resetFilters = useCallback((): void => {
+    clearFilters();
+    if (amountMinRef.current) amountMinRef.current.value = "";
+    if (amountMaxRef.current) amountMaxRef.current.value = "";
+    if (aprMinRef.current) aprMinRef.current.value = "";
+    if (aprAprMax.current) aprAprMax.current.value = "";
+    if (durationMinRef.current) durationMinRef.current.value = "";
+    if (durationMaxRef.current) durationMaxRef.current.value = "";
+  }, [amountMinRef, amountMaxRef, aprMinRef, aprAprMax, durationMinRef, durationMaxRef]);
+
   return (
     <div className="layout-line">
       <div className={`offers-filters-wrapper ${filtersVisible ? "active" : ""}`}>
@@ -37,13 +53,15 @@ export const FiltersRow = observer(() => {
             title="COLLECTIONS"
             type="custom"
             customComponent={
-              <CustomMultiSelect
-                title="Select collections"
-                options={filterCollection}
-                values={filterCollectionSelected}
-                clearFilters={clearFilters}
-                onCheck={store.Offers.setFilterCollection}
-              />
+              <>
+                <CustomMultiSelect
+                  title="Select collections"
+                  options={filterCollection}
+                  values={filterCollectionSelected}
+                  clearFilters={clearFilters}
+                  onCheck={store.Offers.setFilterCollection}
+                />
+              </>
             }
           />
           <Filter
@@ -62,6 +80,8 @@ export const FiltersRow = observer(() => {
             actionMax={store.Offers.setFilterAmountMax}
             actionValidatorMin={store.Offers.filterAmountValidatorMin}
             actionValidatorMax={store.Offers.filterAmountValidatorMax}
+            minRef={amountMinRef}
+            maxRef={amountMaxRef}
           />
           <Filter
             title="APR"
@@ -71,6 +91,8 @@ export const FiltersRow = observer(() => {
             actionMax={store.Offers.setFilterAprMax}
             actionValidatorMin={store.Offers.filterAprValidatorMin}
             actionValidatorMax={store.Offers.filterAprValidatorMax}
+            minRef={aprMinRef}
+            maxRef={aprAprMax}
           />
           <Filter
             title="DURATION (DAYS)"
@@ -80,7 +102,12 @@ export const FiltersRow = observer(() => {
             actionMax={store.Offers.setFilterDurationMax}
             actionValidatorMin={store.Offers.filterDurationValidatorMin}
             actionValidatorMax={store.Offers.filterDurationValidatorMax}
+            minRef={durationMinRef}
+            maxRef={durationMaxRef}
           />
+          <div className={`offers-filters__reset`}>
+            <i onClick={resetFilters} className="icon icon--sm icon--interactive icon--reset" />
+          </div>
         </div>
         <button
           className={`btn--filters btn btn--md btn--secondary ${filtersVisible ? "active" : ""}`}
