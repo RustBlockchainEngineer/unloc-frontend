@@ -227,6 +227,21 @@
       border-radius: 5px;
       padding: 0 15px;
       font-weight: 700;
+      position: relative;
+      align-items: center;
+
+      .icon {
+        width: 18px;
+        position: absolute;
+        right: 15px;
+        margin: 0;
+        &--dash {
+          height: 4px;
+        }
+        &--caret-tin {
+          height: 11px;
+        }
+      }
     }
   }
 

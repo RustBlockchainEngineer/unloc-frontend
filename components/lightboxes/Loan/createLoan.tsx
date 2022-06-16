@@ -372,7 +372,6 @@ export const CreateLoan = observer(({ mode }: CreateLoanProps) => {
             </div>
             <div className="actions">
               <button type="submit" className="btn btn--md btn--primary" disabled={submitting}>
-                <i className="icon icon--nft" />
                 {mode === "new" ? `Create` : `Save Changes`}
               </button>
               <button
@@ -380,6 +379,7 @@ export const CreateLoan = observer(({ mode }: CreateLoanProps) => {
                 className="btn btn--md btn--bordered"
                 onClick={showDetailsHahdler}>
                 Show details
+                <i className={`icon icon--${isDetails ? "caret-tin" : "dash"}`} />
               </button>
             </div>
           </div>
