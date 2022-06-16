@@ -43,6 +43,7 @@
 @import "./lightboxBase";
 @import "./NFTCollateral";
 @import "./createLoan";
+@import "./loanDetails";
 @import "./confirmLoan";
 @import "./connectWallet";
 @import "./loansGiven/myLendingList";
@@ -182,4 +183,8 @@ a {
       background-size: 50%;
     }
   }
+}
+
+.overflow-hidden {
+  overflow: hidden;
 }

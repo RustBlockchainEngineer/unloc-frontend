@@ -1,4 +1,4 @@
-import { useContext, useRef, useState, FormEvent } from "react";
+import { useContext, useRef, useState, FormEvent, useCallback } from "react";
 
 import { observer } from "mobx-react";
 import { Form, Field } from "react-final-form";
@@ -14,6 +14,7 @@ import { CustomSelect } from "@components/layout/customSelect";
 import { getDurationFromContractData } from "@utils/timeUtils/timeUtils";
 import { SOL, USDC } from "@constants/currency-constants";
 import { errorCase, successCase } from "@methods/toast-error-handler";
+import { LoanDetails } from "@components/lightboxes/Loan/loanDetails";
 
 interface CreateLoanProps {
   mode: "new" | "update";
@@ -24,6 +25,7 @@ export const CreateLoan = observer(({ mode }: CreateLoanProps) => {
   const { connected, wallet, walletKey } = store.Wallet;
   const { activeSubOffer, activeSubOfferData } = store.Lightbox;
 
+  const [isDetails, setDetails] = useState(false);
   const [processing, setProcessing] = useState(false);
   const [repayValue, setRepayValue] = useState(
     mode === "update"
@@ -173,7 +175,7 @@ export const CreateLoan = observer(({ mode }: CreateLoanProps) => {
     }
   };
 
-  const onInterestInput = (): void => {
+  const onInterestInput = useCallback((): void => {
     if (!(accruedRef.current && amountRef.current && durationRef.current && aprRef.current)) {
       return;
     }
@@ -195,7 +197,7 @@ export const CreateLoan = observer(({ mode }: CreateLoanProps) => {
     );
 
     return;
-  };
+  }, []);
 
   const onAprInput = (): void => {
     if (!(accruedRef.current && amountRef.current && durationRef.current && aprRef.current)) {
@@ -219,6 +221,13 @@ export const CreateLoan = observer(({ mode }: CreateLoanProps) => {
     }
     return 0;
   };
+
+  const showDetailsHahdler = useCallback(() => {
+    setDetails((prevState) => {
+      store.Lightbox.setAdditionalInfoOpened(!prevState);
+      return !prevState;
+    });
+  }, []);
 
   return processing ? (
     <div className="create-offer-processing">
@@ -361,11 +370,20 @@ export const CreateLoan = observer(({ mode }: CreateLoanProps) => {
                 </p>
               </div>
             </div>
-            <button type="submit" className="btn-content" disabled={submitting}>
-              <i className="icon icon--nft" />
-              {mode === "new" ? `Create` : `Save Changes`}
-            </button>
+            <div className="actions">
+              <button type="submit" className="btn btn--md btn--primary" disabled={submitting}>
+                {mode === "new" ? `Create` : `Save Changes`}
+              </button>
+              <button
+                type="button"
+                className="btn btn--md btn--bordered"
+                onClick={showDetailsHahdler}>
+                Show details
+                <i className={`icon icon--${isDetails ? "caret-tin" : "dash"}`} />
+              </button>
+            </div>
           </div>
+          {isDetails && <LoanDetails isDetails={isDetails} />}
         </form>
       )}
     />

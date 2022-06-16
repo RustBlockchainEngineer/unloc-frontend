@@ -60,7 +60,7 @@ export const ConfirmLoan = memo(() => {
         </div>
       </div>
       <div className="terms-info">
-        <p></p>
+        <p>Your terms:</p>
         <div>
           <span>Loan</span>
           <span>

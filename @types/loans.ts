@@ -57,6 +57,8 @@ export interface SubOfferAccount {
 export interface SanitizedData {
   name: string;
   image: string;
+  collateralId: string;
+  nftMint: string;
 }
 
 export interface PreparedOfferData {

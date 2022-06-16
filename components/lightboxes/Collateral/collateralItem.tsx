@@ -1,4 +1,3 @@
-import React from "react";
 import { NFTMetadata } from "@integration/nftLoan";
 
 interface IProps {
@@ -7,7 +6,7 @@ interface IProps {
   choosen: boolean;
 }
 
-export const CollateralItem: React.FC<IProps> = ({ data, onClick, choosen }) => {
+export const CollateralItem = ({ data, onClick, choosen }: IProps) => {
   return (
     <div
       onClick={() => onClick(data)}

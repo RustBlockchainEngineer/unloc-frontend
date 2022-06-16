@@ -29,7 +29,7 @@
   }
 }
 
-.icon--eye {
+.icon--caret .icon--eye {
   @include theme-aware("background-image", "icon-eye");
 }
 
@@ -166,6 +166,14 @@
 
 .icon--owner {
   background-image: url("/icons/owner-icon.svg");
+}
+
+.icon--caret-tin {
+  background-image: url("/icons/caret.svg");
+}
+
+.icon--dash {
+  background-image: url("/icons/dash.svg");
 }
 
 .icon--theme {

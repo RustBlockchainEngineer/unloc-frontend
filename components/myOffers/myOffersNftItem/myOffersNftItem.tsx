@@ -7,6 +7,7 @@ import { MyOffersNftItemOffers } from "./myOffersNftItemOffers";
 import { IsubOfferData } from "@stores/Lightbox.store";
 import { SanitizedOffer } from "../myOffersNftList";
 import { errorCase, successCase } from "@methods/toast-error-handler";
+import { BlobLoader } from "@components/layout/blobLoader";
 
 interface MyOffersNftItemProps {
   sanitized: SanitizedOffer;
@@ -17,6 +18,8 @@ export const MyOffersNftItem = observer(({ sanitized, classNames }: MyOffersNftI
   const store = useContext(StoreContext);
   const [subOfferCount, setSubOfferCount] = useState(0);
   const { nftMint, name, image, subOffers, state, collection } = sanitized;
+
+  const [loader, disableLoader] = useState(true);
 
   useEffect(
     () => setSubOfferCount(subOffers.filter((o) => o.account.state !== 5).length),
@@ -102,7 +105,15 @@ export const MyOffersNftItem = observer(({ sanitized, classNames }: MyOffersNftI
     return;
   };
 
-  return (
+  useEffect(() => {
+    if (nftMint && name && image && subOffers && state && collection) {
+      disableLoader(false);
+    }
+  }, [nftMint, name, image, subOffers, state, collection]);
+
+  return loader ? (
+    <BlobLoader />
+  ) : (
     <div className="nft-list-item">
       <div className={`my-offers-nft ${classNames ? classNames : ""}`}>
         {name && image ? (

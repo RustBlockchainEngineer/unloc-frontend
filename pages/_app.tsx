@@ -36,6 +36,7 @@ const Unloc = ({ Component, pageProps }: AppProps): ReactNode => {
   const {
     Wallet: { handleWalletError },
   } = rootStore;
+
   const wallets = useMemo(
     () => [
       new PhantomWalletAdapter(),

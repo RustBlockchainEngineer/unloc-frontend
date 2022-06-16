@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 
 import { observer } from "mobx-react";
 import Image from "next/image";
@@ -10,6 +10,7 @@ import { SolscanExplorerIcon } from "@components/layout/solscanExplorerIcon";
 import { ClipboardButton } from "@components/layout/clipboardButton";
 import { SanitizedOffer } from "../myOffersNftList";
 import { errorCase, successCase } from "@methods/toast-error-handler";
+import { BlobLoader } from "@components/layout/blobLoader";
 
 interface MyOffersNftDepositedProps {
   sanitized: SanitizedOffer;
@@ -20,6 +21,8 @@ export const MyOffersNftDeposited = observer(({ sanitized }: MyOffersNftDeposite
   const { getTooltipProps, setTooltipRef, setTriggerRef, visible } = usePopperTooltip();
   const store = useContext(StoreContext);
   const { nftMint, offerKey, name, image, collection } = sanitized;
+
+  const [loader, disableLoader] = useState(true);
 
   const handleCancelCollateral = async () => {
     store.Lightbox.setContent("processing");
@@ -40,7 +43,28 @@ export const MyOffersNftDeposited = observer(({ sanitized }: MyOffersNftDeposite
     }
   };
 
-  return (
+  const createOffersHandler = useCallback(async () => {
+    store.MyOffers.setActiveNftMint(nftMint);
+    await store.MyOffers.setSanitizedOfferData({
+      name,
+      image,
+      collateralId: offerKey,
+      nftMint,
+    });
+
+    store.Lightbox.setContent("loanCreate");
+    store.Lightbox.setVisible(true);
+  }, []);
+
+  useEffect(() => {
+    if (nftMint && offerKey && name && image && collection) {
+      disableLoader(false);
+    }
+  }, [nftMint, offerKey, name, image, collection]);
+
+  return loader ? (
+    <BlobLoader />
+  ) : (
     <div className="nft-deposited-item">
       <div className="nft-deposited-item__row">
         {name && image ? (
@@ -80,12 +104,7 @@ export const MyOffersNftDeposited = observer(({ sanitized }: MyOffersNftDeposite
           <button
             ref={setTriggerRef}
             className="btn btn--md btn--primary"
-            onClick={() => {
-              store.MyOffers.setActiveNftMint(nftMint);
-              store.MyOffers.setPreparedOfferImage({ name, image });
-              store.Lightbox.setContent("loanCreate");
-              store.Lightbox.setVisible(true);
-            }}>
+            onClick={createOffersHandler}>
             Create Offer
           </button>
           {visible && (

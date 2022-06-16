@@ -52,6 +52,8 @@ export class MyOffersStore {
   sanitized: SanitizedData = {
     name: "",
     image: "",
+    collateralId: "",
+    nftMint: "",
   };
 
   constructor(rootStore: any) {
@@ -304,7 +306,7 @@ export class MyOffersStore {
     });
   }
 
-  @action.bound setPreparedOfferImage(data: SanitizedData): void {
+  @action.bound setSanitizedOfferData(data: SanitizedData): void {
     runInAction(() => {
       this.sanitized = data;
     });
