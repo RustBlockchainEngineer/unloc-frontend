@@ -87,10 +87,60 @@
     justify-content: space-between;
     gap: $mr-md;
 
+    @media (max-width: $bp-phone) {
+      &:first-child {
+        display: flex;
+        flex-direction: column;
+        flex-wrap: nowrap;
+        & > div {
+          width: 100%;
+        }
+      }
+    }
+
     &--item {
       display: flex;
       flex-direction: column;
       align-items: center;
+
+      &.header {
+        flex-direction: row;
+        flex: 1 1 calc(65% - $mr-md/2);
+      }
+
+      &.loan-time {
+        align-items: flex-end;
+
+        @media (max-width: $bp-phone) {
+          align-items: center;
+          span {
+            text-align: center;
+          }
+        }
+
+        span {
+          font-size: $tp-sm;
+        }
+
+        .time-row {
+          @include theme-aware("background", "myOffers-subOffer-info-bg");
+          padding: 6px 3px;
+          border-radius: 6px;
+
+          span {
+            font-size: $tp-2md;
+            line-height: 18px;
+            font-weight: $wg-hv;
+          }
+
+          & > span {
+            padding: 0 7px;
+            &:not(:last-child) {
+              @include theme-aware("border-right", "loan-time-divide");
+            }
+          }
+        }
+      }
 
       :first-child {
         margin-bottom: 5px;
@@ -101,14 +151,38 @@
         @include theme-aware("color", "timeLoan-green");
       }
 
+      &.green.loan-time span {
+        @include theme-aware("color", "myLoan-header-color");
+      }
+
+      &.green .time-row span {
+        @include theme-aware("color", "timeLoan-green-white");
+      }
+
       &.yellow p,
       &.yellow span {
         @include theme-aware("color", "timeLoan-yellow");
       }
 
+      &.yellow.loan-time span {
+        @include theme-aware("color", "myLoan-header-color");
+      }
+
+      &.yellow .time-row span {
+        @include theme-aware("color", "timeLoan-yellow-white");
+      }
+
       &.red p,
       &.red span {
         @include theme-aware("color", "timeLoan-red");
+      }
+
+      &.red.loan-time span {
+        @include theme-aware("color", "myLoan-header-color");
+      }
+
+      &.red .time-row span {
+        @include theme-aware("color", "timeLoan-red-white");
       }
 
       &.yellow.status p {
@@ -122,11 +196,6 @@
       h4 {
         font-weight: 400;
       }
-
-      &.header {
-        flex-direction: row;
-        flex: 1 1 calc(65% - $mr-md/2);
-      }
     }
 
     &.details {
@@ -138,12 +207,6 @@
       align-items: center;
       padding: $mr-sm 8px;
 
-      .loan__row--item {
-        min-width: 20%;
-        & p {
-          font-weight: 700;
-        }
-      }
       @media (max-width: $bp-phone) {
         margin: 0 auto;
         width: 90%;
@@ -183,6 +246,13 @@
 
       .name {
         font-weight: 700;
+      }
+
+      .collection {
+        font-size: 12px;
+        span {
+          font-weight: 700;
+        }
       }
 
       .name,
