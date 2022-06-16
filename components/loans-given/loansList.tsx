@@ -43,16 +43,11 @@ export const LoansList = observer(() => {
   };
 
   const formatTimeLeft = (timeLeft: Duration): ReactNode => {
-    const [days, hours, minutes, seconds] = [
-      timeLeft.days(),
-      timeLeft.hours(),
-      timeLeft.minutes(),
-      timeLeft.seconds(),
+    const [days, hours, minutes] = [
+      Math.max(timeLeft.days(), 0),
+      Math.max(timeLeft.hours(), 0),
+      Math.max(timeLeft.minutes(), 0),
     ];
-
-    if (timeLeft.asSeconds() <= 0) {
-      return <>0</>;
-    }
 
     const format = (...durations: [number, string][]) => {
       return durations.map(([len, name], i) => (
@@ -63,13 +58,7 @@ export const LoansList = observer(() => {
       ));
     };
 
-    if (days > 0) {
-      return format([days, "d"], [hours, "h"], [minutes, "m"]);
-    } else if (hours > 0) {
-      return format([hours, "h"], [minutes, "m"]);
-    } else {
-      return format([minutes, "m"], [seconds, "s"]);
-    }
+    return format([days, "d"], [hours, "h"], [minutes, "m"]);
   };
 
   const handleClaimCollateral = async (offerKey: PublicKey) => {
