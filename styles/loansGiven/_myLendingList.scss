@@ -87,6 +87,17 @@
     justify-content: space-between;
     gap: $mr-md;
 
+    @media (max-width: $bp-phone) {
+      &:first-child {
+        display: flex;
+        flex-direction: column;
+        flex-wrap: nowrap;
+        & > div {
+          width: 100%;
+        }
+      }
+    }
+
     &--item {
       display: flex;
       flex-direction: column;
@@ -99,6 +110,13 @@
 
       &.loan-time {
         align-items: flex-end;
+
+        @media (max-width: $bp-phone) {
+          align-items: center;
+          span {
+            text-align: center;
+          }
+        }
 
         span {
           font-size: $tp-sm;
