@@ -106,10 +106,10 @@ export const MyOffersNftItem = observer(({ sanitized, classNames }: MyOffersNftI
   };
 
   useEffect(() => {
-    if (nftMint && name && image && subOffers && state && collection) {
+    if (nftMint && name && image && collection && subOffers) {
       disableLoader(false);
     }
-  }, [nftMint, name, image, subOffers, state, collection]);
+  }, [nftMint, name, image, collection, subOffers]);
 
   return loader ? (
     <BlobLoader />
