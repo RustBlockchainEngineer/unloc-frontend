@@ -280,16 +280,6 @@ export const setOffer = async (
     METADATA_PROGRAM,
   );
 
-  console.log(
-    programId.toString(),
-    borrower.toString(),
-    offer.toString(),
-    nftMint.toString(),
-    nftMetadata.toString(),
-    edition.toString(),
-    borrowerNftVault.toString(),
-  );
-
   const tx = await program.rpc.setOffer({
     accounts: {
       borrower,
