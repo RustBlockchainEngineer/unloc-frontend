@@ -37,12 +37,14 @@ export const getWhitelistedNFTsByWallet = async (owner: PublicKey): Promise<NFTM
     programId: TOKEN_PROGRAM_ID,
   });
 
+  // Filter not freeze tokens
   const filteredTokens = tokens.filter((token) => {
     const {
       tokenAmount: { amount },
+      state,
     } = token.account.data.parsed.info;
 
-    return amount === "1";
+    return amount === "1" && state !== "frozen";
   });
 
   const response = await axios.post("/api/nfts/whitelisted");

@@ -16,7 +16,7 @@ export interface GlobalState {
 export interface Offer {
   borrower: PublicKey;
   nftMint: PublicKey;
-  nftVault: PublicKey;
+  collection: PublicKey;
   state: number;
   subOfferCount: BN;
   startSubOfferNum: BN;
