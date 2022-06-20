@@ -17,7 +17,7 @@ interface MyOffersNftItemProps {
 export const MyOffersNftItem = observer(({ sanitized, classNames }: MyOffersNftItemProps) => {
   const store = useContext(StoreContext);
   const [subOfferCount, setSubOfferCount] = useState(0);
-  const { nftMint, name, image, subOffers, state, collection } = sanitized;
+  const { nftMint, name, image, subOffers, state, collection, offerKey } = sanitized;
 
   const [loader, disableLoader] = useState(true);
 
@@ -45,6 +45,12 @@ export const MyOffersNftItem = observer(({ sanitized, classNames }: MyOffersNftI
   const handleEditOffer = useCallback(async (subOfferKey: string, values: IsubOfferData) => {
     store.Lightbox.setActiveSubOffer(subOfferKey);
     store.Lightbox.setActiveSubOfferData(values);
+    store.MyOffers.setSanitizedOfferData({
+      name,
+      image,
+      collateralId: offerKey,
+      nftMint,
+    });
     store.Lightbox.setContent("loanUpdate");
     store.Lightbox.setCanClose(true);
     store.Lightbox.setVisible(true);
@@ -52,6 +58,12 @@ export const MyOffersNftItem = observer(({ sanitized, classNames }: MyOffersNftI
 
   const handleAddOffer = useCallback(() => {
     store.MyOffers.setActiveNftMint(nftMint);
+    store.MyOffers.setSanitizedOfferData({
+      name,
+      image,
+      collateralId: offerKey,
+      nftMint,
+    });
     store.Lightbox.setContent("loanCreate");
     store.Lightbox.setVisible(true);
   }, [nftMint]);

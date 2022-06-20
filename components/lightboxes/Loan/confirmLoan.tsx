@@ -1,10 +1,11 @@
-import { memo, useCallback, useContext } from "react";
+import { useCallback, useContext } from "react";
 
 import Image from "next/image";
 import { StoreContext } from "@pages/_app";
 import { errorCase, successCase } from "@methods/toast-error-handler";
+import { observer } from "mobx-react";
 
-export const ConfirmLoan = memo(() => {
+export const ConfirmLoan = observer(() => {
   const store = useContext(StoreContext);
   const { connected, wallet, walletKey } = store.Wallet;
   const {

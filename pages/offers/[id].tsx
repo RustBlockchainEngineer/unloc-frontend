@@ -28,7 +28,6 @@ const SingleNftPage: NextPage = observer(() => {
   const handleData = useCallback(async (): Promise<void> => {
     try {
       if (connected && walletKey && router.query.id) {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         await store.SingleOffer.fetchOffer(
           getQueryParamAsString(router.query.id),
           walletKey?.toString(),
@@ -108,7 +107,14 @@ const SingleNftPage: NextPage = observer(() => {
 
   const PrivateTerms = memo(() => {
     const addNewLoan = useCallback(() => {
+      const offerAddress = getQueryParamAsString(router.query.id);
       store.MyOffers.setActiveNftMint(nftData.mint);
+      store.MyOffers.setSanitizedOfferData({
+        name: nftData.name,
+        image: nftData.image,
+        collateralId: offerAddress,
+        nftMint: nftData.mint,
+      });
       store.Lightbox.setContent("loanCreate");
       store.Lightbox.setVisible(true);
     }, []);

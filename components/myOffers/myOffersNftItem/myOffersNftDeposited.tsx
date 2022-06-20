@@ -45,13 +45,12 @@ export const MyOffersNftDeposited = observer(({ sanitized }: MyOffersNftDeposite
 
   const createOffersHandler = useCallback(async () => {
     store.MyOffers.setActiveNftMint(nftMint);
-    await store.MyOffers.setSanitizedOfferData({
+    store.MyOffers.setSanitizedOfferData({
       name,
       image,
       collateralId: offerKey,
       nftMint,
     });
-
     store.Lightbox.setContent("loanCreate");
     store.Lightbox.setVisible(true);
   }, []);

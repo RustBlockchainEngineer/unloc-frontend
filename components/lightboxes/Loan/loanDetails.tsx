@@ -1,16 +1,17 @@
-import { memo, useContext, useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 
 import { StoreContext } from "@pages/_app";
 import Image from "next/image";
 import { compressAddress } from "@utils/stringUtils/compressAdress";
 import { NFTMetadata } from "@integration/nftLoan";
 import { BlobLoader } from "@components/layout/blobLoader";
+import { observer } from "mobx-react";
 
 interface LoanDetails {
   isDetails: boolean;
 }
 
-export const LoanDetails = memo(({ isDetails }: LoanDetails) => {
+export const LoanDetails = observer(({ isDetails }: LoanDetails) => {
   const store = useContext(StoreContext);
   const {
     sanitized: { image, name, collateralId, nftMint },

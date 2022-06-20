@@ -20,7 +20,12 @@ import {
 import { currencies, currencyMints } from "@constants/currency";
 import { getDurationForContractData } from "@utils/timeUtils/timeUtils";
 import { getSubOffersKeysByState } from "@integration/offersListing";
-import { OfferAccount, PreparedOfferData, SanitizedData, SubOfferAccount } from "../@types/loans";
+import type {
+  OfferAccount,
+  PreparedOfferData,
+  SanitizedData,
+  SubOfferAccount,
+} from "../@types/loans";
 import { SubOfferData } from "./Offers.store";
 import axios from "axios";
 import { range } from "@utils/range";
@@ -278,16 +283,14 @@ export class MyOffersStore {
         lendedLoans[index].nftData = nft;
       });
 
-      await this.setLendingListData(lendedLoans);
+      this.setLendingListData(lendedLoans);
 
       this.fetchCollections("lendingList");
     }
   };
 
-  @action.bound setLendingListData = async (data: SubOfferData[]): Promise<void> => {
-    runInAction(() => {
-      this.lendingList = data;
-    });
+  @action.bound setLendingListData = (data: SubOfferData[]): void => {
+    this.lendingList = data;
   };
 
   @action.bound handleClaimCollateral = async (subOffer: PublicKey) => {
@@ -295,20 +298,14 @@ export class MyOffersStore {
   };
 
   @action.bound setActiveCategory(category: OfferCategory): void {
-    runInAction(() => {
-      this.activeCategory = category;
-    });
+    this.activeCategory = category;
   }
 
   @action.bound setPreparedOfferData(data: PreparedOfferData): void {
-    runInAction(() => {
-      this.preparedOfferData = data;
-    });
+    this.preparedOfferData = data;
   }
 
   @action.bound setSanitizedOfferData(data: SanitizedData): void {
-    runInAction(() => {
-      this.sanitized = data;
-    });
+    this.sanitized = data;
   }
 }
