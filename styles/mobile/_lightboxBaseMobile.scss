@@ -33,3 +33,13 @@
     margin: 0;
   }
 }
+
+@media (max-width: $bp-phone) {
+  .blobs {
+    width: 200px;
+    height: 200px;
+  }
+  .lightbox-processing {
+    margin: auto;
+  }
+}

@@ -91,7 +91,9 @@
   }
 
   .btn {
-    width: 255px;
+    @media (min-width: $bp-tablet) {
+      width: 255px;
+    }
     justify-content: center;
     border-radius: 5px;
     margin: $tp-xl auto 0;

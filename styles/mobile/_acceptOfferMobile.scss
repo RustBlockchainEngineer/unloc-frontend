@@ -1,0 +1,24 @@
+@media (max-width: $bp-phone) {
+  .accept-offer {
+    h2 {
+      margin-bottom: $mr-md;
+      margin-top: -20px;
+    }
+
+    .nft-image-circled {
+      flex: 1 0 auto;
+    }
+
+    .collateral {
+      .nft-pill {
+        width: 100%;
+        height: 100%;
+        flex-direction: column;
+      }
+    }
+
+    button {
+      width: 100% !important;
+    }
+  }
+}
