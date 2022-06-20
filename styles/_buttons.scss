@@ -13,6 +13,7 @@
     padding: 0 30px;
     font-size: $tp-md;
     border-radius: $brd-rds-lg;
+    @include theme-aware("border", "button-border-primary");
 
     .icon {
       margin-top: 6px;
