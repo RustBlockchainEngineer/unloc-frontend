@@ -10,7 +10,7 @@ export interface GlobalState {
   accruedInterestNumerator: BN;
   aprNumerator: BN;
   denominator: BN;
-  expireDurationForLender: BN;
+  expireLoanDuration: BN;
 }
 
 export interface Offer {

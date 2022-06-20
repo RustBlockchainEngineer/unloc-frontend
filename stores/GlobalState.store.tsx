@@ -7,7 +7,7 @@ export class GlobalStateStore {
   accruedInterestNumerator = 0;
   aprNumerator = 0;
   denominator = 0;
-  expireDurationForLender = 0;
+  expireLoanDuration = 0;
 
   constructor(rootStore: any) {
     makeAutoObservable(this);
@@ -21,7 +21,7 @@ export class GlobalStateStore {
       this.setAccruedInterestNumerator(globalState.accruedInterestNumerator);
       this.setAprNumerator(globalState.aprNumerator);
       this.setDenominator(globalState.denominator);
-      this.setExpireDurationForLender(globalState.expireDurationForLender);
+      this.setExpireLoanDuration(globalState.expireLoanDuration);
     }
   });
 
@@ -37,7 +37,7 @@ export class GlobalStateStore {
     this.denominator = denominator.toNumber();
   }
 
-  @action.bound setExpireDurationForLender(expireDurationForLender: anchor.BN): void {
-    this.expireDurationForLender = expireDurationForLender.toNumber();
+  @action.bound setExpireLoanDuration(expireLoanDuration: anchor.BN): void {
+    this.expireLoanDuration = expireLoanDuration.toNumber();
   }
 }

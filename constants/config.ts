@@ -16,7 +16,7 @@ export const config = {
 
 export const NFT_LOAN_PID = new PublicKey(
   config.devnet
-    ? "4MwL9T4Kjyq8KuVbJM5hpfQizTKFbZmg7aqBQP9zapBJ"
+    ? "4djDBtHEvzZqMTvpdxskmfegKmfMiPRHPnJ7yrXdCCaB"
     : "H87mP39hQqZvh3GESPCAV426Gp3vJcraz1YgtU21i5RV",
 );
 

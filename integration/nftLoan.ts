@@ -42,14 +42,30 @@ const defaults = {
   clock,
 };
 
-const GLOBAL_STATE_TAG = Buffer.from("global-state-seed");
-const OFFER_TAG = Buffer.from("offer-seed");
-const SUB_OFFER_TAG = Buffer.from("sub-offer-seed");
-const NFT_VAULT_TAG = Buffer.from("nft-vault-seed");
-const OFFER_VAULT_TAG = Buffer.from("offer-vault-seed");
-const TREASURY_VAULT_TAG = Buffer.from("treasury-vault-seed");
+const GLOBAL_STATE_TAG = Buffer.from("GLOBAL_STATE_SEED");
+const OFFER_TAG = Buffer.from("OFFER_SEED");
+const SUB_OFFER_TAG = Buffer.from("SUB_OFFER_SEED");
+const OFFER_VAULT_TAG = Buffer.from("OFFER_VAULT_SEED");
+const TREASURY_VAULT_TAG = Buffer.from("TREASURY_VAULT_SEED");
+const REWARD_VAULT_TAG = Buffer.from("REWARD_VAULT_SEED");
+const METADATA_TAG = Buffer.from("metadata");
+const EDITION_TAG = Buffer.from("edition");
 
 const WSOL_MINT = new anchor.web3.PublicKey("So11111111111111111111111111111111111111112");
+const METADATA_PROGRAM = new anchor.web3.PublicKey("metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s");
+const CHAINLINK_AGGREGATOR_PROGRAM_ID = new anchor.web3.PublicKey(
+  "cjg3oHmg9uuPsP8D6g29NWvhySJkdYdAo9D25PRbKXJ",
+);
+
+export const CHAINLINK_SOL_FEED = new PublicKey("CcPVS9bqyXbD9cLnTbhhHazLsrua8QMFUHTutPtjyDzq");
+export const CHAINLINK_USDC_FEED = new PublicKey("7CLo1BY41BHAVnEs57kzYMnWXyBJrVEBPpZyQyPo2p1G");
+export const CHAINLINK_PID = new PublicKey(CHAINLINK_AGGREGATOR_PROGRAM_ID);
+export const chainlinkIds = {
+  chainlinkProgram: CHAINLINK_PID,
+  solFeed: CHAINLINK_SOL_FEED,
+  usdcFeed: CHAINLINK_USDC_FEED,
+};
+
 // This command makes an Lottery
 export const initLoanProgram = (
   // connection: anchor.web3.Connection,
@@ -206,22 +222,30 @@ export const setGlobalState = async (
   denominator: anchor.BN,
   aprNumerator: anchor.BN,
   expireDurationForLenader: anchor.BN,
+  rewardRate: anchor.BN,
+  lenderRewardsPercentage: anchor.BN,
+  rewardMint: anchor.web3.PublicKey,
   treasury: anchor.web3.PublicKey,
   signer: anchor.web3.PublicKey = program.provider.wallet.publicKey,
   signers: anchor.web3.Keypair[] = [],
 ) => {
-  const globalState = await pda([GLOBAL_STATE_TAG], programId);
   const superOwner = signer;
+  const globalState = await pda([GLOBAL_STATE_TAG], programId);
+  const rewardVault = await pda([REWARD_VAULT_TAG], programId);
 
   const tx = await program.rpc.setGlobalState(
     accruedInterestNumerator,
     denominator,
     aprNumerator,
     expireDurationForLenader,
+    rewardRate,
+    lenderRewardsPercentage,
     {
       accounts: {
         superOwner,
         globalState,
+        rewardMint,
+        rewardVault,
         newSuperOwner: superOwner,
         treasuryWallet: treasury,
         ...defaults,
@@ -247,14 +271,34 @@ export const setOffer = async (
 
   const borrower = signer;
   const offer = await pda([OFFER_TAG, borrower.toBuffer(), nftMint.toBuffer()], programId);
-  const nftVault = await pda([NFT_VAULT_TAG, offer.toBuffer()], programId);
+  const nftMetadata = await pda(
+    [METADATA_TAG, METADATA_PROGRAM.toBytes(), nftMint.toBuffer()],
+    METADATA_PROGRAM,
+  );
+  const edition = await pda(
+    [METADATA_TAG, METADATA_PROGRAM.toBytes(), nftMint.toBuffer(), EDITION_TAG],
+    METADATA_PROGRAM,
+  );
+
+  console.log(
+    programId.toString(),
+    borrower.toString(),
+    offer.toString(),
+    nftMint.toString(),
+    nftMetadata.toString(),
+    edition.toString(),
+    borrowerNftVault.toString(),
+  );
+
   const tx = await program.rpc.setOffer({
     accounts: {
       borrower,
       offer,
       nftMint,
-      nftVault,
+      nftMetadata,
+      edition,
       userVault: borrowerNftVault,
+      metadataProgram: METADATA_PROGRAM,
       ...defaults,
     },
     signers,
@@ -301,7 +345,6 @@ export const cancelOffer = async (
 ) => {
   const borrower = signer;
   const offer = await pda([OFFER_TAG, borrower.toBuffer(), nftMint.toBuffer()], programId);
-  const nftVault = await pda([NFT_VAULT_TAG, offer.toBuffer()], programId);
   let borrowerNftVault = await checkWalletATA(nftMint.toBase58());
   const preInstructions: TransactionInstruction[] = [];
   if (!borrowerNftVault) {
@@ -314,12 +357,19 @@ export const cancelOffer = async (
     );
   }
 
+  const edition = await pda(
+    [METADATA_TAG, METADATA_PROGRAM.toBytes(), nftMint.toBuffer(), EDITION_TAG],
+    METADATA_PROGRAM,
+  );
+
   const tx = await program.rpc.cancelOffer({
     accounts: {
       borrower,
       offer,
-      nftVault,
+      nftMint,
+      edition,
       userVault: borrowerNftVault,
+      metadataProgram: METADATA_PROGRAM,
       ...defaults,
     },
     preInstructions,
@@ -462,6 +512,8 @@ export const acceptOffer = async (
   signers: anchor.web3.Keypair[] = [],
 ) => {
   const lender = signer;
+  const globalState = await pda([GLOBAL_STATE_TAG], programId);
+  const rewardVault = await pda([REWARD_VAULT_TAG], programId);
   const subOfferData = await program.account.subOffer.fetch(subOffer);
   const offer = subOfferData.offer;
   const offerMint = subOfferData.offerMint;
@@ -504,11 +556,14 @@ export const acceptOffer = async (
     accounts: {
       lender,
       borrower,
+      globalState,
       offer,
       subOffer,
       offerMint,
       borrowerOfferVault,
       lenderOfferVault,
+      rewardVault,
+      ...chainlinkIds,
       ...defaults,
     },
     preInstructions,
@@ -525,8 +580,9 @@ export const repayLoan = async (
   signer: anchor.web3.PublicKey = program.provider.wallet.publicKey,
   signers: anchor.web3.Keypair[] = [],
 ) => {
-  const globalState = await pda([GLOBAL_STATE_TAG], programId);
   const borrower = signer;
+  const globalState = await pda([GLOBAL_STATE_TAG], programId);
+  const rewardVault = await pda([REWARD_VAULT_TAG], programId);
   const globalStateData = await program.account.globalState.fetch(globalState);
   const treasuryWallet = globalStateData.treasuryWallet;
   const subOfferData = await program.account.subOffer.fetch(subOffer);
@@ -535,8 +591,11 @@ export const repayLoan = async (
   const offerData = await program.account.offer.fetch(offer);
   const offerMint = subOfferData.offerMint;
   const nftMint = offerData.nftMint;
-  const nftVault = await pda([NFT_VAULT_TAG, offer.toBuffer()], programId);
   const treasuryVault = await pda([TREASURY_VAULT_TAG, offerMint.toBuffer()], programId);
+  const edition = await pda(
+    [METADATA_TAG, METADATA_PROGRAM.toBytes(), nftMint.toBuffer(), EDITION_TAG],
+    METADATA_PROGRAM,
+  );
 
   let borrowerOfferVault = await checkWalletATA(
     offerMint.toBase58(),
@@ -593,14 +652,16 @@ export const repayLoan = async (
       treasuryWallet,
       offer,
       subOffer,
+      nftMint,
+      edition,
+      rewardVault,
       borrowerNftVault,
-      nftVault,
       lenderOfferVault,
       borrowerOfferVault,
       treasuryVault,
-      systemProgram,
-      tokenProgram,
-      clock,
+      metadataProgram: METADATA_PROGRAM,
+      ...chainlinkIds,
+      ...defaults,
     },
     preInstructions,
     postInstructions,
@@ -615,8 +676,9 @@ export const claimCollateral = async (
   signer: anchor.web3.PublicKey = program.provider.wallet.publicKey,
   signers: anchor.web3.Keypair[] = [],
 ) => {
-  const globalState = await pda([GLOBAL_STATE_TAG], programId);
   const lender = signer;
+  const globalState = await pda([GLOBAL_STATE_TAG], programId);
+  const rewardVault = await pda([REWARD_VAULT_TAG], programId);
   const globalStateData = await program.account.globalState.fetch(globalState);
   const treasuryWallet = globalStateData.treasuryWallet;
   const subOfferData = await program.account.subOffer.fetch(subOffer);
@@ -624,13 +686,22 @@ export const claimCollateral = async (
   const offerData = await program.account.offer.fetch(offer);
   const offerMint = subOfferData.offerMint;
   const nftMint = offerData.nftMint;
-  const nftVault = await pda([NFT_VAULT_TAG, offer.toBuffer()], programId);
   const treasuryVault = await pda([TREASURY_VAULT_TAG, offerMint.toBuffer()], programId);
+
+  const edition = await pda(
+    [METADATA_TAG, METADATA_PROGRAM.toBytes(), nftMint.toBuffer(), EDITION_TAG],
+    METADATA_PROGRAM,
+  );
 
   let lenderNftVault = await checkWalletATA(
     nftMint.toBase58(),
     program.provider.connection,
     lender,
+  );
+  let borrowerNftVault = await checkWalletATA(
+    nftMint.toBase58(),
+    program.provider.connection,
+    offerData.borrower,
   );
   let lenderOfferVault = await checkWalletATA(
     offerMint.toBase58(),
@@ -671,13 +742,16 @@ export const claimCollateral = async (
       treasuryWallet,
       offer,
       subOffer,
+      nftMint,
+      edition,
       lenderNftVault,
-      nftVault,
+      borrowerNftVault,
       lenderOfferVault,
       treasuryVault,
-      systemProgram,
-      tokenProgram,
-      clock,
+      rewardVault,
+      metadataProgram: METADATA_PROGRAM,
+      ...chainlinkIds,
+      ...defaults,
     },
     preInstructions,
     postInstructions,
