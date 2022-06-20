@@ -43,6 +43,8 @@
         @include theme-aware("color", "collateral-name");
         font-weight: 700;
         line-height: 21px;
+        width: 100%;
+        text-align: center;
       }
     }
   }
