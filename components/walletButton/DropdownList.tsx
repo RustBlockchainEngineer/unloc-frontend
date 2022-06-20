@@ -3,6 +3,7 @@ import { useWallet } from "@solana/wallet-adapter-react";
 import { StoreContext } from "@pages/_app";
 import { observer } from "mobx-react";
 import { SwitchButton } from "@components/layout/switchButton";
+import { formatOptions } from "@constants/config";
 
 interface DropdownListProps {
   refer: React.RefObject<HTMLUListElement>;
@@ -63,18 +64,12 @@ export const DropdownList = observer(({ refer, active, openModal, base58 }: Drop
       <li className="wallet-adapter-dropdown-list-item balance">Wallet Balance</li>
       <li className="wallet-adapter-dropdown-list-item balance__item balance__item--solana">
         <i className="icon icon--sm icon--fake" />
-        {solAmount.toLocaleString(undefined, {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 5,
-        })}
+        {solAmount.toLocaleString(undefined, formatOptions)}
         <i className="icon icon--sm icon--currency--SOL" />
       </li>
       <li className="wallet-adapter-dropdown-list-item balance__item balance__item--usdc">
         <i className="icon icon--sm icon--fake" />
-        {usdcAmount.toLocaleString(undefined, {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 5,
-        })}
+        {usdcAmount.toLocaleString(undefined, formatOptions)}
         <i className="icon icon--sm icon--currency--USDC" />
       </li>
       <span className="wallet-adapter-dropdown-list-item divider" />

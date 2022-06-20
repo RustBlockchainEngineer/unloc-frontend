@@ -5,7 +5,7 @@ import { getOffer, getSubOffersInRange } from "@integration/nftLoan";
 import { INftCoreData } from "../@types/nfts/nft";
 import { getMetadata } from "@integration/nftIntegration";
 import { getDecimalsForLoanAmount } from "@integration/getDecimalForLoanAmount";
-import { calculateRepayValue } from "@utils/calculateRepayValue";
+import { calculateRepayValue } from "@utils/loansMath";
 import { currencyMints } from "@constants/currency";
 import { getDurationFromContractData } from "@utils/timeUtils/timeUtils";
 import { OfferAccount, Offer } from "../@types/loans";
