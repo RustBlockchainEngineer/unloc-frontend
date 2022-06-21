@@ -11,6 +11,7 @@
     display: flex;
     align-items: center;
     @include theme-aware("color", "color-label");
+    border: none;
 
     span {
       margin: 0 40px;
