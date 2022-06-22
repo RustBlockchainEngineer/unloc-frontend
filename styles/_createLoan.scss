@@ -332,3 +332,39 @@
   padding-bottom: 40px;
   @include theme-aware("color", "color-label");
 }
+
+.rc-slider {
+  width: 100% !important;
+}
+.rc-slider-track {
+  -webkit-appearance: none;
+  width: 100% !important;
+  height: 7px !important;
+  @include theme-aware("background-color", "lightbox-range-bg");
+  border-radius: 5px;
+  background-size: 70% 100%;
+  background-repeat: no-repeat;
+  margin-top: 2px;
+}
+
+.rc-slider-handle {
+  -webkit-appearance: none;
+  height: 20px !important;
+  width: 20px !important;
+  border-radius: 50%;
+  @include theme-aware("background-color", "color-primary");
+  cursor: ew-resize;
+  box-shadow: 0 0 2px 0 #555;
+  transition: background 0.3s ease-in-out;
+  border: 0px !important;
+  opacity: 1 !important;
+  box-shadow: none !important;
+}
+
+.rc-slider-handle:hover {
+  @include theme-aware("background-color", "color-primary");
+}
+
+.rc-slider-rail {
+  opacity: 0 !important;
+}

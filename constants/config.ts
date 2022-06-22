@@ -4,14 +4,6 @@ export const config = {
   devnet: true,
   devnetEndpoint: "https://api.devnet.solana.com",
   mainnetEndpoint: "https://solana-api.projectserum.com",
-  //TODO: properties below is never used. I think we should remove them
-
-  // pagiPrev: 2,
-  // pagiNext: 2,
-  // nftBulkMax: 20,
-  // loanValueMin: 1,
-  // loanAprMin: 1,
-  // loanMinRepayMin: 1,
 };
 
 export const NFT_LOAN_PID = new PublicKey(
@@ -21,3 +13,9 @@ export const NFT_LOAN_PID = new PublicKey(
 );
 
 export const RPC_ENDPOINT = config.devnet ? config.devnetEndpoint : config.mainnetEndpoint;
+
+export const formatOptions: Intl.NumberFormatOptions = {
+  maximumFractionDigits: 4,
+  minimumFractionDigits: 2,
+  useGrouping: false,
+};

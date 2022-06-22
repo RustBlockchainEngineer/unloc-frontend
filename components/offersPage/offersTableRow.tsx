@@ -1,7 +1,7 @@
 import { useCallback, useContext, SyntheticEvent } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { calculateRepayValue } from "@utils/calculateRepayValue";
+import { calculateRepayValue } from "@utils/loansMath";
 import { StoreContext } from "@pages/_app";
 import { ILightboxOffer } from "@stores/Lightbox.store";
 

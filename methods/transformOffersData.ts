@@ -1,7 +1,7 @@
 import { getDecimalsForLoanAmountAsString } from "@integration/getDecimalForLoanAmount";
 
 import { currencyMints } from "@constants/currency";
-import { calculateRepayValue } from "@utils/calculateRepayValue";
+import { calculateRepayValue } from "@utils/loansMath";
 import { SubOfferData } from "@stores/Offers.store";
 import { PublicKey } from "@solana/web3.js";
 

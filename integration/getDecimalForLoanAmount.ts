@@ -1,3 +1,4 @@
+import { formatOptions } from "@constants/config";
 import { currencies, currencyMints } from "@constants/currency";
 
 export const getDecimalsForLoanAmount = (amount: number, offerMint: string): number => {
@@ -7,14 +8,20 @@ export const getDecimalsForLoanAmount = (amount: number, offerMint: string): num
 export const getDecimalsForLoanAmountAsString = (
   amount: number,
   offerMint: string,
-  minDigits = 2,
-  maxDigits = 4,
+  minDigits?: number,
+  maxDigits?: number,
 ): string => {
-  return (amount / 10 ** currencies[currencyMints[offerMint]].decimals).toLocaleString("en-US", {
-    minimumFractionDigits: minDigits,
-    maximumFractionDigits: maxDigits,
-    useGrouping: false,
-  });
+  const uiAmount = amount / 10 ** currencies[currencyMints[offerMint]].decimals;
+
+  if (minDigits || maxDigits) {
+    return uiAmount.toLocaleString("en-US", {
+      minimumFractionDigits: minDigits || 2,
+      maximumFractionDigits: maxDigits || 4,
+      useGrouping: false,
+    });
+  }
+
+  return uiAmount.toLocaleString("en-US", formatOptions);
 };
 
 export const getDecimalsForOfferMint = (offerMint: string): number => {

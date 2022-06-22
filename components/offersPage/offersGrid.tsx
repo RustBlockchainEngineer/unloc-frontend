@@ -9,7 +9,7 @@ import {
   getDecimalsForLoanAmountAsString,
   getDecimalsForOfferMint,
 } from "@integration/getDecimalForLoanAmount";
-import { calculateRepayValue } from "@utils/calculateRepayValue";
+import { calculateRepayValue } from "@utils/loansMath";
 import { ILightboxOffer } from "@stores/Lightbox.store";
 import { errorCase } from "@methods/toast-error-handler";
 
