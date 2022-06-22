@@ -62,7 +62,7 @@ export const LoansList = observer(() => {
   };
 
   const handleClaimCollateral = async (offerKey: PublicKey) => {
-    store.Lightbox.setContent("processing");
+    store.Lightbox.setContent("circleProcessing");
     store.Lightbox.setCanClose(false);
     store.Lightbox.setVisible(true);
 
