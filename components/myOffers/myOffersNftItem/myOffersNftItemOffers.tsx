@@ -87,15 +87,8 @@ export const MyOffersNftItemOffers = ({
       {data && data.length && contentVisible ? (
         <div className="offers-list-content">
           {data.map((offer) => {
-            const {
-              offerAmount,
-              aprNumerator,
-              state,
-              loanStartedTime,
-              loanDuration,
-              minRepaidNumerator,
-              offerMint,
-            } = offer.account;
+            const { offerAmount, aprNumerator, state, loanStartedTime, loanDuration, offerMint } =
+              offer.account;
             if (state === 0) {
               return (
                 <MyOffersNftOfferItem
@@ -105,7 +98,6 @@ export const MyOffersNftItemOffers = ({
                   status={state.toString()}
                   offerID={offer.publicKey}
                   duration={loanDuration}
-                  repaid={minRepaidNumerator.toString()}
                   offerMint={offerMint}
                   handleOfferEdit={handleOfferEdit}
                   handleOfferCancel={handleOfferCancel}
@@ -123,7 +115,6 @@ export const MyOffersNftItemOffers = ({
                   offerID={offer.publicKey}
                   startTime={loanStartedTime}
                   duration={loanDuration}
-                  repaid={minRepaidNumerator.toString()}
                   offerMint={offerMint}
                   nftMint={nftMint}
                   offers={data}

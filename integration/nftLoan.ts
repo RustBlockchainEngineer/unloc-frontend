@@ -220,6 +220,7 @@ export const getSubOfferMultiple = async (keys: anchor.web3.PublicKey[], offerSt
 export const setGlobalState = async (
   accruedInterestNumerator: anchor.BN,
   denominator: anchor.BN,
+  minRepaidNumerator: anchor.BN,
   aprNumerator: anchor.BN,
   expireDurationForLenader: anchor.BN,
   rewardRate: anchor.BN,
@@ -236,6 +237,7 @@ export const setGlobalState = async (
   const tx = await program.rpc.setGlobalState(
     accruedInterestNumerator,
     denominator,
+    minRepaidNumerator,
     aprNumerator,
     expireDurationForLenader,
     rewardRate,
@@ -373,7 +375,6 @@ export const cancelOffer = async (
 export const createSubOffer = async (
   offerAmount: anchor.BN,
   loanDuration: anchor.BN,
-  minRepaidNumerator: anchor.BN,
   aprNumerator: anchor.BN,
   nftMint: anchor.web3.PublicKey,
   offerMint: anchor.web3.PublicKey,
@@ -396,26 +397,19 @@ export const createSubOffer = async (
   const globalStateData = await program.account.globalState.fetch(globalState);
 
   const treasuryWallet = globalStateData.treasuryWallet;
-  const tx = await program.rpc.setSubOffer(
-    offerAmount,
-    subOfferNumer,
-    loanDuration,
-    minRepaidNumerator,
-    aprNumerator,
-    {
-      accounts: {
-        borrower,
-        globalState,
-        offer,
-        subOffer,
-        offerMint,
-        treasuryWallet,
-        treasuryVault,
-        ...defaults,
-      },
-      signers,
+  const tx = await program.rpc.setSubOffer(offerAmount, subOfferNumer, loanDuration, aprNumerator, {
+    accounts: {
+      borrower,
+      globalState,
+      offer,
+      subOffer,
+      offerMint,
+      treasuryWallet,
+      treasuryVault,
+      ...defaults,
     },
-  );
+    signers,
+  });
 
   // eslint-disable-next-line no-console
   console.log("createSubOffer tx = ", tx);
@@ -424,7 +418,6 @@ export const createSubOffer = async (
 export const updateSubOffer = async (
   offerAmount: anchor.BN,
   loanDuration: anchor.BN,
-  minRepaidNumerator: anchor.BN,
   aprNumerator: anchor.BN,
 
   subOffer: anchor.web3.PublicKey,
@@ -447,26 +440,19 @@ export const updateSubOffer = async (
   const globalStateData = await program.account.globalState.fetch(globalState);
 
   const treasuryWallet = globalStateData.treasuryWallet;
-  const tx = await program.rpc.setSubOffer(
-    offerAmount,
-    subOfferNumer,
-    loanDuration,
-    minRepaidNumerator,
-    aprNumerator,
-    {
-      accounts: {
-        borrower,
-        globalState,
-        offer,
-        subOffer,
-        offerMint,
-        treasuryWallet,
-        treasuryVault,
-        ...defaults,
-      },
-      signers,
+  const tx = await program.rpc.setSubOffer(offerAmount, subOfferNumer, loanDuration, aprNumerator, {
+    accounts: {
+      borrower,
+      globalState,
+      offer,
+      subOffer,
+      offerMint,
+      treasuryWallet,
+      treasuryVault,
+      ...defaults,
     },
-  );
+    signers,
+  });
 
   // eslint-disable-next-line no-console
   console.log("updateSubOffer tx = ", tx);

@@ -20,12 +20,14 @@ export interface Offer {
   state: number;
   subOfferCount: BN;
   startSubOfferNum: BN;
+  creationDate: BN;
 }
 
 export interface SubOffer {
   borrower: PublicKey;
   nftMint: PublicKey;
   offerMint: PublicKey;
+  offerMintDecimals: number;
   state: number;
   offer: PublicKey;
   subOfferNumber: BN;
@@ -38,8 +40,12 @@ export interface SubOffer {
   loanStartedTime: BN;
   loanEndedTime: BN;
   loanDuration: BN;
-  minRepaidNumerator: BN;
   aprNumerator: BN;
+  creationDate: BN;
+  totalPoint: BN;
+  collectionPoint: BN;
+  rps: BN;
+  rewardDebt: BN;
 }
 
 // Requests made using Anchor (fetchMultiple) can return data in this shape

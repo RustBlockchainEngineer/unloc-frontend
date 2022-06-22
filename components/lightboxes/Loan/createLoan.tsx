@@ -156,7 +156,6 @@ export const CreateLoan = observer(({ mode }: CreateLoanProps) => {
           Number(amount),
           Number(duration),
           Number(apr),
-          Number(activeSubOfferData.minRepaidNumerator),
           activeSubOffer,
         );
         setProcessing(false);

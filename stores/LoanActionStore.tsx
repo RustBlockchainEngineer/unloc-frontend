@@ -30,8 +30,6 @@ export class LoanActionsStore {
       await createSubOffer(
         new BN(data.loanvalue * 10 ** currencyInfo.decimals),
         new BN(getDurationForContractData(Number(data.duration), "days")),
-        // minRepaidNumerator
-        new BN(1),
         new BN(data.apr),
         new PublicKey(nftMint),
         new PublicKey(currencyInfo.mint),
@@ -57,8 +55,6 @@ export class LoanActionsStore {
       await updateSubOffer(
         new BN(data.loanvalue * 10 ** currencyInfo.decimals),
         new BN(getDurationForContractData(Number(data.duration), "days")),
-        // minRepaidNumerator
-        new BN(1),
         new BN(data.apr),
         subOffer,
       );

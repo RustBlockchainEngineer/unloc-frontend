@@ -13,7 +13,6 @@ export interface IsubOfferData {
   offerAmount: number;
   loanDuration: number;
   aprNumerator: number;
-  minRepaidNumerator: number;
   offerMint: string;
 }
 
@@ -36,7 +35,6 @@ export class LightboxStore {
     offerAmount: 0,
     loanDuration: 0,
     aprNumerator: 0,
-    minRepaidNumerator: 0,
     offerMint: "",
   };
 

@@ -21,7 +21,6 @@ interface MyOffersNftOfferItemAcceptedProps {
   APR: string;
   startTime: BN;
   duration: BN;
-  repaid: string;
   offerMint: PublicKey;
   classNames?: string;
   nftMint: string;

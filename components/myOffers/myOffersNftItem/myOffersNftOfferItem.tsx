@@ -16,7 +16,6 @@ interface MyOffersNftOfferItemProps {
   status: string;
   APR: string;
   duration: BN;
-  repaid: string;
   offerMint: PublicKey;
   handleOfferEdit: (subOfferKey: string, values: IsubOfferData) => Promise<void>;
   handleOfferCancel: (subOfferKey: string) => Promise<void>;
@@ -31,7 +30,6 @@ export const MyOffersNftOfferItem = ({
   status,
   APR,
   duration,
-  repaid,
   offerMint,
   handleOfferEdit,
   handleOfferCancel,
@@ -121,7 +119,6 @@ export const MyOffersNftOfferItem = ({
                 offerAmount: Number(offerAmount),
                 loanDuration: Number(duration),
                 aprNumerator: Number(APR),
-                minRepaidNumerator: Number(repaid),
                 offerMint: offerMint.toBase58(),
               })
             }>

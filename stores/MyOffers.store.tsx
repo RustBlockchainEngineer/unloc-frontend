@@ -16,6 +16,7 @@ import {
   getSubOfferMultiple,
   claimCollateral,
   getSubOffersInRange,
+  setGlobalState,
 } from "@integration/nftLoan";
 import { currencies, currencyMints } from "@constants/currency";
 import { getDurationForContractData } from "@utils/timeUtils/timeUtils";
@@ -205,7 +206,6 @@ export class MyOffersStore {
     await createSubOffer(
       new BN(offerAmount * 10 ** currencyInfo.decimals),
       new BN(getDurationForContractData(loanDuration, "days")),
-      new BN(1), // minRepaidNumerator
       new BN(aprNumerator),
       new PublicKey(nftMint),
       new PublicKey(currencyInfo.mint),
@@ -216,7 +216,6 @@ export class MyOffersStore {
     offerAmount: number,
     loanDuration: number,
     aprNumerator: number,
-    minRepaidNumerator: number,
     subOffer: string,
   ) => {
     const currencyInfo =
@@ -225,7 +224,6 @@ export class MyOffersStore {
     await updateSubOffer(
       new BN(offerAmount * 10 ** currencyInfo.decimals),
       new BN(getDurationForContractData(loanDuration, "days")),
-      new BN(minRepaidNumerator),
       new BN(aprNumerator),
       new PublicKey(subOffer),
     );
@@ -247,6 +245,20 @@ export class MyOffersStore {
 
   @action.bound createCollateral = async (mint: string) => {
     await setOffer(new PublicKey(mint));
+  };
+
+  @action.bound setGlobalState = async () => {
+    await setGlobalState(
+      new BN(10000000), // accruedInterestNumerator
+      new BN(10000), // denominator
+      new BN(5000), // minRepaidNumerator
+      new BN(100), // aprNumerator
+      new BN(90 * 24 * 3600), // expireDurationForLenader
+      new BN(300), // rewardRate
+      new BN(6000), // lenderRewardsPercentage
+      new PublicKey("ExW7Yek3vsRJcapsdRKcxF9XRRS8zigLZ8nqqdqnWgQi"), // rewardMint
+      new PublicKey("J7EeatYskAbfYoBeHZhmaY2GEn2XeFB5xsGjqaVSZiCE"), // treasury
+    );
   };
 
   @action.bound handleCancelCollateral = async (mint: string) => {
