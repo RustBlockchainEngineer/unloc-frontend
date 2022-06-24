@@ -12,6 +12,7 @@ import { Processing } from "@components/lightboxes/processing";
 import { LendConfirmation } from "@components/lightboxes/lendConfirmation";
 import { AcceptOffer } from "@components/lightboxes/acceptOffer";
 import { ConfirmLoan } from "@components/lightboxes/Loan/confirmLoan";
+import { Vote } from "@components/lightboxes/vote";
 
 export const LayoutTop = observer(() => {
   const store = useContext(StoreContext);
@@ -40,6 +41,7 @@ export const LayoutTop = observer(() => {
             {content === "processing" ? <Processing /> : <></>}
             {content === "lendConfirmation" ? <LendConfirmation /> : <></>}
             {content === "acceptOffer" ? <AcceptOffer /> : <></>}
+            {content === "vote" ? <Vote /> : <></>}
           </>
         </Lightbox>
       ) : (

@@ -7,7 +7,8 @@ type LightboxContent =
   | "collateral"
   | "processing"
   | "lendConfirmation"
-  | "acceptOffer";
+  | "acceptOffer"
+  | "vote";
 
 export interface IsubOfferData {
   offerAmount: number;

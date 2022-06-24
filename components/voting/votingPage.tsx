@@ -1,12 +1,15 @@
-import React from "react";
-import { CircleChart } from "@components/layout/circleChart";
+import React, { useContext, useEffect, useState } from "react";
 import { PieChart } from "react-minimal-pie-chart";
+import { StoreContext } from "@pages/_app";
+import { observer } from "mobx-react";
 
-export const VotingPage = () => {
+export const VotingPage = observer(() => {
+  const store = useContext(StoreContext);
+
   const [votingPower, setVotingPower] = React.useState(400);
   console.log("PIE", PieChart.defaultProps.radius);
 
-  const nextVoteValues = { SMB: 55, DAA: 20, DeGods: 10, DT: 10, SolGods: 5 };
+  const nextVoteValues = { SMB: 20, DAA: 20, DeGods: 20, DT: 15, SolGods: 25 };
 
   const colorList = [
     "#d63abe",
@@ -43,64 +46,67 @@ export const VotingPage = () => {
     return { title: vote.title, value: nextVoteValues[vote.title], color: vote.color };
   });
 
+  const renderColumn = (
+    voteInfo: Array<{ title: string; value: number; color: string }>,
+    side: "left" | "right",
+  ) => {
+    return (
+      <div className="vote-column">
+        <div className="vote-column__header">
+          {side === "left" ? "THIS WEEK’S DISTRIBUTION" : "NEXT WEEK’S DISTRIBUTION"}
+        </div>
+        <div className="vote-column__live">{side === "left" ? "" : "LIVE VOTE"}</div>
+        <div className="vote-column__percent-column">
+          {voteInfo.map(function (data, index) {
+            return (
+              <div className="row" key={data.title}>
+                <span className="row__title">
+                  <div
+                    className={`row__title--dot color--${index + 1}`}
+                    style={{ backgroundColor: data.color }}
+                  />
+                  {data.title}:
+                </span>
+                <span className="row__data">{data.value}%</span>
+              </div>
+            );
+          })}
+        </div>
+
+        <div className="vote-column__chart">
+          <PieChart data={[...voteInfo]} animate={true} lineWidth={25} />
+        </div>
+      </div>
+    );
+  };
+
+  const setVote = () => {
+    store.Lightbox.setContent("vote");
+    store.Lightbox.setVisible(true);
+  };
+
+  store.Lightbox.setContent("vote");
+  store.Lightbox.setVisible(true);
+
   return (
     <div className="voting-page">
       <div className="voting-page__power">
-        Voting Power {votingPower} <i className="icon info" />
+        VOTING POWER <span>{votingPower}</span> <i className="icon icon--info icon--vs1" />
       </div>
       <div className="voting-page__distribution">
         <div className="voting-page__distribution--wrapper">
-          <div className="this-week">
-            <div className="this-week__header">THIS WEEK’S DISTRIBUTION</div>
-
-            <div className="this-week__percent-column">
-              {voteData.map(function (data, index) {
-                return (
-                  <div className="row" key={data.title}>
-                    <span className="row__title">
-                      <div
-                        className={`row__title--dot color--${index + 1}`}
-                        style={{ backgroundColor: data.color }}
-                      />
-                      {data.title}:
-                    </span>
-                    <span className="row__data">{data.value}%</span>
-                  </div>
-                );
-              })}
-            </div>
-
-            <div className="this-week__chart">
-              <PieChart data={[...voteData]} animate={true} lineWidth={25} />
-            </div>
-          </div>
-          <div className="next-week">
-            <div className="this-week__header">THIS WEEK’S DISTRIBUTION</div>
-
-            <div className="this-week__percent-column">
-              {nextVoteData.map(function (data, index) {
-                return (
-                  <div className="row" key={data.title}>
-                    <span className="row__title">
-                      <div className={`row__title--dot color--${index + 1}`} />
-                      {data.title}:
-                    </span>
-                    <span className="row__data">{data.value}%</span>
-                  </div>
-                );
-              })}
-            </div>
-
-            <div className="this-week__chart">
-              <PieChart data={[...nextVoteData]} animate={true} lineWidth={25} />
-            </div>
-          </div>
+          {renderColumn(voteData, "left")}
+          <div className="separator"></div>
+          {renderColumn(nextVoteData, "right")}
         </div>
 
         <div className="voting-page__distribution__button">
-          <button className="btn btn--primary"> Vote </button>
+          <button className="btn btn--primary" onClick={setVote}>
+            {" "}
+            Vote{" "}
+          </button>
         </div>
       </div>
     </div>
   );
-};
+});
