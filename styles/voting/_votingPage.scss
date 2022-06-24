@@ -1,3 +1,32 @@
+// @mixin selectColor($number) {
+//     $color: map-get(
+//         (
+//             1: #d63abe,
+//             2: #0262d2,
+//             3: #02d2d2,
+//             4: #1fd202,
+//             5: #d2ca02,
+//             6: #9c02d2,
+//             7: #d2025a,
+//             8: #d20202,
+//             9: #d27f02,
+//             10: #b5d202,
+//             11: #02d26e,
+//             12: #c202d2,
+//             13: #258f00,
+//             14: #930069,
+//             15: #005593,
+//             16: #00a711,
+//             17: #930000,
+//             18: #00936f,
+//             19: #000f93,
+//             20: #a24e00,
+//         ),
+//         $number
+//     );
+//     background-color: $color;
+// }
+
 .voting-page {
   width: 100%;
   margin-top: 50px;
@@ -45,5 +74,79 @@
 .this-week,
 .next-week {
   width: 50%;
-  min-height: 300px;
+  min-height: 200px;
+  padding: 50px 50px 0 50px;
+
+  // display: flex;
+  // align-content: center;
+  // justify-content: center;
+
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 0.1fr 0.8fr;
+  grid-column-gap: 0px;
+  grid-row-gap: 0px;
+
+  svg {
+    // width: 200px;
+    // height: 200px;
+    height: 80%;
+    aspect-ratio: 1;
+  }
+
+  &__header {
+    grid-area: 1 / 1 / 2 / 3;
+  }
+
+  &__percent-column {
+    grid-area: 2 / 1 / 3 / 2;
+  }
+
+  svg {
+    grid-area: 2 / 2 / 3 / 3;
+  }
+
+  &__percent-column,
+  &__chart {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
 }
+
+.this-week__percent-column {
+  .row {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    width: 250px;
+    margin: 10px 0;
+
+    &__title {
+      display: flex;
+      align-items: center;
+      width: 150px;
+
+      &--dot {
+        width: 5px;
+        display: inline-block;
+        aspect-ratio: 1;
+        border-radius: 50%;
+        margin-right: 10px;
+      }
+    }
+
+    &__data {
+      width: 100px;
+    }
+  }
+}
+
+// .row__title--dot {
+//     @for $i from 1 through 20 {
+//         &.color--#{$i} {
+//             @include selectColor($i);
+//         }
+//     }
+// }
