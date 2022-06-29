@@ -1,6 +1,5 @@
 import { useContext, useEffect, useState, memo, useCallback, useMemo } from "react";
 
-import { PublicKey } from "@solana/web3.js";
 import { observer } from "mobx-react";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
@@ -70,16 +69,9 @@ const SingleNftPage: NextPage = observer(() => {
         const { account, publicKey } = offer;
         return (
           account.state === 0 && (
-            <OfferTemplate
-              subOfferKey={new PublicKey("")}
-              offerKey=""
-              description=""
-              external_url=""
-              image=""
-              name=""
-              {...account}
-              publicKey={publicKey}
-            />
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
+            <OfferTemplate key={offer.publicKey.toBase58()} {...account} publicKey={publicKey} />
           )
         );
       })

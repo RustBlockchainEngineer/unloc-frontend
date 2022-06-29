@@ -126,7 +126,7 @@ export const OffersWrap = observer(() => {
     return (
       sanitizedOffers.length > 0 &&
       sanitizedOffers.map((offer) => {
-        return <OfferHead key={offer.offerKey} {...offer} />;
+        return <OfferHead key={offer.offerKey.toString()} {...offer} />;
       })
     );
   }, [sanitizedOffers]);
@@ -135,17 +135,9 @@ export const OffersWrap = observer(() => {
     return (
       lendingList.length > 0 &&
       lendingList.map((offer) => (
-        <OfferTemplate
-          publicKey={new PublicKey("")}
-          offerKey=""
-          description=""
-          external_url=""
-          image=""
-          name=""
-          key={offer.subOfferKey.toString()}
-          {...offer}
-          isLends={true}
-        />
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        <OfferTemplate key={offer.subOfferKey.toString()} {...offer} isLends={true} />
       ))
     );
   }, [lendingList]);
@@ -154,30 +146,9 @@ export const OffersWrap = observer(() => {
     return sanitizedOffers.length > 0
       ? sanitizedOffers.map((offer) => {
           const { subOffers, ...rest } = offer;
-          return (
-            <OfferTemplate
-              publicKey={new PublicKey("")}
-              subOfferKey={new PublicKey("")}
-              borrower={new PublicKey("")}
-              offerMint={new PublicKey("")}
-              offer={new PublicKey("")}
-              subOfferNumber={new BN("")}
-              lender={new PublicKey("")}
-              offerVault={new PublicKey("")}
-              offerAmount={new BN("")}
-              repaidAmount={new BN("")}
-              lenderClaimedAmount={new BN("")}
-              borrowerClaimedAmount={new BN("")}
-              loanStartedTime={new BN("")}
-              loanEndedTime={new BN("")}
-              loanDuration={new BN("")}
-              minRepaidNumerator={new BN("")}
-              aprNumerator={new BN("")}
-              key={offer.offerKey}
-              {...rest}
-              isDeposited={true}
-            />
-          );
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          return <OfferTemplate key={offer.offerKey.toString()} {...rest} isDeposited={true} />;
         })
       : depositButton();
   }, [sanitizedOffers]);
