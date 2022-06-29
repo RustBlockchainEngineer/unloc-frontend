@@ -1,14 +1,11 @@
-import React from "react";
+import { Dispatch, SetStateAction } from "react";
 
 interface MenuShowButtonProps {
   menuVisibleState: boolean;
-  changeMenuVisibility: React.Dispatch<React.SetStateAction<boolean>> | undefined;
+  changeMenuVisibility: Dispatch<SetStateAction<boolean>> | undefined;
 }
 
-export const MenuShowButton: React.FC<MenuShowButtonProps> = ({
-  menuVisibleState,
-  changeMenuVisibility,
-}: MenuShowButtonProps) => {
+export const MenuShowButton = ({ menuVisibleState, changeMenuVisibility }: MenuShowButtonProps) => {
   return (
     <div
       className="menu-show-button mobile-only"

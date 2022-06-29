@@ -1,7 +1,6 @@
 .offers-filters-wrapper {
-  padding-top: 50px;
   display: flex;
-  flex-direction: column-reverse;
+  flex-direction: column;
   align-items: center;
   position: relative;
   z-index: 1;
@@ -20,35 +19,45 @@
     .filter--icon {
       margin: 0 -15px;
     }
+    @include theme-aware("color", "switch-color");
 
     &.active {
       @media (min-width: $bp-phone) {
+        @include theme-aware("color", "text-primary-color");
         @include theme-aware("background-color", "color-accent");
       }
 
       box-shadow: 0 3px 0 rgba(33, 13, 72, 0.25);
     }
+    .icon--filter-dark--striped {
+      background-image: url("/icons/filter-arrow-striped-light.svg");
+    }
 
     &:hover {
       @include theme-aware("background-color", "filter-btn-hover");
     }
+    @media (max-width: $bp-tablet) {
+      position: static;
+    }
   }
 
   @media (max-width: $bp-tablet) {
-    padding-top: 100px;
+    padding-top: 0;
+    position: static;
+    margin-top: 10px;
+    margin-bottom: -550px;
+
+    &.active {
+      margin-bottom: 0;
+    }
 
     .btn--filters {
       margin-top: $mr-md;
 
       &.active {
         border-radius: $brd-rds-lg;
-        margin-top: $mr-tn;
       }
     }
-  }
-
-  @media (max-width: $bp-tablet) {
-    padding-top: 0;
   }
 }
 
@@ -56,10 +65,12 @@
   width: 100%;
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  margin-top: 25px;
 
   h1 {
     font-size: $tp-1xl;
-    margin-bottom: 0;
+    margin: 0;
   }
 
   @media (max-width: $bp-tablet) {
@@ -73,42 +84,69 @@
       font-size: 32px;
     }
   }
-}
 
-.offers-view {
-  display: flex;
-  margin-top: 40px;
+  .reward {
+    display: flex;
+    align-items: center;
+    padding: 3px 20px;
+    @include theme-aware("background-color", "bg-table-hover");
+    border-radius: $brd-rds-2lg;
+    p {
+      display: flex;
+      align-items: center;
+      margin-left: 10px;
+      line-height: 26px;
+      font-size: $tp-1lg;
 
-  button:last-child {
-    margin-left: 20px;
-  }
-
-  button.active {
-    @include theme-aware("background-color", "grid-table-button-bg");
-    @include theme-aware("color", "switch-color");
-  }
-
-  button {
-    @include theme-aware("color", "grid-table-button-bg");
-    @include theme-aware("border-color", "grid-table-button-bg");
-
-    &:hover:not(.active) {
-      @include theme-aware("background-color", "color-accent");
+      @media (max-width: $bp-phone) {
+        display: unset;
+      }
+      span {
+        text-indent: 6px;
+        font-weight: 700;
+      }
+      i {
+        display: inline-block;
+        margin-left: 8px;
+      }
     }
-
-    :last-child {
-      display: block;
-      margin-left: 20px;
-    }
   }
 
-  @media (max-width: $bp-tablet) {
-    display: none;
-    margin: 30px 10px 20px;
+  .offers-view {
+    display: flex;
+    column-gap: 20px;
+
     button {
-      font-size: $tp-tn;
-      &.btn--table {
-        display: none;
+      @include theme-aware("color", "grid-table-button-bg");
+      @include theme-aware("border-color", "grid-table-button-bg");
+      height: unset;
+      padding: 7px 18px;
+      display: flex;
+      align-items: center;
+      column-gap: 6px;
+
+      span {
+        line-height: $tp-2md;
+      }
+
+      &:hover:not(.active) {
+        @include theme-aware("background-color", "color-accent");
+      }
+
+      &.active {
+        @include theme-aware("background-color", "grid-table-button-bg");
+        @include theme-aware("color", "switch-color");
+      }
+    }
+
+    @media (max-width: $bp-tablet) {
+      display: none;
+      margin: 30px 10px 20px;
+      button {
+        font-size: $tp-tn;
+        &.btn--table {
+          display: none;
+        }
       }
     }
   }
@@ -116,11 +154,6 @@
 
 .offers-filters {
   @include theme-aware("background-color", "color-accent");
-  @media (min-width: $bp-tablet) {
-    margin-top: -20px;
-    margin-bottom: -200px;
-  }
-
   display: flex;
   justify-items: center;
   align-items: flex-start;
@@ -165,5 +198,10 @@
     position: absolute;
     top: $mr-sm;
     right: $mr-sm;
+  }
+
+  @media (min-width: $bp-tablet) {
+    //margin-top: -20px;
+    margin-bottom: -140px;
   }
 }

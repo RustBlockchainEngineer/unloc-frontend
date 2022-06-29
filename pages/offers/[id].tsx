@@ -47,7 +47,7 @@ const SingleNftPage: NextPage = observer(() => {
         store.Lightbox.setContent("acceptOffer");
         store.Lightbox.setCanClose(true);
         store.Lightbox.setVisible(true);
-      } catch (e: any) {
+      } catch (e) {
         errorCase(e);
       }
     },

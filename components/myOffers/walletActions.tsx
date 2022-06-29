@@ -1,4 +1,4 @@
-import { useCallback, useContext, FC, MouseEvent } from "react";
+import { useCallback, useContext, MouseEvent, useState } from "react";
 
 import { observer } from "mobx-react";
 import { usePopperTooltip } from "react-popper-tooltip";
@@ -6,17 +6,19 @@ import { usePopperTooltip } from "react-popper-tooltip";
 import { ConnectWallet } from "@components/connectWallet/ConnectWallet";
 import { StoreContext } from "@pages/_app";
 import { OfferCategory } from "@stores/MyOffers.store";
+import { CustomSelect } from "@components/layout/customSelect";
 
-const categories: { label: string; value: OfferCategory }[] = [
-  { label: "Active Loans", value: "active" },
+const categories: { label: string; value: OfferCategory; options?: string[] }[] = [
+  { label: "Active Loans", value: "active", options: ["All", "Borrows", "Lends"] },
   { label: "Active Offers", value: "proposed" },
   { label: "My Vault", value: "deposited" },
 ];
 
-export const WalletActions: FC = observer(() => {
+export const WalletActions = observer(() => {
   const store = useContext(StoreContext);
   const { connected } = store.Wallet;
   const { activeCategory } = store.MyOffers;
+  const [sortOption, setSortOption] = useState("All");
   const { getTooltipProps, setTooltipRef, setTriggerRef, visible } = usePopperTooltip();
 
   const handleDeposit = useCallback(() => {
@@ -28,19 +30,35 @@ export const WalletActions: FC = observer(() => {
     store.MyOffers.setActiveCategory(event.currentTarget.name as OfferCategory);
   }, []);
 
+  const sortNFT = (option: string) => {
+    setSortOption(option);
+    store.MyOffers.setActiveLoan(option.toLowerCase());
+  };
+
   return connected ? (
     <div className="my-offers-top">
       <div className="my-offers-top__heading">
         {categories.map((category) => (
-          <button
-            key={category.value}
-            name={category.value}
-            className={`btn btn--md ${
-              activeCategory === category.value ? "btn--primary" : "btn--bordered"
-            }`}
-            onClick={handleCategoryClick}>
-            {category.label}
-          </button>
+          <>
+            <button
+              key={category.value}
+              name={category.value}
+              className={`btn btn--md ${
+                activeCategory === category.value ? "btn--primary" : "btn--bordered"
+              }`}
+              onClick={handleCategoryClick}>
+              {category.label}
+            </button>
+            {category.options && activeCategory === "active" && (
+              <CustomSelect
+                key={`${category.value}-select`}
+                options={category.options}
+                selectedOption={sortOption}
+                setSelectedOption={sortNFT}
+                classNames={"sort-select"}
+              />
+            )}
+          </>
         ))}
       </div>
       <div className="my-offers-top__toolbox">

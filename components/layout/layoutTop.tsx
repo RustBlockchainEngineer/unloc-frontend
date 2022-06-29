@@ -1,4 +1,5 @@
-import React, { useContext, useEffect } from "react";
+import { useContext, useEffect } from "react";
+
 import { observer } from "mobx-react";
 
 import { StoreContext } from "@pages/_app";
@@ -31,6 +32,12 @@ export const LayoutTop = observer(() => {
         <TopMenu mobileVisible={true} />
         <UserToolbox hideMenu={undefined} isMenuHidden={undefined} />
       </div>
+      <button className="rewards-button" type="button">
+        <i className={`icon icon--svs icon--reward-light`} />
+        <p>
+          Unloc Rewards <span>3</span>
+        </p>
+      </button>
       {visible ? (
         <Lightbox>
           <>

@@ -1,19 +1,4 @@
 @media (max-width: $bp-tablet) {
-  .btn--filters {
-    position: static;
-    z-index: 0 !important;
-  }
-
-  .offers-filters-wrapper {
-    position: static;
-    margin-top: 10px;
-    margin-bottom: -550px;
-
-    &.active {
-      margin-bottom: 0;
-    }
-  }
-
   .offers-filters {
     position: static;
     margin: 100px 2.5vw 0;

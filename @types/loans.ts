@@ -58,7 +58,7 @@ export interface SanitizedData {
   name: string;
   image: string;
   collateralId: string;
-  nftMint: string;
+  nftMint: string | PublicKey;
 }
 
 export interface PreparedOfferData {

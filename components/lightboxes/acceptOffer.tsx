@@ -61,6 +61,14 @@ export const AcceptOffer = observer(() => {
           </div>
         </div>
       </div>
+      <div className="rewards">
+        <span>Current Unloc rewards for this collection</span>
+        <p>
+          APR:
+          <b>12.5%</b>
+          <i className="icon icon--svs icon--unloc--light" />
+        </p>
+      </div>
       <button
         className="btn btn--md btn--primary"
         onClick={() => handleAcceptOffer(offerPublicKey)}>

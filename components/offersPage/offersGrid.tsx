@@ -1,4 +1,4 @@
-import { JSXElementConstructor, ReactElement, useContext } from "react";
+import { ReactElement, useContext } from "react";
 
 import { observer } from "mobx-react";
 import { StoreContext } from "@pages/_app";
@@ -84,10 +84,7 @@ export const OffersGrid = observer(() => {
     );
   };
 
-  const renderPaginator = (
-    active: number,
-    last: number,
-  ): ReactElement<NodeListOf<Element>, string | JSXElementConstructor<any>>[] => {
+  const renderPaginator = (active: number, last: number): ReactElement<NodeListOf<Element>>[] => {
     const beforePages = (index: number, active: number): boolean => {
       return index < active && index > active - 4;
     };

@@ -246,7 +246,13 @@
       "rules": {
         "import/no-default-export": "off",
         "import/prefer-default-export": "off",
-        "react-memo/require-memo": "off" // as observer uses memo under the hood
+        "react-memo/require-memo": "off"
+      }
+    },
+    {
+      "files": ["hooks/offerActionsHook.ts"],
+      "rules": {
+        "react-memo/require-memo": "off"
       }
     }
   ]
