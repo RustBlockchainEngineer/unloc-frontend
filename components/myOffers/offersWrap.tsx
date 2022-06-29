@@ -3,11 +3,13 @@ import { ReactNode, useContext, useEffect, useMemo, useState } from "react";
 import { observer } from "mobx-react";
 import { StoreContext } from "@pages/_app";
 import { OfferAccount, SubOfferAccount } from "../../@types/loans";
-import { OfferTemplate, OfferWrap } from "@components/myOffers/offerTemplate";
+import { OfferHead } from "@components/layout/offerHead";
+import { OfferTemplate } from "@components/layout/offerTemplate";
 import { BlobLoader } from "@components/layout/blobLoader";
 import { PublicKey } from "@solana/web3.js";
 import { usePopperTooltip } from "react-popper-tooltip";
 import { OfferActionsHook } from "@hooks/offerActionsHook";
+import BN from "bn.js";
 
 export type SanitizedOffer = {
   offerKey: string;
@@ -124,7 +126,7 @@ export const OffersWrap = observer(() => {
     return (
       sanitizedOffers.length > 0 &&
       sanitizedOffers.map((offer) => {
-        return <OfferWrap key={offer.offerKey} {...offer} />;
+        return <OfferHead key={offer.offerKey} {...offer} />;
       })
     );
   }, [sanitizedOffers]);
@@ -133,8 +135,17 @@ export const OffersWrap = observer(() => {
     return (
       lendingList.length > 0 &&
       lendingList.map((offer) => (
-        // @ts-ignore
-        <OfferTemplate key={offer.subOfferKey.toString()} {...offer} isLends={true} />
+        <OfferTemplate
+          publicKey={new PublicKey("")}
+          offerKey=""
+          description=""
+          external_url=""
+          image=""
+          name=""
+          key={offer.subOfferKey.toString()}
+          {...offer}
+          isLends={true}
+        />
       ))
     );
   }, [lendingList]);
@@ -143,8 +154,30 @@ export const OffersWrap = observer(() => {
     return sanitizedOffers.length > 0
       ? sanitizedOffers.map((offer) => {
           const { subOffers, ...rest } = offer;
-          // @ts-ignore
-          return <OfferTemplate key={offer.offerKey} {...rest} isDeposited={true} />;
+          return (
+            <OfferTemplate
+              publicKey={new PublicKey("")}
+              subOfferKey={new PublicKey("")}
+              borrower={new PublicKey("")}
+              offerMint={new PublicKey("")}
+              offer={new PublicKey("")}
+              subOfferNumber={new BN("")}
+              lender={new PublicKey("")}
+              offerVault={new PublicKey("")}
+              offerAmount={new BN("")}
+              repaidAmount={new BN("")}
+              lenderClaimedAmount={new BN("")}
+              borrowerClaimedAmount={new BN("")}
+              loanStartedTime={new BN("")}
+              loanEndedTime={new BN("")}
+              loanDuration={new BN("")}
+              minRepaidNumerator={new BN("")}
+              aprNumerator={new BN("")}
+              key={offer.offerKey}
+              {...rest}
+              isDeposited={true}
+            />
+          );
         })
       : depositButton();
   }, [sanitizedOffers]);

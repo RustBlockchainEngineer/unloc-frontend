@@ -4,31 +4,15 @@ import * as anchor from "@project-serum/anchor";
 import { getOffer, getSubOffersInRange } from "@integration/nftLoan";
 import { INftCoreData } from "../@types/nfts/nft";
 import { getMetadata } from "@integration/nftIntegration";
-import { getDecimalsForLoanAmount } from "@integration/getDecimalForLoanAmount";
-import { calculateRepayValue } from "@utils/loansMath";
-import { currencyMints } from "@constants/currency";
-import { getDurationFromContractData } from "@utils/timeUtils/timeUtils";
-import { OfferAccount, Offer } from "../@types/loans";
+import { OfferAccount, Offer, SubOfferAccount } from "../@types/loans";
 import { range } from "@utils/range";
 import { errorCase } from "@methods/toast-error-handler";
-
-interface LoanInterface {
-  id: string;
-  status: number;
-  amount: string;
-  currency: string;
-  duration: string;
-  apr: number;
-  offerMint: string;
-  publicKey: anchor.web3.PublicKey;
-  totalRepay: string;
-}
 
 export class SingleOfferStore {
   rootStore;
   offer = {} as OfferAccount;
   nftData = {} as INftCoreData;
-  loansData: LoanInterface[] = [];
+  loansData: SubOfferAccount[] = [];
   isYours: boolean = false;
   loansCount = 0;
 
@@ -67,42 +51,9 @@ export class SingleOfferStore {
 
     try {
       const subOffers = await getSubOffersInRange(this.offer.publicKey, subOfferRange);
-      const loansArr: Array<LoanInterface> = [];
-      subOffers.forEach((element) => {
-        const { publicKey, account } = element;
-        const { offerAmount, offerMint, loanDuration, aprNumerator, state } = account;
-
-        const amountConvered = getDecimalsForLoanAmount(
-          offerAmount.toNumber(),
-          offerMint.toBase58(),
-        );
-
-        // Converting the duration to days if it's more than 0, otherwise just use 0
-        const durationConverted = loanDuration.gtn(0)
-          ? getDurationFromContractData(loanDuration.toNumber(), "days")
-          : 0;
-        const aprConverted = aprNumerator.toNumber();
-
-        loansArr.push({
-          id: publicKey.toBase58(),
-          status: state,
-          amount: amountConvered.toString(),
-          currency: currencyMints[offerMint.toBase58()],
-          duration: durationConverted.toString(), // suspecting wrong type here, also we are showing loans with 0 day duration this is wrong
-          apr: aprConverted,
-          offerMint: offerMint.toBase58(),
-          publicKey: publicKey,
-          totalRepay: calculateRepayValue(
-            Number(amountConvered),
-            aprConverted,
-            durationConverted,
-            this.rootStore.GlobalState.denominator,
-          ),
-        });
-      });
 
       this.loansCount = subOffers.filter((s) => s.account.state !== 5).length;
-      this.setLoansData(loansArr);
+      this.setLoansData(subOffers);
     } catch (e: any) {
       errorCase(e);
     }
@@ -112,7 +63,7 @@ export class SingleOfferStore {
     this.nftData = data;
   };
 
-  @action.bound setLoansData = (data: LoanInterface[]): void => {
+  @action.bound setLoansData = (data: SubOfferAccount[]): void => {
     this.loansData = data;
   };
 }

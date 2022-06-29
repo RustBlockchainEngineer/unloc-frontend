@@ -1,5 +1,8 @@
 .offer {
   width: 49%;
+  &.default {
+    width: 100%;
+  }
   &.with-wrap {
     width: 100%;
     &.siblings {
@@ -47,6 +50,7 @@
     }
   }
   //&.default {
+  &.default,
   &.deposit,
   &.proposed {
     @include theme-aware("background-image", "myOffers-subOffer-gradient");

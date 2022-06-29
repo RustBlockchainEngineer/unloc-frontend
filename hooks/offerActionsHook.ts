@@ -4,7 +4,7 @@ import { PublicKey } from "@solana/web3.js";
 
 import { errorCase, successCase } from "@methods/toast-error-handler";
 import { StoreContext } from "@pages/_app";
-import { IsubOfferData } from "@stores/Lightbox.store";
+import { ILightboxOffer, IsubOfferData } from "@stores/Lightbox.store";
 
 interface ISanitized {
   nftMint: string | PublicKey;
@@ -13,11 +13,12 @@ interface ISanitized {
   offerKey: string;
 }
 
-export const OfferActionsHook = (): {
+export interface IOfferActionsHook {
   handleClaimCollateral: (offerKey: PublicKey) => Promise<void>;
   refreshSubOffers: (walletKeyProp: PublicKey) => Promise<void>;
   handleCancelCollateral: (nftMint: PublicKey, name: string) => Promise<void>;
   createOffersHandler: ({ nftMint, name, image, offerKey }: ISanitized) => void;
+  handleConfirmOffer: (offer: ILightboxOffer) => void;
   handleCancelOffer: (subOfferKey: string) => Promise<void>;
   handleDepositClick: () => void;
   handleEditOffer: (
@@ -26,7 +27,9 @@ export const OfferActionsHook = (): {
     { nftMint, name, image, offerKey }: ISanitized,
   ) => void;
   handleRepayLoan: (subOfferKey: string) => Promise<void>;
-} => {
+}
+
+export const OfferActionsHook = (): IOfferActionsHook => {
   const store = useContext(StoreContext);
 
   const openLightBox = useCallback((): void => {
@@ -165,6 +168,20 @@ export const OfferActionsHook = (): {
     [closeLightBox, openLightBox, store.MyOffers],
   );
 
+  const handleConfirmOffer = useCallback(
+    (offer: ILightboxOffer) => {
+      try {
+        store.Lightbox.setAcceptOfferData(offer);
+        store.Lightbox.setContent("acceptOffer");
+        store.Lightbox.setCanClose(true);
+        store.Lightbox.setVisible(true);
+      } catch (e) {
+        errorCase(e);
+      }
+    },
+    [store.Lightbox],
+  );
+
   return {
     refreshSubOffers,
     handleDepositClick,
@@ -174,5 +191,6 @@ export const OfferActionsHook = (): {
     handleCancelOffer,
     handleEditOffer,
     handleRepayLoan,
+    handleConfirmOffer,
   };
 };
