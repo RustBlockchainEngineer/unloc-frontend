@@ -10,7 +10,7 @@ export const getSubOffersKeysByState = async (state: SubOfferState[]) => {
       dataSlice: { offset: 0, length: 0 }, // Fetch without any data.
       filters: [
         { memcmp: { offset: 0, bytes: bs58.encode(discriminator) } },
-        { memcmp: { offset: discriminator.length + 96, bytes: bs58.encode(state) } }, // add filters for nftMint, APR, Duration, Amount and this function will be glorious
+        { memcmp: { offset: discriminator.length + 97, bytes: bs58.encode(state) } }, // add filters for nftMint, APR, Duration, Amount and this function will be glorious
       ],
     });
 
