@@ -308,7 +308,7 @@ export const OfferTemplate = observer(
                   currency,
                 })
               }>
-              {isYours ? "Can't lend" : `Lent ${currency}`}
+              {isYours ? "Can't lend" : `Lend ${currency}`}
             </button>
           </div>
         ) : (
