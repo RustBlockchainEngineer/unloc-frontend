@@ -9,7 +9,6 @@ import { BlobLoader } from "@components/layout/blobLoader";
 import { PublicKey } from "@solana/web3.js";
 import { usePopperTooltip } from "react-popper-tooltip";
 import { OfferActionsHook } from "@hooks/offerActionsHook";
-import BN from "bn.js";
 
 export type SanitizedOffer = {
   offerKey: string;
