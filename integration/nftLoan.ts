@@ -46,7 +46,6 @@ const GLOBAL_STATE_TAG = Buffer.from("global-state-seed");
 const OFFER_TAG = Buffer.from("offer-seed");
 const SUB_OFFER_TAG = Buffer.from("sub-offer-seed");
 const NFT_VAULT_TAG = Buffer.from("nft-vault-seed");
-const OFFER_VAULT_TAG = Buffer.from("offer-vault-seed");
 const TREASURY_VAULT_TAG = Buffer.from("treasury-vault-seed");
 
 const WSOL_MINT = new anchor.web3.PublicKey("So11111111111111111111111111111111111111112");
@@ -739,23 +738,6 @@ export const checkWalletATA = async (
   return result;
 };
 
-export const logObject = (title: string, obj: any) => {
-  console.log(title, obj);
-};
-export const getOfferBalance = async (
-  subOffer: anchor.web3.PublicKey,
-  connection: anchor.web3.Connection = program.provider.connection,
-) => {
-  try {
-    const tokenAccount = await pda([OFFER_VAULT_TAG, subOffer.toBuffer()], programId);
-    const balance = (await connection.getTokenAccountBalance(tokenAccount)).value
-      .uiAmount as number;
-    return balance;
-  } catch (e) {
-    console.log(e);
-  }
-  return 0;
-};
 // --------------------utilities---------------------
 
 export class MultipleNFT {
