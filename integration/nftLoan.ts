@@ -53,15 +53,18 @@ const EDITION_TAG = Buffer.from("edition");
 
 const WSOL_MINT = new anchor.web3.PublicKey("So11111111111111111111111111111111111111112");
 const METADATA_PROGRAM = new anchor.web3.PublicKey("metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s");
+const CHAINLINK_STORE_PROGRAM = new anchor.web3.PublicKey(
+  "HEvSKofvBgfaexv23kMabbYqxasxU3mQ4ibBMEmJWHny",
+);
 const CHAINLINK_AGGREGATOR_PROGRAM_ID = new anchor.web3.PublicKey(
   "cjg3oHmg9uuPsP8D6g29NWvhySJkdYdAo9D25PRbKXJ",
 );
 
-export const CHAINLINK_SOL_FEED = new PublicKey("CcPVS9bqyXbD9cLnTbhhHazLsrua8QMFUHTutPtjyDzq");
-export const CHAINLINK_USDC_FEED = new PublicKey("7CLo1BY41BHAVnEs57kzYMnWXyBJrVEBPpZyQyPo2p1G");
+export const CHAINLINK_SOL_FEED = new PublicKey("HgTtcbcmp5BeThax5AU8vg4VwK79qAvAKKFMs8txMLW6");
+export const CHAINLINK_USDC_FEED = new PublicKey("4NmRgDfAZrfBHQBuzstMP5Bu1pgBzVn8u1djSvNrNkrN");
 export const CHAINLINK_PID = new PublicKey(CHAINLINK_AGGREGATOR_PROGRAM_ID);
 export const chainlinkIds = {
-  chainlinkProgram: CHAINLINK_PID,
+  chainlinkProgram: CHAINLINK_STORE_PROGRAM,
   solFeed: CHAINLINK_SOL_FEED,
   usdcFeed: CHAINLINK_USDC_FEED,
 };
@@ -528,27 +531,31 @@ export const acceptOffer = async (
     }
   }
 
-  const tx = await program.rpc.acceptOffer({
-    accounts: {
-      lender,
-      borrower,
-      globalState,
-      offer,
-      subOffer,
-      offerMint,
-      borrowerOfferVault,
-      lenderOfferVault,
-      rewardVault,
-      ...chainlinkIds,
-      ...defaults,
-    },
-    preInstructions,
-    postInstructions,
-    signers,
-  });
+  try {
+    const tx = await program.rpc.acceptOffer({
+      accounts: {
+        lender,
+        borrower,
+        globalState,
+        offer,
+        subOffer,
+        offerMint,
+        borrowerOfferVault,
+        lenderOfferVault,
+        rewardVault,
+        ...chainlinkIds,
+        ...defaults,
+      },
+      preInstructions,
+      postInstructions,
+      signers,
+    });
 
-  // eslint-disable-next-line no-console
-  console.log("acceptOffer tx = ", tx);
+    // eslint-disable-next-line no-console
+    console.log("acceptOffer tx = ", tx);
+  } catch (e) {
+    console.log(e);
+  }
 };
 
 export const repayLoan = async (
