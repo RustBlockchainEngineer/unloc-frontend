@@ -119,6 +119,8 @@ export const OfferTemplate = observer(
 
     const isSingleOffer = getQueryParamAsString(router.query.id);
 
+    offerKey = isSingleOffer ? publicKey.toBase58() : offerKey;
+
     return (
       <div
         className={`offer ${isSingleOffer ? "default" : ""}
@@ -169,6 +171,7 @@ export const OfferTemplate = observer(
           ) : (
             <div className="row-item">
               <p>Offer ID</p>
+              {console.log(offerKey)}
               <ShowOnHover label={compressAddress(4, offerKey)} classNames="on-hover">
                 <ClipboardButton data={offerKey} />
               </ShowOnHover>
