@@ -60,8 +60,8 @@ export const ConfirmLoan = observer(() => {
           <p>{name}</p>
         </div>
       </div>
-      <div className="terms-info">
-        <p>Your terms:</p>
+      <div className="terms-info row-division">
+        <p className="row-division">Your terms:</p>
         <div>
           <span>Loan</span>
           <span>

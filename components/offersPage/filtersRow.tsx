@@ -31,6 +31,8 @@ export const FiltersRow = observer(() => {
     clearFilters,
   } = store.Offers;
 
+  const { theme } = store.Interface;
+
   const switchCurrency = (currency: string): void => {
     store.Offers.setFilterCurrency(currency);
   };
@@ -48,6 +50,19 @@ export const FiltersRow = observer(() => {
   return (
     <div className="layout-line">
       <div className={`offers-filters-wrapper ${filtersVisible ? "active" : ""}`}>
+        <button
+          className={`btn--filters btn btn--md btn--secondary ${filtersVisible ? "active" : ""}`}
+          onClick={() => {
+            store.Offers.setFiltersVisible(!filtersVisible);
+          }}>
+          <i className="icon icon--vs filter--icon" />
+          <span>FILTERS</span>
+          <i
+            className={`icon icon--vs filter--icon icon--filter-${
+              theme === "dark" ? "light" : "dark"
+            }${filtersVisible ? "--down" : "--striped"}`}
+          />
+        </button>
         <div className={`offers-filters ${filtersVisible ? "active" : ""}`}>
           <Filter
             title="COLLECTIONS"
@@ -109,28 +124,26 @@ export const FiltersRow = observer(() => {
             <i onClick={resetFilters} className="icon icon--sm icon--interactive icon--reset" />
           </div>
         </div>
-        <button
-          className={`btn--filters btn btn--md btn--secondary ${filtersVisible ? "active" : ""}`}
-          onClick={() => {
-            store.Offers.setFiltersVisible(!filtersVisible);
-          }}>
-          <i className="icon icon--vs filter--icon" />
-          <span>FILTERS</span>
-          <i
-            className={`icon icon--vs filter--icon icon--filter${
-              filtersVisible ? "--down" : "--striped"
-            }`}
-          />
-        </button>
       </div>
       <div className="offers-top">
         <h1>Offers</h1>
+        <div className="reward">
+          <i className="icon icon--svs icon--info--dark" />
+          <p>
+            Current estimated reward APR: <span>12.5%</span>
+            <i className={`icon icon--svs icon--unloc--${theme === "dark" ? "light" : "dark"}`} />
+          </p>
+        </div>
         <div className="offers-view">
           <button
             className={`btn btn--md btn--grid btn--bordered ${viewType === "grid" ? "active" : ""}`}
             onClick={() => store.Offers.setViewType("grid")}>
             <span>Grid</span>
-            <i className={`icon icon--sm icon--grid ${viewType === "grid" ? "active" : ""}`} />
+            <i
+              className={`icon icon--vs-wide-width2 icon--grid ${
+                viewType === "grid" ? "active" : ""
+              }`}
+            />
           </button>
           <button
             className={`btn btn--md btn--table btn--bordered ${
@@ -138,7 +151,11 @@ export const FiltersRow = observer(() => {
             }`}
             onClick={() => store.Offers.setViewType("table")}>
             <span>Table</span>
-            <i className={`icon icon--sm icon--table ${viewType === "table" ? "active" : ""}`} />
+            <i
+              className={`icon icon--vs-wide-width icon--table ${
+                viewType === "table" ? "active" : ""
+              }`}
+            />
           </button>
         </div>
       </div>

@@ -14,7 +14,8 @@ export const AcceptOffer = observer(() => {
 
   const handleAcceptOffer = async (offerPublicKey: string): Promise<void> => {
     try {
-      store.Lightbox.setContent("processing");
+      // store.Lightbox.setContent("processing");
+      store.Lightbox.setContent("circleProcessing");
       store.Lightbox.setCanClose(false);
       store.Lightbox.setVisible(true);
       await store.Offers.handleAcceptOffer(offerPublicKey);
@@ -59,6 +60,14 @@ export const AcceptOffer = observer(() => {
             </span>
           </div>
         </div>
+      </div>
+      <div className="rewards">
+        <span>Current Unloc rewards for this collection</span>
+        <p>
+          APR:
+          <b>12.5%</b>
+          <i className="icon icon--svs icon--unloc--light" />
+        </p>
       </div>
       <button
         className="btn btn--md btn--primary"

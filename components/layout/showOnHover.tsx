@@ -1,13 +1,13 @@
-import React, { useState } from "react";
+import { useState, ReactNode } from "react";
 
 interface ShowOnHoverProps {
-  label: React.ReactNode;
-  children?: React.ReactNode;
+  label: ReactNode;
+  children?: ReactNode;
   labelClassName?: string;
   classNames?: string;
 }
 
-export const ShowOnHover: React.FC<ShowOnHoverProps> = ({
+export const ShowOnHover = ({
   label,
   children,
   labelClassName,
@@ -25,12 +25,12 @@ export const ShowOnHover: React.FC<ShowOnHoverProps> = ({
 
   return (
     <div
-      className={`show-on-hover ${classNames}`}
+      className={`on-hover ${classNames}`}
       onMouseOver={() => handleHover()}
       onMouseLeave={() => handleLeave()}>
-      <div className={`show-on-hover__label ${labelClassName ? labelClassName : ""}`}>{label}</div>
-      <div className={`show-on-hover__elements ${hoverState ? "active" : ""}`}>
-        <div className="show-on-hover__elements__wrap">{children}</div>
+      <p className={`on-hover__label ${labelClassName ? labelClassName : ""}`}>{label}</p>
+      <div className={`on-hover__elements ${hoverState ? "active" : ""}`}>
+        <div className="on-hover__elements__wrap">{children}</div>
       </div>
     </div>
   );

@@ -14,19 +14,10 @@
     font-size: $tp-md;
     border-radius: $brd-rds-lg;
     @include theme-aware("border", "button-border-primary");
-
-    .icon {
-      margin-top: 6px;
-      margin-right: 5px;
-    }
   }
 
   &--bordered {
     line-height: 35px;
-
-    .icon {
-      margin-top: 4px;
-    }
   }
 
   &--xl {

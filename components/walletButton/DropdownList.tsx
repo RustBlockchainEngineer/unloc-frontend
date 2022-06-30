@@ -76,7 +76,7 @@ export const DropdownList = observer(({ refer, active, openModal, base58 }: Drop
       <li className="wallet-adapter-dropdown-list-item theme" role="menuitem">
         Select theme
         <SwitchButton
-          state={store.Interface.theme == "light"}
+          state={theme == "light"}
           classNames={"theme-switcher--switch"}
           onClick={handleThemeSet}
           theme={true}

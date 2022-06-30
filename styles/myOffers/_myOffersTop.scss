@@ -31,14 +31,27 @@
       justify-content: center;
     }
 
+    @media (max-width: 683px) {
+      flex-wrap: wrap;
+    }
+
     @media (max-width: $bp-phone) {
       margin: 0 $mr-sm;
       gap: 0;
-      justify-content: space-between;
+      row-gap: 12px;
+
+      .sort-select {
+        width: auto;
+        margin-right: 12px;
+        ul {
+          width: fit-content;
+        }
+      }
+      //justify-content: space-between;
 
       .btn {
         max-width: 115px;
-        min-width: 90px;
+        min-width: 100px;
         flex: 1 1 25%;
         padding: 0 $mr-sm;
       }

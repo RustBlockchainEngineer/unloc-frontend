@@ -48,12 +48,22 @@
       }
     }
   }
+  .row-division {
+    display: flex;
+    flex-direction: column;
+    width: fit-content;
+    min-width: 200px;
+    padding-bottom: 10px;
+    //margin-bottom: 17px;
+    margin: 0 auto 17px;
+    @include theme-aware("border-bottom", "nft-headers-border");
+  }
   .terms-info {
-    & > p {
-      padding-bottom: 10px;
-      margin-bottom: 17px;
-      @include theme-aware("border-bottom", "nft-headers-border");
-    }
+    //& > p {
+    //  padding-bottom: 10px;
+    //  margin-bottom: 17px;
+    //  @include theme-aware("border-bottom", "nft-headers-border");
+    //}
     & > div {
       display: flex;
       flex-direction: column;

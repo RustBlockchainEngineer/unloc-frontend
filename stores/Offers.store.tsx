@@ -27,7 +27,6 @@ export class OffersStore {
   nftCollections: string[] = [];
   filterCollection: { label: string; value: string }[] = [];
   filterCollectionSelected: string[] = [];
-  refresh = false; // not sure if this is really needed
   viewType: "grid" | "table" = "grid";
 
   readyToFilter = true;
@@ -48,7 +47,6 @@ export class OffersStore {
 
   offersKeys: PublicKey[] = [];
   offersCount: number = 0;
-  offersKnown: any[] = [];
   offersEmpty: boolean = true;
 
   constructor(rootStore: any) {
@@ -217,7 +215,7 @@ export class OffersStore {
     };
   };
 
-  private inRange(x: number, min: number, max: number) {
+  private static inRange(x: number, min: number, max: number) {
     return (x - min) * (x - max) <= 0;
   }
 
@@ -227,19 +225,19 @@ export class OffersStore {
         this.filterCurrency === "All" ||
         currencyMints[offer.offerMint.toString()] === this.filterCurrency;
 
-      const amountCheck = this.inRange(
+      const amountCheck = OffersStore.inRange(
         offer.offerAmount.toNumber() / getDecimalsForOfferMint(offer.offerMint.toString()),
         this.filterAmountMin,
         this.filterAmountMax,
       );
 
-      const durationCheck = this.inRange(
+      const durationCheck = OffersStore.inRange(
         offer.loanDuration.toNumber() / (3600 * 24),
         this.filterDurationMin,
         this.filterDurationMax,
       );
 
-      const aprCheck = this.inRange(
+      const aprCheck = OffersStore.inRange(
         offer.aprNumerator.toNumber(),
         this.filterAprMin,
         this.filterAprMax,
@@ -389,7 +387,6 @@ export class OffersStore {
 
   @action.bound clearFilters = () => {
     this.filterCollectionSelected = [];
-    // this.filterCollection = []
     this.setFilterCurrency("All");
     this.refetchOffers();
   };

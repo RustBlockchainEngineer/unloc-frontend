@@ -6,6 +6,7 @@ type LightboxContent =
   | "loanConfirm"
   | "collateral"
   | "processing"
+  | "circleProcessing"
   | "lendConfirmation"
   | "acceptOffer"
   | "vote";

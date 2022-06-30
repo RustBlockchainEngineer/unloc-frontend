@@ -7,7 +7,6 @@ export const localesHome = {
 export const localesTop = {
   home: "Home",
   myOffers: "My Offers",
-  loansGiven: "Loans Given",
   myProfile: "My Profile",
   voting: "Voting",
 };

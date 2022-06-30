@@ -1,0 +1,414 @@
+.offer {
+  width: 49%;
+  &.with-wrap {
+    width: 100%;
+    &.siblings {
+      width: 49%;
+    }
+  }
+  @media (max-width: $bp-tablet) {
+    width: 100%;
+    &.with-wrap {
+      width: 100%;
+      &.siblings {
+        width: 100%;
+      }
+    }
+  }
+  .data-row {
+    &.head {
+      .image {
+        overflow: hidden;
+      }
+    }
+  }
+  border-radius: $brd-rds-2tn;
+  padding: 28px 24px;
+  backdrop-filter: blur(4px);
+  @include theme-aware("background-color", "myOffers-subOffer-bg");
+  @include theme-aware("box-shadow", "myOffers-subOffer-shadow");
+  @include theme-aware("box-shadow", "myOffers-subOffer-outer-shadow");
+  .data-row {
+    &.head {
+      .timer {
+        display: none;
+      }
+    }
+  }
+
+  &.deposit {
+    .data-row {
+      &.head {
+        .image {
+          width: 55px;
+          height: 55px;
+        }
+      }
+    }
+  }
+  //&.default {
+  &.deposit,
+  &.proposed {
+    @include theme-aware("background-image", "myOffers-subOffer-gradient");
+    box-shadow: unset;
+  }
+  //}
+  &.borrows,
+  &.proposed {
+    background-image: unset;
+
+    .data-row {
+      &.head {
+        display: none;
+      }
+    }
+    &.green {
+      @include theme-aware("background", "offer-item-label-borrows-green");
+
+      .offer-status {
+        .status {
+          @include theme-aware("background-color", "offer-status-borrows-green");
+          p {
+            @include theme-aware("color", "offer-status-text-borrows-green");
+          }
+        }
+      }
+
+      .proposal-details {
+        .time {
+          @include theme-aware("color", "timeLoan-green-static");
+        }
+      }
+    }
+    &.yellow {
+      @include theme-aware("background", "offer-item-label-borrows-yellow");
+
+      .offer-status {
+        .status {
+          @include theme-aware("background-color", "offer-status-borrows-yellow");
+          p {
+            @include theme-aware("color", "offer-status-text-borrows-yellow");
+          }
+        }
+      }
+
+      .proposal-details {
+        .time {
+          @include theme-aware("color", "timeLoan-yellow");
+        }
+      }
+    }
+    &.red {
+      @include theme-aware("background", "offer-item-label-borrows-red");
+
+      .offer-status {
+        .status {
+          @include theme-aware("background-color", "offer-status-borrows-red");
+          p {
+            @include theme-aware("color", "offer-status-text-borrows-red");
+          }
+        }
+      }
+
+      .proposal-details {
+        .time {
+          @include theme-aware("color", "timeLoan-red");
+        }
+      }
+    }
+  }
+  &.proposed {
+    &.green,
+    &.yellow {
+      @include theme-aware("background-image", "myOffers-subOffer-gradient");
+      .proposal-details {
+        .time {
+          @include theme-aware("color", "text-primary-color");
+        }
+      }
+    }
+  }
+  &.lends {
+    background-image: unset;
+
+    .data-row {
+      &.head {
+        .image {
+          width: 35px;
+          height: 35px;
+        }
+        .timer {
+          display: flex;
+        }
+      }
+    }
+    &.green {
+      @include theme-aware("background", "offer-item-label-lends-green");
+
+      .head {
+        .timer {
+          @include theme-aware("color", "timeLoan-green");
+        }
+      }
+
+      .offer-status {
+        .status {
+          @include theme-aware("background-color", "offer-status-lends-green");
+          p {
+            @include theme-aware("color", "offer-status-text-lends-green");
+          }
+        }
+      }
+    }
+    &.yellow {
+      @include theme-aware("background", "offer-item-label-lends-yellow");
+
+      .head {
+        .timer {
+          @include theme-aware("color", "timeLoan-yellow");
+        }
+      }
+
+      .offer-status {
+        .status {
+          @include theme-aware("background-color", "offer-status-lends-yellow");
+          p {
+            @include theme-aware("color", "offer-status-text-lends-yellow");
+          }
+        }
+      }
+    }
+    &.red {
+      @include theme-aware("background", "offer-item-label-lends-red");
+
+      .head {
+        .timer {
+          @include theme-aware("color", "timeLoan-red");
+        }
+      }
+
+      .offer-status {
+        .status {
+          @include theme-aware("background-color", "offer-status-lends-red");
+          p {
+            @include theme-aware("color", "offer-status-text-lends-red");
+          }
+        }
+      }
+    }
+  }
+
+  @media (max-width: $bp-phone) {
+    width: 100%;
+  }
+
+  .data-row {
+    display: flex;
+    justify-content: space-between;
+    column-gap: 25px;
+
+    &.head {
+      margin-bottom: 5px;
+      @media (max-width: 600px) {
+        flex-direction: column;
+        align-items: center;
+      }
+      .info {
+        display: flex;
+        column-gap: 9px;
+        align-items: center;
+        flex-direction: row;
+        flex: 1 1 calc(65% - $mr-md/2);
+        .image {
+          border-radius: 7px;
+          background: #fff;
+        }
+        p {
+          font-size: $tp-2md;
+          line-height: $tp-1lg;
+          font-weight: $wg-hv;
+        }
+
+        span {
+          font-size: $tp-sm;
+          line-height: $tp-2md;
+        }
+      }
+      .timer {
+        flex-direction: column;
+        align-items: flex-end;
+
+        @media (max-width: 600px) {
+          margin-top: 5px;
+          align-items: center;
+        }
+
+        @media (max-width: $bp-phone) {
+          align-items: center;
+          span {
+            text-align: center;
+          }
+        }
+
+        span {
+          font-size: $tp-sm;
+        }
+
+        .time-row {
+          @include theme-aware("background", "myOffers-subOffer-info-bg");
+          padding: 6px 3px;
+          border-radius: 6px;
+
+          span {
+            font-size: $tp-2md;
+            line-height: 18px;
+            font-weight: $wg-hv;
+          }
+
+          & > span {
+            padding: 0 7px;
+            &:not(:last-child) {
+              @include theme-aware("border-right", "loan-time-divide");
+            }
+          }
+        }
+
+        :first-child {
+          margin-bottom: 5px;
+        }
+      }
+    }
+
+    &.offer-status {
+      margin-bottom: 28px;
+      @media (max-width: 730px) {
+        flex-direction: column;
+      }
+      .row-item {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        @media (max-width: 730px) {
+          &:not(:first-child) {
+            margin-top: 10px;
+          }
+        }
+        p {
+          width: 100%;
+          margin-bottom: 6px;
+          font-size: $tp-sm;
+          line-height: $tp-2md;
+          font-weight: $wg-lt;
+          text-align: center;
+        }
+        & > div {
+          width: 100%;
+          border-radius: $brd-rds-2tn;
+          @include theme-aware("background-color", "offer-item-label-default");
+          padding: 6px 0;
+          p {
+            font-weight: $wg-hv;
+            margin-bottom: 0;
+          }
+          &.on-hover {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            p {
+              width: unset;
+            }
+          }
+        }
+      }
+    }
+
+    &.proposal-details {
+      border-radius: 6px;
+      @include theme-aware("background-color", "myOffers-subOffer-info-bg");
+      @include theme-aware("box-shadow", "myOffers-subOffer-shadow");
+      @include theme-aware("box-shadow", "myOffers-subOffer-proposal-details-shadow");
+      padding: 12px 9px 8px;
+      justify-content: space-around;
+      @media (max-width: 600px) {
+        flex-wrap: wrap;
+        column-gap: 0;
+        row-gap: 10px;
+        & > div {
+          width: 50%;
+        }
+      }
+      & > div {
+        text-align: center;
+        p {
+          font-size: $tp-sm;
+          line-height: $tp-1md;
+        }
+        span {
+          font-size: $tp-md;
+          font-weight: $wg-hv;
+          line-height: $tp-lg;
+        }
+      }
+    }
+
+    &.actions {
+      margin-top: 28px;
+      column-gap: 45px;
+      &.reward-info {
+        justify-content: space-around;
+        @media (max-width: 1160px) {
+          column-gap: 10px;
+        }
+        .reward {
+          width: 100px;
+          p,
+          b {
+            text-align: center;
+          }
+          p {
+            font-size: $tp-sm;
+            line-height: $tp-2md;
+          }
+          b {
+            font-size: $tp-2md;
+            line-height: $tp-1lg;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            i {
+              margin-left: 8px;
+              display: block;
+            }
+          }
+        }
+        button {
+          max-width: 225px;
+          padding: 0 30px;
+          @media (max-width: 570px) {
+            padding: 0 10px;
+          }
+
+          @media (max-width: 500px) {
+            padding: 0;
+            height: unset;
+          }
+        }
+      }
+      button {
+        width: 100%;
+        border-radius: $brd-rds-2tn;
+        justify-content: center;
+        @media (max-width: $bp-tablet) {
+          padding: 0;
+          height: unset;
+          align-self: flex-start;
+        }
+        &.disabled {
+          @include theme-aware("color", "offer-button-disabled-color");
+          @include theme-aware("background-color", "offer-button-disabled-background");
+          border: none;
+        }
+      }
+    }
+  }
+}

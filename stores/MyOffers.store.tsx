@@ -1,21 +1,21 @@
-import { action, makeAutoObservable, runInAction, flow } from "mobx";
+import { action, flow, makeAutoObservable, runInAction } from "mobx";
 import { PublicKey } from "@solana/web3.js";
 import { BN } from "bn.js";
 
 import { getWhitelistedNFTsByWallet } from "@integration/nftIntegration";
 import {
+  cancelOffer,
+  cancelSubOffer,
+  claimCollateral,
+  createSubOffer,
   getOffersBy,
+  getSubOfferMultiple,
+  getSubOffersInRange,
   MultipleNFT,
   NFTMetadata,
-  createSubOffer,
   repayLoan,
   setOffer,
-  cancelSubOffer,
   updateSubOffer,
-  cancelOffer,
-  getSubOfferMultiple,
-  claimCollateral,
-  getSubOffersInRange,
 } from "@integration/nftLoan";
 import { currencies, currencyMints } from "@constants/currency";
 import { getDurationForContractData } from "@utils/timeUtils/timeUtils";
@@ -46,6 +46,7 @@ export class MyOffersStore {
   activeNftMint: string = "";
   lendingList: SubOfferData[] = [];
   activeCategory: OfferCategory = "active";
+  activeLoans: string = "all";
   preparedOfferData: PreparedOfferData = {
     nftMint: "",
     amount: 0,
@@ -235,8 +236,8 @@ export class MyOffersStore {
     await repayLoan(new PublicKey(subOfferKey));
   };
 
-  @action.bound setActiveNftMint = (nftMint: string) => {
-    this.activeNftMint = nftMint;
+  @action.bound setActiveNftMint = (nftMint: string | PublicKey) => {
+    this.activeNftMint = typeof nftMint === "string" ? nftMint : nftMint.toBase58();
   };
 
   @action.bound refetchStoreData = async () => {
@@ -249,7 +250,8 @@ export class MyOffersStore {
     await setOffer(new PublicKey(mint));
   };
 
-  @action.bound handleCancelCollateral = async (mint: string) => {
+  @action.bound handleCancelCollateral = async (mint: string | PublicKey) => {
+    mint = typeof mint === "string" ? mint : mint.toBase58();
     await cancelOffer(new PublicKey(mint));
   };
 
@@ -306,6 +308,12 @@ export class MyOffersStore {
   }
 
   @action.bound setSanitizedOfferData(data: SanitizedData): void {
+    const { nftMint } = data;
+    data.nftMint = typeof nftMint === "string" ? nftMint : nftMint.toBase58();
     this.sanitized = data;
+  }
+
+  @action.bound setActiveLoan(loan: string): void {
+    this.activeLoans = loan;
   }
 }

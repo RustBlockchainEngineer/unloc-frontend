@@ -1,6 +1,27 @@
+.rewards-button {
+  border-radius: $brd-rds-2md;
+  @include theme-aware("background-color", "toaster-bg");
+  @include theme-aware("color", "color-white");
+  display: flex;
+  padding: 7px 20px;
+  border: none;
+  margin-left: auto;
+  margin-top: 45px;
+  cursor: pointer;
+  p {
+    text-indent: 13px;
+    line-height: $tp-lg;
+    font-size: $tp-md;
+  }
+  @media (max-width: $bp-tablet) {
+    margin: 20px auto 0;
+  }
+}
+
 .layout-top {
   display: flex;
-  width: $pg-col;
+  width: 100%;
+  max-width: $pg-col;
   padding-top: 50px;
   justify-content: space-between;
   align-items: center;
