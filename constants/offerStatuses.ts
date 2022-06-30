@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import { IDynamicKeyStringPair } from "@constants/most-used-structures";
+import { DynamicKeyStringPair } from "@constants/most-used-structures";
 
-export const statuses: IDynamicKeyStringPair = {
+export const statuses: DynamicKeyStringPair = {
   "0": "Proposed",
   "1": "Accepted",
   "2": "Expired",

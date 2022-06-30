@@ -738,7 +738,7 @@ export const checkWalletATA = async (
 
   return result;
 };
-
+// TODO: Are we still need logObject, getOfferBalance since they are unused ?
 export const logObject = (title: string, obj: any) => {
   console.log(title, obj);
 };

@@ -9,6 +9,7 @@ import { BlobLoader } from "@components/layout/blobLoader";
 import { PublicKey } from "@solana/web3.js";
 import { usePopperTooltip } from "react-popper-tooltip";
 import { OfferActionsHook } from "@hooks/offerActionsHook";
+import { SubOfferData } from "@stores/Offers.store";
 
 export type SanitizedOffer = {
   offerKey: string;
@@ -26,10 +27,19 @@ export type DepositedOffer = Omit<SanitizedOffer, "subOffers">;
 
 export const OffersWrap = observer(() => {
   const store = useContext(StoreContext);
-  const { offers, nftData, subOffers, activeCategory, lendingList, activeLoans } = store.MyOffers;
+  const {
+    offers,
+    nftData,
+    subOffers,
+    activeCategory,
+    lendingList,
+    activeLoans,
+    lendingListCollection,
+  } = store.MyOffers;
   const [offersToSanitize, setOffersToSanitize] = useState<SubOfferAccount[]>([]);
   const [filtered, setFiltered] = useState<OfferAccount[]>([]);
   const [sanitizedOffers, setSanitizedOffers] = useState<SanitizedOffer[]>([]);
+  const [updatedLends, setUpdatedLends] = useState<SubOfferData[]>([]);
   const [loader, setLoader] = useState(true);
   const { handleDepositClick } = OfferActionsHook();
 
@@ -118,8 +128,24 @@ export const OffersWrap = observer(() => {
   }, [offersToSanitize]);
 
   useEffect(() => {
-    if (sanitizedOffers.length > 0 && lendingList.length > 0) setLoader(false);
-  }, [sanitizedOffers, lendingList]);
+    const updatedLends = lendingListCollection.reduce(
+      (accum: SubOfferData[], collection, index) => {
+        const collectionToLend = collection;
+        const offer = {
+          ...lendingList[index],
+          collectionToLend,
+        };
+        accum.push(offer);
+        return accum;
+      },
+      [],
+    );
+    setUpdatedLends(updatedLends);
+  }, [lendingListCollection]);
+
+  useEffect(() => {
+    if (sanitizedOffers.length > 0 && updatedLends.length > 0) setLoader(false);
+  }, [sanitizedOffers, updatedLends]);
 
   const borrowsOrProposed = useMemo(() => {
     return (
@@ -132,14 +158,16 @@ export const OffersWrap = observer(() => {
 
   const lends = useMemo(() => {
     return (
-      lendingList.length > 0 &&
-      lendingList.map((offer) => (
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        <OfferTemplate key={offer.subOfferKey.toString()} {...offer} isLends={true} />
+      updatedLends.length > 0 &&
+      updatedLends?.map((offer) => (
+        <>
+          {/*// eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+          {/*// @ts-ignore*/}
+          <OfferTemplate key={offer.subOfferKey.toString()} {...offer} isLends={true} />
+        </>
       ))
     );
-  }, [lendingList]);
+  }, [updatedLends]);
 
   const deposited = useMemo(() => {
     return sanitizedOffers.length > 0

@@ -45,6 +45,7 @@ export class MyOffersStore {
   nftData: NFTMetadata[] = [];
   activeNftMint: string = "";
   lendingList: SubOfferData[] = [];
+  lendingListCollection: string[] = [];
   activeCategory: OfferCategory = "active";
   activeLoans: string = "all";
   preparedOfferData: PreparedOfferData = {
@@ -83,14 +84,17 @@ export class MyOffersStore {
       } else {
         requests = this.fetchCollectionForNfts();
       }
-
+      const data = [];
       if (requests) {
         const responses = yield axios.all(requests.map((request) => request.request));
-
         for (const el of requests) {
           if (this[type][el.index] && !this[type][el.index].hasOwnProperty("collection")) {
             this[type][el.index].collection = responses[el.index].data;
+            type === "lendingList" && data.push(responses[el.index].data);
           }
+        }
+        if (type === "lendingList") {
+          data.length && this.fillLendingCollections(data);
         }
       }
     } catch (e) {
@@ -98,6 +102,10 @@ export class MyOffersStore {
       console.log(e);
     }
   });
+
+  @action.bound fillLendingCollections(data: string[]) {
+    this.lendingListCollection = data;
+  }
 
   private fetchCollectionsForLendingOffers() {
     return this.lendingList.map((item, index) => {

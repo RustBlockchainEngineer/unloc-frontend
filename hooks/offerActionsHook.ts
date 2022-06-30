@@ -6,30 +6,30 @@ import { errorCase, successCase } from "@methods/toast-error-handler";
 import { StoreContext } from "@pages/_app";
 import { ILightboxOffer, IsubOfferData } from "@stores/Lightbox.store";
 
-interface ISanitized {
+interface Sanitized {
   nftMint: string | PublicKey;
   name: string;
   image: string;
   offerKey: string;
 }
 
-export interface IOfferActionsHook {
+export interface OfferActionsHook {
   handleClaimCollateral: (offerKey: PublicKey) => Promise<void>;
   refreshSubOffers: (walletKeyProp: PublicKey) => Promise<void>;
   handleCancelCollateral: (nftMint: PublicKey, name: string) => Promise<void>;
-  createOffersHandler: ({ nftMint, name, image, offerKey }: ISanitized) => void;
+  createOffersHandler: ({ nftMint, name, image, offerKey }: Sanitized) => void;
   handleConfirmOffer: (offer: ILightboxOffer) => void;
   handleCancelOffer: (subOfferKey: string) => Promise<void>;
   handleDepositClick: () => void;
   handleEditOffer: (
     subOfferKey: string,
     values: IsubOfferData,
-    { nftMint, name, image, offerKey }: ISanitized,
+    { nftMint, name, image, offerKey }: Sanitized,
   ) => void;
   handleRepayLoan: (subOfferKey: string) => Promise<void>;
 }
 
-export const OfferActionsHook = (): IOfferActionsHook => {
+export const OfferActionsHook = (): OfferActionsHook => {
   const store = useContext(StoreContext);
 
   const openLightBox = useCallback((): void => {
@@ -84,7 +84,7 @@ export const OfferActionsHook = (): IOfferActionsHook => {
   );
 
   const createOffersHandler = useCallback(
-    ({ nftMint, name, image, offerKey }: ISanitized): void => {
+    ({ nftMint, name, image, offerKey }: Sanitized): void => {
       store.MyOffers.setActiveNftMint(nftMint);
       store.MyOffers.setSanitizedOfferData({
         name,
@@ -131,11 +131,7 @@ export const OfferActionsHook = (): IOfferActionsHook => {
   );
 
   const handleEditOffer = useCallback(
-    (
-      subOfferKey: string,
-      values: IsubOfferData,
-      { nftMint, name, image, offerKey }: ISanitized,
-    ) => {
+    (subOfferKey: string, values: IsubOfferData, { nftMint, name, image, offerKey }: Sanitized) => {
       store.Lightbox.setActiveSubOffer(subOfferKey);
       store.Lightbox.setActiveSubOfferData(values);
 
