@@ -1,0 +1,38 @@
+.vote-lightbox {
+  padding: 15px;
+
+  h2 {
+    margin: 10px 0;
+  }
+
+  button {
+    margin: auto;
+    width: 80%;
+    display: flex;
+    justify-content: center;
+    border-radius: $brd-rds-2tn;
+  }
+}
+
+.input-row {
+  display: grid;
+  grid-template-columns: 0.3fr 1fr 0.1fr;
+  grid-template-rows: 1fr;
+  grid-column-gap: 0px;
+  grid-row-gap: 0px;
+
+  margin: 30px 0;
+  min-width: 450px;
+
+  &__slider {
+    width: 300px;
+  }
+  &__value {
+    width: 50px;
+    margin-left: 10px;
+    // &--input {
+    //     appearance: none;
+    //     width: 50px;
+    // }
+  }
+}
