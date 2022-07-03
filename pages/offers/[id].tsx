@@ -7,13 +7,10 @@ import { useRouter } from "next/router";
 import { BlobLoader } from "@components/layout/blobLoader";
 import { LayoutTop } from "@components/layout/layoutTop";
 import { LayoutTopMobile } from "@components/layout/layoutTopMobile";
+import { OfferTemplate } from "@components/layout/offerTemplate";
 import { Header } from "@components/singleOffer/Header/Header";
-import { Offer } from "@components/singleOffer/Offer/Offer";
 import { StoreDataAdapter } from "@components/storeDataAdapter";
-import { currencyMints } from "@constants/currency";
-import { errorCase } from "@methods/toast-error-handler";
 import { StoreContext } from "@pages/_app";
-import { ILightboxOffer } from "@stores/Lightbox.store";
 import { getQueryParamAsString } from "@utils/getQueryParamsAsString";
 
 const SingleNftPage: NextPage = observer(() => {
@@ -40,20 +37,6 @@ const SingleNftPage: NextPage = observer(() => {
     }
   }, [connected, walletKey, router.query.id, store.SingleOffer]);
 
-  const handleConfirmOffer = useCallback(
-    (offer: ILightboxOffer) => {
-      try {
-        store.Lightbox.setAcceptOfferData(offer);
-        store.Lightbox.setContent("acceptOffer");
-        store.Lightbox.setCanClose(true);
-        store.Lightbox.setVisible(true);
-      } catch (e) {
-        errorCase(e);
-      }
-    },
-    [store.Lightbox],
-  );
-
   useEffect(() => {
     void handleData();
   }, [router.query.id, connected, handleData]);
@@ -65,8 +48,6 @@ const SingleNftPage: NextPage = observer(() => {
         mint: "",
         image: "",
         name: "",
-        //TODO: temporary commented but should match strictCamelCase
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         external_url: "",
       });
       store.SingleOffer.setLoansData([]);
@@ -75,35 +56,27 @@ const SingleNftPage: NextPage = observer(() => {
 
   useEffect(() => {
     if (loansData && loansData.length)
-      loansData.forEach((loan) => {
-        if (loan.status === 1) setHasActive(true);
+      loansData.forEach((offer) => {
+        const { account } = offer;
+        if (account.state === 1) setHasActive(true);
       });
   }, [loansData]);
 
   const LoanOffers = useMemo(() => {
-    return loansData.map((offer) => {
-      if (offer.status === 0)
+    return (
+      loansData.length > 0 &&
+      loansData.map((offer) => {
+        const { account, publicKey } = offer;
         return (
-          <Offer
-            key={offer.id}
-            offerID={offer.id}
-            offerMint={offer.offerMint}
-            offerPublicKey={offer.publicKey.toBase58()}
-            status={offer.status.toString()}
-            amount={offer.amount}
-            token={currencyMints[offer.offerMint.toString()]}
-            duration={offer.duration.toString()}
-            // durationRemaning='20' // TODO: include date of offer creation in Program data
-            APR={offer.apr}
-            totalRepay={offer.totalRepay}
-            btnMessage={`Lend ${offer.currency}`}
-            handleConfirmOffer={handleConfirmOffer}
-            isYours={isYours}
-          />
+          account.state === 0 && (
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
+            <OfferTemplate key={offer.publicKey.toBase58()} {...account} publicKey={publicKey} />
+          )
         );
-      else return null;
-    });
-  }, [handleConfirmOffer, isYours, loansData]);
+      })
+    );
+  }, [loansData]);
 
   const PrivateTerms = memo(() => {
     const addNewLoan = useCallback(() => {

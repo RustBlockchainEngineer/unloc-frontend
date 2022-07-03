@@ -1,6 +1,6 @@
-import { useContext, useEffect, useMemo, useState } from "react";
+import { useContext } from "react";
 
-import { DepositedOffer, SanitizedOffer } from "@components/myOffers/offersWrap";
+import { DepositedOffer } from "@components/myOffers/offersWrap";
 import Image from "next/image";
 import { observer } from "mobx-react";
 import { SubOfferData } from "@stores/Offers.store";
@@ -27,108 +27,18 @@ import { usePopperTooltip } from "react-popper-tooltip";
 import { PublicKey } from "@solana/web3.js";
 import { Duration } from "dayjs/plugin/duration";
 import { SubOffer } from "../../@types/loans";
+import { calculateRepayValue } from "@utils/loansMath";
 
 import { OfferActionsHook } from "@hooks/offerActionsHook";
-
-export const OfferWrap = observer(
-  ({ collection, name, image, subOffers, nftMint, offerKey, state }: SanitizedOffer) => {
-    const [subOfferCount, setSubOfferCount] = useState(0);
-    const { createOffersHandler, handleCancelCollateral } = OfferActionsHook();
-
-    useEffect(
-      () => setSubOfferCount(subOffers.filter((o) => o.account.state !== 5).length),
-      [subOffers],
-    );
-
-    const store = useContext(StoreContext);
-    const { activeCategory } = store.MyOffers;
-
-    const activeSubOffer = useMemo(() => {
-      let output = "";
-      subOffers.forEach((offer) => {
-        if (offer.account.state === 1) {
-          output = offer.publicKey.toBase58();
-        }
-      });
-
-      return output;
-    }, [subOffers]);
-
-    const setNFTActions = (status: number) => {
-      if (status === 0) {
-        return (
-          <div className="nft-wallet-actions">
-            {subOfferCount < 3 && (
-              <button
-                className="btn--md btn--primary active-offer--tooltip--parent"
-                onClick={() => createOffersHandler({ nftMint, name, image, offerKey })}>
-                <span className="sign">+</span>
-                <div className="tooltip-container active-offer--tooltip">
-                  <span>Create a new Loan Offer with this NFT as Collateral</span>
-                </div>
-              </button>
-            )}
-            <button
-              className="btn--md btn--bordered active-offer--tooltip--parent"
-              onClick={() => handleCancelCollateral(nftMint, name)}>
-              <span className="sign">&minus;</span>
-              <div className="tooltip-container active-offer--tooltip">
-                <span>Return NFT to wallet</span>
-              </div>
-            </button>
-          </div>
-        );
-      }
-
-      return null;
-    };
-
-    const renderOfferTemplate = useMemo(() => {
-      return subOffers.map((offer) => {
-        return (
-          <OfferTemplate
-            withWrap={true}
-            subOfferKey={offer.publicKey}
-            offerKey={offer.publicKey.toBase58()}
-            description=""
-            external_url=""
-            image={image}
-            name={name}
-            key={offer.publicKey.toBase58()}
-            {...offer.account}
-            publicKey={offer.publicKey}
-            activeSubOffer={activeSubOffer}
-          />
-        );
-      });
-    }, [subOffers]);
-
-    return (
-      <div className={`offer-wrap ${activeCategory === "active" ? "single-children" : ""}`}>
-        <div className="head">
-          <div className="image">{image && <Image src={image} width={84} height={84} />}</div>
-          <div className="info">
-            <p>{name}</p>
-            <span>
-              Collection: <b>{collection}</b>
-            </span>
-          </div>
-          {setNFTActions(state)}
-        </div>
-        <div className={`body ${activeCategory === "proposed" ? "multi-children" : ""}`}>
-          {subOffers && renderOfferTemplate}
-        </div>
-      </div>
-    );
-  },
-);
+import { useRouter } from "next/router";
+import { getQueryParamAsString } from "@utils/getQueryParamsAsString";
 
 interface OfferTemplateData extends SubOfferData, DepositedOffer, SubOffer {
   isLends?: boolean;
   isDeposited?: boolean;
   withWrap?: boolean;
   publicKey: PublicKey;
-  activeSubOffer: string;
+  activeSubOffer?: string;
 }
 
 export const OfferTemplate = observer(
@@ -154,6 +64,7 @@ export const OfferTemplate = observer(
     state,
     minRepaidNumerator,
   }: OfferTemplateData) => {
+    const router = useRouter();
     const { setTriggerRef, visible, getTooltipProps, setTooltipRef } = usePopperTooltip();
 
     const {
@@ -163,17 +74,29 @@ export const OfferTemplate = observer(
       handleClaimCollateral,
       handleEditOffer,
       handleRepayLoan,
+      handleConfirmOffer,
     } = OfferActionsHook();
 
     const store = useContext(StoreContext);
     const { activeCategory } = store.MyOffers;
     const { theme } = store.Interface;
+    const { isYours } = store.SingleOffer;
+    const { denominator } = store.GlobalState;
 
     const imageSrc = nftData ? (nftData as NFTMetadata).arweaveMetadata.image : image;
     const nftName = nftData ? (nftData as NFTMetadata).arweaveMetadata.name : name;
 
-    const duration = getTimeLeft(loanDuration?.toNumber(), loanStartedTime?.toNumber());
-    const timeColor = getDurationColor(duration);
+    const timeLeft = getTimeLeft(loanDuration?.toNumber(), loanStartedTime?.toNumber());
+    const timeColor = getDurationColor(timeLeft);
+
+    const amount = getDecimalsForLoanAmountAsString(
+      offerAmount?.toNumber(),
+      offerMint?.toBase58(),
+      0,
+    );
+
+    const currency = currencyMints[offerMint?.toBase58()];
+    const duration = getDurationFromContractData(loanDuration?.toNumber(), "days");
 
     const canClaim = (timeLeft: Duration) => {
       return timeLeft.asSeconds() <= 0;
@@ -187,20 +110,20 @@ export const OfferTemplate = observer(
             {offersState === 1 ? (
               correctTimeLeftDescription(loanDuration, loanStartedTime)
             ) : (
-              <>
-                {`${getDurationFromContractData(loanDuration.toNumber(), "days")} Day${
-                  getDurationFromContractData(loanDuration.toNumber(), "days") > 1 ? "s" : ""
-                }`}
-              </>
+              <>{`${duration} Day${duration > 1 ? "s" : ""}`}</>
             )}
           </span>
         </>
       );
     };
 
+    const isSingleOffer = getQueryParamAsString(router.query.id);
+
+    offerKey = isSingleOffer ? publicKey.toBase58() : offerKey;
+
     return (
       <div
-        className={`offer  
+        className={`offer ${isSingleOffer ? "default" : ""}
         ${withWrap ? (activeCategory === "active" ? "borrows" : "proposed") : ""} ${
           state === 1 ? timeColor : "green"
         } ${isLends ? `lends` : ""} ${isDeposited ? "deposit" : ""} ${
@@ -233,7 +156,7 @@ export const OfferTemplate = observer(
           {isLends && (
             <div className="timer">
               <span> Time left </span>
-              <div className="time-row">{lendsTimeLeftHelpers(duration)}</div>
+              <div className="time-row">{lendsTimeLeftHelpers(timeLeft)}</div>
             </div>
           )}
         </div>
@@ -282,11 +205,7 @@ export const OfferTemplate = observer(
           <div className="data-row proposal-details">
             <div>
               <p>Amount</p>
-              <span>{`${getDecimalsForLoanAmountAsString(
-                offerAmount?.toNumber(),
-                offerMint?.toBase58(),
-                0,
-              )} ${currencyMints[offerMint?.toBase58()]}`}</span>
+              <span>{`${amount} ${currency}`}</span>
             </div>
             <div>
               <p>APR</p>
@@ -301,7 +220,8 @@ export const OfferTemplate = observer(
             </div>
           </div>
         )}
-        {activeCategory === "active" ? (
+
+        {activeCategory === "active" && !isSingleOffer ? (
           <div className="data-row actions reward-info">
             <div className="reward">
               <p>Unclaimed Tokens</p>
@@ -314,7 +234,7 @@ export const OfferTemplate = observer(
             </div>
 
             {isLends ? (
-              canClaim(duration) ? (
+              canClaim(timeLeft) ? (
                 <button
                   className="btn btn--md btn--primary"
                   onClick={() => handleClaimCollateral(subOfferKey)}>
@@ -325,14 +245,14 @@ export const OfferTemplate = observer(
                   <button className="btn btn--md btn--primary disabled">Loan not Repaid yet</button>
                 </div>
               )
-            ) : canClaim(duration) ? (
+            ) : canClaim(timeLeft) ? (
               <button className="btn btn--md btn--primary disabled">Loan Expired</button>
             ) : (
               <>
                 <button
                   ref={setTriggerRef}
                   className="btn btn--md btn--primary"
-                  onClick={() => handleRepayLoan(activeSubOffer)}>
+                  onClick={() => handleRepayLoan(activeSubOffer as string)}>
                   Repay Loan
                 </button>
                 {visible && (
@@ -364,6 +284,30 @@ export const OfferTemplate = observer(
               className="btn btn--md btn--primary"
               onClick={() => createOffersHandler({ nftMint, name, image, offerKey })}>
               Create Offer
+            </button>
+          </div>
+        ) : isSingleOffer ? (
+          <div className="data-row actions">
+            <button
+              ref={setTriggerRef}
+              className={`btn btn--md btn--primary ${isYours ? "disabled" : ""}`}
+              onClick={() =>
+                !isYours &&
+                handleConfirmOffer({
+                  offerPublicKey: publicKey.toBase58(),
+                  amount,
+                  APR: aprNumerator?.toNumber(),
+                  duration: duration.toString(),
+                  totalRepay: calculateRepayValue(
+                    Number(amount),
+                    aprNumerator?.toNumber(),
+                    duration,
+                    denominator,
+                  ),
+                  currency,
+                })
+              }>
+              {isYours ? "Can't lend" : `Lend ${currency}`}
             </button>
           </div>
         ) : (

@@ -125,7 +125,6 @@ export const CreateLoan = observer(({ mode }: CreateLoanProps) => {
     if (!connected || !wallet || !walletKey) {
       return;
     }
-    console.log(values);
     const { amount, duration, apr, token, total } = values;
 
     if (mode === "new") {
