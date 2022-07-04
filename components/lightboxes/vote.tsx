@@ -6,7 +6,7 @@ import { StoreContext } from "@pages/_app";
 import { errorCase, successCase } from "@methods/toast-error-handler";
 import { SliderAdapter } from "./Loan/sliderAdapter";
 import { Form, Field } from "react-final-form";
-import { Decorator, getIn } from "final-form";
+import { createForm } from "final-form";
 import createDecorator from "final-form-calculate";
 
 export const Vote = observer(() => {
@@ -32,32 +32,48 @@ export const Vote = observer(() => {
     }
   };
 
-  const balancer = useMemo(
-    () =>
-      createDecorator({
-        field: Object.keys(nextVoteValues),
-        updates: (changedVal, changedName, allValues) => {
-          console.log(changedVal, changedName, allValues);
-          if (allValues) {
-            const restVal = (100 - changedVal) / (Object.keys(allValues).length - 1);
-            Object.keys(allValues).map(function (key) {
-              if (key !== changedName) {
-                console.log(key, changedName);
-                allValues[key] = restVal;
-              }
-            });
+  const [memoForm, unsubscribe] = useMemo(() => {
+    const form = createForm({
+      onSubmit: handleVote,
+      initialValues,
+    });
 
-            if (Object.values(allValues).reduce((a, b) => a + b, 0) == 100) {
-              setNextVoteValues(allValues);
-              return allValues;
-            }
-          }
-
+    const balancer = createDecorator<typeof initialValues>({
+      field: Object.keys(nextVoteValues),
+      updates: (value, name, allValues, prevValues) => {
+        // If our field is not active, it means it was not changed by the user.
+        // Return without changes, because if we change here we will get infinite recursion.
+        // @ts-ignore
+        if (!form.getFieldState(name)?.active || !allValues || !prevValues) {
           return {};
-        },
-      }) as Decorator<object, object>,
-    [],
-  );
+        }
+
+        // Omit the field that has been changed by the user
+        // @ts-ignore
+        const { [name]: ommited, ...rest } = allValues;
+
+        // We need to get the number of fields that aren't 0.
+        // The idea is that if a field is 0, we don't update it anymore.
+        const updatedFields = Object.keys(rest).reduce(
+          (acc, key) => (acc += rest[key] > 0 ? 1 : 0),
+          0,
+        );
+        const delta = (value - prevValues[name]) / updatedFields;
+
+        Object.keys(rest).forEach((key) => {
+          if (rest[key] > 0) {
+            rest[key] -= delta;
+          } else {
+            rest[key] = 0;
+          }
+        });
+        return rest;
+      },
+    });
+
+    const unsubscribe = balancer(form);
+    return [form, unsubscribe] as const;
+  }, []);
 
   return (
     <div className="vote-lightbox">
@@ -67,8 +83,7 @@ export const Vote = observer(() => {
           <Form
             className="create-offer-container"
             onSubmit={handleVote}
-            decorators={[balancer]}
-            initialValues={initialValues}
+            form={memoForm}
             render={({ handleSubmit, submitting, values }) => (
               <form onSubmit={handleSubmit}>
                 {Object.keys(initialValues).map(function (key) {
@@ -79,22 +94,16 @@ export const Vote = observer(() => {
                         name={key}
                         min={0}
                         max={100}
-                        step={1}
+                        // step={1}
                         component={SliderAdapter}
                       />
-                      <div className="input-row__value">{nextVoteValues[key] + "%"}</div>
-
-                      {/* <div className="input-row__value">
-                        <Field<number>
-                          component="input"
-                          name={key}
-                          type="number"
-                          className="input-row__value--input"
-                        />
-                      </div> */}
+                      <div className="input-row__value">{values[key].toFixed(2) + "%"}</div>
                     </div>
                   );
                 })}
+                <div>
+                  Total: {Object.keys(values).reduce((acc, key) => (acc += values[key]), 0)}
+                </div>
                 <button type="submit" className="btn btn--md btn--primary" disabled={submitting}>
                   Vote
                 </button>
