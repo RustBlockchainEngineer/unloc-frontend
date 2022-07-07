@@ -17,19 +17,29 @@ export const Vote = observer(() => {
   const initialValues = { SMB: 20, DAA: 20, DeGods: 20, DT: 15, SolGods: 25 };
   const [nextVoteValues, setNextVoteValues] = useState<any>(initialValues);
 
-  const handleVote = async (): Promise<void> => {
-    try {
-      store.Lightbox.setContent("processing");
-      store.Lightbox.setCanClose(false);
-      store.Lightbox.setVisible(true);
-      //await store.Offers.setVote(offerPublicKey);
-      successCase("Loan Accepted");
-    } catch (e: any) {
-      errorCase(e);
-    } finally {
-      store.Lightbox.setCanClose(true);
-      store.Lightbox.setVisible(false);
-    }
+  const handleVote = async (values: any): Promise<void> => {
+    let alertMsg = "";
+    let sum = 0;
+    console.log(values);
+
+    Object.keys(values).forEach((key) => {
+      alertMsg += key + " " + values[key].toFixed(2) + "\n";
+      sum += parseInt(values[key].toFixed(2));
+    });
+
+    alert(alertMsg + sum);
+    // try {
+    //   store.Lightbox.setContent("processing");
+    //   store.Lightbox.setCanClose(false);
+    //   store.Lightbox.setVisible(true);
+    //   //await store.Offers.setVote(offerPublicKey);
+    //   successCase("Loan Accepted");
+    // } catch (e: any) {
+    //   errorCase(e);
+    // } finally {
+    //   store.Lightbox.setCanClose(true);
+    //   store.Lightbox.setVisible(false);
+    // }
   };
 
   const [memoForm, unsubscribe] = useMemo(() => {
