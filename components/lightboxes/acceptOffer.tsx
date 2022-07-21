@@ -14,7 +14,8 @@ export const AcceptOffer = observer(() => {
 
   const handleAcceptOffer = async (offerPublicKey: string): Promise<void> => {
     try {
-      store.Lightbox.setContent("processing");
+      // store.Lightbox.setContent("processing");
+      store.Lightbox.setContent("circleProcessing");
       store.Lightbox.setCanClose(false);
       store.Lightbox.setVisible(true);
       await store.Offers.handleAcceptOffer(offerPublicKey);
