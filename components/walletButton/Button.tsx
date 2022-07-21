@@ -11,7 +11,7 @@ export interface ButtonProps {
   onClick?: (e: MouseEvent<HTMLButtonElement>) => void;
 }
 
-export const Button: React.FC<ButtonProps> = memo(({ ...props }: ButtonProps) => {
+export const Button = memo(({ ...props }: ButtonProps) => {
   return (
     <button
       className={`wallet-adapter-button ${props.className || ""}`}

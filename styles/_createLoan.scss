@@ -21,11 +21,28 @@
     @include theme-aware("color", "lightbox-label-color");
   }
 
+  .row-division {
+    display: flex;
+    flex-direction: column;
+    width: fit-content;
+    min-width: 200px;
+    padding-bottom: 16px;
+    //margin-bottom: 17px;
+    margin: 0 auto 17px;
+    @include theme-aware("border-bottom", "nft-headers-border");
+  }
+
   .form-line {
     display: flex;
     margin-bottom: 24px;
     justify-content: space-between;
 
+    & > div {
+      & > input,
+      & > div {
+        margin-top: 8px;
+      }
+    }
     &.form-amount,
     &.form-duration {
       column-gap: 16px;
@@ -37,6 +54,21 @@
         .loan-currency {
           width: 100%;
         }
+      }
+    }
+
+    &.rewards {
+      flex-direction: column;
+      width: 100%;
+      & > * {
+        text-align: center;
+      }
+      p {
+        display: flex;
+        justify-content: center;
+      }
+      b {
+        margin: 0 4px;
       }
     }
 
@@ -112,7 +144,6 @@
   select {
     @include theme-aware("background-color", "lightbox-collection-select-bg");
     @include theme-aware("color", "lightbox-collection-select-color");
-    margin-top: 8px;
     border: 0;
     padding: 9px;
     border-radius: 2px;
@@ -128,9 +159,7 @@
   }
 
   p {
-    margin-top: 6px;
     padding: 9px 0;
-    height: 42px;
     width: 100%;
   }
 
@@ -202,16 +231,16 @@
     width: 100%;
 
     .title {
-      font-size: 24px;
+      font-size: 20px;
     }
 
     .amount {
-      font-size: 20px;
+      font-size: $tp-2md;
       font-weight: 700;
+      @include theme-aware("color", "lightbox-currency-color");
 
       span {
-        margin-left: $mr-sm;
-        font-size: $tp-lg;
+        margin-left: 4px;
       }
     }
   }

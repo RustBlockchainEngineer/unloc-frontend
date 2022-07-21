@@ -1,3 +1,3 @@
-export interface IDynamicKeyStringPair {
+export interface DynamicKeyStringPair {
   [key: string]: string;
 }

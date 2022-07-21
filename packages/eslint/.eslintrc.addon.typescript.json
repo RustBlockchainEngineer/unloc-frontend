@@ -83,11 +83,6 @@
         "format": ["UPPER_CASE", "camelCase"]
       },
       {
-        "selector": ["interface"],
-        "format": ["StrictPascalCase"],
-        "prefix": ["I"]
-      },
-      {
         "selector": ["objectLiteralProperty"],
         "format": ["camelCase"],
         "modifiers": ["requiresQuotes"]

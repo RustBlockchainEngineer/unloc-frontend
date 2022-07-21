@@ -33,13 +33,16 @@
 @import "./singleOffer/offer";
 @import "./singleOffer/page";
 
+@import "./offerItemWrap";
+@import "./offerTemplate";
+
 @import "./offersPage/offersTop";
 @import "./offersPage/offersGrid";
 @import "./offersPage/offersTable";
 @import "./offersPage/offersPagination";
 
 @import "./myOffers/myOffersTop";
-@import "./myOffers/myOffersNftList";
+@import "./myOffers/myOffersWrap";
 
 @import "./lightboxBase";
 @import "./NFTCollateral";
@@ -47,7 +50,6 @@
 @import "./loanDetails";
 @import "./confirmLoan";
 @import "./connectWallet";
-@import "./loansGiven/myLendingList";
 @import "./singleOffer/lendConfirmation";
 @import "./singleOffer/acceptOffer";
 
@@ -61,7 +63,7 @@
 body {
   @include theme-aware("background-color", "color-background");
   @include theme-aware("background-image", "bg-gradient-home");
-  @include theme-aware("color", "color-primary");
+  @include theme-aware("color", "text-primary-color");
   // background-size: 100vw 100vh;
   font-family: "Red Hat Display", sans-serif;
   background-attachment: fixed;

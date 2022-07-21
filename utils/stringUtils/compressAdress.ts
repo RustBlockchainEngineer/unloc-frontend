@@ -1,5 +1,8 @@
-export const compressAddress = (charLen: number, address: string) => {
+import { PublicKey } from "@solana/web3.js";
+
+export const compressAddress = (charLen: number, address: string | PublicKey) => {
+  address = typeof address === "string" ? address : address?.toBase58();
   return (
-    address.slice(0, charLen) + "..." + address.slice(address.length - charLen, address.length)
+    address?.slice(0, charLen) + "..." + address?.slice(address.length - charLen, address.length)
   );
 };

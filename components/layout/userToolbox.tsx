@@ -17,7 +17,6 @@ export const UserToolbox = observer(({ hideMenu, isMenuHidden }: UserToolboxProp
         changeMenuVisibility={hideMenu ? hideMenu : undefined}
       />
       <WalletCustomButton />
-      <div className="user-toolbox__fake"></div>
     </div>
   );
 });

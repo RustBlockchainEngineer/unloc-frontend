@@ -1,4 +1,5 @@
 import { useContext, useMemo, useState, useCallback } from "react";
+
 import { observer } from "mobx-react";
 import { Form, Field } from "react-final-form";
 import { Decorator, getIn } from "final-form";
@@ -124,7 +125,6 @@ export const CreateLoan = observer(({ mode }: CreateLoanProps) => {
     if (!connected || !wallet || !walletKey) {
       return;
     }
-    console.log(values);
     const { amount, duration, apr, token, total } = values;
 
     if (mode === "new") {
@@ -238,7 +238,7 @@ export const CreateLoan = observer(({ mode }: CreateLoanProps) => {
                 />
               </div>
             </div>
-            <div className="form-line form-APR">
+            <div className="form-line form-APR row-division">
               <div>
                 <span>APR (%)</span>
                 <Field name="state" component={SwitchAdapter} />
@@ -262,6 +262,14 @@ export const CreateLoan = observer(({ mode }: CreateLoanProps) => {
                   disabled={values.state !== "interest_input"}
                 />
               </div>
+            </div>
+            <div className="form-line rewards row-division">
+              <span>Current Unloc rewards for this collection</span>
+              <p>
+                APR:
+                <b>12.5%</b>
+                <i className="icon icon--svs icon--unloc--light" />
+              </p>
             </div>
             <div className="form-line form-repaid">
               <div>

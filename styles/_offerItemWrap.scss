@@ -1,0 +1,101 @@
+.offer-wrap {
+  width: 100%;
+  margin-bottom: 30px;
+  &:last-child {
+    margin-bottom: 0;
+  }
+  &.single-children {
+    width: 49%;
+  }
+  @media (max-width: $bp-tablet) {
+    width: 100%;
+    &.single-children {
+      width: 100%;
+    }
+  }
+  display: flex;
+  align-self: flex-start;
+  flex-direction: column;
+  .head {
+    display: flex;
+    align-items: center;
+    border-radius: 84px;
+    align-self: center;
+    margin-bottom: -42px;
+    z-index: 1;
+    padding-right: 10px;
+    @media (max-width: 730px) {
+      flex-wrap: wrap;
+      height: 85px;
+      padding-right: 0;
+      .nft-wallet-actions {
+        margin: 0 auto;
+      }
+    }
+    @media (max-width: 440px) {
+      height: 70px;
+    }
+    @include theme-aware("background-color", "offer-wrap-header-background");
+    .image {
+      width: 84px;
+      height: 84px;
+      border-radius: 100%;
+      background-color: transparent;
+      overflow: hidden;
+      @media (max-width: 440px) {
+        width: 70px;
+        height: 70px;
+      }
+    }
+    .info {
+      padding: 17px 20px;
+      @media (max-width: 440px) {
+        padding: 5px;
+      }
+      @media (max-width: 385px) {
+        padding: 5px 0;
+      }
+      p {
+        font-size: $tp-2lg;
+        line-height: $tp-3lg;
+        font-weight: $wg-hv;
+        @media (max-width: 730px) {
+          font-size: $tp-lg;
+        }
+      }
+      span {
+        font-size: $tp-md;
+        line-height: $tp-lg;
+      }
+    }
+    .nft-wallet-actions {
+      display: flex;
+      column-gap: 20px;
+      button {
+        width: 30px;
+        height: 30px;
+        line-height: 30px;
+        justify-content: center;
+        border-radius: $brd-rds-2tn;
+        cursor: pointer;
+        padding: 0;
+        .sign {
+          font-size: $tp-1lg;
+          font-weight: $wg-hv;
+        }
+      }
+    }
+  }
+  .body {
+    display: flex;
+    @include theme-aware("background", "offer-wrap-body-background");
+    backdrop-filter: blur(21px);
+    padding: 64px 0;
+    border-radius: 17px;
+
+    &.multi-children {
+      padding: 64px 22px;
+      column-gap: 20px;
+    }
+  }
+}

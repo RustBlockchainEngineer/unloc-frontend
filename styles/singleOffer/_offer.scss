@@ -1,28 +1,8 @@
-.offer-root {
-  border-radius: 8px;
-  @include theme-aware("background", "single-offer-offer-bg");
-
-  &:hover {
-    -moz-box-shadow: 0 0 14px rgba(0, 0, 0, 0.15);
-    box-shadow: 0 0 14px rgba(0, 0, 0, 0.15);
-
-    .offer-container {
-      @include theme-aware("background", "single-offer-offer-bg-hover");
-    }
-  }
-
-  @media (max-width: $bp-phone) {
-    &:not(:last-child) {
-      margin-bottom: $mr-md;
-    }
-  }
-}
-
 .offer-root--add-new {
   @include theme-aware("background", "yourNFT-offer-bg");
   cursor: pointer;
-  height: 200px;
-  width: 406px;
+  height: 258.5px;
+  width: 100%;
   border-radius: $brd-rds-2tn;
   box-shadow: inset 0 0 14px rgba(0, 0, 0, 0.15);
   display: flex;
@@ -56,110 +36,5 @@
       top: 80px;
       left: -118px;
     }
-  }
-}
-
-.offer-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  @include theme-aware("color", "nft-offers-color");
-  padding: 16px;
-  border-radius: $brd-rds-2tn $brd-rds-2tn 0 0;
-  cursor: pointer;
-  transition: background 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-  animation: fadeInAnimation ease 0.8s;
-  animation-iteration-count: 1;
-  animation-fill-mode: forwards;
-
-  p {
-    font-size: 12px;
-  }
-
-  p:nth-child(1) {
-    font-weight: 400;
-    padding-bottom: 3px;
-  }
-  p:nth-child(2) {
-    font-weight: 700;
-  }
-
-  @media (max-width: $bp-tablet) {
-    width: 90vw;
-  }
-}
-
-.offer-header {
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  padding-bottom: 10px;
-
-  .offer-ID {
-    display: flex;
-
-    p,
-    div {
-      font-size: 12px;
-    }
-
-    div {
-      margin-left: 2px;
-      @include theme-aware("color", "lightbox-currency-color");
-      .show-on-hover__elements__wrap {
-        i {
-          width: 16px;
-          height: 16px;
-        }
-      }
-      & > .show-on-hover__label {
-        font-weight: $wg-hv;
-      }
-    }
-  }
-}
-
-.offer-info {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: 1fr 1fr;
-  gap: 20px 0;
-  width: 70%;
-}
-
-.offer-lend {
-  width: 100%;
-
-  @media (max-width: $bp-tablet) {
-    width: 90vw;
-    margin-bottom: 40px;
-  }
-
-  @media (max-width: $bp-phone) {
-    margin: 0;
-  }
-}
-
-.lend-btn {
-  width: 100%;
-  @include theme-aware("background-color", "color-primary");
-  font-weight: $wg-hv;
-  @include theme-aware("color", "lend-offer-button");
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background 0.3s ease-in-out;
-  padding: 7px 0;
-  font-size: $tp-md;
-  &:hover {
-    @include theme-aware("background-color", "color-primary-dark");
-  }
-
-  &.deactivated {
-    pointer-events: none;
-    cursor: not-allowed;
-    @include theme-aware("background-color", "disabled-bg");
-    @include theme-aware("color", "disabled-color");
   }
 }

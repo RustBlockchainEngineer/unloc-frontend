@@ -1,0 +1,40 @@
+.my-offers-wrap {
+  @media (max-width: 1280px) {
+    padding: 0 40px;
+  }
+
+  .loans-group {
+    @include theme-aware("color", "offers-group-div");
+    font-size: $tp-xl;
+    line-height: $tp-1xl;
+    font-weight: $wg-hv;
+    display: flex;
+    align-items: center;
+    column-gap: 20px;
+    margin-bottom: 50px;
+    &::after {
+      content: "";
+      display: block;
+      width: 100%;
+      height: 1px;
+      @include theme-aware("background-color", "offers-group-div");
+    }
+  }
+  .list-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    row-gap: 50px;
+  }
+
+  .deposit-button {
+    margin: auto;
+  }
+
+  @media (max-width: $bp-phone) {
+    margin: 35px 0;
+    .loans-group {
+      margin-bottom: 25px;
+    }
+  }
+}

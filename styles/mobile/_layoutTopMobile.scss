@@ -5,7 +5,7 @@
     border-radius: 0 0 8px 8px;
     width: 100vw;
     height: 70px;
-    z-index: 2;
+    z-index: 5;
 
     &.hidden {
       top: -100%;
@@ -60,12 +60,14 @@
     width: 100%;
     height: 70px;
     justify-content: space-between;
-    display: flex;
     flex-direction: row-reverse;
     align-items: center;
     padding: 0 20px;
     margin: 0;
     z-index: 1;
+    display: grid;
+    grid-template-columns: 67px 150px 67px;
+    direction: rtl;
 
     .shadow-element {
       width: 50px;
@@ -91,7 +93,7 @@
   }
 
   .wallet-adapter-button-trigger:not([disabled]):hover {
-    @include theme-aware("color", "mobile-menu-wallet-color");
+    @include theme-aware("color", "color-white");
     @include theme-aware("background-color", "color-primary");
     @include theme-aware("border-color", "color-primary");
     @include theme-aware("box-shadow", "wallet-button-box-shadow");

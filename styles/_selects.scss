@@ -34,13 +34,14 @@
   &__selected {
     background-color: inherit;
     color: inherit;
-    border: 0;
+    border-color: transparent;
+    border-radius: 19px;
     width: 100%;
     display: inline-flex;
     align-items: center;
     padding: $mr-tn $mr-tn $mr-tn $mr-sm;
     justify-content: space-between;
-    border-radius: $brd-rds-tn;
+    //border-radius: $brd-rds-tn;
   }
 
   ul.custom-select__options {
@@ -48,6 +49,7 @@
     width: 100%;
     border-radius: 18px;
     margin-top: 10px;
+    z-index: 2;
 
     @media (max-width: $bp-tablet) {
       margin-top: $mr-tn;

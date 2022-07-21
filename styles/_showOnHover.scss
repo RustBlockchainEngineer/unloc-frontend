@@ -1,15 +1,8 @@
-.show-on-hover {
+.on-hover {
   cursor: pointer;
   display: flex;
   padding: 0;
   transition: box-shadow ease-in-out 0.3s, padding ease-in-out 0.3s, border-radius ease-in-out 0.3s;
-
-  &:hover {
-    padding: 4px 8px;
-    border-radius: $brd-rds-sm;
-    -moz-box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.75);
-    box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.75);
-  }
 
   &__label {
     overflow-wrap: anywhere;
@@ -31,6 +24,7 @@
   &__elements.active {
     visibility: visible;
     display: flex;
+    align-items: center;
     opacity: 1;
   }
 }

@@ -145,8 +145,8 @@
 
 .sort-select {
   @include theme-aware("color", "lightbox-collection-select-color");
-  border: 0;
-  border-radius: 2px;
+  border-color: transparent;
+  border-radius: 19px;
   width: 200px;
   font-size: $tp-lg;
   appearance: none;
