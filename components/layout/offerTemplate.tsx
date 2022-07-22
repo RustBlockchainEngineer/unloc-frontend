@@ -62,8 +62,8 @@ export const OfferTemplate = observer(
     subOfferKey,
     publicKey,
     state,
-    minRepaidNumerator,
-  }: OfferTemplateData) => {
+  }: // minRepaidNumerator,
+  OfferTemplateData) => {
     const router = useRouter();
     const { setTriggerRef, visible, getTooltipProps, setTooltipRef } = usePopperTooltip();
 
@@ -326,7 +326,7 @@ export const OfferTemplate = observer(
                     offerAmount: Number(offerAmount),
                     loanDuration: Number(loanDuration),
                     aprNumerator: Number(aprNumerator),
-                    minRepaidNumerator: Number(minRepaidNumerator.toString()),
+                    // minRepaidNumerator: Number(minRepaidNumerator.toString()),
                     offerMint: offerMint.toBase58(),
                   },
                   {

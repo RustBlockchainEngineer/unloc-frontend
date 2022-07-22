@@ -144,7 +144,7 @@ export const OffersWrap = observer(() => {
   }, [lendingListCollection]);
 
   useEffect(() => {
-    if (sanitizedOffers.length > 0 && updatedLends.length > 0) setLoader(false);
+    if (sanitizedOffers.length > 0 || updatedLends.length > 0) setLoader(false);
   }, [sanitizedOffers, updatedLends]);
 
   const borrowsOrProposed = useMemo(() => {
