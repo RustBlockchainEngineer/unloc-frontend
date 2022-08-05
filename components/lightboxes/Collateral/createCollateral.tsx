@@ -8,11 +8,18 @@ import { CollateralItem } from "./collateralItem";
 import { BlobLoader } from "@components/layout/blobLoader";
 import { CustomSelect } from "@components/layout/customSelect";
 import { errorCase, successCase } from "@methods/toast-error-handler";
+import { createSetOfferInstruction } from "@unloc-dev/unloc-loan-solita";
+import { PublicKey, Transaction } from "@solana/web3.js";
+import { ASSOCIATED_TOKEN_PROGRAM_ID, Token, TOKEN_PROGRAM_ID } from "@solana/spl-token";
+import { DEFAULT_PROGRAMS, METADATA, NFT_LOAN_PID, OFFER_TAG } from "@constants/config";
+import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 
 export const CreateCollateral = observer(() => {
   const store = useContext(StoreContext);
+  const { connection } = useConnection();
+  const { publicKey: walletKey, sendTransaction } = useWallet();
   const myOffers = store.MyOffers;
-  const { wallet, connection, walletKey } = store.Wallet;
+  // const { wallet, connection, walletKey } = store.Wallet;
 
   const [itemMint, setItemMint] = useState("");
   const [sortOption, setSortOption] = useState("Default");
@@ -34,10 +41,57 @@ export const CreateCollateral = observer(() => {
 
   const createOffer = async (mint: string) => {
     try {
+      if (!walletKey) {
+        throw new Error("Connect your wallet!");
+      }
+
       store.Lightbox.setCanClose(false);
       setProcessing(true);
 
-      await store.MyOffers.createCollateral(mint);
+      const nftMint = new PublicKey(mint);
+      const userVault = await Token.getAssociatedTokenAddress(
+        ASSOCIATED_TOKEN_PROGRAM_ID,
+        TOKEN_PROGRAM_ID,
+        nftMint,
+        walletKey,
+      );
+      const nftMetadata = PublicKey.findProgramAddressSync(
+        [Buffer.from("metadata"), METADATA.toBuffer(), nftMint.toBuffer()],
+        METADATA,
+      )[0];
+      const edition = PublicKey.findProgramAddressSync(
+        [Buffer.from("metadata"), METADATA.toBuffer(), nftMint.toBuffer(), Buffer.from("edition")],
+        METADATA,
+      )[0];
+      const offer = PublicKey.findProgramAddressSync(
+        [Buffer.from(OFFER_TAG), walletKey.toBuffer(), nftMint.toBuffer()],
+        NFT_LOAN_PID,
+      )[0];
+
+      const ix = createSetOfferInstruction(
+        {
+          borrower: walletKey,
+          nftMint,
+          payer: walletKey,
+          nftMetadata,
+          edition,
+          userVault,
+          offer,
+          ...DEFAULT_PROGRAMS,
+        },
+        NFT_LOAN_PID,
+      );
+
+      const latestBlockhash = await connection.getLatestBlockhash();
+      const tx = new Transaction({
+        feePayer: walletKey,
+        ...latestBlockhash,
+      }).add(ix);
+
+      const signature = await sendTransaction(tx, connection);
+      console.log(signature);
+      await connection.confirmTransaction({ signature, ...latestBlockhash }, "confirmed");
+
       store.MyOffers.setActiveCategory("deposited");
 
       store.Lightbox.setVisible(false);
@@ -76,7 +130,7 @@ export const CreateCollateral = observer(() => {
   }, [sortOption]);
 
   useEffect(() => {
-    if (wallet && walletKey) {
+    if (walletKey) {
       const fetchData = async () => {
         try {
           setLoading(true);
@@ -92,7 +146,7 @@ export const CreateCollateral = observer(() => {
 
       fetchData();
     }
-  }, [wallet, connection, walletKey]);
+  }, [connection, walletKey]);
 
   return processing ? (
     <div className="create-offer-processing">

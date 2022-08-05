@@ -1,4 +1,5 @@
-import { PublicKey } from "@solana/web3.js";
+import { TOKEN_PROGRAM_ID } from "@solana/spl-token";
+import { PublicKey, SystemProgram, SYSVAR_CLOCK_PUBKEY, SYSVAR_RENT_PUBKEY } from "@solana/web3.js";
 
 export const config = {
   devnet: true,
@@ -8,7 +9,7 @@ export const config = {
 
 export const NFT_LOAN_PID = new PublicKey(
   config.devnet
-    ? "8bBJr1q7nunD9TQYnfApw1acdzzERuMWoQUKZFVwnvmp"
+    ? "TkpSRsB8yB2qRETXLuPxuZ6Fkg2vuJnmfsQiJLfVpmG"
     : "H87mP39hQqZvh3GESPCAV426Gp3vJcraz1YgtU21i5RV",
 );
 
@@ -19,3 +20,26 @@ export const formatOptions: Intl.NumberFormatOptions = {
   minimumFractionDigits: 2,
   useGrouping: false,
 };
+
+// Token Metadata program
+export const METADATA = new PublicKey("metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s");
+
+// Commonly used programs
+export const DEFAULT_PROGRAMS = {
+  metadataProgram: METADATA,
+  clock: SYSVAR_CLOCK_PUBKEY,
+  rent: SYSVAR_RENT_PUBKEY,
+  tokenProgram: TOKEN_PROGRAM_ID,
+  systemProgram: SystemProgram.programId,
+};
+
+////////////////////////////
+// Loan Program Constants //
+////////////////////////////
+export const GLOBAL_STATE_TAG = "GLOBAL_STATE_SEED";
+export const REWARD_VAULT_TAG = "REWARD_VAULT_SEED";
+export const OFFER_TAG = "OFFER_SEED";
+export const SUB_OFFER_TAG = "SUB_OFFER_SEED";
+export const NFT_VAULT_TAG = "NFT_VAULT_SEED";
+export const OFFER_VAULT_TAG = "OFFER_VAULT_SEED";
+export const TREASURY_VAULT_TAG = "TREASURY_VAULT_SEED";

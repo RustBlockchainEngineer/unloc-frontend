@@ -2,7 +2,7 @@ import { ReactNode, useContext, useEffect, useMemo, useState } from "react";
 
 import { observer } from "mobx-react";
 import { StoreContext } from "@pages/_app";
-import { OfferAccount, SubOfferAccount } from "../../@types/loans";
+import { SubOfferAccount } from "../../@types/loans";
 import { OfferHead } from "@components/layout/offerHead";
 import { OfferTemplate } from "@components/layout/offerTemplate";
 import { BlobLoader } from "@components/layout/blobLoader";
@@ -10,6 +10,8 @@ import { PublicKey } from "@solana/web3.js";
 import { usePopperTooltip } from "react-popper-tooltip";
 import { OfferActionsHook } from "@hooks/offerActionsHook";
 import { SubOfferData } from "@stores/Offers.store";
+import { eq, gt } from "@utils/bignum";
+import { Offer } from "@unloc-dev/unloc-loan-solita";
 
 export type SanitizedOffer = {
   offerKey: string;
@@ -37,7 +39,8 @@ export const OffersWrap = observer(() => {
     lendingListCollection,
   } = store.MyOffers;
   const [offersToSanitize, setOffersToSanitize] = useState<SubOfferAccount[]>([]);
-  const [filtered, setFiltered] = useState<OfferAccount[]>([]);
+  // const [filtered, setFiltered] = useState<OfferAccount[]>([]);
+  const [filtered, setFiltered] = useState<{ publicKey: PublicKey; account: Offer }[]>([]);
   const [sanitizedOffers, setSanitizedOffers] = useState<SanitizedOffer[]>([]);
   const [updatedLends, setUpdatedLends] = useState<SubOfferData[]>([]);
   const [loader, setLoader] = useState(true);
@@ -71,12 +74,14 @@ export const OffersWrap = observer(() => {
       } else if (activeCategory === "proposed") {
         const proposed = subOffers.filter((offer) => offer.account.state === 0);
         setOffersToSanitize(proposed);
-        return state === 0 && subOfferCount.gt(startSubOfferNum);
+        // return state === 0 && subOfferCount.gt(startSubOfferNum);
+        return state === 0 && gt(subOfferCount, startSubOfferNum);
       } else {
         // Deposited condition
         const deposited = subOffers.filter((offer) => offer.account.state === 0);
         setOffersToSanitize(deposited);
-        return state === 0 && subOfferCount.eq(startSubOfferNum);
+        // return state === 0 && subOfferCount.eq(startSubOfferNum);
+        return state === 0 && eq(subOfferCount, startSubOfferNum);
       }
     });
     setFiltered(data);
@@ -85,6 +90,7 @@ export const OffersWrap = observer(() => {
   useEffect(() => {
     const fetchUserLended = async () => {
       if (store.Wallet.connected && store.Wallet.wallet) {
+        console.log("fetching user lended");
         await store.MyOffers.fetchUserLendedOffers();
       }
     };
@@ -95,8 +101,10 @@ export const OffersWrap = observer(() => {
     filterNeededOffersToSanitize();
   }, [offers, nftData, subOffers, activeCategory]);
 
-  const collectDataToRenderOffers = (filtered: OfferAccount[]) => {
-    return filtered.map((offer: OfferAccount) => {
+  const collectDataToRenderOffers = (
+    filtered: { publicKey: PublicKey; account: Offer; collection?: string }[],
+  ) => {
+    return filtered.map((offer) => {
       let offerSanitized: any = {
         collection: offer.collection,
         offerKey: offer.publicKey.toBase58(),

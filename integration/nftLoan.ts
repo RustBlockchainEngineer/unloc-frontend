@@ -11,7 +11,6 @@ import {
   SystemProgram,
   TransactionInstruction,
 } from "@solana/web3.js";
-import { bs58 } from "@project-serum/anchor/dist/cjs/utils/bytes";
 import {
   Edition,
   MasterEdition,
@@ -23,6 +22,7 @@ import axios from "axios";
 
 import { IArweaveMetadata, IMasterEdition, IMetadata, IOnChainMetadata } from "../@types/nfts/nft";
 import { SubOffer, SubOfferAccount } from "../@types/loans";
+import { Offer } from "@unloc-dev/unloc-loan-solita";
 
 const SOLANA_CONNECTION = new Connection(RPC_ENDPOINT, {
   disableRetryOnRateLimit: true,
@@ -110,39 +110,17 @@ export const getOffersBy = async (
   nftMint?: anchor.web3.PublicKey,
   state?: OfferState,
 ) => {
-  const accountName = "offer";
-  const discriminator = anchor.AccountsCoder.accountDiscriminator(accountName);
-  const filters: any[] = [];
+  const query = Offer.gpaBuilder(NFT_LOAN_PID);
 
-  if (owner) {
-    const filter: MemcmpFilter = {
-      memcmp: {
-        offset: discriminator.length,
-        bytes: owner.toBase58(),
-      },
-    };
-    filters.push(filter);
-  }
-  if (nftMint) {
-    const filter: MemcmpFilter = {
-      memcmp: {
-        offset: discriminator.length + 32,
-        bytes: nftMint.toBase58(),
-      },
-    };
-    filters.push(filter);
-  }
-  if (state) {
-    const filter: MemcmpFilter = {
-      memcmp: {
-        offset: discriminator.length + 96,
-        bytes: bs58.encode([state]),
-      },
-    };
-    filters.push(filter);
-  }
+  if (owner) query.addFilter("borrower", owner);
+  if (nftMint) query.addFilter("nftMint", nftMint);
+  if (state) query.addFilter("state", state);
 
-  return await program.account.offer.all(filters);
+  const accountInfos = await query.run(program.provider.connection);
+  return accountInfos.map((data) => ({
+    publicKey: data.pubkey,
+    account: Offer.fromAccountInfo(data.account)[0],
+  }));
 };
 
 export const getSubOffer = async (key: anchor.web3.PublicKey) => {

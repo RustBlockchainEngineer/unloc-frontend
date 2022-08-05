@@ -21,15 +21,11 @@ import {
 import { currencies, currencyMints } from "@constants/currency";
 import { getDurationForContractData } from "@utils/timeUtils/timeUtils";
 import { getSubOffersKeysByState } from "@integration/offersListing";
-import type {
-  OfferAccount,
-  PreparedOfferData,
-  SanitizedData,
-  SubOfferAccount,
-} from "../@types/loans";
+import type { PreparedOfferData, SanitizedData, SubOfferAccount } from "../@types/loans";
 import { SubOfferData } from "./Offers.store";
 import axios from "axios";
 import { range } from "@utils/range";
+import { Offer } from "@unloc-dev/unloc-loan-solita";
 
 /**
  * Active: offer that was accepted by someone and needs to be repayed
@@ -40,7 +36,7 @@ export type OfferCategory = "active" | "proposed" | "deposited";
 
 export class MyOffersStore {
   rootStore;
-  offers: OfferAccount[] = [];
+  offers: { publicKey: PublicKey; account: Offer }[] = [];
   collaterables: NFTMetadata[] = [];
   subOffers: SubOfferAccount[] = [];
   nftData: NFTMetadata[] = [];
@@ -69,11 +65,7 @@ export class MyOffersStore {
     this.rootStore = rootStore;
   }
 
-  private filterOffersByState(offers: OfferAccount[], state: number) {
-    return offers.filter((offer) => offer.account.state === state);
-  }
-
-  @action.bound setOffers(offers: OfferAccount[]): void {
+  @action.bound setOffers(offers: any): void {
     this.offers = offers;
   }
 
@@ -127,15 +119,12 @@ export class MyOffersStore {
   }
 
   @action.bound async getOffersByWallet(wallet: PublicKey): Promise<void> {
-    const offersData = await getOffersBy(wallet, undefined, undefined);
-    const proposedOffers = this.filterOffersByState(offersData, 0);
-    const activeOffers = this.filterOffersByState(offersData, 1);
+    const offers = await getOffersBy(wallet, undefined, undefined);
+    const proposedOrActive = offers.filter(
+      (offer) => offer.account.state === 0 || offer.account.state === 1,
+    );
 
-    if (offersData) {
-      runInAction(() => {
-        this.setOffers([...activeOffers, ...proposedOffers]);
-      });
-    }
+    this.setOffers(proposedOrActive);
   }
 
   @action.bound setCollaterables(collaterables: NFTMetadata[]): void {
@@ -165,7 +154,8 @@ export class MyOffersStore {
       for (const offer of this.offers) {
         if (offer) {
           const { startSubOfferNum, subOfferCount } = offer.account;
-          const subOfferRange = range(startSubOfferNum.toNumber(), subOfferCount.toNumber());
+          // @ts-ignore
+          const subOfferRange = range(startSubOfferNum.valueOf(), subOfferCount.valueOf());
           const subOfferData = yield getSubOffersInRange(offer.publicKey, subOfferRange);
           data.push(subOfferData);
         }
