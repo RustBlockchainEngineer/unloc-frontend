@@ -70,7 +70,8 @@ export const OfferActionsHook = (): OfferActionsHook => {
       openLightBox();
 
       try {
-        await store.MyOffers.handleCancelCollateral(nftMint.toBase58());
+        const mint = typeof nftMint === "string" ? nftMint : nftMint.toBase58();
+        await store.MyOffers.handleCancelCollateral(mint);
         successCase(`NFT ${name} returned to the wallet`, name);
         store.Lightbox.setCanClose(true);
         store.Lightbox.setVisible(false);
