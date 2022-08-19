@@ -188,7 +188,7 @@ export const OfferTemplate = observer(
             <p>NFT mint</p>
             <div className="on-hover">
               <ShowOnHover label={compressAddress(4, nftMint)}>
-                <ClipboardButton data={borrower} />
+                <ClipboardButton data={nftMint} />
               </ShowOnHover>
             </div>
           </div>
