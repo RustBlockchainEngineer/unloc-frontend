@@ -70,7 +70,7 @@ export const OffersGrid = observer(() => {
           ""
         )}
         <button
-          key={`${page}`}
+          key={page.toString()}
           className={`page ${getClassName(page, current)}`}
           onClick={() => store.Offers.setCurrentPage(page + 1)}>
           <b>{page + 1}</b>

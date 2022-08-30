@@ -1,4 +1,4 @@
-import { useCallback, useContext, MouseEvent, useState } from "react";
+import { useCallback, useContext, MouseEvent, useState, Fragment } from "react";
 
 import { observer } from "mobx-react";
 import { usePopperTooltip } from "react-popper-tooltip";
@@ -39,7 +39,7 @@ export const WalletActions = observer(() => {
     <div className="my-offers-top">
       <div className="my-offers-top__heading">
         {categories.map((category) => (
-          <>
+          <Fragment key={category.value}>
             <button
               key={category.value}
               name={category.value}
@@ -58,7 +58,7 @@ export const WalletActions = observer(() => {
                 classNames={"sort-select"}
               />
             )}
-          </>
+          </Fragment>
         ))}
       </div>
       <div className="my-offers-top__toolbox">
