@@ -1,4 +1,4 @@
-import { ReactNode, useContext, useEffect, useMemo, useState } from "react";
+import { ReactNode, useContext, useEffect, useMemo, useState, Fragment } from "react";
 
 import { observer } from "mobx-react";
 import { StoreContext } from "@pages/_app";
@@ -160,11 +160,11 @@ export const OffersWrap = observer(() => {
     return (
       updatedLends.length > 0 &&
       updatedLends?.map((offer) => (
-        <>
+        <Fragment key={offer.subOfferKey.toString()}>
           {/*// eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
           {/*// @ts-ignore*/}
-          <OfferTemplate key={offer.subOfferKey.toString()} {...offer} isLends={true} />
-        </>
+          <OfferTemplate {...offer} isLends={true} />
+        </Fragment>
       ))
     );
   }, [updatedLends]);
