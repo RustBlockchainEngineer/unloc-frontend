@@ -51,6 +51,7 @@ const SingleNftPage: NextPage = observer(() => {
             pubkey={pubkey}
             account={account}
             nftData={nftData}
+            hideImage={true}
           />
         )
       );

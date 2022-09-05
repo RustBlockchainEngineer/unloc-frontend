@@ -34,6 +34,7 @@ import { useOffChainMetadata } from "@hooks/useOffChainMetadata";
 import { useCollectionName } from "@hooks/useCollectionName";
 
 interface OfferTemplateData {
+  hideImage?: boolean;
   isLends?: boolean;
   isDeposited?: boolean;
   withWrap?: boolean;
@@ -45,6 +46,7 @@ interface OfferTemplateData {
 
 export const OfferTemplate = observer(
   ({
+    hideImage,
     isLends,
     isDeposited,
     withWrap,
@@ -132,35 +134,37 @@ export const OfferTemplate = observer(
           activeCategory === "proposed" ? "siblings" : ""
         }
         `}>
-        <div className="data-row head">
-          <div className="info">
-            <div className="image">
-              {!isLoading && json && (
-                <Image
-                  src={json.image}
-                  alt="NFT Picture"
-                  width={isLends ? 35 : 55}
-                  height={isLends ? 35 : 55}
-                />
-              )}
+        {!hideImage && (
+          <div className="data-row head">
+            <div className="info">
+              <div className="image">
+                {!isLoading && json && (
+                  <Image
+                    src={json.image}
+                    alt="NFT Picture"
+                    width={isLends ? 35 : 55}
+                    height={isLends ? 35 : 55}
+                  />
+                )}
+              </div>
+              <div className="details">
+                {!isLoading && json && <p>{json.name}</p>}
+                {isLends && !isLoadingCollection && (
+                  <span>
+                    Collection: <b>{collection}</b>
+                  </span>
+                )}
+              </div>
             </div>
-            <div className="details">
-              {!isLoading && json && <p>{json.name}</p>}
-              {isLends && !isLoadingCollection && (
-                <span>
-                  Collection: <b>{collection}</b>
-                </span>
-              )}
-            </div>
-          </div>
 
-          {isLends && (
-            <div className="timer">
-              <span> Time left </span>
-              <div className="time-row">{lendsTimeLeftHelpers(timeLeft)}</div>
-            </div>
-          )}
-        </div>
+            {isLends && (
+              <div className="timer">
+                <span> Time left </span>
+                <div className="time-row">{lendsTimeLeftHelpers(timeLeft)}</div>
+              </div>
+            )}
+          </div>
+        )}
         <div className="data-row offer-status">
           {isLends ? (
             <div className="row-item">
