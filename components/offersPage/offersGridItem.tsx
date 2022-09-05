@@ -1,121 +1,95 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import OffersGridItemHover from "./offersGridItemHover";
 import Image from "next/image";
 import Link from "next/link";
 import { ILightboxOffer } from "@stores/Lightbox.store";
+import { SubOffer } from "@unloc-dev/unloc-loan-solita";
+import { Metadata } from "@metaplex-foundation/mpl-token-metadata";
+import { PublicKey } from "@solana/web3.js";
+import { useOffChainMetadata } from "@hooks/useOffChainMetadata";
+import { currencyMints } from "@constants/currency";
+import BN from "bn.js";
 
 interface OffersGridItemInterface {
-  subOfferKey: string;
-  offerKey: string;
-  image: string;
-  APR: number;
-  name: string;
+  subOffer: PublicKey;
+  offer: PublicKey;
+  subOfferData: SubOffer;
+  nftData: Metadata;
   handleConfirmOffer: (offer: ILightboxOffer) => void;
   totalRepay: any;
   amount: string;
-  duration: string;
-  currency: string;
-  count?: number;
   collection: string;
   isYours?: boolean;
 }
 
 export const OffersGridItem = ({
-  subOfferKey,
-  offerKey,
-  image,
-  APR,
-  name,
+  subOffer,
+  offer,
+  subOfferData,
+  nftData,
   handleConfirmOffer,
   totalRepay,
   amount,
-  duration,
-  currency,
-  count,
   collection,
   isYours,
 }: OffersGridItemInterface) => {
   const [hover, setHover] = useState<boolean>(false);
-  const rangeSheetsCount = (sheetCount: number) => {
-    if (sheetCount > 8) {
-      return "high";
-    }
-    if (sheetCount > 5) {
-      return "mid";
-    }
-    if (sheetCount > 2) {
-      return "low";
-    }
+  const offerAddress = useMemo(() => offer.toBase58(), [offer]);
+  const subOfferAddress = useMemo(() => subOffer.toBase58(), [subOffer]);
+  const apr = useMemo(() => subOfferData.aprNumerator.toString(), []);
+  const tokenName = useMemo(() => currencyMints[subOfferData.offerMint.toBase58()], [subOfferData]);
+  const duration = useMemo(
+    () => new BN(subOfferData.loanDuration).divn(3600 * 24).toString(),
+    [subOfferData],
+  );
 
-    return "none";
-  };
+  const { isLoading, json } = useOffChainMetadata(nftData.data.uri);
 
-  const getSheets = (count: number) => {
-    let tick = 0;
-    if (count) {
-      [...Array(count)].forEach(() => {
-        tick++;
-      });
+  if (isLoading) return <div>Loading</div>;
 
-      return ` grid-sheet-${rangeSheetsCount(tick)}`;
-    }
-    return "grid-sheet-none";
-  };
   return (
     <div
-      className={`offers-grid-item ${getSheets(count !== undefined ? count : 0)}`}
-      key={subOfferKey}
+      className={"offers-grid-item"}
       onMouseOver={() => setHover(true)}
       onMouseLeave={() => setHover(false)}>
-      {isYours ? (
+      {isYours && (
         <div className="owner-indicator">
           <i className="icon icon--owner" />
         </div>
-      ) : (
-        ""
       )}
       <OffersGridItemHover
         visible={hover}
-        APR={APR}
-        name={name}
+        APR={apr}
+        name={json.name}
         totalRepay={totalRepay}
         amount={amount}
         handleConfirmOffer={handleConfirmOffer}
         duration={duration}
-        currency={currency}
-        subOfferKey={subOfferKey}
-        offerKey={offerKey}
-        count={count}
+        currency={tokenName}
+        subOfferAddress={subOfferAddress}
+        offer={offer}
         collection={collection}
         isYours={isYours}
       />
-      <Link href={`/offers/${offerKey}`}>
+      <Link href={`/offers/${offerAddress}`}>
         <a>
           <div className="hover-data" style={{ visibility: `${hover ? "hidden" : "visible"}` }}>
             <div className="hover-data-item">
               <span className="label">APR</span>
-              <span className="content">{APR} %</span>
+              <span className="content">{apr} %</span>
             </div>
             <div className="hover-data-item">
               <span className="label">Amount</span>
               <span className="content">
-                {amount} {currency}
+                {amount} {tokenName}
               </span>
             </div>
             <div className="hover-data-item">
               <span className="label">Duration</span>
               <span className="content">{duration} Days</span>
             </div>
-            {count ? (
-              <div className="hover-data-item">
-                <span className="label">Offers</span>
-                <span className="content">{count}</span>
-              </div>
-            ) : (
-              <></>
-            )}
           </div>
-          {image ? <Image src={image} alt="NFT Picture" layout="fill" /> : ""}
+          {json && <Image src={json.image} alt="NFT Picture" layout="fill" />}
         </a>
       </Link>
     </div>

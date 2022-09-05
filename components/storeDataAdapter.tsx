@@ -1,12 +1,12 @@
 import { useContext, useEffect, ReactNode } from "react";
-import { useWallet } from "@solana/wallet-adapter-react";
+import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { observer } from "mobx-react";
 import axios from "axios";
 
 import { StoreContext } from "@pages/_app";
 
 import { initLoanProgram } from "@integration/nftLoan";
-import { errorCase } from "@methods/toast-error-handler";
+import { errorCase } from "@utils/toast-error-handler";
 import { useAccountChange } from "@hooks/useAccountChange";
 
 type Props = {
@@ -14,14 +14,15 @@ type Props = {
 };
 
 export const StoreDataAdapter = observer(({ children }: Props) => {
-  const { wallet, connected, disconnect, publicKey } = useWallet();
+  const { wallet, disconnect, publicKey } = useWallet();
+  const { connection } = useConnection();
   const store = useContext(StoreContext);
 
   const [onAccountChange, accountChangeDestructor] = useAccountChange();
 
   useEffect(() => {
     const setWallet = async (): Promise<void> => {
-      if (connected && wallet && publicKey) {
+      if (wallet && publicKey) {
         const response = await axios.post("/api/auth", { user: publicKey.toBase58() });
 
         if (!(response && response.data)) return;
@@ -37,18 +38,16 @@ export const StoreDataAdapter = observer(({ children }: Props) => {
         await onAccountChange();
 
         initLoanProgram(wallet.adapter);
-        store.GlobalState.fetchGlobalState();
-        store.Wallet.setConnected(connected);
-        store.Wallet.setWallet(wallet);
-        store.Wallet.setHandleDisconnect(disconnect);
         store.Wallet.setWalletKey(publicKey);
+        store.Wallet.setWallet(wallet);
+        await store.GlobalState.fetchGlobalState(connection);
       }
     };
 
     setWallet();
 
     return accountChangeDestructor;
-  }, [wallet, connected, store.Wallet]);
+  }, [wallet, publicKey]);
 
   return <>{children}</>;
 });

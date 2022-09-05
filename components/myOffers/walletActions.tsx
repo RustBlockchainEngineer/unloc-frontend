@@ -7,6 +7,7 @@ import { ConnectWallet } from "@components/connectWallet/ConnectWallet";
 import { StoreContext } from "@pages/_app";
 import { OfferCategory } from "@stores/MyOffers.store";
 import { CustomSelect } from "@components/layout/customSelect";
+import { useWallet } from "@solana/wallet-adapter-react";
 
 const categories: { label: string; value: OfferCategory; options?: string[] }[] = [
   { label: "Active Loans", value: "active", options: ["All", "Borrows", "Lends"] },
@@ -16,7 +17,7 @@ const categories: { label: string; value: OfferCategory; options?: string[] }[] 
 
 export const WalletActions = observer(() => {
   const store = useContext(StoreContext);
-  const { connected } = store.Wallet;
+  const { publicKey: wallet } = useWallet();
   const { activeCategory } = store.MyOffers;
   const [sortOption, setSortOption] = useState("All");
   const { getTooltipProps, setTooltipRef, setTriggerRef, visible } = usePopperTooltip();
@@ -35,7 +36,7 @@ export const WalletActions = observer(() => {
     store.MyOffers.setActiveLoan(option.toLowerCase());
   };
 
-  return connected ? (
+  return wallet ? (
     <div className="my-offers-top">
       <div className="my-offers-top__heading">
         {categories.map((category) => (

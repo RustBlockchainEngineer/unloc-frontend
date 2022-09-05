@@ -3,7 +3,6 @@ import type { NextPage } from "next";
 
 import { LayoutTop } from "@components/layout/layoutTop";
 import { LayoutTopMobile } from "@components/layout/layoutTopMobile";
-import { Header } from "@components/singleOffer/Header/Header";
 import { StoreDataAdapter } from "@components/storeDataAdapter";
 
 const MyOffers: NextPage = observer(() => {
@@ -11,13 +10,7 @@ const MyOffers: NextPage = observer(() => {
     <StoreDataAdapter>
       <div className="page my-offers">
         <LayoutTop />
-        <Header
-          collectionName="test"
-          nftAddress="4G7tnw4nFy1zK8KW77HJyDn4tTU4vFcwQJF3FF9ek5Rj"
-          nftImage="test"
-          nftName="test"
-          website="unloc.xyz"
-        />
+        <p>Not found</p>
       </div>
       <LayoutTopMobile />
     </StoreDataAdapter>

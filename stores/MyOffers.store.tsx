@@ -1,34 +1,26 @@
-import { action, flow, makeAutoObservable, runInAction } from "mobx";
-import { PublicKey } from "@solana/web3.js";
+import { flow, makeAutoObservable, runInAction } from "mobx";
+import { clusterApiUrl, Connection, PublicKey } from "@solana/web3.js";
 import { BN } from "bn.js";
 
-import { getWhitelistedNFTsByWallet } from "@integration/nftIntegration";
 import {
-  cancelOffer,
-  cancelSubOffer,
-  claimCollateral,
-  createSubOffer,
   getOffersBy,
+  getSubOfferKeys,
   getSubOfferMultiple,
   getSubOffersInRange,
-  MultipleNFT,
-  NFTMetadata,
-  repayLoan,
-  setOffer,
-  updateSubOffer,
 } from "@integration/nftLoan";
-import { currencies, currencyMints } from "@constants/currency";
-import { getDurationForContractData } from "@utils/timeUtils/timeUtils";
-import { getSubOffersKeysByState } from "@integration/offersListing";
 import type {
   OfferAccount,
   PreparedOfferData,
   SanitizedData,
   SubOfferAccount,
-} from "../@types/loans";
-import { SubOfferData } from "./Offers.store";
-import axios from "axios";
-import { range } from "@utils/range";
+} from "@utils/spl/types";
+
+import { range, zipMap } from "@utils/common";
+import { Offer, SubOffer, SubOfferState } from "@unloc-dev/unloc-loan-solita";
+import { RootStore } from "./Root.store";
+import { findMetadataPda } from "@utils/spl/metadata";
+import { GmaBuilder } from "@utils/spl/GmaBuilder";
+import { Metadata } from "@metaplex-foundation/mpl-token-metadata";
 
 /**
  * Active: offer that was accepted by someone and needs to be repayed
@@ -37,15 +29,19 @@ import { range } from "@utils/range";
  */
 export type OfferCategory = "active" | "proposed" | "deposited";
 
+type SubOfferData = {
+  pubkey: PublicKey;
+  account: SubOffer;
+  nftData: Metadata;
+};
+
 export class MyOffersStore {
-  rootStore;
+  rootStore: RootStore;
   offers: OfferAccount[] = [];
-  collaterables: NFTMetadata[] = [];
   subOffers: SubOfferAccount[] = [];
-  nftData: NFTMetadata[] = [];
+  nftData: Metadata[] = [];
   activeNftMint: string = "";
-  lendingList: SubOfferData[] = [];
-  lendingListCollection: string[] = [];
+  lendingList: { pubkey: PublicKey; account: SubOffer; nftData: Metadata }[] = [];
   activeCategory: OfferCategory = "active";
   activeLoans: string = "all";
   preparedOfferData: PreparedOfferData = {
@@ -56,11 +52,9 @@ export class MyOffersStore {
     currency: "",
     repayValue: "0.00",
   };
-  sanitized: SanitizedData = {
-    name: "",
-    image: "",
+  sanitized = {
     collateralId: "",
-    nftMint: "",
+    metadata: {} as Metadata,
   };
 
   constructor(rootStore: any) {
@@ -68,104 +62,30 @@ export class MyOffersStore {
     this.rootStore = rootStore;
   }
 
-  private filterOffersByState(offers: OfferAccount[], state: number) {
-    return offers.filter((offer) => offer.account.state === state);
-  }
-
-  @action.bound setOffers(offers: OfferAccount[]): void {
+  setOffers(offers: { pubkey: PublicKey; account: Offer }[]): void {
     this.offers = offers;
   }
 
-  @action.bound fetchCollections = flow(function* (this: MyOffersStore, type: string = "offers") {
-    try {
-      let requests;
-      if (type === "lendingList") {
-        requests = this.fetchCollectionsForLendingOffers();
-      } else {
-        requests = this.fetchCollectionForNfts();
-      }
-      const data = [];
-      if (requests) {
-        const responses = yield axios.all(requests.map((request) => request.request));
-        for (const el of requests) {
-          if (this[type][el.index] && !this[type][el.index].hasOwnProperty("collection")) {
-            this[type][el.index].collection = responses[el.index].data;
-            type === "lendingList" && data.push(responses[el.index].data);
-          }
-        }
-        if (type === "lendingList") {
-          data.length && this.fillLendingCollections(data);
-        }
-      }
-    } catch (e) {
-      // eslint-disable-next-line no-console
-      console.log(e);
-    }
-  });
+  async getOffersByWallet(wallet: PublicKey): Promise<void> {
+    const offers = await getOffersBy(wallet, undefined, undefined);
+    const proposedOrActive = offers.filter(
+      (offer) => offer.account.state === 0 || offer.account.state === 1,
+    );
 
-  @action.bound fillLendingCollections(data: string[]) {
-    this.lendingListCollection = data;
+    this.setOffers(proposedOrActive);
   }
 
-  private fetchCollectionsForLendingOffers() {
-    return this.lendingList.map((item, index) => {
-      return {
-        request: axios.post("/api/collections/nft", { id: item.nftMint.toBase58() }),
-        index,
-      };
-    });
-  }
-
-  private fetchCollectionForNfts() {
-    return this.offers.map((item, index) => {
-      return {
-        request: axios.post("/api/collections/nft", { id: item.account.nftMint.toBase58() }),
-        index,
-      };
-    });
-  }
-
-  @action.bound async getOffersByWallet(wallet: PublicKey): Promise<void> {
-    const offersData = await getOffersBy(wallet, undefined, undefined);
-    const proposedOffers = this.filterOffersByState(offersData, 0);
-    const activeOffers = this.filterOffersByState(offersData, 1);
-
-    if (offersData) {
-      runInAction(() => {
-        this.setOffers([...activeOffers, ...proposedOffers]);
-      });
-    }
-  }
-
-  @action.bound setCollaterables(collaterables: NFTMetadata[]): void {
-    this.collaterables = collaterables;
-  }
-
-  @action.bound async getUserNFTs(wallet: PublicKey): Promise<void> {
-    const data = await getWhitelistedNFTsByWallet(wallet);
-    if (data) {
-      runInAction(() => {
-        this.setCollaterables(data);
-      });
-    }
-  }
-
-  @action.bound setNftData(nftData: NFTMetadata[]): void {
-    this.nftData = nftData;
-  }
-
-  @action.bound setSubOffers(subOffers: SubOfferAccount[]): void {
-    this.subOffers = subOffers;
-  }
-
-  @action.bound getSubOffersByOffers = flow(function* (this: MyOffersStore) {
-    if (this.offers && this.offers.length > 0) {
+  getSubOffersByOffers = flow(function* (this: MyOffersStore) {
+    if (this.offers.length > 0) {
       const data: SubOfferAccount[] = [];
       for (const offer of this.offers) {
         if (offer) {
           const { startSubOfferNum, subOfferCount } = offer.account;
-          const subOfferRange = range(startSubOfferNum.toNumber(), subOfferCount.toNumber());
-          const subOfferData = yield getSubOffersInRange(offer.publicKey, subOfferRange);
+          const subOfferRange = range(
+            new BN(startSubOfferNum).toNumber(),
+            new BN(subOfferCount).toNumber(),
+          );
+          const subOfferData = yield getSubOffersInRange(offer.pubkey, subOfferRange);
           data.push(subOfferData);
         }
       }
@@ -173,155 +93,75 @@ export class MyOffersStore {
     }
   });
 
-  @action.bound getNFTsData = flow(function* (this: MyOffersStore) {
-    if (this.offers && this.offers.length > 0) {
-      this.fetchCollections();
-      const data: NFTMetadata[] = [];
-      const nftMintKeys: PublicKey[] = [];
-
-      for (const offer of this.offers) {
-        const nftMint = offer.account.nftMint;
-
-        if (!nftMintKeys.find((mintKey) => mintKey.equals(nftMint))) {
-          nftMintKeys.push(nftMint);
-        }
-      }
-
-      const multipleNft = new MultipleNFT(nftMintKeys);
-      yield multipleNft.initialize();
-      yield multipleNft.initArweavedata();
-
-      for (const nftMint of nftMintKeys) {
-        const nftMeta = multipleNft.getNftMeta(nftMint);
-
-        if (nftMeta) {
-          data.push(nftMeta);
-        }
-      }
-      this.nftData = data;
+  async getNFTsData(): Promise<void> {
+    if (this.offers.length > 0) {
+      const nftPdas = this.offers.map((offer) => offer.account.nftMint).map(findMetadataPda);
+      const connection = new Connection(clusterApiUrl("devnet"));
+      const metadatas = (
+        await GmaBuilder.make(connection, nftPdas, { commitment: "confirmed" }).getAndMap(
+          (account) => {
+            if (!account.exists) return null;
+            return Metadata.deserialize(account.data)[0];
+          },
+        )
+      ).filter((item): item is Metadata => item !== null);
+      runInAction(() => {
+        this.nftData = metadatas;
+      });
     }
-  });
+  }
 
-  @action.bound handleCreateSubOffer = async (
-    nftMint: string,
-    offerAmount: number,
-    loanDuration: number,
-    aprNumerator: number,
-    currency: string,
-  ) => {
-    const currencyInfo = currencies[currency];
-
-    await createSubOffer(
-      new BN(offerAmount * 10 ** currencyInfo.decimals),
-      new BN(getDurationForContractData(loanDuration, "days")),
-      new BN(1), // minRepaidNumerator
-      new BN(aprNumerator),
-      new PublicKey(nftMint),
-      new PublicKey(currencyInfo.mint),
-    );
-  };
-
-  @action.bound handleEditSubOffer = async (
-    offerAmount: number,
-    loanDuration: number,
-    aprNumerator: number,
-    minRepaidNumerator: number,
-    subOffer: string,
-  ) => {
-    const currencyInfo =
-      currencies[currencyMints[this.rootStore.Lightbox.activeSubOfferData.offerMint]];
-
-    await updateSubOffer(
-      new BN(offerAmount * 10 ** currencyInfo.decimals),
-      new BN(getDurationForContractData(loanDuration, "days")),
-      new BN(minRepaidNumerator),
-      new BN(aprNumerator),
-      new PublicKey(subOffer),
-    );
-  };
-
-  @action.bound handleRepayLoan = async (subOfferKey: string) => {
-    await repayLoan(new PublicKey(subOfferKey));
-  };
-
-  @action.bound setActiveNftMint = (nftMint: string | PublicKey) => {
+  setActiveNftMint = (nftMint: string | PublicKey) => {
     this.activeNftMint = typeof nftMint === "string" ? nftMint : nftMint.toBase58();
   };
 
-  @action.bound refetchStoreData = async () => {
+  refetchStoreData = async () => {
+    if (!this.rootStore.Wallet.walletKey) return;
+
     await this.getOffersByWallet(this.rootStore.Wallet.walletKey);
     await this.getNFTsData();
     await this.getSubOffersByOffers();
   };
 
-  @action.bound createCollateral = async (mint: string) => {
-    await setOffer(new PublicKey(mint));
-  };
-
-  @action.bound handleCancelCollateral = async (mint: string | PublicKey) => {
-    mint = typeof mint === "string" ? mint : mint.toBase58();
-    await cancelOffer(new PublicKey(mint));
-  };
-
-  @action.bound handleCancelSubOffer = async (subOfferKey: string) => {
-    await cancelSubOffer(new PublicKey(subOfferKey));
-  };
-
-  private initManyNfts = async (nftMintKeys: PublicKey[]) => {
-    const multipleNft = new MultipleNFT(nftMintKeys);
-    await multipleNft.initialize();
-    await multipleNft.initArweavedata();
-
-    return multipleNft;
-  };
-
-  @action.bound fetchUserLendedOffers = async () => {
-    const activeOffersKeys = await getSubOffersKeysByState([1]);
+  async fetchUserLendedOffers(connection: Connection, wallet: PublicKey) {
+    const activeOffersKeys = await getSubOfferKeys(connection, {
+      state: SubOfferState.Accepted,
+      lender: wallet,
+    });
     if (activeOffersKeys && activeOffersKeys.length) {
-      const offersData: SubOfferData[] = await getSubOfferMultiple(activeOffersKeys);
+      const offersData = await getSubOfferMultiple(connection, activeOffersKeys);
 
-      const lendedLoans = offersData.filter((offer) =>
-        offer.lender.equals(this.rootStore.Wallet.walletKey),
-      );
-
-      const nftMints = lendedLoans.map((offerData) => {
-        return offerData.nftMint;
-      });
-      const nftsData = await this.initManyNfts(nftMints);
-
-      nftsData.metadatas.forEach((nft, index) => {
-        lendedLoans[index].nftData = nft;
+      const nftPdas = offersData.map(({ account }) => findMetadataPda(account.nftMint));
+      const metadatas = await GmaBuilder.make(connection, nftPdas, {
+        commitment: "confirmed",
+      }).getAndMap((account) => {
+        if (!account.exists) return null;
+        return Metadata.deserialize(account.data)[0];
       });
 
-      this.setLendingListData(lendedLoans);
+      const zipped = zipMap(offersData, metadatas, (account, metadata) => {
+        return { nftData: metadata, ...account };
+      }).filter((item): item is SubOfferData => item.nftData !== null);
 
-      this.fetchCollections("lendingList");
+      runInAction(() => {
+        this.lendingList = zipped;
+      });
     }
-  };
+  }
 
-  @action.bound setLendingListData = (data: SubOfferData[]): void => {
-    this.lendingList = data;
-  };
-
-  @action.bound handleClaimCollateral = async (subOffer: PublicKey) => {
-    await claimCollateral(subOffer);
-  };
-
-  @action.bound setActiveCategory(category: OfferCategory): void {
+  setActiveCategory(category: OfferCategory): void {
     this.activeCategory = category;
   }
 
-  @action.bound setPreparedOfferData(data: PreparedOfferData): void {
+  setPreparedOfferData(data: PreparedOfferData): void {
     this.preparedOfferData = data;
   }
 
-  @action.bound setSanitizedOfferData(data: SanitizedData): void {
-    const { nftMint } = data;
-    data.nftMint = typeof nftMint === "string" ? nftMint : nftMint.toBase58();
+  setSanitizedOfferData(data: SanitizedData): void {
     this.sanitized = data;
   }
 
-  @action.bound setActiveLoan(loan: string): void {
+  setActiveLoan(loan: string): void {
     this.activeLoans = loan;
   }
 }

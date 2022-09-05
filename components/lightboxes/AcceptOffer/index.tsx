@@ -1,24 +1,34 @@
 import { useContext } from "react";
 
 import { observer } from "mobx-react";
-import Image from "next/image";
 
 import { StoreContext } from "@pages/_app";
-import { errorCase, successCase } from "@methods/toast-error-handler";
+import { errorCase, successCase } from "@utils/toast-error-handler";
+import { AcceptHeader } from "./acceptHeader";
+import { acceptOffer } from "@utils/spl/unlocLoan";
+import { useConnection, useWallet } from "@solana/wallet-adapter-react";
+import { PublicKey } from "@solana/web3.js";
+import { useSendTransaction } from "@hooks/useSendTransaction";
 
 export const AcceptOffer = observer(() => {
   const store = useContext(StoreContext);
+  const { connection } = useConnection();
+  const { publicKey: wallet } = useWallet();
+  const sendAndConfirm = useSendTransaction();
   const { acceptOfferData } = store.Lightbox;
   const { nftData } = store.SingleOffer;
   const { amount, duration, APR, totalRepay, currency, offerPublicKey } = acceptOfferData;
 
   const handleAcceptOffer = async (offerPublicKey: string): Promise<void> => {
     try {
-      // store.Lightbox.setContent("processing");
+      if (!wallet) throw Error("Connect your wallet");
+
       store.Lightbox.setContent("circleProcessing");
       store.Lightbox.setCanClose(false);
       store.Lightbox.setVisible(true);
-      await store.Offers.handleAcceptOffer(offerPublicKey);
+
+      const tx = await acceptOffer(connection, wallet, new PublicKey(offerPublicKey));
+      await sendAndConfirm(tx, "confirmed");
       successCase("Loan Accepted");
     } catch (e: any) {
       errorCase(e);
@@ -31,12 +41,7 @@ export const AcceptOffer = observer(() => {
   return (
     <div className="accept-offer">
       <h2>Lend Tokens</h2>
-      <div className="collection">
-        <div className="nft-image-circled">
-          <Image alt="NFT Image" src={nftData.image} width={46} height={46} />
-        </div>
-        <p className="nft-name">{nftData.name}</p>
-      </div>
+      {nftData && <AcceptHeader nftData={nftData} />}
       <div className="collateral">
         <div className="nft-pill">
           <div className="data">

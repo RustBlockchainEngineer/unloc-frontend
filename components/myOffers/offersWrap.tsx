@@ -1,46 +1,33 @@
-import { ReactNode, useContext, useEffect, useMemo, useState, Fragment } from "react";
+import { ReactNode, useContext, useEffect, useMemo, useState } from "react";
 
 import { observer } from "mobx-react";
 import { StoreContext } from "@pages/_app";
-import { OfferAccount, SubOfferAccount } from "../../@types/loans";
+import { OfferAccount, SubOfferAccount } from "@utils/spl/types";
 import { OfferHead } from "@components/layout/offerHead";
 import { OfferTemplate } from "@components/layout/offerTemplate";
 import { BlobLoader } from "@components/layout/blobLoader";
-import { PublicKey } from "@solana/web3.js";
 import { usePopperTooltip } from "react-popper-tooltip";
 import { OfferActionsHook } from "@hooks/offerActionsHook";
-import { SubOfferData } from "@stores/Offers.store";
+import { eq, gt, gte } from "@utils/bignum";
+import { OfferState, SubOfferState } from "@unloc-dev/unloc-loan-solita";
+import { DepositTemplate } from "@components/layout/depositTemplate";
+import { Metadata } from "@metaplex-foundation/mpl-token-metadata";
+import { PublicKey } from "@solana/web3.js";
+import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 
 export type SanitizedOffer = {
-  offerKey: string;
-  collection?: string;
-  nftMint: PublicKey;
-  description: string;
-  external_url: string;
-  state: number;
-  image: string;
-  name: string;
+  offer: PublicKey;
+  metadata: Metadata;
+  state: OfferState;
   subOffers: SubOfferAccount[];
 };
 
-export type DepositedOffer = Omit<SanitizedOffer, "subOffers">;
-
 export const OffersWrap = observer(() => {
+  const { connection } = useConnection();
+  const { publicKey } = useWallet();
   const store = useContext(StoreContext);
-  const {
-    offers,
-    nftData,
-    subOffers,
-    activeCategory,
-    lendingList,
-    activeLoans,
-    lendingListCollection,
-  } = store.MyOffers;
-  const [offersToSanitize, setOffersToSanitize] = useState<SubOfferAccount[]>([]);
-  const [filtered, setFiltered] = useState<OfferAccount[]>([]);
-  const [sanitizedOffers, setSanitizedOffers] = useState<SanitizedOffer[]>([]);
-  const [updatedLends, setUpdatedLends] = useState<SubOfferData[]>([]);
-  const [loader, setLoader] = useState(true);
+  const { offers, nftData, subOffers, activeCategory, lendingList, activeLoans } = store.MyOffers;
+  const [loader] = useState(false);
   const { handleDepositClick } = OfferActionsHook();
 
   const { getTooltipProps, setTooltipRef, setTriggerRef, visible } = usePopperTooltip();
@@ -61,124 +48,61 @@ export const OffersWrap = observer(() => {
     </>
   );
 
-  const filterNeededOffersToSanitize = () => {
-    const data = offers.filter((offer) => {
-      const { state, subOfferCount, startSubOfferNum } = offer.account;
-      if (activeCategory === "active") {
-        const active = subOffers.filter((offer) => offer.account.state === 1);
-        setOffersToSanitize(active);
-        return state === 1;
-      } else if (activeCategory === "proposed") {
-        const proposed = subOffers.filter((offer) => offer.account.state === 0);
-        setOffersToSanitize(proposed);
-        return state === 0 && subOfferCount.gt(startSubOfferNum);
-      } else {
-        // Deposited condition
-        const deposited = subOffers.filter((offer) => offer.account.state === 0);
-        setOffersToSanitize(deposited);
-        return state === 0 && subOfferCount.eq(startSubOfferNum);
-      }
-    });
-    setFiltered(data);
-  };
-
   useEffect(() => {
     const fetchUserLended = async () => {
-      if (store.Wallet.connected && store.Wallet.wallet) {
-        await store.MyOffers.fetchUserLendedOffers();
+      if (publicKey) {
+        await store.MyOffers.fetchUserLendedOffers(connection, publicKey);
       }
     };
     fetchUserLended();
-  }, [store.Wallet.connected, store.Wallet.wallet]);
+  }, [connection, publicKey]);
 
-  useEffect(() => {
-    filterNeededOffersToSanitize();
-  }, [offers, nftData, subOffers, activeCategory]);
-
-  const collectDataToRenderOffers = (filtered: OfferAccount[]) => {
-    return filtered.map((offer: OfferAccount) => {
-      let offerSanitized: any = {
-        collection: offer.collection,
-        offerKey: offer.publicKey.toBase58(),
-        nftMint: offer.account.nftMint.toBase58(),
-        state: offer.account.state,
-        subOffers: [],
-      };
-
-      nftData.forEach((nft) => {
-        if (nft.mint === offerSanitized.nftMint) {
-          const { description, external_url, image, name } = nft.arweaveMetadata;
-          offerSanitized = { ...offerSanitized, ...{ description, external_url, image, name } };
-        }
-      });
-
-      offersToSanitize.forEach((subOffer) => {
-        if (subOffer.account.offer.toBase58() === offerSanitized.offerKey) {
-          offerSanitized.subOffers.push(subOffer);
-        }
-      });
-
-      return offerSanitized;
-    });
-  };
-
-  useEffect(() => {
-    const sanitized = collectDataToRenderOffers(filtered);
-    setSanitizedOffers(sanitized);
-  }, [offersToSanitize]);
-
-  useEffect(() => {
-    const updatedLends = lendingListCollection.reduce(
-      (accum: SubOfferData[], collection, index) => {
-        const collectionToLend = collection;
-        const offer = {
-          ...lendingList[index],
-          collectionToLend,
-        };
-        accum.push(offer);
-        return accum;
-      },
-      [],
-    );
-    setUpdatedLends(updatedLends);
-  }, [lendingListCollection]);
-
-  useEffect(() => {
-    if (sanitizedOffers.length > 0 && updatedLends.length > 0) setLoader(false);
-  }, [sanitizedOffers, updatedLends]);
-
-  const borrowsOrProposed = useMemo(() => {
-    return (
-      sanitizedOffers.length > 0 &&
-      sanitizedOffers.map((offer) => {
-        return <OfferHead key={offer.offerKey.toString()} {...offer} />;
-      })
-    );
-  }, [sanitizedOffers]);
+  const accepted = useMemo(() => {
+    // Offers in the accepted state
+    const acceptedOffers = selectAcceptedOffers(offers, subOffers, nftData);
+    return acceptedOffers.map((sanitizedOffer) => (
+      <OfferHead key={sanitizedOffer.offer.toBase58()} {...sanitizedOffer} />
+    ));
+  }, [offers, subOffers, nftData]);
 
   const lends = useMemo(() => {
-    return (
-      updatedLends.length > 0 &&
-      updatedLends?.map((offer) => (
-        <Fragment key={offer.subOfferKey.toString()}>
-          {/*// eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
-          {/*// @ts-ignore*/}
-          <OfferTemplate {...offer} isLends={true} />
-        </Fragment>
-      ))
-    );
-  }, [updatedLends]);
+    return lendingList.map((subOfferData) => (
+      <OfferTemplate key={subOfferData.pubkey.toBase58()} {...subOfferData} isLends={true} />
+    ));
+  }, [lendingList]);
+
+  const proposed = useMemo(() => {
+    // Offers that have at least 1 proposed subOffer
+    const proposedOffers = selectProposedOffers(offers, subOffers, nftData);
+
+    return proposedOffers.map((sanitizedOffer) => (
+      <OfferHead key={sanitizedOffer.offer.toBase58()} {...sanitizedOffer} />
+    ));
+  }, [offers, subOffers, nftData]);
 
   const deposited = useMemo(() => {
-    return sanitizedOffers.length > 0
-      ? sanitizedOffers.map((offer) => {
-          const { subOffers, ...rest } = offer;
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
-          return <OfferTemplate key={offer.offerKey.toString()} {...rest} isDeposited={true} />;
-        })
-      : depositButton();
-  }, [sanitizedOffers]);
+    const depositedOffers = selectDepositedOffers(offers, subOffers);
+
+    if (depositedOffers.length === 0) {
+      return depositButton();
+    }
+
+    return depositedOffers.map((offer) => {
+      const selectedNft = nftData.find((nft) => nft.mint.equals(offer.account.nftMint));
+      if (!selectedNft) {
+        // Fail-safe
+        return null;
+      }
+
+      return (
+        <DepositTemplate
+          key={offer.pubkey.toBase58()}
+          metadata={selectedNft}
+          pubkey={offer.pubkey}
+        />
+      );
+    });
+  }, [offers, subOffers, nftData]);
 
   const loansGroups = (): ReactNode => {
     return (
@@ -186,7 +110,7 @@ export const OffersWrap = observer(() => {
         {activeLoans !== "lends" && (
           <>
             <div className="loans-group">Borrows</div>
-            <div className="list-row">{borrowsOrProposed}</div>
+            <div className="list-row">{accepted}</div>
           </>
         )}
         {activeLoans !== "borrows" && (
@@ -205,9 +129,120 @@ export const OffersWrap = observer(() => {
     <>
       <div className="my-offers-wrap">
         {activeCategory === "active" && loansGroups()}
-        {activeCategory === "proposed" && borrowsOrProposed}
+        {activeCategory === "proposed" && proposed}
         {activeCategory === "deposited" && deposited}
       </div>
     </>
   );
 });
+
+/**
+ * Filters from all offers and suboffers belonging to a user that are currently in the accepted state.
+ * These offers, their suboffer and the related NFT information are mapped to a SanitizedOffer object.
+ *
+ * @param offers
+ * @param subOffers
+ * @param nftData
+ * @returns
+ */
+const selectAcceptedOffers = (
+  offers: OfferAccount[],
+  subOffers: SubOfferAccount[],
+  nftData: Metadata[],
+): SanitizedOffer[] => {
+  return offers.reduce<SanitizedOffer[]>((sanitized, offer) => {
+    if (offer.account.state !== OfferState.Accepted) return sanitized;
+
+    const filtered = subOffers.filter(
+      (subOffer) =>
+        subOffer.account.offer.equals(offer.pubkey) &&
+        subOffer.account.state === SubOfferState.Accepted &&
+        gte(subOffer.account.subOfferNumber, offer.account.startSubOfferNum),
+    );
+
+    // if (filtered.length !== 1) {
+    //   throw Error("Multiple accepted subOffers, check the transaction history");
+    // }
+    const selectedNft = nftData.find((nft) => nft.mint.equals(offer.account.nftMint));
+    if (!selectedNft) return sanitized;
+
+    if (filtered.length > 0) {
+      sanitized.push({
+        offer: offer.pubkey,
+        state: offer.account.state,
+        subOffers: filtered,
+        metadata: selectedNft,
+      });
+    }
+
+    return sanitized;
+  }, []);
+};
+
+/**
+ * Filters from all offers and suboffers belonging to a user that are currently in a proposed
+ * state and have at least 1 proposed suboffer.
+ * These offers, their suboffers and the related NFT information are mapped to a SanitizedOffer object.
+ *
+ * @param offers
+ * @param subOffers
+ * @param nftData
+ */
+const selectProposedOffers = (
+  offers: OfferAccount[],
+  subOffers: SubOfferAccount[],
+  nftData: Metadata[],
+): SanitizedOffer[] => {
+  return offers.reduce<SanitizedOffer[]>((sanitized, offer) => {
+    if (offer.account.state !== OfferState.Proposed) return sanitized;
+
+    const filtered = subOffers.filter(
+      (subOffer) =>
+        subOffer.account.offer.equals(offer.pubkey) &&
+        subOffer.account.state === SubOfferState.Proposed &&
+        gte(subOffer.account.subOfferNumber, offer.account.startSubOfferNum),
+    );
+
+    const selectedNft = nftData.find((nft) => nft.mint.equals(offer.account.nftMint));
+    if (!selectedNft) return sanitized;
+
+    if (filtered.length > 0) {
+      sanitized.push({
+        offer: offer.pubkey,
+        state: offer.account.state,
+        subOffers: filtered,
+        metadata: selectedNft,
+      });
+    }
+
+    return sanitized;
+  }, []);
+};
+
+/**
+ * Filter for offers that are in the "proposed state", but have no active
+ * suboffers.
+ *
+ * @param offers Offers that have the same borrower
+ * @param subOffers All subOffers that also have the same borrower
+ */
+const selectDepositedOffers = (offers: OfferAccount[], subOffers: SubOfferAccount[]) => {
+  return offers.filter(({ pubkey, account }) => {
+    // Short-circuit
+    if (account.state !== OfferState.Proposed) {
+      return false;
+    }
+    if (eq(account.startSubOfferNum, account.subOfferCount)) {
+      return true;
+    }
+    return (
+      subOffers.filter(
+        (subOffer) =>
+          subOffer.account.offer.equals(pubkey) &&
+          subOffer.account.state === SubOfferState.Proposed &&
+          gte(subOffer.account.subOfferNumber, account.startSubOfferNum) &&
+          gt(account.subOfferCount, subOffer.account.subOfferNumber),
+      ).length === 0
+    );
+  });
+};

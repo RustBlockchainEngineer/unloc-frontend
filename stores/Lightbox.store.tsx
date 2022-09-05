@@ -14,14 +14,13 @@ export interface IsubOfferData {
   offerAmount: number;
   loanDuration: number;
   aprNumerator: number;
-  minRepaidNumerator: number;
   offerMint: string;
 }
 
 export interface ILightboxOffer {
   offerPublicKey: string;
   amount: string;
-  APR: number;
+  APR: string;
   duration: string;
   totalRepay: string;
   currency: string;
@@ -37,7 +36,6 @@ export class LightboxStore {
     offerAmount: 0,
     loanDuration: 0,
     aprNumerator: 0,
-    minRepaidNumerator: 0,
     offerMint: "",
   };
 
@@ -45,7 +43,7 @@ export class LightboxStore {
   acceptOfferData: ILightboxOffer = {
     offerPublicKey: "",
     amount: "",
-    APR: 0,
+    APR: "",
     duration: "",
     totalRepay: "",
     currency: "",

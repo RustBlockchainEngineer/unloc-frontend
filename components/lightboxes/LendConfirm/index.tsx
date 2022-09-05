@@ -1,23 +1,34 @@
 import { useContext } from "react";
 
 import { observer } from "mobx-react";
-import Image from "next/image";
 
 import { StoreContext } from "@pages/_app";
-import { errorCase, successCase } from "@methods/toast-error-handler";
+import { errorCase, successCase } from "@utils/toast-error-handler";
+import { LendConfirmHeader } from "./LendConfirmHeader";
+import { acceptOffer } from "@utils/spl/unlocLoan";
+import { useConnection, useWallet } from "@solana/wallet-adapter-react";
+import { PublicKey } from "@solana/web3.js";
+import { useSendTransaction } from "@hooks/useSendTransaction";
 
 export const LendConfirmation = observer(() => {
   const store = useContext(StoreContext);
+  const { connection } = useConnection();
+  const { publicKey: wallet } = useWallet();
+  const sendAndConfirm = useSendTransaction();
   const { lendConfirmationData } = store.Lightbox;
   const { nftData } = store.SingleOffer;
   const { amount, duration, APR, totalRepay, currency, offerPublicKey } = lendConfirmationData;
 
   const handleAcceptOffer = async (offerPublicKey: string) => {
     try {
-      store.Lightbox.setContent("processing");
+      if (!wallet) throw Error("Connect your wallet");
+
+      store.Lightbox.setContent("circleProcessing");
       store.Lightbox.setCanClose(false);
       store.Lightbox.setVisible(true);
-      await store.Offers.handleAcceptOffer(offerPublicKey);
+
+      const tx = await acceptOffer(connection, wallet, new PublicKey(offerPublicKey));
+      await sendAndConfirm(tx, "confirmed");
       successCase("Loan Accepted");
     } catch (e: any) {
       errorCase(e);
@@ -30,15 +41,7 @@ export const LendConfirmation = observer(() => {
   return (
     <div className="lend-confirmation">
       <h2>Lend Funds</h2>
-      <div className="collateral">
-        <div className="label">Collateral:</div>
-        <div className="nft-pill">
-          <div className="nft-image-circled">
-            <Image alt="NFT Image" src={nftData.image} width={38} height={38} />
-          </div>
-          <div className="nft-name">{nftData.name}</div>
-        </div>
-      </div>
+      {nftData && <LendConfirmHeader nftData={nftData} />}
       <div className="offer-data">
         <div className="offer-data-top">Loan terms:</div>
         <div className="offer-data-liner">

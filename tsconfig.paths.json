@@ -11,8 +11,7 @@
       "@integration/*": ["./integration/*"],
       "@methods/*": ["./methods/*"],
       "@styles/*": ["./styles/*"],
-      "@icons/*": ["./icons/*"],
-      "@types/*": ["./types/*"]
+      "@icons/*": ["./icons/*"]
     }
   }
 }

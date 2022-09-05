@@ -1,15 +1,12 @@
 import { useContext } from "react";
 
-import { DepositedOffer } from "@components/myOffers/offersWrap";
 import Image from "next/image";
 import { observer } from "mobx-react";
-import { SubOfferData } from "@stores/Offers.store";
 import {
   getDurationColor,
   getDurationFromContractData,
   getTimeLeft,
 } from "@utils/timeUtils/timeUtils";
-import { NFTMetadata } from "@integration/nftLoan";
 import {
   correctTimeLeftDescription,
   lendsTimeLeftHelpers,
@@ -26,19 +23,24 @@ import { StoreContext } from "@pages/_app";
 import { usePopperTooltip } from "react-popper-tooltip";
 import { PublicKey } from "@solana/web3.js";
 import { Duration } from "dayjs/plugin/duration";
-import { SubOffer } from "../../@types/loans";
 import { calculateRepayValue } from "@utils/loansMath";
 
 import { OfferActionsHook } from "@hooks/offerActionsHook";
 import { useRouter } from "next/router";
-import { getQueryParamAsString } from "@utils/getQueryParamsAsString";
+import { getQueryParamAsString } from "@utils/common";
+import { OfferState, SubOffer } from "@unloc-dev/unloc-loan-solita";
+import { Metadata } from "@metaplex-foundation/mpl-token-metadata";
+import { useOffChainMetadata } from "@hooks/useOffChainMetadata";
+import { useCollectionName } from "@hooks/useCollectionName";
 
-interface OfferTemplateData extends SubOfferData, DepositedOffer, SubOffer {
+interface OfferTemplateData {
   isLends?: boolean;
   isDeposited?: boolean;
   withWrap?: boolean;
-  publicKey: PublicKey;
   activeSubOffer?: string;
+  pubkey: PublicKey;
+  account: SubOffer;
+  nftData: Metadata;
 }
 
 export const OfferTemplate = observer(
@@ -47,29 +49,23 @@ export const OfferTemplate = observer(
     isDeposited,
     withWrap,
     activeSubOffer,
-    loanDuration,
-    loanStartedTime,
+    account,
     nftData,
-    collection,
-    borrower,
-    nftMint,
-    offerAmount,
-    offerMint,
-    aprNumerator,
-    image,
-    name,
-    offerKey,
-    subOfferKey,
-    publicKey,
-    state,
-    minRepaidNumerator,
+    pubkey,
   }: OfferTemplateData) => {
     const router = useRouter();
     const { setTriggerRef, visible, getTooltipProps, setTooltipRef } = usePopperTooltip();
+    const store = useContext(StoreContext);
+    const { activeCategory } = store.MyOffers;
+    const { theme } = store.Interface;
+    const { isYours } = store.SingleOffer;
+    const { denominator } = store.GlobalState;
+    const { json, isLoading } = useOffChainMetadata(nftData.data.uri);
+    const { collection, isLoading: isLoadingCollection } = useCollectionName(
+      nftData.mint.toBase58(),
+    );
 
     const {
-      createOffersHandler,
-      handleCancelCollateral,
       handleCancelOffer,
       handleClaimCollateral,
       handleEditOffer,
@@ -77,26 +73,32 @@ export const OfferTemplate = observer(
       handleConfirmOffer,
     } = OfferActionsHook();
 
-    const store = useContext(StoreContext);
-    const { activeCategory } = store.MyOffers;
-    const { theme } = store.Interface;
-    const { isYours } = store.SingleOffer;
-    const { denominator } = store.GlobalState;
+    const {
+      loanDuration,
+      loanStartedTime,
+      offerAmount,
+      offerMint,
+      nftMint,
+      borrower,
+      aprNumerator,
+      offer,
+      state,
+    } = account;
 
-    const imageSrc = nftData ? (nftData as NFTMetadata).arweaveMetadata.image : image;
-    const nftName = nftData ? (nftData as NFTMetadata).arweaveMetadata.name : name;
-
-    const timeLeft = getTimeLeft(loanDuration?.toNumber(), loanStartedTime?.toNumber());
+    const timeLeft = getTimeLeft(
+      new BN(loanDuration).toNumber(),
+      new BN(loanStartedTime).toNumber(),
+    );
     const timeColor = getDurationColor(timeLeft);
 
     const amount = getDecimalsForLoanAmountAsString(
-      offerAmount?.toNumber(),
+      new BN(offerAmount).toNumber(),
       offerMint?.toBase58(),
       0,
     );
 
     const currency = currencyMints[offerMint?.toBase58()];
-    const duration = getDurationFromContractData(loanDuration?.toNumber(), "days");
+    const duration = getDurationFromContractData(new BN(loanDuration).toNumber(), "days");
 
     const canClaim = (timeLeft: Duration) => {
       return timeLeft.asSeconds() <= 0;
@@ -107,7 +109,7 @@ export const OfferTemplate = observer(
         <>
           <p>{offersState.toString() === "1" ? "Time left" : "Duration"}</p>
           <span>
-            {offersState === 1 ? (
+            {offersState === OfferState.Accepted ? (
               correctTimeLeftDescription(loanDuration, loanStartedTime)
             ) : (
               <>{`${duration} Day${duration > 1 ? "s" : ""}`}</>
@@ -119,23 +121,23 @@ export const OfferTemplate = observer(
 
     const isSingleOffer = getQueryParamAsString(router.query.id);
 
-    offerKey = isSingleOffer ? publicKey.toBase58() : offerKey;
+    const offerKey = isSingleOffer ? pubkey.toBase58() : offer.toBase58();
 
     return (
       <div
         className={`offer ${isSingleOffer ? "default" : ""}
         ${withWrap ? (activeCategory === "active" ? "borrows" : "proposed") : ""} ${
           state === 1 ? timeColor : "green"
-        } ${isLends ? `lends` : ""} ${isDeposited ? "deposit" : ""} ${
-          withWrap ? "with-wrap" : ""
-        } ${activeCategory === "proposed" ? "siblings" : ""}
+        } ${isLends ? `lends` : ""} ${withWrap ? "with-wrap" : ""} ${
+          activeCategory === "proposed" ? "siblings" : ""
+        }
         `}>
         <div className="data-row head">
           <div className="info">
             <div className="image">
-              {imageSrc && (
+              {!isLoading && json && (
                 <Image
-                  src={imageSrc}
+                  src={json.image}
                   alt="NFT Picture"
                   width={isLends ? 35 : 55}
                   height={isLends ? 35 : 55}
@@ -143,9 +145,8 @@ export const OfferTemplate = observer(
               )}
             </div>
             <div className="details">
-              <p>{nftName}</p>
-
-              {isLends && (
+              {!isLoading && json && <p>{json.name}</p>}
+              {isLends && !isLoadingCollection && (
                 <span>
                   Collection: <b>{collection}</b>
                 </span>
@@ -192,14 +193,6 @@ export const OfferTemplate = observer(
               </ShowOnHover>
             </div>
           </div>
-          {isDeposited && (
-            <div className="row-item">
-              <p>Collection</p>
-              <div className="on-hover">
-                <p>{collection}</p>
-              </div>
-            </div>
-          )}
         </div>
         {!isDeposited && (
           <div className="data-row proposal-details">
@@ -212,7 +205,9 @@ export const OfferTemplate = observer(
               <span>{aprNumerator?.toString()} %</span>
             </div>
             {!isLends && (
-              <div className="time">{offerTimeData(state, loanDuration, loanStartedTime)}</div>
+              <div className="time">
+                {offerTimeData(state, new BN(loanDuration), new BN(loanStartedTime))}
+              </div>
             )}
             <div>
               <p>Min repaid value</p>
@@ -237,7 +232,7 @@ export const OfferTemplate = observer(
               canClaim(timeLeft) ? (
                 <button
                   className="btn btn--md btn--primary"
-                  onClick={() => handleClaimCollateral(subOfferKey)}>
+                  onClick={() => handleClaimCollateral(pubkey)}>
                   Claim NFT
                 </button>
               ) : (
@@ -272,20 +267,6 @@ export const OfferTemplate = observer(
               </b>
             </div>
           </div>
-        ) : isDeposited ? (
-          <div className="data-row actions">
-            <button
-              className="btn btn--md btn--bordered"
-              onClick={() => handleCancelCollateral(nftMint, name)}>
-              Cancel Collateral
-            </button>
-            <button
-              ref={setTriggerRef}
-              className="btn btn--md btn--primary"
-              onClick={() => createOffersHandler({ nftMint, name, image, offerKey })}>
-              Create Offer
-            </button>
-          </div>
         ) : isSingleOffer ? (
           <div className="data-row actions">
             <button
@@ -294,13 +275,13 @@ export const OfferTemplate = observer(
               onClick={() =>
                 !isYours &&
                 handleConfirmOffer({
-                  offerPublicKey: publicKey.toBase58(),
+                  offerPublicKey: pubkey.toBase58(),
                   amount,
-                  APR: aprNumerator?.toNumber(),
+                  APR: aprNumerator.toString(),
                   duration: duration.toString(),
                   totalRepay: calculateRepayValue(
                     Number(amount),
-                    aprNumerator?.toNumber(),
+                    new BN(aprNumerator).toNumber(),
                     duration,
                     denominator,
                   ),
@@ -312,28 +293,23 @@ export const OfferTemplate = observer(
           </div>
         ) : (
           <div className="data-row actions">
-            <button
-              className="btn btn--md btn--bordered"
-              onClick={() => handleCancelOffer(publicKey.toBase58())}>
+            <button className="btn btn--md btn--bordered" onClick={() => handleCancelOffer(pubkey)}>
               Cancel Offer
             </button>
             <button
               className="btn btn--md btn--primary"
               onClick={() =>
                 handleEditOffer(
-                  publicKey.toBase58(),
+                  pubkey.toBase58(),
                   {
                     offerAmount: Number(offerAmount),
                     loanDuration: Number(loanDuration),
                     aprNumerator: Number(aprNumerator),
-                    minRepaidNumerator: Number(minRepaidNumerator.toString()),
                     offerMint: offerMint.toBase58(),
                   },
                   {
-                    name,
-                    image,
                     offerKey,
-                    nftMint,
+                    metadata: nftData,
                   },
                 )
               }>

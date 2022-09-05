@@ -2,32 +2,47 @@ import { useCallback, useContext } from "react";
 
 import Image from "next/image";
 import { StoreContext } from "@pages/_app";
-import { errorCase, successCase } from "@methods/toast-error-handler";
+import { errorCase, successCase } from "@utils/toast-error-handler";
 import { observer } from "mobx-react";
+
+import { useConnection, useWallet } from "@solana/wallet-adapter-react";
+import { createSubOffer } from "@utils/spl/unlocLoan";
+import { PublicKey } from "@solana/web3.js";
+import { useOffChainMetadata } from "@hooks/useOffChainMetadata";
+import { useSendTransaction } from "@hooks/useSendTransaction";
 
 export const ConfirmLoan = observer(() => {
   const store = useContext(StoreContext);
-  const { connected, wallet, walletKey } = store.Wallet;
+  const { connection } = useConnection();
+  const { publicKey: wallet } = useWallet();
+  const sendAndConfirm = useSendTransaction();
   const {
     preparedOfferData: { amount, duration, currency, APR, repayValue },
-    sanitized: { image, name },
+    sanitized: { metadata },
   } = store.MyOffers;
+  const { isLoading, json } = useOffChainMetadata(metadata.data.uri);
 
   const confirm = useCallback(async (): Promise<void> => {
-    if (connected && wallet && walletKey) {
-      store.Lightbox.setContent("processing");
+    if (wallet) {
+      store.Lightbox.setContent("circleProcessing");
       store.Lightbox.setCanClose(false);
       store.Lightbox.setVisible(true);
+
       try {
-        await store.MyOffers.handleCreateSubOffer(
-          store.MyOffers.activeNftMint,
-          Number(amount),
-          Number(duration),
-          Number(APR),
+        const nftMint = new PublicKey(store.MyOffers.activeNftMint);
+        const tx = await createSubOffer(
+          connection,
+          wallet,
+          nftMint,
           currency,
+          APR,
+          duration,
+          amount,
         );
+        await sendAndConfirm(tx, "confirmed");
         successCase("Loan Offer Created");
       } catch (e: any) {
+        console.log(e);
         errorCase(e);
       } finally {
         store.Lightbox.setVisible(false);
@@ -38,7 +53,7 @@ export const ConfirmLoan = observer(() => {
   }, []);
 
   const edit = useCallback(async (): Promise<void> => {
-    if (connected && wallet && walletKey) {
+    if (wallet) {
       try {
         store.Lightbox.setContent("loanCreate");
         store.Lightbox.setVisible(true);
@@ -55,10 +70,14 @@ export const ConfirmLoan = observer(() => {
       </div>
       <div className="collateral-info">
         <p>Your collateral:</p>
-        <div className="collection">
-          <Image src={image} width={38} height={38} />
-          <p>{name}</p>
-        </div>
+        {isLoading ? (
+          <div>Loading</div>
+        ) : (
+          <div className="collection">
+            {isLoading ? <div>Loading...</div> : <Image src={json.image} width={38} height={38} />}
+            <p>{json.name}</p>
+          </div>
+        )}
       </div>
       <div className="terms-info row-division">
         <p className="row-division">Your terms:</p>

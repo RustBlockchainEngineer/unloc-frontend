@@ -4,9 +4,9 @@ import { observer } from "mobx-react";
 import { StoreContext } from "@pages/_app";
 import { OffersTableRow } from "./offersTableRow";
 import { BlobLoader } from "@components/layout/blobLoader";
-import { ITransformedOffer, transformOffersData } from "@methods/transformOffersData";
+import { ITransformedOffer, transformOffersData } from "@utils/spl/transformOffersData";
 import { ILightboxOffer } from "@stores/Lightbox.store";
-import { errorCase } from "@methods/toast-error-handler";
+import { errorCase } from "@utils/toast-error-handler";
 
 type CompareType = "string" | "number";
 
@@ -92,19 +92,17 @@ export const OffersTable = observer(() => {
     return list.map((item, index) => {
       return (
         <OffersTableRow
-          key={`offer-${item.name}-${index}`}
+          key={`offer-${item.nftData.data.name}-${index}`}
           subOfferKey={item.subOfferKey}
           offerKey={item.offerKey}
-          image={item.image}
           amount={item.amount}
-          name={item.name}
+          nftData={item.nftData}
           handleConfirmOffer={handleConfirmOffer}
           APR={item.apr}
           duration={item.duration}
           currency={item.currency}
-          count={item.count}
           isYours={item.isYours}
-          collection={item.collection ?? ""}
+          collection={item.collection}
           totalRepay={item.repayAmount}
         />
       );

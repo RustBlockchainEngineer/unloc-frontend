@@ -1,17 +1,14 @@
-import { action, makeAutoObservable, flow } from "mobx";
-import axios from "axios";
-import * as anchor from "@project-serum/anchor";
-import { getOffer, getSubOffersInRange } from "@integration/nftLoan";
-import { INftCoreData } from "../@types/nfts/nft";
-import { getMetadata } from "@integration/nftIntegration";
-import { OfferAccount, Offer, SubOfferAccount } from "../@types/loans";
-import { range } from "@utils/range";
-import { errorCase } from "@methods/toast-error-handler";
+import { makeAutoObservable, runInAction } from "mobx";
+import { Connection, PublicKey } from "@solana/web3.js";
+import { Offer } from "@unloc-dev/unloc-loan-solita";
+import { OfferAccount, SubOfferAccount } from "@utils/spl/types";
+import { findMetadataPda } from "@utils/spl/metadata";
+import { Metadata } from "@metaplex-foundation/mpl-token-metadata";
 
 export class SingleOfferStore {
   rootStore;
-  offer = {} as OfferAccount;
-  nftData = {} as INftCoreData;
+  offer: OfferAccount | null = null;
+  nftData: Metadata | null = null;
   loansData: SubOfferAccount[] = [];
   isYours: boolean = false;
   loansCount = 0;
@@ -21,49 +18,23 @@ export class SingleOfferStore {
     this.rootStore = rootStore;
   }
 
-  @action.bound fetchOffer = flow(function* (
-    this: SingleOfferStore,
-    id: string,
-    walletAddress?: string,
-  ) {
-    const pubkey = new anchor.web3.PublicKey(id);
-    const offer: Offer = yield getOffer(pubkey);
-    this.offer = { publicKey: pubkey, account: offer };
-    this.isYours = offer.borrower.toString() === walletAddress;
+  async fetchOffer(connection: Connection, offer: PublicKey, wallet?: PublicKey): Promise<void> {
+    const offerInfo = await Offer.fromAccountAddress(connection, offer);
+    const metadataPda = findMetadataPda(offerInfo.nftMint);
+    const metadata = await Metadata.fromAccountAddress(connection, metadataPda);
 
-    const metadata = yield getMetadata(offer.nftMint);
-    const collection = yield axios.post("/api/collections/nft", { id: offer.nftMint.toString() });
-    if (collection && metadata && metadata.arweaveMetadata) {
-      this.nftData = {
-        ...metadata.arweaveMetadata,
-        collection: collection.data,
-        mint: offer.nftMint.toString(),
-      };
-    }
-  });
+    runInAction(() => {
+      this.offer = { pubkey: offer, account: offerInfo };
+      this.isYours = wallet?.equals(offerInfo.borrower) ?? false;
+      this.nftData = metadata;
+    });
+  }
 
-  @action.bound fetchSubOffers = async (): Promise<void> => {
-    if (!this.offer) return;
-
-    // We need to find the suboffer PDAs
-    const { startSubOfferNum, subOfferCount } = this.offer.account;
-    const subOfferRange = range(startSubOfferNum.toNumber(), subOfferCount.toNumber());
-
-    try {
-      const subOffers = await getSubOffersInRange(this.offer.publicKey, subOfferRange);
-
-      this.loansCount = subOffers.filter((s) => s.account.state !== 5).length;
-      this.setLoansData(subOffers);
-    } catch (e: any) {
-      errorCase(e);
-    }
-  };
-
-  @action.bound setNftData = (data: INftCoreData): void => {
+  setNftData = (data: Metadata): void => {
     this.nftData = data;
   };
 
-  @action.bound setLoansData = (data: SubOfferAccount[]): void => {
+  setLoansData = (data: SubOfferAccount[]): void => {
     this.loansData = data;
   };
 }

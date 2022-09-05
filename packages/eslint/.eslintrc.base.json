@@ -49,7 +49,6 @@
     "curly": ["error", "multi"],
     "prefer-template": "error",
     "radix": "error",
-    "no-console": "error",
     "no-empty-function": "error",
     "no-nested-ternary": "error",
     "no-param-reassign": "error",
