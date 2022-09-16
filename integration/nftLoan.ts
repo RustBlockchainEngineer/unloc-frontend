@@ -9,6 +9,7 @@ import {
   offerDiscriminator,
   OfferState,
   SubOffer,
+  subOfferDiscriminator,
   SubOfferState,
 } from "@unloc-dev/unloc-loan-solita";
 import { range } from "@utils/common";
@@ -48,6 +49,7 @@ export const getOffersBy = async (
   const connection = program?.provider?.connection ?? new Connection(clusterApiUrl("devnet"));
   const query = Offer.gpaBuilder(NFT_LOAN_PID);
 
+  query.addFilter("accountDiscriminator", offerDiscriminator);
   if (owner) query.addFilter("borrower", owner);
   if (nftMint) query.addFilter("nftMint", nftMint);
   if (state) query.addFilter("state", state);
@@ -67,7 +69,10 @@ export const getSubOfferKeys = async (
     lender?: PublicKey;
   },
 ) => {
-  const query = SubOffer.gpaBuilder(NFT_LOAN_PID);
+  const query = SubOffer.gpaBuilder(NFT_LOAN_PID).addFilter(
+    "accountDiscriminator",
+    subOfferDiscriminator,
+  );
   if (options?.state) query.addFilter("state", options.state);
   if (options?.borrower) query.addFilter("borrower", options.borrower);
   if (options?.lender) query.addFilter("lender", options.lender);
