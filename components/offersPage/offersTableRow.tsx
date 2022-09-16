@@ -1,16 +1,20 @@
 import { useCallback, useContext, SyntheticEvent } from "react";
+import { Metadata } from "@metaplex-foundation/mpl-token-metadata";
+import { useConnection } from "@solana/wallet-adapter-react";
+import { PublicKey } from "@solana/web3.js";
 import Image from "next/image";
 import Link from "next/link";
-import { calculateRepayValue } from "@utils/calculateRepayValue";
-import { StoreContext } from "@pages/_app";
+
 import { ILightboxOffer } from "@stores/Lightbox.store";
+import { StoreContext } from "@pages/_app";
+import { useOffChainMetadata } from "@hooks/useOffChainMetadata";
+import { calculateRepayValue } from "@utils/loansMath";
 
 interface OffersTableItemInterface {
   subOfferKey: string;
   offerKey: string;
-  image: string;
-  name: string;
-  APR: number;
+  nftData: Metadata;
+  APR: string;
   amount: string;
   duration: string;
   currency: string;
@@ -24,8 +28,7 @@ interface OffersTableItemInterface {
 export const OffersTableRow = ({
   subOfferKey,
   offerKey,
-  image,
-  name,
+  nftData,
   APR,
   handleConfirmOffer,
   amount,
@@ -37,13 +40,15 @@ export const OffersTableRow = ({
 }: OffersTableItemInterface) => {
   const store = useContext(StoreContext);
   const { denominator } = store.GlobalState;
+  const { connection } = useConnection();
+  const { json, isLoading } = useOffChainMetadata(nftData.data.uri);
 
   const handlePrevent = useCallback(
     async (e: SyntheticEvent<HTMLButtonElement, Event>) => {
       if (!isYours) {
         e.stopPropagation();
         e.preventDefault();
-        await store.SingleOffer.fetchOffer(offerKey);
+        await store.SingleOffer.fetchOffer(connection, new PublicKey(offerKey));
         handleConfirmOffer({
           offerPublicKey: subOfferKey,
           amount,
@@ -69,8 +74,12 @@ export const OffersTableRow = ({
             ) : (
               ""
             )}
-            {image ? <Image src={image} alt="NFT Picture" width={36} height={36} /> : ""}
-            <span className="text-content">{name}</span>
+            {isLoading ? (
+              <div>Loading</div>
+            ) : (
+              <Image src={json.image} alt="NFT Picture" width={36} height={36} />
+            )}
+            <span className="text-content">{nftData.data.name}</span>
           </div>
           <div className="row-cell">
             <button className={isYours ? "deactivated" : ""} onClick={handlePrevent}>
@@ -96,7 +105,7 @@ export const OffersTableRow = ({
           </div>
           <div className="row-cell">
             <span className="text-content">
-              {calculateRepayValue(Number(amount), APR, Number(duration), denominator)}
+              {calculateRepayValue(Number(amount), Number(APR), Number(duration), denominator)}
             </span>
           </div>
         </a>

@@ -1,23 +1,19 @@
 @media (max-width: $bp-tablet) {
-  .btn--filters {
-    position: static;
-    z-index: 0 !important;
-  }
-
-  .offers-filters-wrapper {
-    position: static;
-    margin-top: 100px;
-    margin-bottom: -550px;
-
-    &.active {
-      margin-bottom: 0px;
-    }
-  }
-
   .offers-filters {
     position: static;
     margin: 100px 2.5vw 0;
     flex-direction: column;
+
+    @media (max-width: $bp-tablet) {
+      .filter-generic {
+        margin-left: 0;
+        padding: 0 20px;
+
+        &:first-child {
+          padding: 0 20px;
+        }
+      }
+    }
 
     &.active {
       width: 95vw;
@@ -26,7 +22,7 @@
       height: 100%;
 
       .filter-generic {
-        margin: 5px 0 15px 0;
+        margin: 5px 0 15px;
         padding: 0 0 15px;
 
         &:first-child {
@@ -39,7 +35,7 @@
         }
       }
 
-      .filter-generic:not(:last-child) {
+      .filter-generic:nth-last-child(n + 3) {
         @include theme-aware("border-color", "color-secondary");
         border-right: none;
         border-bottom: 1px dotted;

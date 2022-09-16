@@ -6,6 +6,17 @@
     padding: 0 20px;
     justify-content: center;
   }
+
+  &__fake {
+    display: none;
+
+    @media (max-width: $bp-phone) {
+      display: block;
+      width: 32px;
+      height: 32px;
+      margin: 16px;
+    }
+  }
 }
 
 .theme-switcher {

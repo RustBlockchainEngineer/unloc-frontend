@@ -54,14 +54,27 @@
       display: flex;
       justify-content: space-around;
 
+      @media (max-width: $bp-phone) {
+        flex-direction: column;
+      }
+
       .data {
         display: flex;
         flex-direction: column;
         align-items: center;
 
+        @media (max-width: $bp-phone) {
+          &:not(:last-child) {
+            margin-bottom: 10px;
+          }
+        }
+
         p {
           font-size: $tp-sm;
           margin-bottom: 10px;
+          @media (max-width: $bp-phone) {
+            margin-bottom: 5px;
+          }
         }
 
         span {
@@ -77,10 +90,42 @@
     }
   }
 
+  .rewards {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-top: 15px;
+
+    span {
+      margin-bottom: 9px;
+    }
+    & > * {
+      text-align: center;
+    }
+    p {
+      display: flex;
+      justify-content: center;
+    }
+    b {
+      margin: 0 4px;
+    }
+  }
+
   .btn {
-    width: 255px;
+    @media (min-width: $bp-tablet) {
+      width: 255px;
+    }
     justify-content: center;
     border-radius: 5px;
-    margin: $tp-xl auto 0;
+    margin: 15px auto 0;
+  }
+}
+
+@media (max-width: $bp-tablet) {
+  .accept-offer {
+    width: 100%;
+    h2 {
+      text-align: center;
+    }
   }
 }

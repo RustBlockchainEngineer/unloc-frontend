@@ -13,19 +13,11 @@
     padding: 0 30px;
     font-size: $tp-md;
     border-radius: $brd-rds-lg;
-
-    .icon {
-      margin-top: 6px;
-      margin-right: 5px;
-    }
+    @include theme-aware("border", "button-border-primary");
   }
 
   &--bordered {
     line-height: 35px;
-
-    .icon {
-      margin-top: 4px;
-    }
   }
 
   &--xl {
@@ -55,7 +47,7 @@
     background-color: transparent;
     border: 2px solid;
     @include theme-aware("border-color", "color-primary");
-    @include theme-aware("background-color", "color-background");
+    //@include theme-aware("background-color", "color-background");
     @include theme-aware("color", "color-primary");
 
     &:hover {

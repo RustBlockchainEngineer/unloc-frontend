@@ -1,5 +1,6 @@
 .page {
-  width: $pg-col;
+  width: 100%;
+  max-width: $pg-col;
   margin: 0 auto;
 
   @media (max-width: $bp-tablet) {

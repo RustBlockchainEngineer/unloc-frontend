@@ -12,8 +12,20 @@
   background-image: url("/icons/nft-icon.svg");
 }
 
+.icon--unloc--light {
+  background-image: url("/icons/unloc-light.svg");
+}
+
+.icon--unloc--dark {
+  background-image: url("/icons/unloc-dark.svg");
+}
+
 .icon--info {
   background-image: url("/icons/info-icon.svg");
+}
+
+.icon--info--dark {
+  background-image: url("/icons/info-icon-dark.svg");
 }
 
 .icon--share {
@@ -29,7 +41,7 @@
   }
 }
 
-.icon--eye {
+.icon--caret .icon--eye {
   @include theme-aware("background-image", "icon-eye");
 }
 
@@ -96,12 +108,32 @@
 }
 
 .icon--filter {
-  &--down {
-    @include theme-aware("background-image", "filter-arrow-down");
-  }
+  &-light {
+    &--down {
+      background-image: url("/icons/filter-arrow-down-light.svg");
+    }
 
-  &--striped {
-    @include theme-aware("background-image", "filter-stripe");
+    &--striped {
+      background-image: url("/icons/filter-arrow-striped-light.svg");
+    }
+  }
+  &-dark {
+    &--down {
+      background-image: url("/icons/filter-arrow-down-dark.svg");
+    }
+
+    &--striped {
+      background-image: url("/icons/filter-arrow-striped-dark.svg");
+    }
+  }
+}
+
+.icon--reward {
+  &-light {
+    background-image: url("/icons/reward-icon-light.svg");
+  }
+  &-dark {
+    background-image: url("/icons/reward-icon-dark.svg");
   }
 }
 
@@ -171,6 +203,14 @@
   background-image: url("/icons/owner-icon.svg");
 }
 
+.icon--caret-tin {
+  background-image: url("/icons/caret.svg");
+}
+
+.icon--dash {
+  background-image: url("/icons/dash.svg");
+}
+
 .icon--theme {
   position: absolute;
   z-index: 1;
@@ -186,6 +226,14 @@
   }
 }
 
+.icon--reset {
+  background-image: url("/icons/reset-icon.svg");
+
+  &:hover {
+    background-image: url("/icons/reset-icon-hover.svg");
+  }
+}
+
 .icon--tn {
   width: 12px;
   height: 12px;
@@ -194,6 +242,21 @@
 .icon--vs {
   width: 15px;
   height: 15px;
+}
+
+.icon--vs-wide-width {
+  width: 18px;
+  height: 16px;
+}
+
+.icon--vs-wide-width2 {
+  width: 23px;
+  height: 16px;
+}
+
+.icon--svs {
+  width: 18px;
+  height: 18px;
 }
 
 .icon--sm {

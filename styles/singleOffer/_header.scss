@@ -10,11 +10,17 @@
   align-items: center;
   padding-bottom: 86px;
   padding-top: 94px;
+
   @media (max-width: $bp-tablet) {
     width: 100vw;
     flex-direction: column;
     padding-top: 60px;
     padding-bottom: 40px;
+  }
+
+  @media (max-width: $bp-phone) {
+    padding: unset;
+    margin: 45px 0 $mr-md;
   }
 }
 
@@ -109,6 +115,26 @@
 
     p {
       margin-bottom: 10px;
+    }
+  }
+
+  @media (max-width: $bp-phone) {
+    padding: unset;
+    margin: 0 5vw 10px;
+
+    p,
+    h1 {
+      text-align: center;
+    }
+
+    p {
+      font-size: $tp-md;
+      font-weight: $wg-hv;
+    }
+
+    h1 {
+      font-size: $tp-2lg;
+      line-height: calc($tp-xl - 2px);
     }
   }
 }

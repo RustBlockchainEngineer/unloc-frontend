@@ -1,11 +1,12 @@
 import { useContext, useMemo, useState, useCallback, useEffect } from "react";
+
 import { observer } from "mobx-react";
 import { StoreContext } from "@pages/_app";
 import { OffersTableRow } from "./offersTableRow";
 import { BlobLoader } from "@components/layout/blobLoader";
-import { toast } from "react-toastify";
-import { ITransformedOffer, transformOffersData } from "@methods/transformOffersData";
+import { ITransformedOffer, transformOffersData } from "@utils/spl/transformOffersData";
 import { ILightboxOffer } from "@stores/Lightbox.store";
+import { errorCase } from "@utils/toast-error-handler";
 
 type CompareType = "string" | "number";
 
@@ -81,39 +82,7 @@ export const OffersTable = observer(() => {
         store.Lightbox.setCanClose(true);
         store.Lightbox.setVisible(true);
       } catch (e: any) {
-        console.log(e);
-
-        if (e.message === "User rejected the request.") {
-          toast.error(`Transaction rejected`, {
-            autoClose: 3000,
-            position: "top-center",
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-          });
-        } else if ((e as Error).message.includes("503 Service Unavailable")) {
-          toast.error("Solana RPC currently unavailable, please try again in a moment", {
-            autoClose: 3000,
-            position: "top-center",
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-          });
-        } else {
-          toast.error(`Something went wrong`, {
-            autoClose: 3000,
-            position: "top-center",
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-          });
-        }
+        errorCase(e);
       }
     },
     [store.Lightbox, store.Offers],
@@ -123,19 +92,17 @@ export const OffersTable = observer(() => {
     return list.map((item, index) => {
       return (
         <OffersTableRow
-          key={`offer-${item.name}-${index}`}
+          key={`offer-${item.nftData.data.name}-${index}`}
           subOfferKey={item.subOfferKey}
           offerKey={item.offerKey}
-          image={item.image}
           amount={item.amount}
-          name={item.name}
+          nftData={item.nftData}
           handleConfirmOffer={handleConfirmOffer}
           APR={item.apr}
           duration={item.duration}
           currency={item.currency}
-          count={item.count}
           isYours={item.isYours}
-          collection={item.collection ?? ""}
+          collection={item.collection}
           totalRepay={item.repayAmount}
         />
       );

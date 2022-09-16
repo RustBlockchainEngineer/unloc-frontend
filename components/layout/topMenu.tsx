@@ -1,4 +1,5 @@
-import React from "react";
+import { useCallback } from "react";
+
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { localesTop } from "@constants/locales";
@@ -14,23 +15,23 @@ export const TopMenu = ({ mobileVisible }: TopMenuProps) => {
     return `top-nav__page ${router.pathname === path ? "active" : ""}`;
   };
 
-  return (
-    <ul className={`top-menu ${mobileVisible ? "" : "mobile-hide"}`}>
-      <li>
-        <Link href="/">
-          <a className={handleCurrent("/")}>{localesTop.home}</a>
-        </Link>
-      </li>
-      <li>
-        <Link href="/my-offers">
-          <a className={handleCurrent("/my-offers")}>{localesTop.myOffers}</a>
-        </Link>
-      </li>
-      <li>
-        <Link href="/loans-given">
-          <a className={handleCurrent("/loans-given")}>{localesTop.loansGiven}</a>
-        </Link>
-      </li>
-    </ul>
-  );
+  const menuList = useCallback(() => {
+    return Object.keys(localesTop).map((item) => {
+      const snakeCaseName = localesTop[item].replace(/\s/, "-").toLowerCase();
+      return (
+        //TODO: temporary statement
+        item !== "myProfile" && (
+          <li key={item}>
+            <Link href={item === "home" ? "/" : `/${snakeCaseName}`}>
+              <a className={handleCurrent(item === "home" ? "/" : `/${snakeCaseName}`)}>
+                {localesTop[item]}
+              </a>
+            </Link>
+          </li>
+        )
+      );
+    });
+  }, []);
+
+  return <ul className={`top-menu ${mobileVisible ? "" : "mobile-hide"}`}>{menuList()}</ul>;
 };

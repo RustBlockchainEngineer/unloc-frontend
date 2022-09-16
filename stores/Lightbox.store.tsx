@@ -3,8 +3,10 @@ import { action, makeAutoObservable } from "mobx";
 type LightboxContent =
   | "loanCreate"
   | "loanUpdate"
+  | "loanConfirm"
   | "collateral"
   | "processing"
+  | "circleProcessing"
   | "lendConfirmation"
   | "acceptOffer";
 
@@ -12,14 +14,13 @@ export interface IsubOfferData {
   offerAmount: number;
   loanDuration: number;
   aprNumerator: number;
-  minRepaidNumerator: number;
   offerMint: string;
 }
 
 export interface ILightboxOffer {
   offerPublicKey: string;
   amount: string;
-  APR: number;
+  APR: string;
   duration: string;
   totalRepay: string;
   currency: string;
@@ -35,7 +36,6 @@ export class LightboxStore {
     offerAmount: 0,
     loanDuration: 0,
     aprNumerator: 0,
-    minRepaidNumerator: 0,
     offerMint: "",
   };
 
@@ -43,11 +43,12 @@ export class LightboxStore {
   acceptOfferData: ILightboxOffer = {
     offerPublicKey: "",
     amount: "",
-    APR: 0,
+    APR: "",
     duration: "",
     totalRepay: "",
     currency: "",
   };
+  isAdditionalInfoOpened: boolean = false;
 
   constructor(rootStore: any) {
     makeAutoObservable(this);
@@ -56,6 +57,7 @@ export class LightboxStore {
 
   @action.bound setVisible(visible: boolean) {
     this.visible = visible;
+    this.isAdditionalInfoOpened = false;
   }
 
   @action.bound setContent(content: LightboxContent) {
@@ -80,5 +82,9 @@ export class LightboxStore {
 
   @action.bound setAcceptOfferData(offer: ILightboxOffer) {
     this.acceptOfferData = offer;
+  }
+
+  @action.bound setAdditionalInfoOpened(isOpened: boolean) {
+    this.isAdditionalInfoOpened = isOpened;
   }
 }

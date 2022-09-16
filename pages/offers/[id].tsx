@@ -1,126 +1,77 @@
-import { useContext, useEffect, useState, memo, useCallback, useMemo } from "react";
+import { useContext, memo, useCallback, useMemo } from "react";
 
+import { useWallet } from "@solana/wallet-adapter-react";
+import { PublicKey } from "@solana/web3.js";
+import { SubOfferState } from "@unloc-dev/unloc-loan-solita";
 import { observer } from "mobx-react";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
-import { toast } from "react-toastify";
 
 import { BlobLoader } from "@components/layout/blobLoader";
 import { LayoutTop } from "@components/layout/layoutTop";
+import { LayoutTopMobile } from "@components/layout/layoutTopMobile";
+import { OfferTemplate } from "@components/layout/offerTemplate";
 import { Header } from "@components/singleOffer/Header/Header";
-import { Offer } from "@components/singleOffer/Offer/Offer";
 import { StoreDataAdapter } from "@components/storeDataAdapter";
-import { currencyMints } from "@constants/currency";
+import { useSingleOffer } from "@hooks/useSingleOffer";
 import { StoreContext } from "@pages/_app";
-import { ILightboxOffer } from "@stores/Lightbox.store";
-import { getQueryParamAsString } from "@utils/getQueryParamsAsString";
+import { getQueryParamAsString } from "@utils/common";
 
 const SingleNftPage: NextPage = observer(() => {
   const router = useRouter();
   const store = useContext(StoreContext);
-
-  const { connected, walletKey } = store.Wallet;
-  const { nftData, loansData, isYours } = store.SingleOffer;
-
-  const [hasActive, setHasActive] = useState(false);
-
-  const handleData = useCallback(async (): Promise<void> => {
+  const { publicKey: wallet } = useWallet();
+  const offerKey = useMemo(() => {
     try {
-      if (connected && walletKey && router.query.id) {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-        await store.SingleOffer.fetchOffer(
-          getQueryParamAsString(router.query.id),
-          walletKey?.toString(),
-        );
-        await store.SingleOffer.fetchSubOffers();
-      }
-    } catch (e) {
-      // eslint-disable-next-line no-console
-      console.log(e);
+      return new PublicKey(getQueryParamAsString(router.query.id));
+    } catch {
+      return null;
     }
-  }, [connected, walletKey, router.query.id, store.SingleOffer]);
+  }, [router.query.id]);
+  const { nftData, offer, subOffers, isLoading, error } = useSingleOffer(offerKey);
 
-  const handleConfirmOffer = useCallback(
-    (offer: ILightboxOffer): void => {
-      try {
-        store.Lightbox.setAcceptOfferData(offer);
-        store.Lightbox.setContent("acceptOffer");
-        store.Lightbox.setCanClose(true);
-        store.Lightbox.setVisible(true);
-      } catch (e) {
-        // eslint-disable-next-line no-console
-        console.log(e);
-        toast.error("Something went wrong", {
-          autoClose: 3000,
-          position: "top-center",
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-      }
-    },
-    [store.Lightbox],
+  const hasActive = useMemo(
+    () => subOffers.some(({ account }) => account.state === SubOfferState.Accepted),
+    [subOffers],
+  );
+  const isYours = useMemo(
+    () => (!!offer && !!wallet ? wallet?.equals(offer.account.borrower) : false),
+    [wallet, offer],
   );
 
-  useEffect(() => {
-    void handleData();
-  }, [router.query.id, connected, handleData]);
-
-  useEffect(() => {
-    router.events.on("routeChangeStart", () => {
-      store.SingleOffer.setNftData({
-        collection: "",
-        mint: "",
-        image: "",
-        name: "",
-        //TODO: temporary commented but should match strictCamelCase
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        external_url: "",
-      });
-      store.SingleOffer.setLoansData([]);
-    });
-  }, [router.events, store.SingleOffer]);
-
-  useEffect(() => {
-    if (loansData && loansData.length)
-      loansData.forEach((loan) => {
-        if (loan.status === 1) setHasActive(true);
-      });
-  }, [loansData]);
-
   const LoanOffers = useMemo(() => {
-    return loansData.map((offer) => {
-      if (offer.status === 0)
-        return (
-          <Offer
-            key={offer.id}
-            offerID={offer.id}
-            offerMint={offer.offerMint}
-            offerPublicKey={offer.publicKey.toBase58()}
-            status={offer.status.toString()}
-            amount={offer.amount}
-            token={currencyMints[offer.offerMint.toString()]}
-            duration={offer.duration.toString()}
-            // durationRemaning='20' // TODO: include date of offer creation in Program data
-            APR={offer.apr}
-            totalRepay={offer.totalRepay}
-            btnMessage={`Lend ${offer.currency}`}
-            handleConfirmOffer={handleConfirmOffer}
-            isYours={isYours}
+    if (isLoading || !nftData) return null;
+
+    return subOffers.map((subOffer) => {
+      const { account, pubkey } = subOffer;
+      return (
+        account.state === 0 && (
+          <OfferTemplate
+            key={pubkey.toBase58()}
+            pubkey={pubkey}
+            account={account}
+            nftData={nftData}
+            hideImage={true}
           />
-        );
-      else return null;
+        )
+      );
     });
-  }, [handleConfirmOffer, isYours, loansData]);
+  }, [subOffers, nftData, isLoading]);
 
   const PrivateTerms = memo(() => {
     const addNewLoan = useCallback(() => {
-      store.MyOffers.setActiveNftMint(nftData.mint);
+      const offerAddress = getQueryParamAsString(router.query.id);
+      if (nftData) {
+        store.MyOffers.setActiveNftMint(nftData.mint);
+        store.MyOffers.setSanitizedOfferData({
+          collateralId: offerAddress,
+          metadata: nftData,
+        });
+      }
       store.Lightbox.setContent("loanCreate");
       store.Lightbox.setVisible(true);
     }, []);
+
     return (
       <div className="offer-root--add-new">
         <button onClick={addNewLoan}>
@@ -140,35 +91,30 @@ const SingleNftPage: NextPage = observer(() => {
       return (
         <h2 className="single-offer-active">Loan Active, can&apos;t claim any offers right now</h2>
       );
-    else if (loansData && loansData.length)
-      return (
-        <div className="offer-grid">
-          {LoanOffers}
-          {isYours && <PrivateTerms />}
-        </div>
-      );
-    else
+
+    if (subOffers.length === 0)
       return (
         <div className="offer-grid-empty">
           <BlobLoader />
         </div>
       );
+
+    return (
+      <div className="offer-grid">
+        {LoanOffers}
+        {isYours && subOffers.length < 3 && <PrivateTerms />}
+      </div>
+    );
   });
 
   return (
     <StoreDataAdapter>
+      <LayoutTopMobile />
       <div className="page my-offers">
         <LayoutTop />
-        {nftData && (
-          <Header
-            collectionName={nftData.collection}
-            nftAddress={nftData.mint}
-            nftImage={nftData.image}
-            nftName={nftData.name}
-            website={nftData.external_url}
-            isYours={isYours}
-          />
-        )}
+        {error && <div>Not found</div>}
+        {isLoading && <BlobLoader />}
+        {nftData && <Header nftData={nftData} isYours={isYours} />}
         <Loans />
       </div>
     </StoreDataAdapter>

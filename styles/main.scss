@@ -27,10 +27,14 @@
 @import "./solscanExplorer";
 @import "./popups";
 @import "./circularProgressBar";
+@import "./circleLoader";
 
 @import "./singleOffer/header";
 @import "./singleOffer/offer";
 @import "./singleOffer/page";
+
+@import "./offerItemWrap";
+@import "./offerTemplate";
 
 @import "./offersPage/offersTop";
 @import "./offersPage/offersGrid";
@@ -38,7 +42,7 @@
 @import "./offersPage/offersPagination";
 
 @import "./myOffers/myOffersTop";
-@import "./myOffers/myOffersNftList";
+@import "./myOffers/myOffersWrap";
 
 @import "./profilePage/header";
 @import "./profilePage/page";
@@ -47,8 +51,9 @@
 @import "./lightboxBase";
 @import "./NFTCollateral";
 @import "./createLoan";
+@import "./loanDetails";
+@import "./confirmLoan";
 @import "./connectWallet";
-@import "./loansGiven/myLendingList";
 @import "./singleOffer/lendConfirmation";
 @import "./singleOffer/acceptOffer";
 
@@ -56,11 +61,13 @@
 @import "./mobile/layoutTopMobile";
 @import "./mobile/offersPage/offersTopMobile";
 @import "./mobile/offersPage/offersGridMobile";
+@import "./mobile/lightboxBaseMobile";
+@import "./mobile/acceptOfferMobile";
 
 body {
   @include theme-aware("background-color", "color-background");
   @include theme-aware("background-image", "bg-gradient-home");
-  @include theme-aware("color", "color-primary");
+  @include theme-aware("color", "text-primary-color");
   // background-size: 100vw 100vh;
   font-family: "Red Hat Display", sans-serif;
   background-attachment: fixed;
@@ -162,4 +169,30 @@ a {
   .mobile-only {
     display: none;
   }
+}
+
+@media (max-width: $bp-tablet) {
+  .theme-light {
+    .home-bg-top {
+      background-size: 60%;
+    }
+
+    .home-bg-bottom {
+      background-size: 50%;
+    }
+  }
+
+  .theme-dark {
+    .home-bg-top {
+      background-size: 60%;
+    }
+
+    .home-bg-bottom {
+      background-size: 50%;
+    }
+  }
+}
+
+.overflow-hidden {
+  overflow: hidden;
 }

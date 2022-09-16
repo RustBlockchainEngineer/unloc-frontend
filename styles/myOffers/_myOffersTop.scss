@@ -2,74 +2,65 @@
   width: 100%;
   display: flex;
   justify-content: space-between;
-  margin-top: 60px;
+  margin: 60px 0;
+
+  .btn {
+    display: inline-block;
+    line-height: normal;
+    min-width: 172px;
+
+    .btn--primary {
+      @include theme-aware("border-color", "color-primary");
+      border: 2px solid;
+    }
+  }
+
+  @media (max-width: $bp-tablet) {
+    margin: $mr-lg 0;
+  }
+
+  @media (max-width: $bp-phone) {
+    margin: 45px 0 0;
+  }
 
   &__heading {
-    .wallet-label {
-      font-size: $tp-sm;
-      @include theme-aware("color", "color-secondary");
+    display: flex;
+    gap: $mr-sm $mr-lg;
 
-      @media (max-width: $bp-tablet) {
-        display: inline-block;
-        width: 100%;
-        text-align: center;
-        margin-bottom: 5px;
-      }
+    @media (max-width: $bp-tablet) {
+      justify-content: center;
     }
 
-    h2 {
-      margin: 0;
-      padding: 0;
-      font-size: 48px;
-
-      @media (max-width: $bp-tablet) {
-        text-align: center;
-        margin-bottom: 20px;
-        padding: 0 20px;
-      }
+    @media (max-width: 683px) {
+      flex-wrap: wrap;
     }
 
-    .show-on-hover {
-      @media (max-width: $bp-tablet) {
-        width: 100%;
-        flex-direction: column;
-      }
+    @media (max-width: $bp-phone) {
+      margin: 0 $mr-sm;
+      gap: 0;
+      row-gap: 12px;
 
-      .show-on-hover__elements__wrap {
-        @media (max-width: $bp-tablet) {
-          display: block;
-          width: 100%;
-          text-align: center;
-          justify-items: center;
-          justify-content: center;
-          margin-top: 5px;
+      .sort-select {
+        width: auto;
+        margin-right: 12px;
+        ul {
+          width: fit-content;
         }
       }
+      //justify-content: space-between;
 
-      .show-on-hover__label,
-      .how-on-hover__elements {
-        @media (max-width: $bp-tablet) {
-          width: 100%;
-        }
+      .btn {
+        max-width: 115px;
+        min-width: 100px;
+        flex: 1 1 25%;
+        padding: 0 $mr-sm;
       }
     }
   }
 
   &__toolbox {
-    display: flex;
-    padding-top: 8px;
-
-    button {
-      margin-right: 15px;
-      text-transform: uppercase;
-
-      &:last-child {
-        margin-right: 0;
-      }
-    }
-
     @media (max-width: $bp-tablet) {
-      justify-content: center;
+      display: none;
     }
   }
 

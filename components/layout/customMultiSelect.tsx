@@ -15,7 +15,6 @@ export const CustomMultiSelect = ({
   title,
   options,
   values,
-  clearFilters,
   onCheck,
 }: CustomMultiSelectProps) => {
   const [hidden, setHidden] = useState(true);
@@ -25,10 +24,6 @@ export const CustomMultiSelect = ({
   useEffect(() => {
     updateCollectionsList(options);
   }, [options]);
-
-  const uncheckAll = () => {
-    clearFilters && clearFilters();
-  };
 
   const toggleOptions = () => {
     !disabled && setHidden(!hidden);
@@ -41,6 +36,7 @@ export const CustomMultiSelect = ({
         setHidden(true);
       }
     };
+
     document.addEventListener("click", handleOutsideClick);
     return () => {
       document.removeEventListener("click", handleOutsideClick);
@@ -59,19 +55,16 @@ export const CustomMultiSelect = ({
   );
 
   return (
-    <div ref={container} className={`custom-multi-select ${disabled ? "disabled" : ""}`}>
-      <div className="custom-multi-select__title" onClick={toggleOptions}>
-        <span>{title}</span>
-        <i className="icon icon--sm icon--filter--down" />
+    <div className="custom-multi-select-container" ref={container}>
+      <div className={`custom-multi-select ${disabled ? "disabled" : ""}`} onClick={toggleOptions}>
+        <div className="custom-multi-select__title">
+          <span>{title}</span>
+          <i className="icon icon--sm icon--filter--down" />
+        </div>
       </div>
       <div className={`custom-multi-select__options ${hidden ? "hidden" : ""}`}>
         <div className="custom-multi-select__input">
           <input type="text" placeholder="Search for collection" onChange={searchFilterHandler} />
-        </div>
-        <div className={`custom-multi-select__reset`}>
-          <button onClick={uncheckAll} className="btn btn--md">
-            Reset
-          </button>
         </div>
         {collectionsList && (
           <CollectionList

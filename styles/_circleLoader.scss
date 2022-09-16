@@ -1,0 +1,48 @@
+.circle-loader-lightbox {
+  margin: 40px;
+  color: white;
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 19px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  &__caption {
+    margin-top: 30px;
+  }
+}
+
+@keyframes spin {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.circle-loader {
+  animation: spin 2s linear infinite; /* the size */
+  /* the border */
+  background: #e00a7f; /* the color */
+  aspect-ratio: 1;
+  border-radius: 50%;
+  mask: conic-gradient(#0000, #000), linear-gradient(#000 0 0) content-box;
+  mask-composite: source-out;
+  mask-composite: subtract;
+  box-sizing: border-box;
+
+  &.small {
+    width: 40px;
+    padding: 4px;
+  }
+
+  &.medium {
+    width: 80px;
+    padding: 6px;
+  }
+
+  &.large {
+    width: 160px;
+    padding: 8px;
+  }
+}

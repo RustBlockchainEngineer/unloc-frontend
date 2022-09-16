@@ -6,7 +6,10 @@
 }
 
 .create-offer {
-  padding: 0 20px 24px;
+  max-width: 340px;
+  @media (max-width: $bp-tablet) {
+    padding: 0;
+  }
 }
 
 .offer-form {
@@ -18,29 +21,113 @@
     @include theme-aware("color", "lightbox-label-color");
   }
 
+  .row-division {
+    display: flex;
+    flex-direction: column;
+    width: fit-content;
+    min-width: 200px;
+    padding-bottom: 16px;
+    //margin-bottom: 17px;
+    margin: 0 auto 17px;
+    @include theme-aware("border-bottom", "nft-headers-border");
+  }
+
   .form-line {
     display: flex;
     margin-bottom: 24px;
     justify-content: space-between;
 
+    & > div {
+      & > input,
+      & > div {
+        margin-top: 8px;
+      }
+    }
+    &.form-amount,
+    &.form-duration {
+      column-gap: 16px;
+      div:nth-child(1) {
+        flex-grow: 2;
+      }
+      div:nth-child(2) {
+        flex-grow: 1;
+        .loan-currency {
+          width: 100%;
+        }
+      }
+    }
+
+    &.rewards {
+      flex-direction: column;
+      width: 100%;
+      & > * {
+        text-align: center;
+      }
+      p {
+        display: flex;
+        justify-content: center;
+      }
+      b {
+        margin: 0 4px;
+      }
+    }
+
+    & > div:nth-child(1),
+    & > div:nth-child(2) {
+      display: flex;
+      flex-direction: column;
+    }
+
     div:nth-child(1) {
       display: flex;
       flex-direction: column;
-      width: 315px;
-      margin-right: 15px;
+
+      @media (max-width: $bp-tablet) {
+        width: 100%;
+      }
     }
 
     div:nth-child(2) {
-      width: 128px;
+      //width: 128px;
+
+      @media (max-width: $bp-tablet) {
+        width: 100%;
+      }
     }
 
     @media (max-width: $bp-tablet) {
       flex-direction: column;
+      margin-bottom: 0;
 
-      div:nth-child(1),
-      div:nth-child(2) {
+      & > div:nth-child(1),
+      & > div:nth-child(2) {
         width: 100%;
-        margin: 0 0 30px 0;
+        margin: unset;
+      }
+      &.form-amount {
+        & > div:nth-child(1),
+        & > div:nth-child(2) {
+          padding-bottom: $mr-md;
+          margin: unset;
+          margin-bottom: 14px;
+          @include theme-aware("border-bottom", "lightbox-loan-group-border-bottom");
+        }
+      }
+
+      &.form-duration {
+        & > div:nth-child(1) {
+          margin-bottom: 20px;
+        }
+        & > div:nth-child(2) {
+          padding-bottom: $mr-md;
+          margin-bottom: 14px;
+          @include theme-aware("border-bottom", "lightbox-loan-group-border-bottom");
+
+          input {
+            width: 75%;
+            margin: 0 auto;
+          }
+        }
       }
     }
 
@@ -57,29 +144,32 @@
   select {
     @include theme-aware("background-color", "lightbox-collection-select-bg");
     @include theme-aware("color", "lightbox-collection-select-color");
-    margin-top: 6px;
-    border: 0px;
+    border: 0;
     padding: 9px;
-    border-radius: 6px;
+    border-radius: 2px;
     height: 42px;
     width: 100%;
+
+    @media (max-width: $bp-tablet) {
+      font-size: $tp-md;
+      line-height: $tp-lg;
+      padding: 7px 10px;
+      height: unset;
+    }
   }
 
   p {
-    margin-top: 6px;
     padding: 9px 0;
-    height: 42px;
     width: 100%;
   }
 
   .loan-currency {
-    @include theme-aware("background-color", "lightbox-collection-select-bg");
-    @include theme-aware("color", "lightbox-collection-select-color");
-
-    margin-top: $mr-tn;
+    margin-top: 8px;
     border-radius: 6px;
 
     .custom-select__selected {
+      @include theme-aware("background-color", "lightbox-collection-select-bg");
+      @include theme-aware("color", "lightbox-collection-select-color");
       padding: 8.5px;
       margin-right: 0 !important;
       display: inline-flex !important;
@@ -87,7 +177,11 @@
     }
 
     .custom-select__options {
-      margin-top: 45px;
+      margin-top: 10px;
+
+      @media (max-width: $bp-tablet) {
+        margin-top: $mr-tn;
+      }
     }
 
     &.disabled {
@@ -101,34 +195,35 @@
   }
 
   .form-APR {
-    & > div:nth-child(1),
-    & > div:nth-child(3) {
-      width: 50%;
-    }
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 22px;
 
     & > div:nth-child(1) {
-      margin-right: $mr-md;
+      width: 100%;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      margin: 0;
     }
-
-    & > div:nth-child(3) {
-      margin-left: $mr-md;
-    }
-
-    & > div:nth-child(2) {
-      width: 50px;
-      position: relative;
-
-      div.switch--button--knob {
-        width: 22px;
-        margin: 0;
+    & > div:nth-child(1) {
+      justify-content: space-around;
+      margin-bottom: $mr-sm;
+      span {
+        width: 56px;
       }
     }
 
-    & span {
-      display: block;
-      text-align: center;
-      font-size: 24px;
+    & > div:nth-child(2) {
+      display: flex;
+      flex-direction: row;
+      column-gap: $mr-2rem;
       width: 100%;
+    }
+
+    & span {
+      text-align: center;
+      font-size: $tp-md;
     }
   }
 
@@ -136,53 +231,58 @@
     width: 100%;
 
     .title {
-      font-size: 24px;
+      font-size: 20px;
     }
 
     .amount {
-      font-size: 20px;
+      font-size: $tp-2md;
+      font-weight: 700;
+      @include theme-aware("color", "lightbox-currency-color");
 
       span {
-        margin-left: $mr-sm;
-        font-size: $tp-lg;
+        margin-left: 4px;
       }
     }
   }
 
-  button {
-    @include theme-aware("background-color", "color-primary");
-    cursor: pointer;
-    padding: 15px;
-    text-align: center;
-    margin: 0;
+  .actions {
     display: flex;
-    align-items: center;
-    border: none;
-    border-radius: 6px;
-    transition: background 0.3s ease-in-out;
-
-    &:hover {
-      @include theme-aware("background-color", "color-primary-dark");
-    }
-
-    &.btn-content {
+    flex-direction: column;
+    row-gap: 18px;
+    button {
       width: 100%;
-      text-align: center;
+      display: flex;
       justify-content: center;
-      @include theme-aware("color", "lend-offer-button");
+      border-radius: 5px;
+      padding: 0 15px;
+      font-weight: 700;
+      position: relative;
+      align-items: center;
+
+      .icon {
+        width: 18px;
+        position: absolute;
+        right: 15px;
+        margin: 0;
+        &--dash {
+          height: 4px;
+        }
+        &--caret-tin {
+          height: 11px;
+        }
+      }
     }
   }
 
   input[type="range"] {
     -webkit-appearance: none;
-    margin-right: 15px;
     width: 100%;
     height: 7px;
     @include theme-aware("background-color", "lightbox-range-bg");
     border-radius: 5px;
     background-size: 70% 100%;
     background-repeat: no-repeat;
-    margin-top: 10px;
+    margin-top: 17px;
   }
 
   /* Input Thumb */
@@ -260,4 +360,40 @@
   text-align: center;
   padding-bottom: 40px;
   @include theme-aware("color", "color-label");
+}
+
+.rc-slider {
+  width: 100% !important;
+}
+.rc-slider-track {
+  -webkit-appearance: none;
+  width: 100% !important;
+  height: 7px !important;
+  @include theme-aware("background-color", "lightbox-range-bg");
+  border-radius: 5px;
+  background-size: 70% 100%;
+  background-repeat: no-repeat;
+  margin-top: 2px;
+}
+
+.rc-slider-handle {
+  -webkit-appearance: none;
+  height: 20px !important;
+  width: 20px !important;
+  border-radius: 50%;
+  @include theme-aware("background-color", "color-primary");
+  cursor: ew-resize;
+  box-shadow: 0 0 2px 0 #555;
+  transition: background 0.3s ease-in-out;
+  border: 0px !important;
+  opacity: 1 !important;
+  box-shadow: none !important;
+}
+
+.rc-slider-handle:hover {
+  @include theme-aware("background-color", "color-primary");
+}
+
+.rc-slider-rail {
+  opacity: 0 !important;
 }

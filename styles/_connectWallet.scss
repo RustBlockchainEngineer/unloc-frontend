@@ -28,3 +28,21 @@
     font-weight: 700;
   }
 }
+
+@media (max-width: $bp-phone) {
+  .connect-wallet-modal-root {
+    margin-top: 45px;
+  }
+
+  .connect-wallet-modal {
+    width: 75%;
+
+    .connect-info {
+      text-align: center;
+    }
+
+    .wallet-adapter-button {
+      width: 100%;
+    }
+  }
+}

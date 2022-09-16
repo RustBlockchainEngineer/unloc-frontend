@@ -1,6 +1,27 @@
+.rewards-button {
+  border-radius: $brd-rds-2md;
+  @include theme-aware("background-color", "toaster-bg");
+  @include theme-aware("color", "color-white");
+  display: flex;
+  padding: 7px 20px;
+  border: none;
+  margin-left: auto;
+  margin-top: 45px;
+  cursor: pointer;
+  p {
+    text-indent: 13px;
+    line-height: $tp-lg;
+    font-size: $tp-md;
+  }
+  @media (max-width: $bp-tablet) {
+    margin: 20px auto 0;
+  }
+}
+
 .layout-top {
   display: flex;
-  width: $pg-col;
+  width: 100%;
+  max-width: $pg-col;
   padding-top: 50px;
   justify-content: space-between;
   align-items: center;
@@ -29,39 +50,37 @@
   justify-content: space-between;
 
   li {
-    display: contents;
-  }
-
-  li a {
-    display: inline-block;
-    @include theme-aware("color", "color-content");
-    text-decoration: none;
-    font-size: $tp-lg;
-    padding: 4px 8px 5px 8px;
     margin-right: 12px;
-    transition: background 0.3s ease-in-out, color 0.3s ease-in-out;
-    border-radius: 4px;
-    height: 31px;
 
-    &:hover {
-      @include theme-aware("background-color", "color-accent");
-    }
+    a {
+      @include theme-aware("color", "color-content");
+      text-decoration: none;
+      font-size: $tp-lg;
+      padding: $mr-tn $mr-md;
+      transition: background 0.3s ease-in-out, color 0.3s ease-in-out;
+      border-radius: $brd-rds-lg;
+      line-height: $tp-2lg;
 
-    &.active {
-      @media (min-width: $bp-phone) {
-        @include theme-aware("background-color", "color-primary");
+      &:hover {
+        @include theme-aware("background-color", "color-accent");
       }
 
-      @include theme-aware("color", "lend-offer-button");
+      &.active {
+        @media (min-width: $bp-phone) {
+          @include theme-aware("background-color", "color-primary");
+        }
+
+        @include theme-aware("color", "lend-offer-button");
+      }
+
+      .mobile-wrapper {
+        background: rgba(0, 0, 0, 0);
+      }
     }
 
-    .mobile-wrapper {
-      background: rgba(0, 0, 0, 0);
+    &:last-child {
+      margin-right: 0;
     }
-  }
-
-  li:last-child a {
-    margin-right: 0;
   }
 
   @media (max-width: $bp-tablet) {
@@ -69,9 +88,9 @@
     margin: 10px 2.5vw;
     justify-content: center;
 
-    li a {
-      height: auto;
-      padding: 8px 15px 9px 15px;
+    li {
+      text-align: center;
+      padding: 9px 15px;
     }
   }
 }

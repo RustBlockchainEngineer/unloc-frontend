@@ -16,14 +16,6 @@
   @include theme-aware(color, "color-content");
   border-radius: 6px;
   width: 1023px;
-
-  @media (max-width: $bp-tablet) {
-    width: 100%;
-    height: 100vh;
-    padding: 10px 0 0;
-    align-items: flex-start;
-    justify-content: flex-start;
-  }
 }
 
 .NFT-lb-header {
@@ -146,12 +138,6 @@
   color: #ffffff;
   cursor: pointer;
 
-  @media (max-width: $bp-tablet) {
-    position: absolute;
-    bottom: 90px;
-    margin: 0;
-  }
-
   &:hover {
     @include theme-aware("background-color", "color-primary-dark");
   }
@@ -159,8 +145,8 @@
 
 .sort-select {
   @include theme-aware("color", "lightbox-collection-select-color");
-  border: 0;
-  border-radius: 2px;
+  border-color: transparent;
+  border-radius: 19px;
   width: 200px;
   font-size: $tp-lg;
   appearance: none;

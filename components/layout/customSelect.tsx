@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, SyntheticEvent } from "react";
 
 interface CustomSelectProps {
   classNames?: string;
@@ -33,7 +33,8 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
     setHidden(true);
   };
 
-  const handleVisibilityForOptions = () => {
+  const handleVisibilityForOptions = (event?: SyntheticEvent<HTMLButtonElement, Event>): void => {
+    event?.preventDefault();
     if (disabled) {
       return;
     }
@@ -60,10 +61,10 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
 
   return (
     <div className={`custom-select ${classNames} ${disabled ? "disabled" : ""}`}>
-      <div className="custom-select__selected" onClick={handleVisibilityForOptions}>
+      <button className="custom-select__selected" onClick={handleVisibilityForOptions}>
         {selectedOption || defaultOption}
         <i className="icon icon--sm icon--rnd--triangle--down" />
-      </div>
+      </button>
       <ul className={`custom-select__options ${hidden ? "hidden" : ""}`}>
         {options.map((option) => (
           <li

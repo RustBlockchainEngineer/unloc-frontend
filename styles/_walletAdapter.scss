@@ -20,7 +20,7 @@
 
 .wallet-adapter-button-trigger {
   @include theme-aware("color", "color-white");
-  background-color: #512da8;
+  @include theme-aware("background-color", "toaster-bg");
 }
 
 .wallet-adapter-button:not([disabled]):focus-visible {
@@ -64,6 +64,7 @@
   position: relative;
   display: flex;
   justify-content: center;
+  direction: initial;
 }
 
 .wallet-adapter-dropdown-list {
@@ -141,6 +142,10 @@
 
 .wallet-adapter-dropdown-list-item.balance {
   justify-content: center;
+}
+
+.wallet-adapter-dropdown-list-item.theme {
+  margin-bottom: 4px;
 }
 
 .wallet-adapter-modal-collapse-button svg {

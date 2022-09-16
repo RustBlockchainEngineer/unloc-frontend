@@ -1,0 +1,67 @@
+.details-box {
+  height: auto;
+  overflow: hidden;
+  margin-top: 3px;
+
+  * {
+    @include theme-aware("color", "lightbox-label-color");
+  }
+
+  & > div {
+    p {
+      text-align: center;
+      font-weight: 700;
+      margin-top: 15px;
+      margin-bottom: 10px;
+    }
+  }
+
+  .attributes-wrap {
+    display: flex;
+    column-gap: 12px;
+    row-gap: 12px;
+    flex-wrap: wrap;
+    @include theme-aware("border-bottom", "nft-headers-border");
+    padding-bottom: 15px;
+
+    .attribute {
+      padding: 6px 8px;
+      display: flex;
+      flex-direction: column;
+      border-radius: 5px;
+      flex: 1;
+      @include theme-aware("background-color", "bg-input-disabled");
+      span {
+        line-height: 19px;
+        width: max-content;
+        &.name {
+          text-indent: 2px;
+          @include theme-aware("color", "purple-light");
+          font-size: $tp-sm;
+          line-height: 16px;
+        }
+      }
+    }
+  }
+  .details {
+    margin-bottom: 36px;
+    .details-wrap {
+      display: flex;
+      flex-direction: column;
+      row-gap: 12px;
+      .info {
+        display: flex;
+        justify-content: space-between;
+        span {
+          &.label {
+            font-weight: 700;
+          }
+        }
+      }
+    }
+  }
+
+  img {
+    border-radius: 7px;
+  }
+}
