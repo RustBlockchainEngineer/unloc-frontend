@@ -8,7 +8,8 @@ type LightboxContent =
   | "processing"
   | "circleProcessing"
   | "lendConfirmation"
-  | "acceptOffer";
+  | "acceptOffer"
+  | "createStake";
 
 export interface IsubOfferData {
   offerAmount: number;

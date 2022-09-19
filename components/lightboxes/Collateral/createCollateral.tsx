@@ -9,7 +9,7 @@ import { CustomSelect } from "@components/layout/customSelect";
 import { errorCase, successCase } from "@utils/toast-error-handler";
 import { PublicKey } from "@solana/web3.js";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
-import { createOffer } from "@utils/spl/unlocLoan";
+import { createOffer } from "@utils/spl/unloc-loan";
 import { fetchWhitelistedUserNfts } from "@utils/spl/metadata";
 import useSWR from "swr";
 import { CircleProcessing } from "../circleProcessing";

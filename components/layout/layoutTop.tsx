@@ -14,6 +14,7 @@ import { LendConfirmation } from "@components/lightboxes/LendConfirm";
 import { AcceptOffer } from "@components/lightboxes/AcceptOffer";
 import { ConfirmLoan } from "@components/lightboxes/Loan/confirmLoan";
 import { CircleProcessing } from "@components/lightboxes/circleProcessing";
+import { CreateStake } from "@components/lightboxes/Staking/create";
 
 export const LayoutTop = observer(() => {
   const store = useContext(StoreContext);
@@ -49,6 +50,7 @@ export const LayoutTop = observer(() => {
             {content === "lendConfirmation" ? <LendConfirmation /> : <></>}
             {content === "acceptOffer" ? <AcceptOffer /> : <></>}
             {content === "circleProcessing" ? <CircleProcessing /> : <></>}
+            {content === "createStake" && <CreateStake />}
           </>
         </Lightbox>
       ) : (

@@ -19,16 +19,13 @@ export const TopMenu = ({ mobileVisible }: TopMenuProps) => {
     return Object.keys(localesTop).map((item) => {
       const snakeCaseName = localesTop[item].replace(/\s/, "-").toLowerCase();
       return (
-        //TODO: temporary statement
-        item !== "myProfile" && (
-          <li key={item}>
-            <Link href={item === "home" ? "/" : `/${snakeCaseName}`}>
-              <a className={handleCurrent(item === "home" ? "/" : `/${snakeCaseName}`)}>
-                {localesTop[item]}
-              </a>
-            </Link>
-          </li>
-        )
+        <li key={item}>
+          <Link href={item === "home" ? "/" : `/${snakeCaseName}`}>
+            <a className={handleCurrent(item === "home" ? "/" : `/${snakeCaseName}`)}>
+              {localesTop[item]}
+            </a>
+          </Link>
+        </li>
       );
     });
   }, []);

@@ -2,13 +2,18 @@ import { useCallback } from "react";
 
 import { WalletNotConnectedError } from "@solana/wallet-adapter-base";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
-import { Commitment, Transaction } from "@solana/web3.js";
+import { Commitment, RpcResponseAndContext, SignatureResult, Transaction } from "@solana/web3.js";
+
+type SendTransactionReturnType = {
+  signature: string;
+  result: RpcResponseAndContext<SignatureResult>;
+};
 
 export const useSendTransaction = (): ((
   transaction: Transaction,
   commitment?: Commitment,
   skipPreflight?: boolean,
-) => Promise<void>) => {
+) => Promise<SendTransactionReturnType>) => {
   const { connection } = useConnection();
   const { publicKey, sendTransaction } = useWallet();
 
@@ -28,10 +33,12 @@ export const useSendTransaction = (): ((
 
       console.log(signature);
 
-      await connection.confirmTransaction(
+      const result = await connection.confirmTransaction(
         { blockhash, lastValidBlockHeight, signature },
         commitment,
       );
+
+      return { signature, result };
     },
     [publicKey, sendTransaction, connection],
   );

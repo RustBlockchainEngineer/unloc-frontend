@@ -1,0 +1,73 @@
+.create-stake {
+  width: 416px;
+  &__title {
+    font-weight: $wg-hv;
+    font-size: $tp-2lg;
+    padding: $mr-2rem 0;
+  }
+
+  &__stats {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &__stats-item {
+    padding: $mr-sm 0;
+    font-weight: $wg-lt;
+    font-size: $tp-2lg;
+    strong {
+      font-weight: $wg-hv;
+      @include theme-aware("color", "color-primary");
+    }
+  }
+
+  &__form {
+    font-size: $tp-md;
+    .confirm {
+      border-radius: $brd-rds-2tn;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      font-weight: $wg-hv;
+      justify-content: center;
+    }
+  }
+
+  &__amount {
+    padding: $mr-sm 0;
+    & > * {
+      display: block;
+    }
+  }
+
+  &__amount input,
+  input::placeholder {
+    margin-top: $mr-tn;
+    width: 100%;
+    border: none;
+    padding: $mr-tn $mr-1sm;
+    @include theme-aware("color", "color-content");
+    @include theme-aware("background-color", "input-bg");
+  }
+
+  &__duration {
+    padding-bottom: $mr-sm;
+    margin-bottom: $mr-2rem;
+
+    .rc_slider {
+      margin-top: $mr-sm;
+    }
+  }
+
+  &__score {
+    font-size: $tp-2lg;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: $mr-md;
+    strong {
+      font-weight: $wg-hv;
+      @include theme-aware("color", "color-primary");
+    }
+  }
+}

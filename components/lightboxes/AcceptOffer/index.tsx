@@ -5,7 +5,7 @@ import { observer } from "mobx-react";
 import { StoreContext } from "@pages/_app";
 import { errorCase, successCase } from "@utils/toast-error-handler";
 import { AcceptHeader } from "./acceptHeader";
-import { acceptOffer } from "@utils/spl/unlocLoan";
+import { acceptOffer } from "@utils/spl/unloc-loan";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
 import { useSendTransaction } from "@hooks/useSendTransaction";
