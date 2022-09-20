@@ -20,7 +20,6 @@ const Home: NextPage = observer(() => {
 
   const handleOffers = useCallback(async () => {
     try {
-      console.log("Entered handleOffers if");
       await refetchOffers();
       buildFilters();
     } catch (e) {
@@ -31,7 +30,7 @@ const Home: NextPage = observer(() => {
 
   useEffect(() => {
     if (wallet) void handleOffers();
-  }, [wallet, handleOffers]);
+  }, [wallet, handleOffers, store.Wallet.connection]);
 
   return (
     <StoreDataAdapter>

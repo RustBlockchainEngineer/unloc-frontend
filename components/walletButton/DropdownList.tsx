@@ -4,8 +4,8 @@ import { useWallet } from "@solana/wallet-adapter-react";
 import { StoreContext } from "@pages/_app";
 import { observer } from "mobx-react";
 import { SwitchButton } from "@components/layout/switchButton";
-import { formatOptions } from "@constants/config";
 import { CustomSelect } from "@components/layout/customSelect";
+import { formatOptions } from "@constants/config";
 import { Commitment } from "@solana/web3.js";
 
 interface DropdownListProps {
@@ -21,6 +21,11 @@ export const DropdownList = observer(({ refer, active, openModal, base58 }: Drop
   const { disconnect } = useWallet();
   const { theme } = store.Interface;
   const [copied, setCopied] = useState(false);
+
+  const { endpoint, endpoints } = store.GlobalState;
+  const switchEndpoint = (endpointString: string): void => {
+    store.GlobalState.setEndpoint(endpointString);
+  };
 
   const handleThemeSet = () => {
     store.Interface.setTheme(theme === "dark" ? "light" : "dark");
@@ -88,6 +93,16 @@ export const DropdownList = observer(({ refer, active, openModal, base58 }: Drop
           classNames={"theme-switcher--switch"}
           onClick={handleThemeSet}
           theme={true}
+        />
+      </li>
+      <span className="wallet-adapter-dropdown-list-item divider" />
+      <li className="wallet-adapter-dropdown-list-item endpoint" role="menuitem">
+        Select endpoint
+        <CustomSelect
+          classNames="wallet-endpoint-select"
+          options={endpoints}
+          selectedOption={endpoint}
+          setSelectedOption={switchEndpoint}
         />
       </li>
       <li className="wallet-adapter-dropdown-list-item endpoint" role="menuitem">

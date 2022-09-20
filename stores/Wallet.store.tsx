@@ -1,11 +1,11 @@
-import { PublicKey } from "@solana/web3.js";
+import { Connection, PublicKey } from "@solana/web3.js";
 import { makeAutoObservable } from "mobx";
 
 export class WalletStore {
   rootStore;
   connected = false;
   wallet = undefined;
-  connection: any;
+  connection: Connection | null = null;
   disconnect: any;
   walletKey: PublicKey | undefined;
   solAmount = 0;
@@ -24,7 +24,7 @@ export class WalletStore {
     this.wallet = wallet;
   }
 
-  setConnection(connection: any): void {
+  setConnection(connection: Connection): void {
     this.connection = connection;
   }
 

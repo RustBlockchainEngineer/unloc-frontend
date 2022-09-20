@@ -9,6 +9,9 @@ export class GlobalStateStore {
   accruedInterestNumerator = 0;
   aprNumerator = 0;
   denominator = 0;
+  expireDurationForLender = 0;
+  endpoints = ["devnet", "localnet", "mainnet"];
+  endpoint = "devnet";
   expireLoanDuration = 0;
   commitmentLevels: Commitment[] = ["processed", "confirmed", "finalized"];
   selectedCommitment: Commitment = "confirmed";
@@ -46,6 +49,10 @@ export class GlobalStateStore {
 
   setExpireLoanDuration(expireLoanDuration: BN): void {
     this.expireLoanDuration = expireLoanDuration.toNumber();
+  }
+
+  setEndpoint(endpoint: string): void {
+    this.endpoint = endpoint;
   }
 
   setCommitment(level: Commitment): void {

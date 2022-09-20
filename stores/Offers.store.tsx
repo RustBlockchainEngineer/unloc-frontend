@@ -1,5 +1,5 @@
 import { action, makeAutoObservable, runInAction } from "mobx";
-import { clusterApiUrl, Connection, PublicKey } from "@solana/web3.js";
+import { PublicKey } from "@solana/web3.js";
 import axios from "axios";
 import { getFrontPageSubOffers } from "@integration/nftLoan";
 import { getDecimalsForOfferMint } from "@integration/getDecimalForLoanAmount";
@@ -11,6 +11,7 @@ import { GmaBuilder } from "@utils/spl/GmaBuilder";
 import { SubOfferAccount } from "@utils/spl/types";
 import { findMetadataPda } from "@utils/spl/metadata";
 import { zipMap } from "@utils/common";
+import { RootStore } from "./Root.store";
 
 export interface SubOfferData {
   pubkey: PublicKey;
@@ -48,7 +49,7 @@ export class OffersStore {
   filterDurationValidatorMax = 90;
   filterCurrency = "All";
 
-  constructor(rootStore: any) {
+  constructor(rootStore: RootStore) {
     makeAutoObservable(this);
     this.rootStore = rootStore;
   }
@@ -247,7 +248,12 @@ export class OffersStore {
   async getOffersForListings(): Promise<void> {
     runInAction(() => (this.isLoading = true));
 
-    const connection = new Connection(clusterApiUrl("devnet"));
+    const connection = this.rootStore.Wallet.connection;
+    if (!connection) {
+      console.error("Not connected");
+      return;
+    }
+
     const subOfferKeys = await getFrontPageSubOffers(connection);
     const subOffers = (
       await GmaBuilder.make(connection, subOfferKeys).getAndMap((account) => {

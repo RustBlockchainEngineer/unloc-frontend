@@ -11,9 +11,9 @@ import {
 import { calculateRepayValue } from "@utils/loansMath";
 import { ILightboxOffer } from "@stores/Lightbox.store";
 import { errorCase } from "@utils/toast-error-handler";
-import { BN } from "@project-serum/anchor";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { SubOfferState } from "@unloc-dev/unloc-loan-solita";
+import BN from "bn.js";
 
 export const OffersGrid = observer(() => {
   const store = useContext(StoreContext);
