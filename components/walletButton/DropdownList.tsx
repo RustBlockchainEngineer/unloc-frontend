@@ -25,6 +25,7 @@ export const DropdownList = observer(({ refer, active, openModal, base58 }: Drop
   const { endpoint, endpoints } = store.GlobalState;
   const switchEndpoint = (endpointString: string): void => {
     store.GlobalState.setEndpoint(endpointString);
+    localStorage.setItem("endpoint", endpointString);
   };
 
   const handleThemeSet = () => {
@@ -35,6 +36,7 @@ export const DropdownList = observer(({ refer, active, openModal, base58 }: Drop
   const { selectedCommitment, commitmentLevels } = store.GlobalState;
   const commitmentLevelHandler = (level: Commitment | string): void => {
     store.GlobalState.setCommitment(level as Commitment);
+    localStorage.setItem("commitment_level", level);
   };
 
   useEffect(() => {
@@ -43,6 +45,15 @@ export const DropdownList = observer(({ refer, active, openModal, base58 }: Drop
       store.Interface.setTheme(savedTheme);
     }
   });
+
+  useEffect(() => {
+    const storedEndpoint = localStorage.getItem("endpoint");
+    const storedCommitmentLevel = localStorage.getItem("commitment_level");
+    if (storedEndpoint) store.GlobalState.setEndpoint(storedEndpoint);
+    else localStorage.setItem("endpoint", endpoint);
+    if (storedCommitmentLevel) store.GlobalState.setCommitment(storedCommitmentLevel as Commitment);
+    else localStorage.setItem("commitment_level", selectedCommitment);
+  }, []);
 
   const copyAddress = useCallback(async (): Promise<void> => {
     if (base58) {
