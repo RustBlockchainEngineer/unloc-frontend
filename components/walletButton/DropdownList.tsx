@@ -1,12 +1,15 @@
-import { useCallback, useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState, RefObject } from "react";
+
 import { useWallet } from "@solana/wallet-adapter-react";
 import { StoreContext } from "@pages/_app";
 import { observer } from "mobx-react";
 import { SwitchButton } from "@components/layout/switchButton";
 import { formatOptions } from "@constants/config";
+import { CustomSelect } from "@components/layout/customSelect";
+import { Commitment } from "@solana/web3.js";
 
 interface DropdownListProps {
-  refer: React.RefObject<HTMLUListElement>;
+  refer: RefObject<HTMLUListElement>;
   active: boolean;
   base58: string;
   openModal: () => void;
@@ -22,6 +25,11 @@ export const DropdownList = observer(({ refer, active, openModal, base58 }: Drop
   const handleThemeSet = () => {
     store.Interface.setTheme(theme === "dark" ? "light" : "dark");
     localStorage.setItem("unloc-theme", theme === "dark" ? "light" : "dark");
+  };
+
+  const { selectedCommitment, commitmentLevels } = store.GlobalState;
+  const commitmentLevelHandler = (level: Commitment | string): void => {
+    store.GlobalState.setCommitment(level as Commitment);
   };
 
   useEffect(() => {
@@ -80,6 +88,15 @@ export const DropdownList = observer(({ refer, active, openModal, base58 }: Drop
           classNames={"theme-switcher--switch"}
           onClick={handleThemeSet}
           theme={true}
+        />
+      </li>
+      <li className="wallet-adapter-dropdown-list-item endpoint" role="menuitem">
+        Set commitment
+        <CustomSelect
+          classNames="wallet-endpoint-select"
+          options={commitmentLevels}
+          selectedOption={selectedCommitment}
+          setSelectedOption={commitmentLevelHandler}
         />
       </li>
     </ul>
