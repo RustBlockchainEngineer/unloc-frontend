@@ -3,7 +3,7 @@ export const SkeletonGrid = () => {
   return (
     <>
       {items.map((_item, index) => (
-        <div key={`grid-${index}`} className="offers-grid-item" />
+        <div key={`offers-grid-item-${index}`} className="offers-grid-item" />
       ))}
     </>
   );
