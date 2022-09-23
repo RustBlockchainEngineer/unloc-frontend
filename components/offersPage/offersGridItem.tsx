@@ -49,7 +49,7 @@ export const OffersGridItem = ({
 
   return (
     <div
-      className={"offers-grid-item"}
+      className="offers-grid-item"
       onMouseOver={() => setHover(true)}
       onMouseLeave={() => setHover(false)}>
       {isYours && (
