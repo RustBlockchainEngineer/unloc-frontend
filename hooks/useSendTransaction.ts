@@ -1,8 +1,10 @@
-import { useCallback } from "react";
+import { useCallback, useContext } from "react";
 
 import { WalletNotConnectedError } from "@solana/wallet-adapter-base";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { Commitment, RpcResponseAndContext, SignatureResult, Transaction } from "@solana/web3.js";
+
+import { StoreContext } from "@pages/_app";
 
 type SendTransactionReturnType = {
   signature: string;
@@ -14,11 +16,19 @@ export const useSendTransaction = (): ((
   commitment?: Commitment,
   skipPreflight?: boolean,
 ) => Promise<SendTransactionReturnType>) => {
+  const store = useContext(StoreContext);
+  const { selectedCommitment } = store.GlobalState;
+
   const { connection } = useConnection();
   const { publicKey, sendTransaction } = useWallet();
 
-  const sendAndConfirm = useCallback(
-    async (transaction: Transaction, commitment?: Commitment, skipPreflight?: boolean) => {
+  return useCallback(
+    async (
+      transaction: Transaction,
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+      commitment = selectedCommitment as Commitment,
+      skipPreflight?: boolean,
+    ) => {
       if (!publicKey) throw new WalletNotConnectedError();
 
       const {
@@ -40,8 +50,6 @@ export const useSendTransaction = (): ((
 
       return { signature, result };
     },
-    [publicKey, sendTransaction, connection],
+    [selectedCommitment, publicKey, connection, sendTransaction],
   );
-
-  return sendAndConfirm;
 };

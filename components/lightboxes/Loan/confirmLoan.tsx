@@ -39,7 +39,7 @@ export const ConfirmLoan = observer(() => {
           duration,
           amount,
         );
-        await sendAndConfirm(tx, "confirmed");
+        await sendAndConfirm(tx);
         successCase("Loan Offer Created");
       } catch (e: any) {
         console.log(e);

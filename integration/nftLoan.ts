@@ -1,8 +1,6 @@
-import * as anchor from "@project-serum/anchor";
-import { IDL as idl, UnlocNftLoan } from "./unloc_nft_loan";
-import { NFT_LOAN_PID, RPC_ENDPOINT, SUB_OFFER_TAG } from "@constants/config";
+import { NFT_LOAN_PID, SUB_OFFER_TAG } from "@constants/config";
 import BN from "bn.js";
-import { clusterApiUrl, Connection, PublicKey } from "@solana/web3.js";
+import { Connection, PublicKey } from "@solana/web3.js";
 
 import {
   Offer,
@@ -17,36 +15,12 @@ import { OfferAccount, SubOfferAccount } from "@utils/spl/types";
 import { gte } from "@utils/bignum";
 import { GmaBuilder } from "@utils/spl/GmaBuilder";
 
-const SOLANA_CONNECTION = new Connection(RPC_ENDPOINT, {
-  disableRetryOnRateLimit: true,
-});
-
-export let program: anchor.Program<UnlocNftLoan> = null as unknown as anchor.Program<UnlocNftLoan>;
-export let programId: anchor.web3.PublicKey = null as unknown as anchor.web3.PublicKey;
-
-// This command makes an Lottery
-export const initLoanProgram = (
-  // connection: anchor.web3.Connection,
-  wallet: any,
-  pid: anchor.web3.PublicKey = NFT_LOAN_PID,
-) => {
-  if (program != null) {
-    return;
-  }
-  programId = pid;
-  // const provider = new anchor.Provider(connection, wallet, anchor.Provider.defaultOptions())
-  const provider = new anchor.Provider(SOLANA_CONNECTION, wallet, { skipPreflight: true });
-
-  // Generate the program client from IDL.
-  program = new (anchor as any).Program(idl, programId, provider) as anchor.Program<UnlocNftLoan>;
-};
-
 export const getOffersBy = async (
-  owner?: anchor.web3.PublicKey,
-  nftMint?: anchor.web3.PublicKey,
+  connection: Connection,
+  owner?: PublicKey,
+  nftMint?: PublicKey,
   state?: OfferState,
 ) => {
-  const connection = program?.provider?.connection ?? new Connection(clusterApiUrl("devnet"));
   const query = Offer.gpaBuilder(NFT_LOAN_PID);
 
   query.addFilter("accountDiscriminator", offerDiscriminator);
@@ -97,8 +71,12 @@ export const getSubOfferKeys = async (
   return sortedAccountsWithCreationDate.map((account) => account.pubkey);
 };
 
-export const getSubOffersInRange = async (offer: PublicKey, range: number[], state?: number) => {
-  const connection = program?.provider?.connection ?? new Connection(clusterApiUrl("devnet"));
+export const getSubOffersInRange = async (
+  connection: Connection,
+  offer: PublicKey,
+  range: number[],
+  state?: number,
+) => {
   const subOfferAddresses = range.map((num) => {
     return PublicKey.findProgramAddressSync(
       [SUB_OFFER_TAG, offer.toBuffer(), new BN(num).toArrayLike(Buffer, "be", 8)],

@@ -78,7 +78,7 @@ export const OfferActionsHook = (): OfferActionsHook => {
         if (!wallet) throw new Error("Wallet not connected");
 
         const tx = cancelOffer(wallet, nftMint);
-        await sendAndConfirm(tx, "confirmed");
+        await sendAndConfirm(tx);
         successCase(`NFT ${name} returned to the wallet`, name);
         store.Lightbox.setCanClose(true);
         store.Lightbox.setVisible(false);
@@ -113,7 +113,7 @@ export const OfferActionsHook = (): OfferActionsHook => {
         if (!wallet) throw new Error("Wallet not connected");
 
         const tx = await claimCollateral(connection, wallet, subOffer);
-        await sendAndConfirm(tx, "confirmed");
+        await sendAndConfirm(tx);
         successCase("NFT Claimed");
       } catch (e) {
         errorCase(e);
@@ -132,7 +132,7 @@ export const OfferActionsHook = (): OfferActionsHook => {
         if (!wallet) throw new Error("Wallet not connected");
 
         const tx = await cancelSubOffer(connection, wallet, subOffer);
-        await sendAndConfirm(tx, "confirmed");
+        await sendAndConfirm(tx);
         successCase("Offer canceled");
       } catch (e) {
         errorCase(e);
@@ -167,7 +167,7 @@ export const OfferActionsHook = (): OfferActionsHook => {
         if (!wallet) throw new Error("Wallet not connected");
         const subOffer = new PublicKey(subOfferKey);
         const tx = await repayLoan(connection, wallet, subOffer);
-        await sendAndConfirm(tx, "confirmed");
+        await sendAndConfirm(tx);
         successCase("Loan Repayed, NFT is back in your wallet");
       } catch (e) {
         errorCase(e);

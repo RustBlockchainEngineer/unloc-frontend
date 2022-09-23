@@ -52,7 +52,7 @@ export const CreateCollateral = observer(() => {
       setProcessing(true);
 
       const tx = createOffer(wallet, selectedMint);
-      await sendAndConfirm(tx, "confirmed");
+      await sendAndConfirm(tx);
       store.MyOffers.setActiveCategory("deposited");
 
       store.Lightbox.setVisible(false);

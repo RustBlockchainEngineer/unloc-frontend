@@ -1,5 +1,5 @@
 import { makeAutoObservable, runInAction } from "mobx";
-import { Connection, PublicKey } from "@solana/web3.js";
+import { Commitment, Connection, PublicKey } from "@solana/web3.js";
 import { GLOBAL_STATE_TAG, NFT_LOAN_PID } from "@constants/config";
 import { GlobalState } from "@unloc-dev/unloc-loan-solita";
 import BN from "bn.js";
@@ -9,7 +9,12 @@ export class GlobalStateStore {
   accruedInterestNumerator = 0;
   aprNumerator = 0;
   denominator = 0;
+  expireDurationForLender = 0;
+  endpoints = ["devnet", "localnet", "mainnet"];
+  endpoint = "devnet";
   expireLoanDuration = 0;
+  commitmentLevels: Commitment[] = ["processed", "confirmed", "finalized"];
+  selectedCommitment: Commitment = "confirmed";
 
   constructor(rootStore: any) {
     makeAutoObservable(this);
@@ -44,5 +49,13 @@ export class GlobalStateStore {
 
   setExpireLoanDuration(expireLoanDuration: BN): void {
     this.expireLoanDuration = expireLoanDuration.toNumber();
+  }
+
+  setEndpoint(endpoint: string): void {
+    this.endpoint = endpoint;
+  }
+
+  setCommitment(level: Commitment): void {
+    this.selectedCommitment = level;
   }
 }

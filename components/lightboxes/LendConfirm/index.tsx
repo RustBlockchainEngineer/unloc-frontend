@@ -28,7 +28,7 @@ export const LendConfirmation = observer(() => {
       store.Lightbox.setVisible(true);
 
       const tx = await acceptOffer(connection, wallet, new PublicKey(offerPublicKey));
-      await sendAndConfirm(tx, "confirmed");
+      await sendAndConfirm(tx);
       successCase("Loan Accepted");
     } catch (e: any) {
       errorCase(e);

@@ -5,7 +5,6 @@ import axios from "axios";
 
 import { StoreContext } from "@pages/_app";
 
-import { initLoanProgram } from "@integration/nftLoan";
 import { errorCase } from "@utils/toast-error-handler";
 import { useAccountChange } from "@hooks/useAccountChange";
 
@@ -37,9 +36,9 @@ export const StoreDataAdapter = observer(({ children }: Props) => {
 
         await onAccountChange();
 
-        initLoanProgram(wallet.adapter);
         store.Wallet.setWalletKey(publicKey);
         store.Wallet.setWallet(wallet);
+        store.Wallet.setConnection(connection);
         await store.GlobalState.fetchGlobalState(connection);
       }
     };
@@ -47,7 +46,7 @@ export const StoreDataAdapter = observer(({ children }: Props) => {
     setWallet();
 
     return accountChangeDestructor;
-  }, [wallet, publicKey]);
+  }, [wallet, publicKey, connection]);
 
   return <>{children}</>;
 });

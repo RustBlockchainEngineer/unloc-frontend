@@ -1,5 +1,5 @@
-import { flow, makeAutoObservable, runInAction } from "mobx";
-import { clusterApiUrl, Connection, PublicKey } from "@solana/web3.js";
+import { makeAutoObservable, runInAction } from "mobx";
+import { Connection, PublicKey } from "@solana/web3.js";
 import { BN } from "bn.js";
 
 import {
@@ -67,7 +67,12 @@ export class MyOffersStore {
   }
 
   async getOffersByWallet(wallet: PublicKey): Promise<void> {
-    const offers = await getOffersBy(wallet, undefined, undefined);
+    const connection = this.rootStore.Wallet.connection;
+    if (!connection) {
+      console.error("Not connected");
+      return;
+    }
+    const offers = await getOffersBy(connection, wallet, undefined, undefined);
     const proposedOrActive = offers.filter(
       (offer) => offer.account.state === 0 || offer.account.state === 1,
     );
@@ -75,7 +80,13 @@ export class MyOffersStore {
     this.setOffers(proposedOrActive);
   }
 
-  getSubOffersByOffers = flow(function* (this: MyOffersStore) {
+  async getSubOffersByOffers(): Promise<void> {
+    const connection = this.rootStore.Wallet.connection;
+    if (!connection) {
+      console.error("Not connected");
+      return;
+    }
+
     if (this.offers.length > 0) {
       const data: SubOfferAccount[] = [];
       for (const offer of this.offers) {
@@ -85,18 +96,25 @@ export class MyOffersStore {
             new BN(startSubOfferNum).toNumber(),
             new BN(subOfferCount).toNumber(),
           );
-          const subOfferData = yield getSubOffersInRange(offer.pubkey, subOfferRange);
-          data.push(subOfferData);
+          const subOfferData = await getSubOffersInRange(connection, offer.pubkey, subOfferRange);
+          data.push(...subOfferData);
         }
       }
-      this.subOffers = data.flat();
+      runInAction(() => {
+        this.subOffers = data;
+      });
     }
-  });
+  }
 
   async getNFTsData(): Promise<void> {
+    const connection = this.rootStore.Wallet.connection;
+    if (!connection) {
+      console.error("Not connected");
+      return;
+    }
+
     if (this.offers.length > 0) {
       const nftPdas = this.offers.map((offer) => offer.account.nftMint).map(findMetadataPda);
-      const connection = new Connection(clusterApiUrl("devnet"));
       const metadatas = (
         await GmaBuilder.make(connection, nftPdas, { commitment: "confirmed" }).getAndMap(
           (account) => {
