@@ -1,6 +1,6 @@
 import { useCallback, useContext, useRef } from "react";
 
-import { observer } from "mobx-react";
+import { observer } from "mobx-react-lite";
 
 import { Filter } from "@components/filters/filter";
 import { CustomMultiSelect } from "@components/layout/customMultiSelect";

@@ -1,6 +1,6 @@
 import { useOffChainMetadata } from "@hooks/useOffChainMetadata";
 import { Metadata } from "@metaplex-foundation/mpl-token-metadata";
-import { observer } from "mobx-react";
+import { observer } from "mobx-react-lite";
 import Image from "next/image";
 
 interface IAcceptHeader {

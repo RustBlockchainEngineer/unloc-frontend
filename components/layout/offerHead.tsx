@@ -1,6 +1,6 @@
 import { useContext, useEffect, useMemo, useState } from "react";
 
-import { observer } from "mobx-react";
+import { observer } from "mobx-react-lite";
 import { SanitizedOffer } from "@components/myOffers/offersWrap";
 import { OfferActionsHook } from "@hooks/offerActionsHook";
 import { StoreContext } from "@pages/_app";

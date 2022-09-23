@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { observer } from "mobx-react";
+import { observer } from "mobx-react-lite";
 
 import { compressAddress } from "@utils/stringUtils/compressAdress";
 import { ClipboardButton } from "@components/layout/clipboardButton";

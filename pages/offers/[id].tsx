@@ -3,7 +3,7 @@ import { useContext, memo, useCallback, useMemo } from "react";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
 import { SubOfferState } from "@unloc-dev/unloc-loan-solita";
-import { observer } from "mobx-react";
+import { observer } from "mobx-react-lite";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
 
