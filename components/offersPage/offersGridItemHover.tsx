@@ -4,7 +4,7 @@ import { SyntheticEvent, useCallback, useContext } from "react";
 import { StoreContext } from "@pages/_app";
 import { useConnection } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
-import { observer } from "mobx-react";
+import { observer } from "mobx-react-lite";
 
 interface IProps {
   visible: boolean;

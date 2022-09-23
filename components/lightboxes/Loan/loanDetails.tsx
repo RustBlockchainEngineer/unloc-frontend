@@ -4,7 +4,7 @@ import { StoreContext } from "@pages/_app";
 import Image from "next/image";
 import { compressAddress } from "@utils/stringUtils/compressAdress";
 import { BlobLoader } from "@components/layout/blobLoader";
-import { observer } from "mobx-react";
+import { observer } from "mobx-react-lite";
 import { useOffChainMetadata } from "@hooks/useOffChainMetadata";
 
 interface LoanDetails {

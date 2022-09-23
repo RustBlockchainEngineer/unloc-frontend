@@ -1,6 +1,6 @@
 import { useContext, useEffect } from "react";
 
-import { observer } from "mobx-react";
+import { observer } from "mobx-react-lite";
 
 import { StoreContext } from "@pages/_app";
 import { UnlocLogo } from "./unlocLogo";

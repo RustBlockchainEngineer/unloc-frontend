@@ -1,5 +1,5 @@
 import React, { useContext, useRef } from "react";
-import { observer } from "mobx-react";
+import { observer } from "mobx-react-lite";
 import { StoreContext } from "@pages/_app";
 
 interface LightboxProps {
