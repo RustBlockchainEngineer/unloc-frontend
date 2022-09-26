@@ -1,6 +1,6 @@
 import { ReactElement, useContext } from "react";
 
-import { observer } from "mobx-react";
+import { observer } from "mobx-react-lite";
 import { StoreContext } from "@pages/_app";
 import { OffersGridItem } from "./offersGridItem";
 import { BlobLoader } from "@components/layout/blobLoader";

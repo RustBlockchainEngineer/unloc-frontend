@@ -1,6 +1,6 @@
 import { useCallback, useContext, MouseEvent, useState, Fragment } from "react";
 
-import { observer } from "mobx-react";
+import { observer } from "mobx-react-lite";
 import { usePopperTooltip } from "react-popper-tooltip";
 
 import { ConnectWallet } from "@components/connectWallet/ConnectWallet";

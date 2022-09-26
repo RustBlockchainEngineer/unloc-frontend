@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { observer } from "mobx-react";
+import { observer } from "mobx-react-lite";
 import { StoreContext } from "@pages/_app";
 interface UnlocLogoProps {
   classNames?: string;

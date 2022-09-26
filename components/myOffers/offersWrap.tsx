@@ -1,6 +1,6 @@
 import { ReactNode, useContext, useEffect, useMemo, useState } from "react";
 
-import { observer } from "mobx-react";
+import { observer } from "mobx-react-lite";
 import { StoreContext } from "@pages/_app";
 import { OfferAccount, SubOfferAccount } from "@utils/spl/types";
 import { OfferHead } from "@components/layout/offerHead";

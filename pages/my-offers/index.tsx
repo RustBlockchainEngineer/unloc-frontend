@@ -1,7 +1,7 @@
 import { useContext, useEffect } from "react";
 
 import { useWallet } from "@solana/wallet-adapter-react";
-import { observer } from "mobx-react";
+import { observer } from "mobx-react-lite";
 import type { NextPage } from "next";
 
 import { LayoutTop } from "@components/layout/layoutTop";

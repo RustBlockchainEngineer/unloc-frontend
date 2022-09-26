@@ -1,5 +1,5 @@
 import { StoreContext } from "@pages/_app";
-import { observer } from "mobx-react";
+import { observer } from "mobx-react-lite";
 import { useContext } from "react";
 
 export const StakeActions = observer(() => {

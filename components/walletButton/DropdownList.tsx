@@ -2,7 +2,7 @@ import { useCallback, useContext, useEffect, useState, RefObject } from "react";
 
 import { useWallet } from "@solana/wallet-adapter-react";
 import { StoreContext } from "@pages/_app";
-import { observer } from "mobx-react";
+import { observer } from "mobx-react-lite";
 import { SwitchButton } from "@components/layout/switchButton";
 import { CustomSelect } from "@components/layout/customSelect";
 import { formatOptions } from "@constants/config";

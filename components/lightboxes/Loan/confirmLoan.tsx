@@ -3,7 +3,7 @@ import { useCallback, useContext } from "react";
 import Image from "next/image";
 import { StoreContext } from "@pages/_app";
 import { errorCase, successCase } from "@utils/toast-error-handler";
-import { observer } from "mobx-react";
+import { observer } from "mobx-react-lite";
 
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { createSubOffer } from "@utils/spl/unloc-loan";

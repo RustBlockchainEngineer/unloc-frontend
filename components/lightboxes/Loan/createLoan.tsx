@@ -1,6 +1,6 @@
 import { useContext, useMemo, useState, useCallback } from "react";
 
-import { observer } from "mobx-react";
+import { observer } from "mobx-react-lite";
 import { Form, Field } from "react-final-form";
 import { Decorator, getIn } from "final-form";
 import { StoreContext } from "@pages/_app";

@@ -1,6 +1,6 @@
 import { useContext, useEffect, ReactNode } from "react";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
-import { observer } from "mobx-react";
+import { observer } from "mobx-react-lite";
 import axios from "axios";
 
 import { StoreContext } from "@pages/_app";
