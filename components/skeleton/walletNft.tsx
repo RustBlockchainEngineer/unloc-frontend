@@ -1,4 +1,4 @@
-export const SkeletonDepositNFT = () => {
+export const SkeletonWalletNFT = () => {
   const item = new Array(9).fill(0);
   return (
     <>

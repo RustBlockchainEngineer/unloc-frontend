@@ -5,7 +5,7 @@ import { StoreContext } from "@pages/_app";
 import { OfferAccount, SubOfferAccount } from "@utils/spl/types";
 import { OfferHead } from "@components/layout/offerHead";
 import { OfferTemplate } from "@components/layout/offerTemplate";
-import { BlobLoader } from "@components/layout/blobLoader";
+// import { BlobLoader } from "@components/layout/blobLoader";
 import { usePopperTooltip } from "react-popper-tooltip";
 import { OfferActionsHook } from "@hooks/offerActionsHook";
 import { eq, gt, gte } from "@utils/bignum";
@@ -14,6 +14,7 @@ import { DepositTemplate } from "@components/layout/depositTemplate";
 import { Metadata } from "@metaplex-foundation/mpl-token-metadata";
 import { PublicKey } from "@solana/web3.js";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
+import { SkeletonDeposited } from "@components/skeleton/deposited";
 
 export type SanitizedOffer = {
   offer: PublicKey;
@@ -124,7 +125,8 @@ export const OffersWrap = observer(() => {
   };
 
   return loader ? (
-    <BlobLoader />
+    // <BlobLoader />
+    activeCategory === "deposited" && <SkeletonDeposited />
   ) : (
     <>
       <div className="my-offers-wrap">

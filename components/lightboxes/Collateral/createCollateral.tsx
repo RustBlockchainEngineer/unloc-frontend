@@ -14,7 +14,7 @@ import { fetchWhitelistedUserNfts } from "@utils/spl/metadata";
 import useSWR from "swr";
 import { CircleProcessing } from "../circleProcessing";
 import { useSendTransaction } from "@hooks/useSendTransaction";
-import { SkeletonDepositNFT } from "@components/skeleton/depositNft";
+import { SkeletonWalletNFT } from "@components/skeleton/walletNft";
 
 export const CreateCollateral = observer(() => {
   const store = useContext(StoreContext);
@@ -76,17 +76,17 @@ export const CreateCollateral = observer(() => {
   return (
     <StoreDataAdapter>
       <div className="collateral-lightbox">
-        {loading && (
-          <div className="NFT-lb-collateral-list skeleton">
-            {/*<BlobLoader />*/}
-            {/*<h2>Loading...</h2>*/}
-            <SkeletonDepositNFT />
-          </div>
-        )}
         {data && data.length === 0 && (
           <div className="collateral-empty">
             <div />
             <h2>No whitelisted NFTs in your wallet</h2>
+          </div>
+        )}
+        {loading && (
+          <div className="NFT-lb-collateral-list skeleton">
+            {/*<BlobLoader />*/}
+            {/*<h2>Loading...</h2>*/}
+            <SkeletonWalletNFT />
           </div>
         )}
         {data && (

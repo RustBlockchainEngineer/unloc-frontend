@@ -19,8 +19,9 @@
 
     &.skeleton {
       .collateral-list-item {
-        @include theme-aware("background-color", "color-primary");
+        @include theme-aware("background-color", "color-accent");
         animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        border: none;
       }
     }
   }
@@ -48,11 +49,5 @@
   }
   .lightbox-processing {
     margin: auto;
-  }
-}
-
-@keyframes pulse {
-  50% {
-    opacity: 0.5;
   }
 }

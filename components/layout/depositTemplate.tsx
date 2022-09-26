@@ -27,7 +27,7 @@ export const DepositTemplate = observer(({ pubkey, metadata }: DepositTemplateDa
   );
 
   return (
-    <div className={`offer deposit`}>
+    <div className="offer deposit">
       <div className="data-row head">
         {isLoading && <div>Loading</div>}
         {json && (
