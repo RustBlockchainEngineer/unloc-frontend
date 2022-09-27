@@ -132,6 +132,7 @@
       }
     }
   }
+
   &.lends {
     background-image: unset;
 
@@ -200,6 +201,17 @@
         }
       }
     }
+  }
+
+  &.skeleton {
+    box-shadow: unset;
+    -moz-box-shadow: unset;
+
+    @include theme-aware("background-color", "color-accent");
+
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+
+    height: 232px;
   }
 
   @media (max-width: $bp-phone) {

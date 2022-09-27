@@ -14,7 +14,7 @@ import { errorCase } from "@utils/toast-error-handler";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { SubOfferState } from "@unloc-dev/unloc-loan-solita";
 import BN from "bn.js";
-import { SkeletonGrid } from "@components/skeleton/grid";
+import { SkeletonRectangle } from "@components/skeleton/rectangle";
 
 export const OffersGrid = observer(() => {
   const store = useContext(StoreContext);
@@ -110,8 +110,7 @@ export const OffersGrid = observer(() => {
   if (isLoading) {
     return (
       <div className="offers-grid skeleton">
-        {/*<BlobLoader />*/}
-        <SkeletonGrid />
+        <SkeletonRectangle offerType="grid" />
       </div>
     );
   }
