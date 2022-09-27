@@ -3,11 +3,11 @@ import { RootStore } from "./Root.store";
 
 type CreateFormInputs = {
   lockDuration: number;
-  amount: string;
+  uiAmount: string;
 };
 
 const createFormInitialValues = {
-  amount: "",
+  uiAmount: "",
   lockDuration: 0,
 };
 
@@ -20,7 +20,7 @@ export class StakingStore {
     this.rootStore = rootStore;
   }
 
-  setCreateFormInput = (input: "lockDuration" | "amount", value: number | string) => {
+  setCreateFormInput = (input: keyof CreateFormInputs, value: number | string) => {
     this.createFormInputs = { ...this.createFormInputs, [input]: value };
   };
 

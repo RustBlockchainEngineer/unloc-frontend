@@ -153,6 +153,7 @@
 
       &__claim {
         @include theme-aware("color", "status-proposed-color");
+        white-space: nowrap;
         position: relative;
 
         .sub {

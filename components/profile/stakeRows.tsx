@@ -1,37 +1,48 @@
+import { useSolanaUnixTime } from "@hooks/useSolanaUnixTime";
+import { useStakingAccounts } from "@hooks/useStakingAccounts";
+import { bignum } from "@metaplex-foundation/beet";
 import { PublicKey } from "@solana/web3.js";
-import { StakeRow, stakeStatus } from "./stakeAccount/stakeRow";
+import { numVal, val } from "@utils/bignum";
+import { StakeRow, StakeStatus } from "./stakeAccount/stakeRow";
+
+export type StakeRowType = {
+  address: PublicKey;
+  amount: bignum;
+  APR: number;
+  status: StakeStatus;
+  startDate: Date;
+  endDate: Date;
+};
 
 export const StakeRows = () => {
-  const rows: {
-    address: PublicKey;
-    amount: number;
-    uiAmount: string;
-    APR: number;
-    status: stakeStatus;
-    startDate?: Date;
-    endDate?: Date;
-  }[] = [
-    {
-      address: new PublicKey("Le1PGWq1Hgdx1tKoDuWfaJa5etjaXVyXhAXLwCT8U4B"),
-      amount: 3685,
-      uiAmount: "3685.00",
-      APR: 40,
-      status: "locked",
-    },
-    {
-      address: new PublicKey("86J52egGfkzDmByk961appyevaJ5BqaATXzKMRXCPyZJ"),
-      amount: 3685,
-      uiAmount: "3685.00",
-      APR: 40,
-      status: "unlocked",
-      startDate: new Date("2022-4-20"),
-      endDate: new Date("2022-7-14"),
-    },
-  ];
+  const { accounts } = useStakingAccounts();
+  const time = useSolanaUnixTime();
+
+  const rows = accounts?.reduce<StakeRowType[]>((rows, { info, address, assigned }) => {
+    if (assigned && info) {
+      const endTimestamp = val(info.lastStakeTime).add(val(info.lockDuration));
+      const status: StakeStatus = val(info.lastStakeTime)
+        .add(endTimestamp)
+        .gten(time ?? 0)
+        ? "unlocked"
+        : "locked";
+
+      const newRow: StakeRowType = {
+        address: address,
+        amount: info.amount,
+        APR: 40,
+        status,
+        startDate: new Date(numVal(info.lastStakeTime) * 1000),
+        endDate: new Date(numVal(endTimestamp) * 1000),
+      };
+      return [...rows, newRow];
+    }
+    return rows;
+  }, []);
 
   return (
     <div className="profile__stake-accounts">
-      {rows.map((row, i) => (
+      {rows?.map((row, i) => (
         <StakeRow key={row.address.toString()} id={i + 1} {...row} />
       ))}
     </div>

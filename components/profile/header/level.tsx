@@ -3,7 +3,7 @@ export const ProfileLevel = () => {
     { description: "Lending fee reduction", value: 5, unit: "%" },
     { description: "Borrowing fee reduction", value: 5, unit: "%" },
   ];
-  const level = 7;
+  const level = 1;
 
   return (
     <article className="profile__level col">

@@ -4,14 +4,15 @@ import { useContext } from "react";
 
 export const StakeActions = observer(() => {
   const { Lightbox, StakingStore } = useContext(StoreContext);
+
   const handleNewStake = () => {
-    console.log("click");
     Lightbox.setVisible(false);
     // Reset the inputs
     StakingStore.resetCreateFormInputs();
     Lightbox.setContent("createStake");
     Lightbox.setVisible(true);
   };
+
   return (
     <article className="stake__actions col">
       <div className="stake__plus">

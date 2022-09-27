@@ -1,14 +1,16 @@
 import { useStore } from "@hooks/useStore";
 import { WalletNotConnectedError } from "@solana/wallet-adapter-base";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
-import { stake } from "@utils/spl/unloc-staking";
-import { observer } from "mobx-react";
+import { createStake, getFarmPoolUserObject } from "@utils/spl/unloc-staking";
+import { observer } from "mobx-react-lite";
 import Slider from "rc-slider";
 import "rc-slider/assets/index.css";
 import { ChangeEvent, FormEvent } from "react";
 import { getDurationForContractData } from "@utils/timeUtils/timeUtils";
 import { useSendTransaction } from "@hooks/useSendTransaction";
 import { errorCase } from "@utils/toast-error-handler";
+import { useStakingAccounts } from "@hooks/useStakingAccounts";
+import BN from "bn.js";
 
 type InputEvent = ChangeEvent<HTMLInputElement>;
 const sliderMarks = {
@@ -23,19 +25,32 @@ export const CreateStake = observer(() => {
   const { StakingStore, Lightbox } = useStore();
   const { connection } = useConnection();
   const { publicKey: wallet } = useWallet();
+  const { accounts, isLoading, mutate } = useStakingAccounts();
   const sendAndConfirm = useSendTransaction();
 
   const handleCreate = async (e: FormEvent) => {
     e.preventDefault();
     try {
       if (!wallet) throw new WalletNotConnectedError();
+      if (!accounts) return;
 
-      const { amount, lockDuration } = StakingStore.createFormInputs;
-      const tx = await stake(connection, wallet, Number(amount), lockDuration);
+      const stakeSeed = accounts.findIndex((state) => !state.assigned);
+      const { uiAmount, lockDuration } = StakingStore.createFormInputs;
+      const amount = new BN(uiAmount).muln(10 ** 6);
+      const tx = await createStake(connection, wallet, stakeSeed + 1, amount, lockDuration);
 
       Lightbox.setCanClose(false);
       Lightbox.setContent("circleProcessing");
       await sendAndConfirm(tx);
+
+      // Optimistic
+      const unixNow = Math.floor(Date.now() / 1000);
+      const info = getFarmPoolUserObject(wallet, amount, stakeSeed + 1, 0, unixNow, lockDuration);
+      const address = accounts[stakeSeed].address;
+      const newAccounts = [...accounts];
+      newAccounts[stakeSeed] = { address, assigned: true, info };
+
+      mutate(newAccounts, { rollbackOnError: true, populateCache: true, revalidate: true });
     } catch (err) {
       errorCase(err);
     } finally {
@@ -48,7 +63,7 @@ export const CreateStake = observer(() => {
     const value = e.target.value;
     // Check for numbers
     if (!value || value.match(/^\d{1,}(\.\d{0,6})?$/)) {
-      StakingStore.setCreateFormInput("amount", value);
+      StakingStore.setCreateFormInput("uiAmount", value);
     }
   };
 
@@ -56,6 +71,7 @@ export const CreateStake = observer(() => {
     if (typeof value !== "number") {
       value = value[0];
     }
+    value = Number(sliderMarks[value]);
     const asSeconds = getDurationForContractData(value, "days");
     StakingStore.setCreateFormInput("lockDuration", asSeconds);
   };
@@ -76,7 +92,7 @@ export const CreateStake = observer(() => {
           <label htmlFor="amount">Amount</label>
           <input
             lang="en"
-            value={StakingStore.createFormInputs.amount}
+            value={StakingStore.createFormInputs.uiAmount}
             onChange={handleAmountInput}
             placeholder="100"
             name="amount"
@@ -88,6 +104,7 @@ export const CreateStake = observer(() => {
           <Slider
             onChange={handleDurationInput}
             min={0}
+            max={100}
             defaultValue={StakingStore.createFormInputs.lockDuration}
             marks={sliderMarks}
             step={null}
@@ -101,7 +118,7 @@ export const CreateStake = observer(() => {
           </p>
         </div>
 
-        <button type="submit" className="confirm btn btn--md btn--primary">
+        <button disabled={isLoading} type="submit" className="confirm btn btn--md btn--primary">
           Create
         </button>
       </form>

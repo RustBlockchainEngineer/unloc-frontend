@@ -8,6 +8,13 @@ export function val(num: any) {
   return new BN(num);
 }
 
+export function numVal(num: bignum) {
+  if (BN.isBN(num)) {
+    return num.toNumber();
+  }
+  return num;
+}
+
 export const gt = (a: bignum, b: bignum) => {
   if (typeof a === "number" && typeof b === "number") {
     return a > b;
@@ -36,4 +43,11 @@ export const eq = (a: bignum, b: bignum) => {
     const bBN = val(b);
     return aBN.eq(bBN);
   }
+};
+
+export const amountToUiAmount = (amount: BigInt | bignum, mintDecimals: number) => {
+  amount = typeof amount === "bigint" ? amount : BigInt(amount.toString());
+  const decimals = BigInt(10 ** mintDecimals);
+  const fractional = Number(amount.valueOf() % decimals) / Number(decimals);
+  return Number(amount.valueOf() / decimals) + fractional;
 };
