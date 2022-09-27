@@ -3,7 +3,7 @@ import { ReactElement, useContext } from "react";
 import { observer } from "mobx-react";
 import { StoreContext } from "@pages/_app";
 import { OffersGridItem } from "./offersGridItem";
-// import { BlobLoader } from "@components/layout/blobLoader";
+
 import {
   getDecimalsForLoanAmountAsString,
   getDecimalsForOfferMint,

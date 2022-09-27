@@ -3,7 +3,7 @@ import { useContext, useMemo, useState, useCallback, useEffect } from "react";
 import { observer } from "mobx-react";
 import { StoreContext } from "@pages/_app";
 import { OffersTableRow } from "./offersTableRow";
-// import { BlobLoader } from "@components/layout/blobLoader";
+
 import { ITransformedOffer, transformOffersData } from "@utils/spl/transformOffersData";
 import { ILightboxOffer } from "@stores/Lightbox.store";
 import { errorCase } from "@utils/toast-error-handler";
