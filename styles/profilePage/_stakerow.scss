@@ -4,6 +4,11 @@
   @include theme-aware("color", "color-content");
   border-radius: $brd-rds-2tn;
   display: flex;
+  transition: background-color 50ms ease-in-out;
+
+  &:hover {
+    @include theme-aware("background-color", "color-accentHover");
+  }
 
   & > *:not(:last-child) {
     border-right: 1px solid;
@@ -90,6 +95,7 @@
   &__amount {
     display: flex;
     font-size: 24px;
+    cursor: default;
 
     .icon {
       margin-left: 4px;
@@ -100,6 +106,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    cursor: default;
 
     .sub {
       text-align: center;

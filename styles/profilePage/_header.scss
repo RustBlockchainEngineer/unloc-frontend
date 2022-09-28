@@ -45,7 +45,7 @@
         padding-bottom: $mr-tn;
 
         &:nth-child(2) {
-          font-weight: $wg-hv;
+          @include theme-aware("color", "color-userLevel");
         }
       }
     }

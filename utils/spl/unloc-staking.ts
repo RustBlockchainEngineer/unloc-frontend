@@ -5,6 +5,7 @@ import { Connection, PublicKey, Transaction, TransactionInstruction } from "@sol
 import {
   createCreateUserInstruction,
   createStakeInstruction,
+  createUnstakeInstruction,
   FarmPoolAccount,
   FarmPoolUserAccount,
   StateAccount,
@@ -84,6 +85,45 @@ export const createStake = async (
         ...DEFAULT_PROGRAMS,
       },
       { amount, lockDuration },
+      UNLOC_STAKING_PID,
+    ),
+  );
+
+  return new Transaction().add(...instructions);
+};
+
+export const unstake = async (
+  connection: Connection,
+  wallet: PublicKey,
+  amount: bignum,
+  farmPoolUser: PublicKey,
+) => {
+  const state = getStakingState(UNLOC_STAKING_PID);
+  const extraRewardAccount = getExtraConfig(UNLOC_STAKING_PID);
+  const pool = getPool(UNLOC_MINT, UNLOC_STAKING_PID);
+  const userVault = getAssociatedTokenAddressSync(UNLOC_MINT, wallet);
+
+  const stateInfo = await StateAccount.fromAccountAddress(connection, state);
+  const poolInfo = await FarmPoolAccount.fromAccountAddress(connection, pool);
+
+  const instructions: TransactionInstruction[] = [];
+  instructions.push(
+    createUnstakeInstruction(
+      {
+        authority: wallet,
+        state,
+        pool,
+        user: farmPoolUser,
+        mint: UNLOC_MINT,
+        extraRewardAccount,
+        feeVault: stateInfo.feeVault,
+        poolVault: poolInfo.vault,
+        userVault,
+        ...DEFAULT_PROGRAMS,
+      },
+      {
+        amount,
+      },
       UNLOC_STAKING_PID,
     ),
   );
