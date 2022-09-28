@@ -61,6 +61,7 @@ export const OffersWrap = observer(() => {
     // Offers in the accepted state
     const acceptedOffers = selectAcceptedOffers(offers, subOffers, nftData);
     if (acceptedOffers.length) {
+      setLoader(false);
       return acceptedOffers.map((sanitizedOffer) => (
         <OfferHead key={sanitizedOffer.offer.toBase58()} {...sanitizedOffer} />
       ));
@@ -136,9 +137,7 @@ export const OffersWrap = observer(() => {
   return (
     <div className="my-offers-wrap">
       {loader ? (
-        <div className="list-row">
-          <SkeletonRectangle offerType="my-offers" />
-        </div>
+        <SkeletonRectangle offerType="my-offers" />
       ) : (
         <>
           {activeCategory === "active" && loansGroups()}

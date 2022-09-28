@@ -108,11 +108,7 @@ export const OffersGrid = observer(() => {
   };
 
   if (isLoading) {
-    return (
-      <div className="offers-grid skeleton">
-        <SkeletonRectangle offerType="grid" />
-      </div>
-    );
+    return <SkeletonRectangle offerType="grid" />;
   }
 
   if (pageOfferData.length === 0) {

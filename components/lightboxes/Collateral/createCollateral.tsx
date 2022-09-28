@@ -81,11 +81,7 @@ export const CreateCollateral = observer(() => {
             <h2>No whitelisted NFTs in your wallet</h2>
           </div>
         )}
-        {loading && (
-          <div className="NFT-lb-collateral-list skeleton">
-            <SkeletonRectangle offerType="wallet" />
-          </div>
-        )}
+        {loading && <SkeletonRectangle offerType="wallet" />}
         {data && (
           <>
             <div className="NFT-lb-header">
