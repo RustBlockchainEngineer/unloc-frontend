@@ -192,3 +192,15 @@ a {
 .overflow-hidden {
   overflow: hidden;
 }
+
+.no-offers {
+  width: 100%;
+  text-align: center;
+  margin: 80px 0;
+}
+
+@keyframes pulse {
+  50% {
+    opacity: 0.5;
+  }
+}

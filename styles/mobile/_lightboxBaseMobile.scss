@@ -16,6 +16,14 @@
     max-height: 60%;
     overflow-y: scroll;
     margin-bottom: 80px;
+
+    &.skeleton {
+      .collateral-list-item {
+        @include theme-aware("background-color", "color-accent");
+        animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        border: none;
+      }
+    }
   }
 
   .collateral-lightbox {

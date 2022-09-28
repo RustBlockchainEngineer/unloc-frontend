@@ -3,7 +3,7 @@ import { ReactElement, useContext } from "react";
 import { observer } from "mobx-react-lite";
 import { StoreContext } from "@pages/_app";
 import { OffersGridItem } from "./offersGridItem";
-import { BlobLoader } from "@components/layout/blobLoader";
+
 import {
   getDecimalsForLoanAmountAsString,
   getDecimalsForOfferMint,
@@ -14,6 +14,7 @@ import { errorCase } from "@utils/toast-error-handler";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { SubOfferState } from "@unloc-dev/unloc-loan-solita";
 import BN from "bn.js";
+import { SkeletonRectangle } from "@components/skeleton/rectangle";
 
 export const OffersGrid = observer(() => {
   const store = useContext(StoreContext);
@@ -108,8 +109,8 @@ export const OffersGrid = observer(() => {
 
   if (isLoading) {
     return (
-      <div className="offers-grid--empty">
-        <BlobLoader />
+      <div className="offers-grid skeleton">
+        <SkeletonRectangle offerType="grid" />
       </div>
     );
   }

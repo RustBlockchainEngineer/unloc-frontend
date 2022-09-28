@@ -5,7 +5,6 @@ import { StoreContext } from "@pages/_app";
 import { OfferAccount, SubOfferAccount } from "@utils/spl/types";
 import { OfferHead } from "@components/layout/offerHead";
 import { OfferTemplate } from "@components/layout/offerTemplate";
-import { BlobLoader } from "@components/layout/blobLoader";
 import { usePopperTooltip } from "react-popper-tooltip";
 import { OfferActionsHook } from "@hooks/offerActionsHook";
 import { eq, gt, gte } from "@utils/bignum";
@@ -14,6 +13,7 @@ import { DepositTemplate } from "@components/layout/depositTemplate";
 import { Metadata } from "@metaplex-foundation/mpl-token-metadata";
 import { PublicKey } from "@solana/web3.js";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
+import { SkeletonRectangle } from "@components/skeleton/rectangle";
 
 export type SanitizedOffer = {
   offer: PublicKey;
@@ -27,7 +27,7 @@ export const OffersWrap = observer(() => {
   const { publicKey } = useWallet();
   const store = useContext(StoreContext);
   const { offers, nftData, subOffers, activeCategory, lendingList, activeLoans } = store.MyOffers;
-  const [loader] = useState(false);
+  const [loader, setLoader] = useState(true);
   const { handleDepositClick } = OfferActionsHook();
 
   const { getTooltipProps, setTooltipRef, setTriggerRef, visible } = usePopperTooltip();
@@ -60,10 +60,14 @@ export const OffersWrap = observer(() => {
   const accepted = useMemo(() => {
     // Offers in the accepted state
     const acceptedOffers = selectAcceptedOffers(offers, subOffers, nftData);
-    return acceptedOffers.map((sanitizedOffer) => (
-      <OfferHead key={sanitizedOffer.offer.toBase58()} {...sanitizedOffer} />
-    ));
-  }, [offers, subOffers, nftData]);
+    if (acceptedOffers.length) {
+      return acceptedOffers.map((sanitizedOffer) => (
+        <OfferHead key={sanitizedOffer.offer.toBase58()} {...sanitizedOffer} />
+      ));
+    } else {
+      return null;
+    }
+  }, [offers, subOffers]);
 
   const lends = useMemo(() => {
     return lendingList.map((subOfferData) => (
@@ -75,33 +79,39 @@ export const OffersWrap = observer(() => {
     // Offers that have at least 1 proposed subOffer
     const proposedOffers = selectProposedOffers(offers, subOffers, nftData);
 
-    return proposedOffers.map((sanitizedOffer) => (
-      <OfferHead key={sanitizedOffer.offer.toBase58()} {...sanitizedOffer} />
-    ));
+    if (proposedOffers.length) {
+      setLoader(false);
+      return proposedOffers.map((sanitizedOffer) => (
+        <OfferHead key={sanitizedOffer.offer.toBase58()} {...sanitizedOffer} />
+      ));
+    } else {
+      return <h2 className="no-offers">No offers offered!</h2>;
+    }
   }, [offers, subOffers, nftData]);
 
   const deposited = useMemo(() => {
     const depositedOffers = selectDepositedOffers(offers, subOffers);
 
-    if (depositedOffers.length === 0) {
+    if (depositedOffers.length) {
+      setLoader(false);
+      return depositedOffers.map((offer) => {
+        const selectedNft = nftData.find((nft) => nft.mint.equals(offer.account.nftMint));
+        if (!selectedNft) {
+          // Fail-safe
+          return null;
+        }
+
+        return (
+          <DepositTemplate
+            key={offer.pubkey.toBase58()}
+            metadata={selectedNft}
+            pubkey={offer.pubkey}
+          />
+        );
+      });
+    } else {
       return depositButton();
     }
-
-    return depositedOffers.map((offer) => {
-      const selectedNft = nftData.find((nft) => nft.mint.equals(offer.account.nftMint));
-      if (!selectedNft) {
-        // Fail-safe
-        return null;
-      }
-
-      return (
-        <DepositTemplate
-          key={offer.pubkey.toBase58()}
-          metadata={selectedNft}
-          pubkey={offer.pubkey}
-        />
-      );
-    });
   }, [offers, subOffers, nftData]);
 
   const loansGroups = (): ReactNode => {
@@ -123,16 +133,20 @@ export const OffersWrap = observer(() => {
     );
   };
 
-  return loader ? (
-    <BlobLoader />
-  ) : (
-    <>
-      <div className="my-offers-wrap">
-        {activeCategory === "active" && loansGroups()}
-        {activeCategory === "proposed" && proposed}
-        {activeCategory === "deposited" && deposited}
-      </div>
-    </>
+  return (
+    <div className="my-offers-wrap">
+      {loader ? (
+        <div className="list-row">
+          <SkeletonRectangle offerType="my-offers" />
+        </div>
+      ) : (
+        <>
+          {activeCategory === "active" && loansGroups()}
+          {activeCategory === "proposed" && proposed}
+          <div className="list-row">{activeCategory === "deposited" && deposited}</div>
+        </>
+      )}
+    </div>
   );
 });
 
