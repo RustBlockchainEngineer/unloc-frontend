@@ -1,6 +1,6 @@
 import { useContext, useMemo, useState, useCallback, useEffect } from "react";
 
-import { observer } from "mobx-react";
+import { observer } from "mobx-react-lite";
 import { StoreContext } from "@pages/_app";
 import { OffersTableRow } from "./offersTableRow";
 
