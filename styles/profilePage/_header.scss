@@ -88,7 +88,7 @@
           color: #fff;
           @include theme-aware("border-color", "color-primary");
           @include theme-aware("color", "color-primary");
-          border: 2px solid;
+          border: 3px solid;
           display: flex;
           justify-content: center;
           align-items: center;
@@ -97,6 +97,13 @@
           font-size: 60px;
           cursor: pointer;
           border-radius: 50%;
+          transition: color 0.15s ease-in-out;
+          transition: border-color 0.15s ease-in-out;
+
+          &:hover {
+            @include theme-aware("border-color", "color-primary-dark");
+            @include theme-aware("color", "color-primary-dark");
+          }
         }
       }
     }

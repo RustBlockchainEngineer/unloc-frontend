@@ -1,30 +1,31 @@
-import { CircularProgressBar } from "@components/layout/circularProgressBar";
-import { useSolanaUnixTime } from "@hooks/useSolanaUnixTime";
+// import { CircularProgressBar } from "@components/layout/circularProgressBar";
 import dayjs from "dayjs";
-import { useEffect } from "react";
-// import dayjs from "dayjs";
+import { CircularProgressbarWithChildren } from "react-circular-progressbar";
+import "react-circular-progressbar/dist/styles.css";
 
 interface IDurationProgress {
   startUnix: number;
   endUnix: number;
-  label?: string;
 }
 
-export const DurationProgress = ({ startUnix, endUnix, label = "days" }: IDurationProgress) => {
-  const time = useSolanaUnixTime();
-  const max = dayjs.duration((endUnix - startUnix) * 1000).asSeconds();
-  const current = dayjs.duration((time - startUnix) * 1000).asSeconds();
-  // const current = 5;
-  useEffect(() => {
-    console.log("current", current);
+export const DurationProgress = ({ startUnix, endUnix }: IDurationProgress) => {
+  // const time = useSolanaUnixTime();
+  const time = Math.floor(Date.now() / 1000);
+  const maxValue = dayjs.duration((endUnix - startUnix) * 1000).asSeconds();
+  const value = dayjs.duration((time - startUnix) * 1000).asSeconds();
+  const remainingDays = Math.floor(dayjs.duration((endUnix - time) * 1000).asDays());
 
-    console.log("max", max);
-  }, []);
-  // const startDate = dayjs.unix(startUnix);
-  // const endDate = dayjs.unix(endUnix);
-  // const normalizedMax = endUnix - startUnix;
-  // const normalizedStart = dayjs().unix() - startUnix;
-  // Maybe move the markup that shows the dates around the circle here
+  const description = `Staked on ${dayjs(startUnix * 1000).toString()} \nUnlocks on: ${dayjs(
+    endUnix * 1000,
+  ).toString()}`;
 
-  return <CircularProgressBar value={30} maxValue={90} label={label} />;
+  return (
+    <CircularProgressbarWithChildren strokeWidth={14} value={value} maxValue={maxValue}>
+      <div className="duration-text" style={{}} title={description}>
+        <strong className="days">{remainingDays}</strong>
+        <br />
+        <span className="label">days</span>
+      </div>
+    </CircularProgressbarWithChildren>
+  );
 };

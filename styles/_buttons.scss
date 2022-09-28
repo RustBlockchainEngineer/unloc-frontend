@@ -3,7 +3,7 @@
   outline: none;
   border: none;
   font-size: $tp-md;
-  transition: all 0.3s ease-in-out;
+  transition: all 0.15s ease-in-out;
   cursor: pointer;
   text-align: center;
 
@@ -13,7 +13,6 @@
     padding: 0 30px;
     font-size: $tp-md;
     border-radius: $brd-rds-lg;
-    @include theme-aware("border", "button-border-primary");
   }
 
   &--bordered {
@@ -28,6 +27,7 @@
   &--primary {
     @include theme-aware("background-color", "color-primary");
     @include theme-aware("color", "color-white");
+    @include theme-aware("border", "button-border-primary");
 
     &:hover {
       @include theme-aware("background-color", "color-primary-dark");
@@ -53,6 +53,13 @@
     &:hover {
       @include theme-aware("background-color", "color-primary-dark");
       @include theme-aware("color", "color-label");
+    }
+  }
+
+  &--disabled {
+    @include theme-aware("background-color", "button-disabled");
+    &:hover {
+      cursor: default;
     }
   }
 }

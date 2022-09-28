@@ -13,13 +13,10 @@ export const ProfileLevel = () => {
       </div>
       <div className="profile__perks">
         <ul className="perks__list">
-          {levelBenefits.map(({ description, value, unit }) => (
+          {levelBenefits.map(({ description }) => (
             <li key={description} className="perks__row">
               <p>{description}</p>
-              <p>
-                {value}
-                {unit}
-              </p>
+              <p>No benefits yet</p>
             </li>
           ))}
         </ul>

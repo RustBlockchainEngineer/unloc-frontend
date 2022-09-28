@@ -2,14 +2,10 @@ import { useCallback, useMemo } from "react";
 import { compressAddress } from "@utils/stringUtils/compressAdress";
 import { DurationProgress } from "./durationProgress";
 import { StakeRowType } from "../stakeRows";
-import { amountToUiAmount } from "@utils/bignum";
+import { amountToUiAmount, numVal } from "@utils/bignum";
 import dayjs from "dayjs";
 
 export type StakeStatus = "flexi" | "unlocked" | "locked";
-
-function toUnix(date: Date) {
-  return Math.floor(date.getTime() / 1000);
-}
 
 const UNLOC_MINT_DECIMALS = 6;
 
@@ -17,10 +13,10 @@ export const StakeRow = ({
   id,
   address,
   amount,
-  APR,
+  APY,
   status,
-  startDate,
-  endDate,
+  startUnix,
+  endUnix,
 }: StakeRowType & { id: number }) => {
   const pubkey = useMemo(() => compressAddress(4, address.toString()), [address]);
   const uiAmount = amountToUiAmount(amount, UNLOC_MINT_DECIMALS);
@@ -40,27 +36,41 @@ export const StakeRow = ({
     let buttons = [];
     switch (status) {
       case "flexi":
-        buttons = ["Claim"];
+        buttons = ["Withdraw"];
         break;
       case "unlocked":
-        buttons = ["Claim", "Relock"];
+        buttons = ["Withdraw", "Relock"];
         break;
       case "locked":
-        buttons = ["Claim", "Unlock", "Relock"];
+        buttons = ["Withdraw", "Relock"];
         break;
       default:
-        throw new Error("Stake status error");
+        throw Error("Stake status error");
     }
 
-    return buttons.map((button) => (
-      <button key={button} className="btn btn--md btn--primary">
-        {button}
-      </button>
-    ));
+    return buttons.map((button) => {
+      if (button === "Withdraw") {
+        const locked = status === "locked";
+
+        return (
+          <button
+            disabled={locked}
+            key={button}
+            className={`btn btn--md ${locked ? "btn--disabled" : "btn--primary"}`}>
+            {button}
+          </button>
+        );
+      }
+      return (
+        <button key={button} className="btn btn--md btn--primary">
+          {button}
+        </button>
+      );
+    });
   }, [status]);
 
   return (
-    <article className="stakerow">
+    <li className="stakerow">
       <div className="stakerow__col--id">
         <div className="stakerow__id">{id}</div>
       </div>
@@ -82,19 +92,19 @@ export const StakeRow = ({
       <div className="stakerow__col--duration">
         <div className="stakerow__title">
           <p>Start date</p>
-          <p className="date">{dayjs(startDate).format("DD.MM.YYYY")}</p>
+          <p className="date">{dayjs(numVal(startUnix) * 1000).format("DD.MM.YYYY")}</p>
         </div>
         <div className="stakerow__progress">
-          <DurationProgress startUnix={toUnix(startDate)} endUnix={toUnix(endDate)} />
+          <DurationProgress startUnix={numVal(startUnix)} endUnix={numVal(endUnix)} />
         </div>
         <div className="stakerow__title">
           <p>End date</p>
-          <p className="date">{dayjs(endDate).format("DD.MM.YYYY")}</p>
+          <p className="date">{dayjs(numVal(endUnix) * 1000).format("DD.MM.YYYY")}</p>
         </div>
       </div>
       <div className="stakerow__col">
-        <div className="stakerow__title">APR</div>
-        <div className="stakerow__apr">{APR}%</div>
+        <div className="stakerow__title">APY</div>
+        <div className="stakerow__apr">{APY}%</div>
       </div>
       <div className="stakerow__col">
         <div className="stakerow__title">
@@ -102,6 +112,6 @@ export const StakeRow = ({
         </div>
         <div className="stakerow__actions">{renderActions()}</div>
       </div>
-    </article>
+    </li>
   );
 };

@@ -108,6 +108,11 @@
     }
   }
 
+  &__progress {
+    width: 96px;
+    margin-bottom: 6px;
+  }
+
   &__actions {
     display: flex;
     gap: $mr-md;

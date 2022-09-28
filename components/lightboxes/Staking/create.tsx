@@ -5,12 +5,14 @@ import { createStake, getFarmPoolUserObject } from "@utils/spl/unloc-staking";
 import { observer } from "mobx-react-lite";
 import Slider from "rc-slider";
 import "rc-slider/assets/index.css";
-import { ChangeEvent, FormEvent } from "react";
+import { ChangeEvent, FormEvent, useMemo } from "react";
 import { getDurationForContractData } from "@utils/timeUtils/timeUtils";
 import { useSendTransaction } from "@hooks/useSendTransaction";
 import { errorCase } from "@utils/toast-error-handler";
 import { useStakingAccounts } from "@hooks/useStakingAccounts";
 import BN from "bn.js";
+import { amountToUiAmount, val } from "@utils/bignum";
+import { formatOptions } from "@constants/config";
 
 type InputEvent = ChangeEvent<HTMLInputElement>;
 const sliderMarks = {
@@ -27,6 +29,20 @@ export const CreateStake = observer(() => {
   const { publicKey: wallet } = useWallet();
   const { accounts, isLoading, mutate } = useStakingAccounts();
   const sendAndConfirm = useSendTransaction();
+
+  // Get total staked amount
+  const totalStaked = useMemo(
+    () =>
+      !accounts
+        ? new BN(0)
+        : accounts?.reduce<BN>((sum, { info, assigned }) => {
+            if (assigned && info) {
+              return sum.add(val(info.amount));
+            }
+            return sum;
+          }, new BN(0)),
+    [accounts],
+  );
 
   const handleCreate = async (e: FormEvent) => {
     e.preventDefault();
@@ -81,7 +97,8 @@ export const CreateStake = observer(() => {
       <h3 className="create-stake__title">Create staking account</h3>
       <div className="create-stake__stats">
         <div className="create-stake__stats-item">
-          Staked <strong>721</strong>
+          Staked{" "}
+          <strong>{amountToUiAmount(totalStaked, 6).toLocaleString("en-us", formatOptions)}</strong>
         </div>
         <div className="create-stake__stats-item">
           Unloc score <strong>7.1</strong>
