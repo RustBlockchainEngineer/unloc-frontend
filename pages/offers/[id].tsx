@@ -7,11 +7,11 @@ import { observer } from "mobx-react-lite";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
 
-import { BlobLoader } from "@components/layout/blobLoader";
 import { LayoutTop } from "@components/layout/layoutTop";
 import { LayoutTopMobile } from "@components/layout/layoutTopMobile";
 import { OfferTemplate } from "@components/layout/offerTemplate";
 import { Header } from "@components/singleOffer/Header/Header";
+import { SkeletonOfferId } from "@components/skeleton/offer-id";
 import { StoreDataAdapter } from "@components/storeDataAdapter";
 import { useSingleOffer } from "@hooks/useSingleOffer";
 import { StoreContext } from "@pages/_app";
@@ -92,13 +92,6 @@ const SingleNftPage: NextPage = observer(() => {
         <h2 className="single-offer-active">Loan Active, can&apos;t claim any offers right now</h2>
       );
 
-    if (subOffers.length === 0)
-      return (
-        <div className="offer-grid-empty">
-          <BlobLoader />
-        </div>
-      );
-
     return (
       <div className="offer-grid">
         {LoanOffers}
@@ -113,7 +106,8 @@ const SingleNftPage: NextPage = observer(() => {
       <div className="page my-offers">
         <LayoutTop />
         {error && <div>Not found</div>}
-        {isLoading && <BlobLoader />}
+        {/*{isLoading && <BlobLoader />}*/}
+        {isLoading && <SkeletonOfferId />}
         {nftData && <Header nftData={nftData} isYours={isYours} />}
         <Loans />
       </div>

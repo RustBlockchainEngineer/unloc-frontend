@@ -204,8 +204,6 @@ export const OffersTable = observer(() => {
       </div>
     </>
   ) : (
-    <div className="offers-table skeleton">
-      <SkeletonTable />
-    </div>
+    <SkeletonTable />
   );
 });
