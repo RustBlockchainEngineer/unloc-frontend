@@ -23,35 +23,35 @@ const airdropMetadata: SimpleMetadata[] = [
     name: "Unloc Devnet Nft",
     symbol: "UNLOC",
     tribe: "Test 1",
-    uri: "https://arweave.net/XBoDa9TqiOZeXW_6bV8wvieD8fMQS6IHxKipwdvduCo",
+    uri: "https://s3.eu-central-1.amazonaws.com/cdn.unloc.xyz/unloc_devnet/json/7yQGqnCk7hHb4YDuiirr2dVhJ6TP1BbFGRei6353WXZU.json",
     collection: "TkpSRsB8yB2qRETXLuPxuZ6Fkg2vuJnmfsQiJLfVpmG",
   },
   {
     name: "Unloc Devnet Nft",
     symbol: "UNLOC",
     tribe: "Test 2",
-    uri: "https://arweave.net/eAyy-lC4veIzq-l3kLsPXcRADKm3ektdNDFRv34Z3EI",
+    uri: "https://s3.eu-central-1.amazonaws.com/cdn.unloc.xyz/unloc_devnet/json/7yQGqnCk7hHb4YDuiirr2dVhJ6TP1BbFGRei6353WXZU.json",
     collection: "TkpSRsB8yB2qRETXLuPxuZ6Fkg2vuJnmfsQiJLfVpmG",
   },
   {
     name: "Unloc Devnet Nft",
     symbol: "UNLOC",
     tribe: "Test 3",
-    uri: "https://arweave.net/8Kzx3ht22-aSxaZSGGy0C0ykLG4WP04qgcIP8Lwq1-g",
+    uri: "https://s3.eu-central-1.amazonaws.com/cdn.unloc.xyz/unloc_devnet/json/7yQGqnCk7hHb4YDuiirr2dVhJ6TP1BbFGRei6353WXZU.json",
     collection: "TkpSRsB8yB2qRETXLuPxuZ6Fkg2vuJnmfsQiJLfVpmG",
   },
   {
     name: "Unloc Devnet Nft",
     symbol: "UNLOC",
     tribe: "Test 4",
-    uri: "https://arweave.net/CZbdvRc_RMNOpuSoeT4IZyU39cE3cQQfL6rFVuEuLvc",
+    uri: "https://s3.eu-central-1.amazonaws.com/cdn.unloc.xyz/unloc_devnet/json/7yQGqnCk7hHb4YDuiirr2dVhJ6TP1BbFGRei6353WXZU.json",
     collection: "TkpSRsB8yB2qRETXLuPxuZ6Fkg2vuJnmfsQiJLfVpmG",
   },
   {
     name: "Unloc Devnet Nft",
     symbol: "UNLOC",
     tribe: "Test 5",
-    uri: "https://arweave.net/-RWSxzZPG89j9y7MDPvV1OkD4unSrWUXyqB1gDkK9l8",
+    uri: "https://s3.eu-central-1.amazonaws.com/cdn.unloc.xyz/unloc_devnet/json/7yQGqnCk7hHb4YDuiirr2dVhJ6TP1BbFGRei6353WXZU.json",
     collection: "TkpSRsB8yB2qRETXLuPxuZ6Fkg2vuJnmfsQiJLfVpmG",
   },
 ];
@@ -77,8 +77,25 @@ export const Airdrop = () => {
       wallet.publicKey!,
       masterEditionMint.publicKey,
     );
-
     const [masterEditionMetadataId] = await findNftMetadata(masterEditionMint.publicKey);
+    const nftData = {
+      name: metadata.name,
+      symbol: metadata.symbol,
+      uri: metadata.uri,
+      sellerFeeBasisPoints: 10,
+      creators: [
+        {
+          address: wallet.publicKey!,
+          verified: false,
+          share: 100,
+        },
+      ],
+      collection: {
+        verified: false,
+        key: new PublicKey(metadata.collection),
+      },
+      uses: null,
+    };
     const metadataIx = createCreateMetadataAccountV2Instruction(
       {
         metadata: masterEditionMetadataId,
@@ -89,24 +106,7 @@ export const Airdrop = () => {
       },
       {
         createMetadataAccountArgsV2: {
-          data: {
-            name: metadata.name,
-            symbol: metadata.symbol,
-            uri: metadata.uri,
-            sellerFeeBasisPoints: 10,
-            creators: [
-              {
-                address: wallet.publicKey!,
-                verified: false,
-                share: 50,
-              },
-            ],
-            collection: {
-              verified: false,
-              key: new PublicKey(metadata.collection),
-            },
-            uses: null,
-          },
+          data: nftData,
           isMutable: true,
         },
       },
