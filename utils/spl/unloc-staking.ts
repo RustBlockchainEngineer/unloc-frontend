@@ -1,16 +1,27 @@
 import { DEFAULT_PROGRAMS, UNLOC_STAKING_PID } from "@constants/config";
 import { bignum } from "@metaplex-foundation/beet";
-import { getAssociatedTokenAddressSync } from "@solana/spl-token";
-import { Connection, PublicKey, Transaction, TransactionInstruction } from "@solana/web3.js";
+import {
+  createAssociatedTokenAccountInstruction,
+  getAssociatedTokenAddressSync,
+} from "@solana/spl-token";
+import {
+  Connection,
+  PublicKey,
+  SYSVAR_CLOCK_PUBKEY,
+  Transaction,
+  TransactionInstruction,
+} from "@solana/web3.js";
 import {
   createCreateUserInstruction,
   createStakeInstruction,
   createUnstakeInstruction,
+  createHarvestInstruction,
   FarmPoolAccount,
   FarmPoolUserAccount,
   StateAccount,
 } from "@unloc-dev/unloc-staking-solita";
 import { BN } from "bn.js";
+import { isAccountInitialized } from "./unloc-loan";
 
 // CONSTANTS
 export const STATE_SEED = Buffer.from("state");
@@ -123,6 +134,44 @@ export const unstake = async (
       },
       {
         amount,
+      },
+      UNLOC_STAKING_PID,
+    ),
+  );
+
+  return new Transaction().add(...instructions);
+};
+
+export const harvest = async (
+  connection: Connection,
+  wallet: PublicKey,
+  farmPoolUser: PublicKey,
+) => {
+  const state = getStakingState(UNLOC_STAKING_PID);
+  const extraRewardAccount = getExtraConfig(UNLOC_STAKING_PID);
+  const pool = getPool(UNLOC_MINT, UNLOC_STAKING_PID);
+  const userVault = getAssociatedTokenAddressSync(UNLOC_MINT, wallet);
+  const stateInfo = await StateAccount.fromAccountAddress(connection, state);
+
+  const instructions: TransactionInstruction[] = [];
+  if (!(await isAccountInitialized(connection, userVault))) {
+    instructions.push(
+      createAssociatedTokenAccountInstruction(wallet, userVault, wallet, UNLOC_MINT),
+    );
+  }
+
+  instructions.push(
+    createHarvestInstruction(
+      {
+        authority: wallet,
+        state,
+        pool,
+        user: farmPoolUser,
+        mint: UNLOC_MINT,
+        userVault,
+        extraRewardAccount,
+        rewardVault: stateInfo.rewardVault,
+        clock: SYSVAR_CLOCK_PUBKEY,
       },
       UNLOC_STAKING_PID,
     ),

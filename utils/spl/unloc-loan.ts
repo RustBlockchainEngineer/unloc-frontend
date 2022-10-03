@@ -393,7 +393,7 @@ export const claimCollateral = async (
 
 // Utils
 
-const isAccountInitialized = async (
+export const isAccountInitialized = async (
   connection: Connection,
   account: PublicKey,
 ): Promise<boolean> => {

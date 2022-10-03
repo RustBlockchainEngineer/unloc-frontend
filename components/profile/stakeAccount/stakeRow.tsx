@@ -4,6 +4,11 @@ import { DurationProgress } from "./durationProgress";
 import { StakeRowType } from "../stakeRows";
 import { amountToUiAmount, numVal } from "@utils/bignum";
 import dayjs from "dayjs";
+import { useConnection, useWallet } from "@solana/wallet-adapter-react";
+import { WalletNotConnectedError } from "@solana/wallet-adapter-base";
+import { harvest } from "@utils/spl/unloc-staking";
+import { useSendTransaction } from "@hooks/useSendTransaction";
+import { errorCase } from "@utils/toast-error-handler";
 
 export type StakeStatus = "flexi" | "unlocked" | "locked";
 
@@ -18,8 +23,22 @@ export const StakeRow = ({
   startUnix,
   endUnix,
 }: StakeRowType & { id: number }) => {
+  const { connection } = useConnection();
+  const { publicKey: wallet } = useWallet();
+  const sendAndConfirm = useSendTransaction();
   const pubkey = useMemo(() => compressAddress(4, address.toString()), [address]);
   const uiAmount = amountToUiAmount(amount, UNLOC_MINT_DECIMALS);
+
+  const handleHarvest = async () => {
+    try {
+      if (!wallet) throw new WalletNotConnectedError();
+      const tx = await harvest(connection, wallet, address);
+      await sendAndConfirm(tx);
+    } catch (err) {
+      console.log(err);
+      errorCase(err);
+    }
+  };
 
   // TODO: import this from somewhere, use a proper formula
   const exitAmount = useMemo(
@@ -39,33 +58,40 @@ export const StakeRow = ({
         buttons = ["Withdraw"];
         break;
       case "unlocked":
-        buttons = ["Withdraw", "Relock"];
+        buttons = ["Withdraw", "Harvest"];
         break;
       case "locked":
-        buttons = ["Withdraw", "Relock"];
+        buttons = ["Withdraw", "Harvest"];
         break;
       default:
         throw Error("Stake status error");
     }
 
     return buttons.map((button) => {
-      if (button === "Withdraw") {
-        const locked = status === "locked";
-
-        return (
-          <button
-            disabled={locked}
-            key={button}
-            className={`btn btn--md ${locked ? "btn--disabled" : "btn--primary"}`}>
-            {button}
-          </button>
-        );
+      switch (button) {
+        case "Withdraw":
+          const locked = status === "locked";
+          return (
+            <button
+              disabled={locked}
+              key={button}
+              className={`btn btn--md ${locked ? "btn--disabled" : "btn--primary"}`}>
+              {button}
+            </button>
+          );
+        case "Harvest":
+          return (
+            <button onClick={handleHarvest} key={button} className="btn btn--md btn--primary">
+              {button}
+            </button>
+          );
+        default:
+          return (
+            <button key={button} className="btn btn--md btn--primary">
+              {button}
+            </button>
+          );
       }
-      return (
-        <button key={button} className="btn btn--md btn--primary">
-          {button}
-        </button>
-      );
     });
   }, [status]);
 

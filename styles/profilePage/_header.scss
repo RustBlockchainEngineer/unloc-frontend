@@ -143,25 +143,43 @@
 
   &__amounts {
     display: flex;
+    width: 100%;
+    justify-content: space-between;
     font-size: $tp-xl;
     font-weight: $wg-lt;
     align-items: center;
 
     .separator {
       height: 80%;
+      flex: 0 0 1px;
     }
 
     .amount {
       &__locked,
       &__claim {
+        text-align: center;
         display: block;
         padding: 6px $mr-sm;
+        flex: 1 0 auto;
+      }
+
+      &__locked {
+        border-right: 1px solid;
+        @include theme-aware("border-color", "profile-separator");
+
+        &--empty {
+          @include theme-aware("color", "color-secondary");
+        }
       }
 
       &__claim {
         @include theme-aware("color", "status-proposed-color");
         white-space: nowrap;
         position: relative;
+
+        &--empty {
+          @include theme-aware("color", "color-secondary");
+        }
 
         .sub {
           width: 100%;
