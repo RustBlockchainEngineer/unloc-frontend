@@ -16,6 +16,7 @@ import type { AppProps } from "next/app";
 import Head from "next/head";
 import { ToastContainer } from "react-toastify";
 
+import { Airdrop } from "@components/Airdrop/Airdrop";
 import { Footer } from "@components/layout/footer";
 import { config } from "@constants/config";
 import { localesHome } from "@constants/locales";
@@ -68,11 +69,14 @@ const Unloc = observer(({ Component, pageProps }: AppProps) => {
               <meta name="viewport" content="initial-scale=1, maximum-scale=1" />
             </Head>
             {config.devnet && (
-              <div className="devnet-container">
-                <span className="devnet">
-                  <i className="icon icon--smd icon--info" />
-                  Devnet Version
-                </span>
+              <div>
+                <div className="devnet-container">
+                  <span className="devnet">
+                    <i className="icon icon--smd icon--info" />
+                    Devnet Version
+                  </span>
+                  <Airdrop />
+                </div>
               </div>
             )}
             <div className="home-bg-top" />

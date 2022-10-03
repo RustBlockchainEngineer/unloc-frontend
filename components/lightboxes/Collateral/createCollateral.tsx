@@ -4,7 +4,6 @@ import { observer } from "mobx-react-lite";
 import { StoreContext } from "@pages/_app";
 import { StoreDataAdapter } from "@components/storeDataAdapter";
 import { CollateralItem } from "./collateralItem";
-import { BlobLoader } from "@components/layout/blobLoader";
 import { CustomSelect } from "@components/layout/customSelect";
 import { errorCase, successCase } from "@utils/toast-error-handler";
 import { PublicKey } from "@solana/web3.js";
@@ -14,6 +13,7 @@ import { fetchWhitelistedUserNfts } from "@utils/spl/metadata";
 import useSWR from "swr";
 import { CircleProcessing } from "../circleProcessing";
 import { useSendTransaction } from "@hooks/useSendTransaction";
+import { SkeletonRectangle } from "@components/skeleton/rectangle";
 
 export const CreateCollateral = observer(() => {
   const store = useContext(StoreContext);
@@ -75,18 +75,13 @@ export const CreateCollateral = observer(() => {
   return (
     <StoreDataAdapter>
       <div className="collateral-lightbox">
-        {loading && (
-          <div className="collateral-loading">
-            <BlobLoader />
-            <h2>Loading...</h2>
-          </div>
-        )}
         {data && data.length === 0 && (
           <div className="collateral-empty">
             <div />
             <h2>No whitelisted NFTs in your wallet</h2>
           </div>
         )}
+        {loading && <SkeletonRectangle offerType="wallet" />}
         {data && (
           <>
             <div className="NFT-lb-header">

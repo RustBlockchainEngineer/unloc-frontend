@@ -12,6 +12,27 @@
     justify-content: center;
   }
 
+  &.skeleton {
+    .offers-table-heading,
+    .offers-table-row {
+      box-shadow: unset;
+      -moz-box-shadow: unset;
+
+      animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+    .offers-table-heading {
+      @include theme-aware("background-color", "color-accent");
+      padding: 15px 0;
+    }
+    .offers-table-row {
+      &:nth-child(odd) {
+        a {
+          @include theme-aware("background-color", "bg-table-hover");
+        }
+      }
+    }
+  }
+
   :last-child a {
     border-radius: 0 0 $brd-rds-sm $brd-rds-sm;
   }
