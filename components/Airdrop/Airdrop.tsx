@@ -9,6 +9,7 @@ import { createMintTransaction, findEditionPda, findNftMetadata } from "./utils"
 import {
   createCreateMasterEditionV3Instruction,
   createCreateMetadataAccountV2Instruction,
+  createVerifyCollectionInstruction,
 } from "@metaplex-foundation/mpl-token-metadata";
 
 type SimpleMetadata = {
@@ -17,6 +18,7 @@ type SimpleMetadata = {
   tribe: string;
   uri: string;
   collection: string;
+  collectionPK: Array<number>;
 };
 const airdropMetadata: SimpleMetadata[] = [
   {
@@ -25,6 +27,12 @@ const airdropMetadata: SimpleMetadata[] = [
     tribe: "Test 1",
     uri: "https://s3.eu-central-1.amazonaws.com/cdn.unloc.xyz/unloc_devnet/json/7yQGqnCk7hHb4YDuiirr2dVhJ6TP1BbFGRei6353WXZU.json",
     collection: "TkpSRsB8yB2qRETXLuPxuZ6Fkg2vuJnmfsQiJLfVpmG",
+    collectionPK: [
+      47, 189, 147, 2, 35, 185, 143, 206, 166, 235, 121, 127, 40, 93, 77, 119, 218, 145, 244, 150,
+      137, 160, 216, 101, 52, 63, 167, 94, 29, 247, 100, 9, 6, 218, 165, 102, 171, 1, 147, 54, 252,
+      194, 104, 184, 176, 181, 47, 128, 191, 35, 101, 142, 248, 78, 127, 51, 163, 185, 60, 116, 105,
+      183, 199, 3,
+    ],
   },
   {
     name: "Unloc Devnet Nft",
@@ -32,6 +40,12 @@ const airdropMetadata: SimpleMetadata[] = [
     tribe: "Test 2",
     uri: "https://s3.eu-central-1.amazonaws.com/cdn.unloc.xyz/unloc_devnet/json/7yQGqnCk7hHb4YDuiirr2dVhJ6TP1BbFGRei6353WXZU.json",
     collection: "TkpSRsB8yB2qRETXLuPxuZ6Fkg2vuJnmfsQiJLfVpmG",
+    collectionPK: [
+      47, 189, 147, 2, 35, 185, 143, 206, 166, 235, 121, 127, 40, 93, 77, 119, 218, 145, 244, 150,
+      137, 160, 216, 101, 52, 63, 167, 94, 29, 247, 100, 9, 6, 218, 165, 102, 171, 1, 147, 54, 252,
+      194, 104, 184, 176, 181, 47, 128, 191, 35, 101, 142, 248, 78, 127, 51, 163, 185, 60, 116, 105,
+      183, 199, 3,
+    ],
   },
   {
     name: "Unloc Devnet Nft",
@@ -39,6 +53,12 @@ const airdropMetadata: SimpleMetadata[] = [
     tribe: "Test 3",
     uri: "https://s3.eu-central-1.amazonaws.com/cdn.unloc.xyz/unloc_devnet/json/7yQGqnCk7hHb4YDuiirr2dVhJ6TP1BbFGRei6353WXZU.json",
     collection: "TkpSRsB8yB2qRETXLuPxuZ6Fkg2vuJnmfsQiJLfVpmG",
+    collectionPK: [
+      47, 189, 147, 2, 35, 185, 143, 206, 166, 235, 121, 127, 40, 93, 77, 119, 218, 145, 244, 150,
+      137, 160, 216, 101, 52, 63, 167, 94, 29, 247, 100, 9, 6, 218, 165, 102, 171, 1, 147, 54, 252,
+      194, 104, 184, 176, 181, 47, 128, 191, 35, 101, 142, 248, 78, 127, 51, 163, 185, 60, 116, 105,
+      183, 199, 3,
+    ],
   },
   {
     name: "Unloc Devnet Nft",
@@ -46,6 +66,12 @@ const airdropMetadata: SimpleMetadata[] = [
     tribe: "Test 4",
     uri: "https://s3.eu-central-1.amazonaws.com/cdn.unloc.xyz/unloc_devnet/json/7yQGqnCk7hHb4YDuiirr2dVhJ6TP1BbFGRei6353WXZU.json",
     collection: "TkpSRsB8yB2qRETXLuPxuZ6Fkg2vuJnmfsQiJLfVpmG",
+    collectionPK: [
+      47, 189, 147, 2, 35, 185, 143, 206, 166, 235, 121, 127, 40, 93, 77, 119, 218, 145, 244, 150,
+      137, 160, 216, 101, 52, 63, 167, 94, 29, 247, 100, 9, 6, 218, 165, 102, 171, 1, 147, 54, 252,
+      194, 104, 184, 176, 181, 47, 128, 191, 35, 101, 142, 248, 78, 127, 51, 163, 185, 60, 116, 105,
+      183, 199, 3,
+    ],
   },
   {
     name: "Unloc Devnet Nft",
@@ -53,6 +79,12 @@ const airdropMetadata: SimpleMetadata[] = [
     tribe: "Test 5",
     uri: "https://s3.eu-central-1.amazonaws.com/cdn.unloc.xyz/unloc_devnet/json/7yQGqnCk7hHb4YDuiirr2dVhJ6TP1BbFGRei6353WXZU.json",
     collection: "TkpSRsB8yB2qRETXLuPxuZ6Fkg2vuJnmfsQiJLfVpmG",
+    collectionPK: [
+      47, 189, 147, 2, 35, 185, 143, 206, 166, 235, 121, 127, 40, 93, 77, 119, 218, 145, 244, 150,
+      137, 160, 216, 101, 52, 63, 167, 94, 29, 247, 100, 9, 6, 218, 165, 102, 171, 1, 147, 54, 252,
+      194, 104, 184, 176, 181, 47, 128, 191, 35, 101, 142, 248, 78, 127, 51, 163, 185, 60, 116, 105,
+      183, 199, 3,
+    ],
   },
 ];
 
@@ -86,13 +118,13 @@ export const Airdrop = () => {
       creators: [
         {
           address: wallet.publicKey!,
-          verified: false,
+          verified: true,
           share: 100,
         },
       ],
       collection: {
         verified: false,
-        key: new PublicKey(metadata.collection),
+        key: masterEditionMint.publicKey,
       },
       uses: null,
     };
@@ -124,13 +156,25 @@ export const Airdrop = () => {
       },
       {
         createMasterEditionArgs: {
-          maxSupply: new BN(1),
+          maxSupply: new BN(0),
         },
       },
     );
+    const verifyCollectionIx = createVerifyCollectionInstruction({
+      metadata: masterEditionMetadataId,
+      collectionAuthority: wallet.publicKey!,
+      payer: wallet.publicKey!,
+      collectionMint: masterEditionMint.publicKey,
+      collection: masterEditionMetadataId,
+      collectionMasterEditionAccount: masterEditionId,
+    });
 
-    // const transaction = new Transaction()
-    transaction.instructions = [...transaction.instructions, metadataIx, masterEditionIx];
+    transaction.instructions = [
+      ...transaction.instructions,
+      metadataIx,
+      masterEditionIx,
+      verifyCollectionIx,
+    ];
     transaction.feePayer = wallet.publicKey!;
     const {
       context: { slot: minContextSlot },
