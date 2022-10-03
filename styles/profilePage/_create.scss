@@ -1,5 +1,5 @@
 .create-stake {
-  width: 416px;
+  width: 380px;
   &__title {
     font-weight: $wg-hv;
     font-size: $tp-2lg;
@@ -54,8 +54,29 @@
     padding-bottom: $mr-sm;
     margin-bottom: $mr-2rem;
 
-    .rc_slider {
-      margin-top: $mr-sm;
+    .slider-container {
+      display: flex;
+      justify-content: center;
+      margin-top: 8px;
+      width: 95%;
+      margin-left: auto;
+      margin-right: auto;
+    }
+  }
+
+  &__apy {
+    font-size: $tp-2lg;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: $mr-md 0;
+    padding: $mr-md 0;
+    border-bottom: 1px solid;
+    @include theme-aware("border-color", "profile-separator");
+
+    strong {
+      font-weight: $wg-hv;
+      @include theme-aware("color", "color-primary");
     }
   }
 
@@ -68,6 +89,34 @@
     strong {
       font-weight: $wg-hv;
       @include theme-aware("color", "color-primary");
+    }
+  }
+
+  .rc-slider.rc-slider {
+    width: 100%;
+  }
+
+  .rc-slider-dot.rc-slider-dot {
+    width: 8px;
+    height: 8px;
+  }
+
+  .rc-slider-track {
+    margin-top: 0;
+  }
+
+  .rc-slider-step .rc-slider-dot {
+    @include theme-aware("background-color", "color-primary");
+    @include theme-aware("border-color", "color-primary");
+    width: 9px;
+    height: 9px;
+  }
+
+  .rc-slider-mark {
+    & .rc-slider-mark-text {
+      @include theme-aware("color", "color-secondary");
+      top: 10px;
+      font-size: 14px;
     }
   }
 }

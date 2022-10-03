@@ -5,7 +5,7 @@ import { createStake, getFarmPoolUserObject } from "@utils/spl/unloc-staking";
 import { observer } from "mobx-react-lite";
 import Slider from "rc-slider";
 import "rc-slider/assets/index.css";
-import { ChangeEvent, FormEvent, useMemo } from "react";
+import { ChangeEvent, FormEvent, useMemo, useState } from "react";
 import { getDurationForContractData } from "@utils/timeUtils/timeUtils";
 import { useSendTransaction } from "@hooks/useSendTransaction";
 import { errorCase } from "@utils/toast-error-handler";
@@ -15,13 +15,48 @@ import { amountToUiAmount, val } from "@utils/bignum";
 import { formatOptions } from "@constants/config";
 
 type InputEvent = ChangeEvent<HTMLInputElement>;
+
 const sliderMarks = {
-  0: "No Lock",
+  0: { label: "No lock", style: { left: "3%" } },
   25: "30",
   50: "60",
   75: "90",
-  100: "180",
+  100: { label: "180", style: { left: "97%" } },
 };
+
+function markToDurationMapping(value: number) {
+  switch (value) {
+    case 0:
+      return 0;
+    case 25:
+      return 30;
+    case 50:
+      return 60;
+    case 75:
+      return 90;
+    case 100:
+      return 180;
+    default:
+      return 0;
+  }
+}
+
+function durationToApyBasisPoints(value: number) {
+  switch (value) {
+    case 0:
+      return 50;
+    case 30:
+      return 2000;
+    case 60:
+      return 3500;
+    case 90:
+      return 5500;
+    case 180:
+      return 9000;
+    default:
+      return 0;
+  }
+}
 
 export const CreateStake = observer(() => {
   const { StakingStore, Lightbox } = useStore();
@@ -29,6 +64,7 @@ export const CreateStake = observer(() => {
   const { publicKey: wallet } = useWallet();
   const { accounts, isLoading, mutate } = useStakingAccounts();
   const sendAndConfirm = useSendTransaction();
+  const [apy, setApy] = useState(50);
 
   // Get total staked amount
   const totalStaked = useMemo(
@@ -87,9 +123,12 @@ export const CreateStake = observer(() => {
     if (typeof value !== "number") {
       value = value[0];
     }
-    value = Number(sliderMarks[value]);
+    value = markToDurationMapping(value);
     const asSeconds = getDurationForContractData(value, "days");
     StakingStore.setCreateFormInput("lockDuration", asSeconds);
+
+    console.log(durationToApyBasisPoints(value));
+    setApy(durationToApyBasisPoints(value));
   };
 
   return (
@@ -101,7 +140,7 @@ export const CreateStake = observer(() => {
           <strong>{amountToUiAmount(totalStaked, 6).toLocaleString("en-us", formatOptions)}</strong>
         </div>
         <div className="create-stake__stats-item">
-          Unloc score <strong>7.1</strong>
+          Unloc score <strong>0</strong>
         </div>
       </div>
       <form onSubmit={handleCreate} className="create-stake__form">
@@ -111,23 +150,29 @@ export const CreateStake = observer(() => {
             lang="en"
             value={StakingStore.createFormInputs.uiAmount}
             onChange={handleAmountInput}
-            placeholder="100"
+            placeholder=""
             name="amount"
             type="text"
           />
         </div>
         <div className="create-stake__duration">
           <label htmlFor="duration">Duration (Days)</label>
-          <Slider
-            onChange={handleDurationInput}
-            min={0}
-            max={100}
-            defaultValue={StakingStore.createFormInputs.lockDuration}
-            marks={sliderMarks}
-            step={null}
-          />
+          <div className="slider-container">
+            <Slider
+              onChange={handleDurationInput}
+              min={0}
+              max={100}
+              defaultValue={StakingStore.createFormInputs.lockDuration}
+              marks={sliderMarks}
+              step={null}
+            />
+          </div>
         </div>
-        <div className="create-stake__apy"></div>
+        <div className="create-stake__apy">
+          <p>
+            APY <strong>{(apy / 100).toLocaleString("en-us")}%</strong>
+          </p>
+        </div>
 
         <div className="create-stake__score">
           <p>
