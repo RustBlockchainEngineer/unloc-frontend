@@ -29,10 +29,10 @@ export const StakeActions = observer(() => {
   return (
     <article className="stake__actions col">
       <div className="stake__plus">
-        <span>New staking account</span>
+        <span className="title">New staking account</span>
         <div className="add-new">
-          <button type="button" onClick={handleNewStake}>
-            <span className="button--circle">&#43;</span>
+          <button type="button" className="button--plus" onClick={handleNewStake}>
+            &#43;
           </button>
         </div>
       </div>

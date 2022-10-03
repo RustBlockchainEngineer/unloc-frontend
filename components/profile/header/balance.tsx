@@ -49,7 +49,7 @@ export const StakeBalance = () => {
           <div className="sub">Available to claim!</div>
         </div>
       </div>
-      <p>{count ?? 0} staking accounts</p>
+      <p className="stake__summary">{count ?? 0} staking accounts</p>
     </article>
   );
 };

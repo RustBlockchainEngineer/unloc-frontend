@@ -11,10 +11,26 @@
     width: 100%;
     gap: $mr-2rem 20px;
     flex-wrap: wrap;
+    @media (max-width: $bp-phone) {
+      width: fit-content;
+    }
 
     & > .col {
       @include theme-aware("background-color", "color-accent");
       border-radius: $brd-rds-2tn;
+
+      &:not(:last-child) {
+        @media (max-width: $bp-phone) {
+          border-radius: 0;
+          border-bottom: 2px solid;
+          @include theme-aware("border-color", "profile-separator");
+        }
+      }
+    }
+
+    @media (max-width: $bp-phone) {
+      margin: 0 14px;
+      gap: 0 20px;
     }
   }
 
