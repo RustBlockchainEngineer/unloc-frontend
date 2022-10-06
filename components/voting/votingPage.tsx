@@ -1,7 +1,7 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext } from "react";
 import { PieChart } from "react-minimal-pie-chart";
 import { StoreContext } from "@pages/_app";
-import { observer } from "mobx-react";
+import { observer } from "mobx-react-lite";
 
 export const VotingPage = observer(() => {
   const store = useContext(StoreContext);
