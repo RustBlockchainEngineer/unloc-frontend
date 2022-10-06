@@ -61,6 +61,7 @@ export const Vote = observer(() => {
 
         // We need to get the number of fields that aren't 0.
         // The idea is that if a field is 0, we don't update it anymore.
+        // (That's similar to how HumbleBundle sliders work.)
         const updatedFields = Object.keys(rest).reduce(
           (acc, key) => (acc += rest[key] > 0 ? 1 : 0),
           0,
