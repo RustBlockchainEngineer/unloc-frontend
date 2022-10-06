@@ -1,21 +1,18 @@
-import { useContext, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
-import { observer } from "mobx-react";
+import { observer } from "mobx-react-lite";
 
-import { StoreContext } from "@pages/_app";
-import { errorCase, successCase } from "@methods/toast-error-handler";
 import { SliderAdapter } from "./Loan/sliderAdapter";
 import { Form, Field } from "react-final-form";
 import { createForm } from "final-form";
 import createDecorator from "final-form-calculate";
 
 export const Vote = observer(() => {
-  const store = useContext(StoreContext);
   // const { setVote } = store.Lightbox;
   // const { amount, duration, APR, totalRepay, currency, offerPublicKey } = acceptOfferData;
 
   const initialValues = { SMB: 20, DAA: 20, DeGods: 20, DT: 15, SolGods: 25 };
-  const [nextVoteValues, setNextVoteValues] = useState<any>(initialValues);
+  const [nextVoteValues] = useState<any>(initialValues);
 
   const handleVote = async (values: any): Promise<void> => {
     let alertMsg = "";
@@ -42,7 +39,7 @@ export const Vote = observer(() => {
     // }
   };
 
-  const [memoForm, unsubscribe] = useMemo(() => {
+  const [memoForm] = useMemo(() => {
     const form = createForm({
       onSubmit: handleVote,
       initialValues,

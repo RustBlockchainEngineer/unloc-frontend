@@ -1,30 +1,39 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useMemo, useState } from "react";
 
-import { observer } from "mobx-react";
-import { NFTMetadata } from "@integration/nftLoan";
+import { observer } from "mobx-react-lite";
 import { StoreContext } from "@pages/_app";
 import { StoreDataAdapter } from "@components/storeDataAdapter";
 import { CollateralItem } from "./collateralItem";
-import { BlobLoader } from "@components/layout/blobLoader";
 import { CustomSelect } from "@components/layout/customSelect";
-import { errorCase, successCase } from "@methods/toast-error-handler";
+import { errorCase, successCase } from "@utils/toast-error-handler";
+import { PublicKey } from "@solana/web3.js";
+import { useConnection, useWallet } from "@solana/wallet-adapter-react";
+import { createOffer } from "@utils/spl/unlocLoan";
+import { fetchWhitelistedUserNfts } from "@utils/spl/metadata";
+import useSWR from "swr";
+import { CircleProcessing } from "../circleProcessing";
+import { useSendTransaction } from "@hooks/useSendTransaction";
+import { SkeletonRectangle } from "@components/skeleton/rectangle";
 
 export const CreateCollateral = observer(() => {
   const store = useContext(StoreContext);
-  const myOffers = store.MyOffers;
-  const { wallet, connection, walletKey } = store.Wallet;
+  const { connection } = useConnection();
+  const { publicKey: wallet } = useWallet();
+  const sendAndConfirm = useSendTransaction();
 
-  const [itemMint, setItemMint] = useState("");
+  const { data, error } = useSWR([connection, wallet], fetchWhitelistedUserNfts, {
+    refreshInterval: 20000,
+  });
+  const loading = useMemo(() => !data && !error, [data, error]);
+  const [selectedMint, setSelectedMint] = useState<PublicKey | null>(null);
   const [sortOption, setSortOption] = useState("Default");
-  const [data, setData] = useState<NFTMetadata[]>(myOffers.collaterables);
   const [processing, setProcessing] = useState(false);
-  const [loading, setLoading] = useState(true);
 
-  const chooseNFT = (mint: any) => {
-    if (mint === itemMint) {
-      setItemMint("");
+  const chooseNFT = (mint: PublicKey) => {
+    if (selectedMint?.equals(mint)) {
+      setSelectedMint(null);
     } else {
-      setItemMint(mint);
+      setSelectedMint(mint);
     }
   };
 
@@ -32,12 +41,18 @@ export const CreateCollateral = observer(() => {
     setSortOption(option);
   };
 
-  const createOffer = async (mint: string) => {
+  const handleDepositNft = async () => {
     try {
+      if (!wallet) {
+        throw new Error("Connect your wallet!");
+      }
+      if (!selectedMint) throw new Error("Select an NFT");
+
       store.Lightbox.setCanClose(false);
       setProcessing(true);
 
-      await store.MyOffers.createCollateral(mint);
+      const tx = createOffer(wallet, selectedMint);
+      await sendAndConfirm(tx);
       store.MyOffers.setActiveCategory("deposited");
 
       store.Lightbox.setVisible(false);
@@ -52,102 +67,51 @@ export const CreateCollateral = observer(() => {
       store.Lightbox.setVisible(false);
     }
 
-    store.MyOffers.refetchStoreData();
+    await store.MyOffers.refetchStoreData();
   };
 
-  useEffect(() => {
-    if (data) {
-      if (sortOption === "") {
-        return;
-      }
+  if (processing) return <CircleProcessing />;
 
-      if (sortOption.toLowerCase() === "name") {
-        setData(
-          data.sort((a, b) =>
-            a.arweaveMetadata.name > b.arweaveMetadata.name
-              ? 1
-              : b.arweaveMetadata.name > a.arweaveMetadata.name
-              ? -1
-              : 0,
-          ),
-        );
-      }
-    }
-  }, [sortOption]);
-
-  useEffect(() => {
-    if (wallet && walletKey) {
-      const fetchData = async () => {
-        try {
-          setLoading(true);
-          await myOffers.getUserNFTs(walletKey);
-          await myOffers.getNFTsData();
-          setData(myOffers.collaterables);
-        } catch (e: any) {
-          errorCase(e);
-        } finally {
-          setLoading(false);
-        }
-      };
-
-      fetchData();
-    }
-  }, [wallet, connection, walletKey]);
-
-  return processing ? (
-    <div className="create-offer-processing">
-      <BlobLoader />
-      <span>Processing Transaction</span>
-    </div>
-  ) : (
+  return (
     <StoreDataAdapter>
       <div className="collateral-lightbox">
-        {!loading ? (
-          data && data.length ? (
-            <>
-              <div className="NFT-lb-header">
-                <h1>Choose an NFT for collateral</h1>
-                <label htmlFor="sort-select">
-                  Sort by:
-                  <CustomSelect
-                    options={["Default", "Name"]}
-                    selectedOption={sortOption}
-                    setSelectedOption={sortNFT}
-                    classNames={"sort-select"}
-                  />
-                </label>
-              </div>
-              <div className="NFT-lb-collateral-list">
-                {data?.map((item: NFTMetadata) => {
-                  return (
-                    <CollateralItem
-                      key={item.mint}
-                      data={item}
-                      onClick={() => chooseNFT(item.mint)}
-                      choosen={item.mint === itemMint}
-                    />
-                  );
-                })}
-              </div>
-              <button
-                onClick={() => {
-                  createOffer(itemMint);
-                }}
-                className="lb-collateral-button">
-                Use as Collateral
-              </button>
-            </>
-          ) : (
-            <div className="collateral-empty">
-              <div />
-              <h2>No whitelisted NFTs in your wallet</h2>
-            </div>
-          )
-        ) : (
-          <div className="collateral-loading">
-            <BlobLoader />
-            <h2>Loading...</h2>
+        {data && data.length === 0 && (
+          <div className="collateral-empty">
+            <div />
+            <h2>No whitelisted NFTs in your wallet</h2>
           </div>
+        )}
+        {loading && <SkeletonRectangle offerType="wallet" />}
+        {data && (
+          <>
+            <div className="NFT-lb-header">
+              <h1>Choose an NFT for collateral</h1>
+              <label htmlFor="sort-select">
+                Sort by:
+                <CustomSelect
+                  options={["Default", "Name"]}
+                  selectedOption={sortOption}
+                  setSelectedOption={sortNFT}
+                  classNames={"sort-select"}
+                />
+              </label>
+            </div>
+            <div className="NFT-lb-collateral-list">
+              {data.map((item) => {
+                return (
+                  <CollateralItem
+                    key={item.mint.toBase58()}
+                    metadata={item}
+                    onClick={() => chooseNFT(item.mint)}
+                    chosen={selectedMint?.equals(item.mint) ?? false}
+                  />
+                );
+              })}
+            </div>
+            <button onClick={handleDepositNft} className="lb-collateral-button">
+              Use as Collateral
+            </button>
+          </>
         )}
       </div>
     </StoreDataAdapter>

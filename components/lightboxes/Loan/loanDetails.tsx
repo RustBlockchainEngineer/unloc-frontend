@@ -1,11 +1,11 @@
-import { useContext, useEffect, useMemo, useState } from "react";
+import { useContext, useMemo } from "react";
 
 import { StoreContext } from "@pages/_app";
 import Image from "next/image";
 import { compressAddress } from "@utils/stringUtils/compressAdress";
-import { NFTMetadata } from "@integration/nftLoan";
 import { BlobLoader } from "@components/layout/blobLoader";
-import { observer } from "mobx-react";
+import { observer } from "mobx-react-lite";
+import { useOffChainMetadata } from "@hooks/useOffChainMetadata";
 
 interface LoanDetails {
   isDetails: boolean;
@@ -14,35 +14,22 @@ interface LoanDetails {
 export const LoanDetails = observer(({ isDetails }: LoanDetails) => {
   const store = useContext(StoreContext);
   const {
-    sanitized: { image, name, collateralId, nftMint },
-    nftData,
+    sanitized: { collateralId, metadata },
   } = store.MyOffers;
-
-  const [nftArweaveMetadata, setNftArweaveMetadata] = useState<NFTMetadata | undefined>();
-
-  const [loader, disableLoader] = useState(true);
-
-  useEffect(() => {
-    const arweaveMetadata = nftData.find((item) => item.mint === nftMint);
-    setNftArweaveMetadata(arweaveMetadata);
-  }, []);
+  const { isLoading, json } = useOffChainMetadata(metadata.data.uri);
 
   const attributes = useMemo(() => {
-    return nftArweaveMetadata?.arweaveMetadata.attributes?.map((item) => {
-      return (
-        <div className="attribute" key={item.trait_type}>
-          <span className="name">{item.trait_type}</span>
-          <span>{item.value}</span>
-        </div>
-      );
-    });
-  }, [nftArweaveMetadata]);
+    if (!isLoading) return null;
 
-  useEffect(() => {
-    if (image) disableLoader(false);
-  }, [image]);
+    return json.attributes?.map((item) => (
+      <div className="attribute" key={item.trait_type}>
+        <span className="name">{item.trait_type}</span>
+        <span>{item.value}</span>
+      </div>
+    ));
+  }, [json, isLoading]);
 
-  const renderImage = useMemo(() => <Image src={image} width={336} height={336} />, [image]);
+  const renderImage = useMemo(() => <Image src={json.image} width={336} height={336} />, [json]);
 
   return (
     <div className={`details-box ${isDetails ? "opened" : ""}`}>
@@ -59,21 +46,19 @@ export const LoanDetails = observer(({ isDetails }: LoanDetails) => {
           </div>
           <div className="info">
             <span className="label">Mint address</span>
-            <span>{compressAddress(4, nftMint)}</span>
+            <span>{compressAddress(4, metadata.mint)}</span>
           </div>
           <div className="info">
             <span className="label">Collection</span>
-            <span>{name}</span>
+            <span>{metadata.data.name}</span>
           </div>
-          {nftArweaveMetadata && (
-            <div className="info">
-              <span className="label">Artist royalties</span>
-              <span>{nftArweaveMetadata?.onChainMetadata.data.sellerFeeBasisPoints * 0.01}%</span>
-            </div>
-          )}
+          <div className="info">
+            <span className="label">Artist royalties</span>
+            <span>{metadata.data.sellerFeeBasisPoints * 0.01}%</span>
+          </div>
         </div>
       </div>
-      {loader ? <BlobLoader /> : renderImage}
+      {isLoading ? <BlobLoader /> : renderImage}
     </div>
   );
 });

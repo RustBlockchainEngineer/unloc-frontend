@@ -1,6 +1,7 @@
-import { useEffect, useContext } from "react";
+import { useContext, useEffect } from "react";
 
-import { observer } from "mobx-react";
+import { useWallet } from "@solana/wallet-adapter-react";
+import { observer } from "mobx-react-lite";
 import type { NextPage } from "next";
 
 import { LayoutTop } from "@components/layout/layoutTop";
@@ -12,15 +13,13 @@ import { OfferActionsHook } from "@hooks/offerActionsHook";
 import { StoreContext } from "@pages/_app";
 
 const MyOffers: NextPage = observer(() => {
-  const store = useContext(StoreContext);
-  const { connected, walletKey } = store.Wallet;
-  const { activeCategory } = store.MyOffers;
-
+  const { Wallet } = useContext(StoreContext);
+  const { publicKey } = useWallet();
   const { refreshSubOffers } = OfferActionsHook();
 
   useEffect(() => {
-    if (connected && walletKey) void refreshSubOffers(walletKey);
-  }, [connected, walletKey, refreshSubOffers]);
+    if (publicKey) void refreshSubOffers(publicKey);
+  }, [publicKey, refreshSubOffers, Wallet.connection]);
 
   return (
     <StoreDataAdapter>
@@ -28,7 +27,7 @@ const MyOffers: NextPage = observer(() => {
       <div className="page my-offers">
         <LayoutTop />
         <WalletActions />
-        {connected && activeCategory && <OffersWrap />}
+        <OffersWrap />
       </div>
     </StoreDataAdapter>
   );

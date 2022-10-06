@@ -70,10 +70,6 @@
 .wallet-adapter-dropdown-list {
   @include theme-aware("background-color", "wallet-adapter-bg");
 
-  @media (min-width: calc($bp-phone + 1px)) {
-    width: 100%;
-  }
-
   @media (max-width: $bp-phone) {
     width: 90vw;
     margin: 0 auto;
@@ -115,6 +111,12 @@
   border-radius: $brd-rds-2md;
   font-size: $tp-md;
   font-weight: $wg-lt;
+
+  &.endpoint {
+    .custom-select {
+      width: unset;
+    }
+  }
 }
 
 .wallet-adapter-dropdown-list-item.hover {
@@ -330,4 +332,8 @@
   border: none;
   border-radius: 8px;
   color: #fff;
+}
+
+.wallet-endpoint-select {
+  width: 80px;
 }

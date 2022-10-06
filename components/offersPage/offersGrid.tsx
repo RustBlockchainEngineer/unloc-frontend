@@ -1,23 +1,25 @@
 import { ReactElement, useContext } from "react";
 
-import { observer } from "mobx-react";
+import { observer } from "mobx-react-lite";
 import { StoreContext } from "@pages/_app";
 import { OffersGridItem } from "./offersGridItem";
-import { currencyMints } from "@constants/currency";
-import { BlobLoader } from "@components/layout/blobLoader";
+
 import {
   getDecimalsForLoanAmountAsString,
   getDecimalsForOfferMint,
 } from "@integration/getDecimalForLoanAmount";
 import { calculateRepayValue } from "@utils/loansMath";
 import { ILightboxOffer } from "@stores/Lightbox.store";
-import { errorCase } from "@methods/toast-error-handler";
+import { errorCase } from "@utils/toast-error-handler";
+import { useWallet } from "@solana/wallet-adapter-react";
+import { SubOfferState } from "@unloc-dev/unloc-loan-solita";
+import BN from "bn.js";
+import { SkeletonRectangle } from "@components/skeleton/rectangle";
 
 export const OffersGrid = observer(() => {
   const store = useContext(StoreContext);
-  const { walletKey } = store.Wallet;
-  const { pageOfferData, currentPage, maxPage, offersEmpty } = store.Offers;
-
+  const { publicKey: wallet } = useWallet();
+  const { pageOfferData, currentPage, maxPage, isLoading } = store.Offers;
   const handleAcceptOffer = async (offer: ILightboxOffer) => {
     try {
       store.Lightbox.setAcceptOfferData(offer);
@@ -70,7 +72,7 @@ export const OffersGrid = observer(() => {
           ""
         )}
         <button
-          key={`${page}`}
+          key={page.toString()}
           className={`page ${getClassName(page, current)}`}
           onClick={() => store.Offers.setCurrentPage(page + 1)}>
           <b>{page + 1}</b>
@@ -105,40 +107,44 @@ export const OffersGrid = observer(() => {
       .map((page) => pageBtn(page, active, last));
   };
 
-  return offersEmpty ? (
-    <div className="offers-grid--empty">
-      <h2 className="no-offers">No Offers Created yet</h2>
-    </div>
-  ) : pageOfferData.length > 0 ? (
+  if (isLoading) {
+    return <SkeletonRectangle offerType="grid" />;
+  }
+
+  if (pageOfferData.length === 0) {
+    return (
+      <div className="offers-grid--empty">
+        <h2 className="no-offers">No Offers Created yet</h2>
+      </div>
+    );
+  }
+
+  return (
     <>
       <div className="offers-grid">
-        {pageOfferData.map((offerData, index) => {
-          if ((offerData.state === 0 || offerData.state === 6) && offerData.nftData) {
+        {pageOfferData.map(({ account, pubkey, nftData, collection }, index) => {
+          if (account.state === SubOfferState.Proposed) {
             return (
               <OffersGridItem
-                key={`offer-${offerData.subOfferKey.toString()}-${index}`}
-                subOfferKey={offerData.subOfferKey.toString()}
-                offerKey={offerData.offer.toString()}
-                image={offerData.nftData.arweaveMetadata.image}
+                key={`offer-${pubkey.toString()}-${index}`}
+                subOffer={pubkey}
+                offer={account.offer}
+                subOfferData={account}
+                nftData={nftData}
                 amount={getDecimalsForLoanAmountAsString(
-                  offerData.offerAmount.toNumber(),
-                  offerData.offerMint.toString(),
+                  new BN(account.offerAmount).toNumber(),
+                  account.offerMint.toString(),
                   0,
                   2,
                 )}
-                name={offerData.nftData.arweaveMetadata.name}
                 handleConfirmOffer={handleAcceptOffer}
-                APR={offerData.aprNumerator.toNumber()}
-                duration={Math.floor(offerData.loanDuration.toNumber() / (3600 * 24)).toString()}
-                currency={currencyMints[offerData.offerMint.toBase58()]}
-                count={0}
-                isYours={walletKey?.equals(offerData.borrower)}
-                collection={offerData?.collection ?? ""}
+                isYours={wallet?.equals(account.borrower)}
+                collection={collection}
                 totalRepay={calculateRepayValue(
-                  offerData.offerAmount.toNumber() /
-                    getDecimalsForOfferMint(offerData.offerMint.toString()),
-                  offerData.aprNumerator.toNumber(),
-                  offerData.loanDuration.toNumber() / (3600 * 24),
+                  new BN(account.offerAmount).toNumber() /
+                    getDecimalsForOfferMint(account.offerMint.toString()),
+                  new BN(account.aprNumerator).toNumber(),
+                  new BN(account.loanDuration).toNumber() / (3600 * 24),
                   store.GlobalState.denominator,
                 )}
               />
@@ -164,9 +170,5 @@ export const OffersGrid = observer(() => {
         </div>
       </div>
     </>
-  ) : (
-    <div className="offers-grid--empty">
-      <BlobLoader />
-    </div>
   );
 });

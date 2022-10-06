@@ -1,6 +1,7 @@
 import { useCallback, useContext, useEffect } from "react";
 
-import { observer } from "mobx-react";
+import { useWallet } from "@solana/wallet-adapter-react";
+import { observer } from "mobx-react-lite";
 import type { NextPage } from "next";
 
 import { LayoutTop } from "@components/layout/layoutTop";
@@ -14,25 +15,22 @@ import { StoreContext } from "./_app";
 
 const Home: NextPage = observer(() => {
   const store = useContext(StoreContext);
-  const { wallet, connected } = store.Wallet;
-  const { viewType } = store.Offers;
+  const { viewType, buildFilters, refetchOffers } = store.Offers;
+  const { publicKey: wallet } = useWallet();
 
   const handleOffers = useCallback(async () => {
     try {
-      if (connected && wallet) {
-        await store.Offers.refetchOffers();
-        store.Offers.buildFilters(store.Offers.pageOfferData);
-        store.Offers.buildFilterCollection();
-      }
+      await refetchOffers();
+      buildFilters();
     } catch (e) {
       // eslint-disable-next-line no-console
       console.log(e);
     }
-  }, [connected, store.Offers, wallet]);
+  }, [buildFilters, refetchOffers]);
 
   useEffect(() => {
-    if (wallet && connected) void handleOffers();
-  }, [wallet, connected, handleOffers]);
+    if (wallet) void handleOffers();
+  }, [wallet, handleOffers, store.Wallet.connection]);
 
   return (
     <StoreDataAdapter>

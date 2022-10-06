@@ -1,6 +1,6 @@
 import { useContext, useEffect } from "react";
 
-import { observer } from "mobx-react";
+import { observer } from "mobx-react-lite";
 
 import { StoreContext } from "@pages/_app";
 import { UnlocLogo } from "./unlocLogo";
@@ -10,8 +10,8 @@ import { Lightbox } from "@components/lightboxes/lightbox";
 import { CreateCollateral } from "@components/lightboxes/Collateral/createCollateral";
 import { CreateLoan } from "@components/lightboxes/Loan/createLoan";
 import { Processing } from "@components/lightboxes/processing";
-import { LendConfirmation } from "@components/lightboxes/lendConfirmation";
-import { AcceptOffer } from "@components/lightboxes/acceptOffer";
+import { LendConfirmation } from "@components/lightboxes/LendConfirm";
+import { AcceptOffer } from "@components/lightboxes/AcceptOffer";
 import { ConfirmLoan } from "@components/lightboxes/Loan/confirmLoan";
 import { Vote } from "@components/lightboxes/vote";
 import { CircleProcessing } from "@components/lightboxes/circleProcessing";

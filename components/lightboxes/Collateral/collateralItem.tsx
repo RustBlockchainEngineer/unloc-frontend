@@ -1,28 +1,32 @@
-import { NFTMetadata } from "@integration/nftLoan";
+import { Metadata } from "@metaplex-foundation/mpl-token-metadata";
+import { useOffChainMetadata } from "@hooks/useOffChainMetadata";
 
 interface IProps {
-  data: NFTMetadata;
-  onClick: (data: NFTMetadata) => void;
-  choosen: boolean;
+  metadata: Metadata;
+  onClick: (data: Metadata) => void;
+  chosen: boolean;
 }
 
-export const CollateralItem = ({ data, onClick, choosen }: IProps) => {
+export const CollateralItem = ({ metadata, onClick, chosen }: IProps) => {
+  const { json, isLoading } = useOffChainMetadata(metadata.data.uri);
+
+  if (isLoading) return <div></div>;
+
   return (
     <div
-      onClick={() => onClick(data)}
-      className={`collateral-list-item ${choosen ? "active" : ""}`}>
-      <img src={data.arweaveMetadata.image} className="collateral-image" />
+      onClick={() => onClick(metadata)}
+      className={`collateral-list-item ${chosen ? "active" : ""}`}>
+      <img src={json.image} className="collateral-image" />
       <div className="collateral-list-item-info">
-        <h2>{data.arweaveMetadata.name}</h2>
+        <h2>{json.name}</h2>
         <div className="list-collection-name">
           <p>Collection</p>
           <p>
-            {data.arweaveMetadata.collection === undefined ||
-            data.arweaveMetadata.collection === null
-              ? data.arweaveMetadata.name.slice(0, data.arweaveMetadata.name.lastIndexOf("#"))
-              : typeof data.arweaveMetadata.collection === "string"
-              ? data.arweaveMetadata.collection
-              : data.arweaveMetadata.collection.name}
+            {json.collection === undefined || json.collection === null
+              ? json.name.slice(0, json.name.lastIndexOf("#"))
+              : typeof json.collection === "string"
+              ? json.collection
+              : json.collection.name}
           </p>
         </div>
       </div>

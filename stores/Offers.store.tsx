@@ -1,33 +1,37 @@
-import { action, flow, makeAutoObservable } from "mobx";
+import { action, makeAutoObservable, runInAction } from "mobx";
 import { PublicKey } from "@solana/web3.js";
 import axios from "axios";
-import { MultipleNFT, getSubOfferMultiple, acceptOffer, NFTMetadata } from "@integration/nftLoan";
-import { getSubOffersKeysByState } from "@integration/offersListing";
-import { removeDuplicatesByPropertyIndex } from "@utils/removeDuplicatesByPropertyIndex";
+import { getFrontPageSubOffers } from "@integration/nftLoan";
 import { getDecimalsForOfferMint } from "@integration/getDecimalForLoanAmount";
 import { currencyMints } from "@constants/currency";
-import { SubOffer } from "../@types/loans";
+import { SubOffer } from "@unloc-dev/unloc-loan-solita";
+import BN from "bn.js";
+import { Metadata } from "@metaplex-foundation/mpl-token-metadata";
+import { GmaBuilder } from "@utils/spl/GmaBuilder";
+import { SubOfferAccount } from "@utils/spl/types";
+import { findMetadataPda } from "@utils/spl/metadata";
+import { zipMap } from "@utils/common";
+import { RootStore } from "./Root.store";
 
-export interface SubOfferData extends SubOffer {
-  subOfferKey: PublicKey;
-  collection?: string; // Lazy loaded
-  nftData?: NFTMetadata; // Lazy loaded
+export interface SubOfferData {
+  pubkey: PublicKey;
+  account: SubOffer;
+  nftData: Metadata;
+  collection: string;
 }
 
 export class OffersStore {
   rootStore;
   offers: SubOfferData[] = [];
-  offersRef: SubOfferData[] = [];
   filteredOffers: SubOfferData[] = [];
+  pageOfferData: SubOfferData[] = []; // same type as offers, should describe it
   currentPage = 1;
   maxPage = 1;
   itemsPerPage = 16;
-  pageOfferData: SubOfferData[] = []; // same type as offers, should describe it
-  pageNFTData: NFTMetadata[] = [];
-  nftCollections: string[] = [];
   filterCollection: { label: string; value: string }[] = [];
   filterCollectionSelected: string[] = [];
   viewType: "grid" | "table" = "grid";
+  isLoading = true;
 
   readyToFilter = true;
   filterAprMin = 1;
@@ -45,46 +49,39 @@ export class OffersStore {
   filterDurationValidatorMax = 90;
   filterCurrency = "All";
 
-  offersKeys: PublicKey[] = [];
-  offersCount: number = 0;
-  offersEmpty: boolean = true;
-
-  constructor(rootStore: any) {
+  constructor(rootStore: RootStore) {
     makeAutoObservable(this);
     this.rootStore = rootStore;
   }
 
-  private addCollectionToNFTCollections(collection: string): void {
-    this.nftCollections = this.nftCollections.includes(collection)
-      ? this.nftCollections
-      : this.nftCollections.concat(collection);
-  }
-
-  @action.bound fetchCollectionForNfts = flow(function* (this: OffersStore) {
+  private async fetchCollectionNamesForOffers<T extends SubOfferAccount>(
+    offers: T[],
+  ): Promise<(T & { collection: string })[]> {
     try {
-      const requests = this.offers.map((item, index) => {
-        return {
-          request: axios.post("/api/collections/nft", { id: item.nftMint.toBase58() }),
-          index,
-        };
+      const requests = offers.map((item) => ({
+        request: axios.post("/api/collections/nft", { id: item.account.nftMint.toBase58() }),
+      }));
+      const responses = await axios.all(requests.map((request) => request.request));
+
+      responses.forEach((response) => {
+        this.addFilterCollection(response.data);
       });
-      const responses = yield axios.all(requests.map((request) => request.request));
 
-      for (const el of requests) {
-        if (this.offers[el.index] && !this.offers[el.index].hasOwnProperty("collection")) {
-          this.offers[el.index].collection = responses[el.index].data;
-          this.addCollectionToNFTCollections(responses[el.index].data);
-        }
-      }
+      return zipMap(offers, responses, (offer, response) => ({
+        ...offer,
+        collection: response?.data as string,
+      }));
     } catch (e) {
-      // eslint-disable-next-line no-console
       console.log(e);
+      throw Error("Failed to load collection data");
     }
-  });
-
-  @action.bound resetNFTCollections(): void {
-    this.nftCollections = [];
   }
+
+  @action.bound addFilterCollection = (name: string): void => {
+    if (this.filterCollection.find(({ value }) => value === name) === undefined) {
+      this.filterCollection.push({ label: name, value: name });
+    }
+  };
 
   @action.bound setFilterCollection = (value: string): void => {
     const hasValue = this.filterCollectionSelected.map((e) => e).indexOf(value);
@@ -97,12 +94,6 @@ export class OffersStore {
 
     this.currentPage = 1;
     this.refetchOffers();
-  };
-
-  @action.bound buildFilterCollection = () => {
-    this.filterCollection = this.nftCollections.map((collection) => {
-      return { label: collection, value: collection };
-    });
   };
 
   @action.bound setOffersData(data: SubOfferData[]): void {
@@ -121,13 +112,8 @@ export class OffersStore {
     this.refetchOffers();
   }
 
-  @action.bound setPageNFTData(pageNFTData: NFTMetadata[]): void {
-    this.pageNFTData = pageNFTData;
-  }
-
   @action.bound setCurrentPage(page: number): void {
     this.currentPage = page;
-    this.pageNFTData = [];
     this.setPageOfferData([]);
     this.getOffersForListings();
   }
@@ -176,33 +162,18 @@ export class OffersStore {
     this.refetchOffers();
   };
 
-  @action.bound setOffersKeys = (values: PublicKey[]): void => {
-    this.offersKeys = values;
-  };
-
-  @action.bound setOffersCount = (count: number): void => {
-    this.offersCount = count;
-  };
-
-  private initManyNfts = async (nftMintKeys: PublicKey[]) => {
-    const multipleNft = new MultipleNFT(nftMintKeys);
-    await multipleNft.initialize();
-    await multipleNft.initArweavedata();
-
-    return multipleNft;
-  };
-
   private getFiltersMinMaxValues = (data: SubOfferData[]) => {
     const amounts: number[] = [];
     const durations: number[] = [];
     const aprs: number[] = [];
 
-    data.forEach((offer) => {
+    data.forEach(({ account }) => {
       amounts.push(
-        offer.offerAmount.toNumber() / getDecimalsForOfferMint(offer.offerMint.toBase58()),
+        new BN(account.offerAmount).toNumber() /
+          getDecimalsForOfferMint(account.offerMint.toBase58()),
       );
-      aprs.push(offer.aprNumerator.toNumber());
-      durations.push(Math.floor(offer.loanDuration.toNumber() / (3600 * 24)));
+      aprs.push(new BN(account.aprNumerator).toNumber());
+      durations.push(Math.floor(new BN(account.loanDuration).toNumber() / (3600 * 24)));
     });
 
     return {
@@ -219,52 +190,42 @@ export class OffersStore {
     return (x - min) * (x - max) <= 0;
   }
 
-  private handleFilters = (data: SubOfferData[]) => {
-    return data.filter((offer) => {
+  private handleFilters<T extends SubOfferData>(data: T[]): T[] {
+    return data.filter(({ account, collection }) => {
       const currencyCheck =
         this.filterCurrency === "All" ||
-        currencyMints[offer.offerMint.toString()] === this.filterCurrency;
+        currencyMints[account.offerMint.toString()] === this.filterCurrency;
 
       const amountCheck = OffersStore.inRange(
-        offer.offerAmount.toNumber() / getDecimalsForOfferMint(offer.offerMint.toString()),
+        new BN(account.offerAmount).toNumber() /
+          getDecimalsForOfferMint(account.offerMint.toString()),
         this.filterAmountMin,
         this.filterAmountMax,
       );
 
       const durationCheck = OffersStore.inRange(
-        offer.loanDuration.toNumber() / (3600 * 24),
+        new BN(account.loanDuration).toNumber() / (3600 * 24),
         this.filterDurationMin,
         this.filterDurationMax,
       );
 
       const aprCheck = OffersStore.inRange(
-        offer.aprNumerator.toNumber(),
+        new BN(account.aprNumerator).toNumber(),
         this.filterAprMin,
         this.filterAprMax,
       );
 
-      return currencyCheck && aprCheck && amountCheck && durationCheck;
+      let collectionCheck: boolean = true;
+      if (this.filterCollectionSelected.length > 0) {
+        collectionCheck = this.filterCollectionSelected.includes(collection);
+      }
+
+      return currencyCheck && aprCheck && amountCheck && durationCheck && collectionCheck;
     });
-  };
+  }
 
-  private handleCollectionFilter = () => {
-    const output: any[] = [];
-    if (this.filterCollectionSelected && this.filterCollectionSelected.length) {
-      this.filterCollectionSelected.forEach((collection) => {
-        this.offers.forEach((offer) => {
-          if (offer.collection === collection) {
-            output.push(offer);
-          }
-        });
-      });
-      return output;
-    } else {
-      return this.offers;
-    }
-  };
-
-  @action.bound buildFilters = (offers: any[]) => {
-    const filterDef = this.getFiltersMinMaxValues(offers);
+  @action.bound buildFilters = () => {
+    const filterDef = this.getFiltersMinMaxValues(this.filteredOffers);
     this.filterAprMin = filterDef.aprMin;
     this.filterAprMax = filterDef.aprMax;
     this.filterAmountMin = filterDef.amountMin;
@@ -280,98 +241,55 @@ export class OffersStore {
     this.filterDurationValidatorMax = filterDef.durationsMax;
   };
 
-  private mangleNftData = () => {
-    const output: any[] = [];
-    if (this.pageNFTData && this.pageNFTData.length) {
-      this.offers.forEach((offer) => {
-        removeDuplicatesByPropertyIndex(this.pageNFTData, "mint").forEach((nftData) => {
-          if (offer.nftMint.toBase58() === nftData.mint) {
-            if (
-              output.findIndex(
-                (item) => item.subOfferKey.toBase58() === offer.subOfferKey.toBase58(),
-              ) === -1
-            ) {
-              output.push({ ...offer, nftData: nftData });
-            }
-          }
-        });
-      });
-
-      return output;
-    } else {
-      return this.offers;
-    }
-  };
-
   @action.bound setPageOfferData(pageOfferData: any[]): void {
     this.pageOfferData = pageOfferData;
   }
 
-  @action.bound getOffersForListings = async (): Promise<void> => {
-    const proposedOffersKeys = await getSubOffersKeysByState([0]);
+  async getOffersForListings(): Promise<void> {
+    runInAction(() => (this.isLoading = true));
 
-    if (proposedOffersKeys?.length) {
-      this.setOffersEmpty(false);
-      this.setOffersKeys(proposedOffersKeys);
-      this.setOffersCount(proposedOffersKeys?.length);
-
-      const offersData = await getSubOfferMultiple(this.offersKeys, 0);
-      if (offersData?.length) {
-        const nftMints = offersData.map((offerData: any) => {
-          return offerData.nftMint;
-        });
-
-        const data = await this.initManyNfts(nftMints);
-        const paginatedNFTData = data.metadatas.slice(
-          (this.currentPage - 1) * this.itemsPerPage,
-          this.currentPage * this.itemsPerPage,
-        );
-
-        this.setPageNFTData(paginatedNFTData);
-        this.setOffersData(this.handleFilters(offersData));
-
-        await this.fetchCollectionForNfts();
-
-        this.setOffersData(this.handleCollectionFilter());
-        this.offersRef = this.offers;
-
-        const finalData = this.mangleNftData();
-        if (finalData && finalData.length > 16) {
-          this.setPageOfferData(
-            finalData.slice(
-              (this.currentPage - 1) * this.itemsPerPage,
-              this.currentPage * this.itemsPerPage,
-            ),
-          );
-        } else {
-          this.setPageOfferData(finalData);
-        }
-
-        this.setMaxPage(Math.ceil(this.offersRef.length / this.itemsPerPage));
-
-        if (this.pageOfferData?.length === 0) {
-          // This stops the home page from showing an infinite loading loop
-          this.setPageNFTData([]);
-          this.setOffersEmpty(true);
-        }
-      }
-    } else {
-      this.setPageOfferData([]);
-      this.setPageNFTData([]);
-      this.setOffersEmpty(true);
+    const connection = this.rootStore.Wallet.connection;
+    if (!connection) {
+      console.error("Not connected");
+      return;
     }
-  };
+
+    const subOfferKeys = await getFrontPageSubOffers(connection);
+    const subOffers = (
+      await GmaBuilder.make(connection, subOfferKeys).getAndMap((account) => {
+        if (!account.exists) return null;
+        return { pubkey: account.publicKey, account: SubOffer.deserialize(account.data)[0] };
+      })
+    ).filter((item): item is SubOfferAccount => item !== null);
+
+    const nftPdas = subOffers.map((subOffer) => findMetadataPda(subOffer.account.nftMint));
+    const nfts = await GmaBuilder.make(connection, nftPdas).getAndMap((account) => {
+      if (!account.exists) return null;
+      return Metadata.deserialize(account.data)[0];
+    });
+
+    const offersWithNftData = zipMap(subOffers, nfts, (subOffer, nftData) => ({
+      nftData,
+      ...subOffer,
+    })).filter((item): item is SubOfferData => item.nftData !== null);
+    const offersWithCollectionData = await this.fetchCollectionNamesForOffers(offersWithNftData);
+    const filtered = this.handleFilters(offersWithCollectionData);
+    const pageOffers = filtered.slice(
+      (this.currentPage - 1) * this.itemsPerPage,
+      this.currentPage * this.itemsPerPage,
+    );
+
+    runInAction(() => {
+      this.offers = offersWithCollectionData;
+      this.filteredOffers = filtered;
+      this.pageOfferData = pageOffers;
+      this.maxPage = Math.ceil(this.filteredOffers.length / this.itemsPerPage);
+      this.isLoading = false;
+    });
+  }
 
   @action.bound setFiltersVisible = (visible: boolean): void => {
     this.filtersVisible = visible;
-  };
-
-  @action.bound setOffersEmpty = (offersEmpty: boolean) => {
-    this.offersEmpty = offersEmpty;
-  };
-
-  @action.bound handleAcceptOffer = async (offerPublicKey: string) => {
-    await acceptOffer(new PublicKey(offerPublicKey));
   };
 
   @action.bound refetchOffers = async () => {
@@ -379,7 +297,6 @@ export class OffersStore {
       console.log("filter run");
 
       this.setOffersData([]);
-      this.setPageNFTData([]);
       this.setPageOfferData([]);
       await this.getOffersForListings();
     }

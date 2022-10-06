@@ -9,7 +9,7 @@ import {
   SyntheticEvent,
 } from "react";
 
-import { validateFilterInput, validateFilterRangeInput } from "@methods/validators/filterValidator";
+import { validateFilterInput, validateFilterRangeInput } from "@utils/validators/filterValidator";
 
 import { InputNumberArrows } from "./inputNumberArrows";
 

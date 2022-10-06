@@ -2,8 +2,12 @@
   --toastify-icon-color-success: #00d756;
 }
 
+.Toastify__toast-container {
+  width: 460px;
+}
+
 .Toastify__toast {
-  border-radius: $brd-rds-1md;
+  border-radius: $brd-rds-sm;
   padding: 15px 6% 40px 6%;
 }
 

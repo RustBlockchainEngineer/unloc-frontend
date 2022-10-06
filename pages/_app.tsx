@@ -1,38 +1,44 @@
-import { useMemo, createContext, useEffect, ReactNode } from "react";
+import { createContext, useContext, useEffect, useMemo } from "react";
 
 import { WalletAdapterNetwork } from "@solana/wallet-adapter-base";
+import { GlowWalletAdapter } from "@solana/wallet-adapter-glow";
+import { LedgerWalletAdapter } from "@solana/wallet-adapter-ledger";
+import { PhantomWalletAdapter } from "@solana/wallet-adapter-phantom";
 import { ConnectionProvider, WalletProvider } from "@solana/wallet-adapter-react";
 import { WalletModalProvider } from "@solana/wallet-adapter-react-ui";
-import {
-  LedgerWalletAdapter,
-  PhantomWalletAdapter,
-  SlopeWalletAdapter,
-  SolflareWalletAdapter,
-  SolletExtensionWalletAdapter,
-  SolletWalletAdapter,
-  TorusWalletAdapter,
-} from "@solana/wallet-adapter-wallets";
+import { SlopeWalletAdapter } from "@solana/wallet-adapter-slope";
+import { SolflareWalletAdapter } from "@solana/wallet-adapter-solflare";
 import { clusterApiUrl } from "@solana/web3.js";
 import { extend } from "dayjs";
 import duration from "dayjs/plugin/duration";
+import { observer } from "mobx-react-lite";
 import type { AppProps } from "next/app";
 import Head from "next/head";
 import { ToastContainer } from "react-toastify";
 
+import { Airdrop } from "@components/Airdrop/Airdrop";
 import { Footer } from "@components/layout/footer";
 import { config } from "@constants/config";
 import { localesHome } from "@constants/locales";
 import { rootStore } from "@stores/Root.store";
 
-import "react-toastify/dist/ReactToastify.css";
 import "@styles/main.scss";
+import "react-toastify/dist/ReactToastify.css";
 
 extend(duration);
 export const StoreContext = createContext(rootStore);
 
-const Unloc = ({ Component, pageProps }: AppProps): ReactNode => {
-  const network = config.devnet ? WalletAdapterNetwork.Devnet : WalletAdapterNetwork.Mainnet;
-  const endpoint = useMemo(() => clusterApiUrl(network), [network]);
+const Unloc = observer(({ Component, pageProps }: AppProps) => {
+  const store = useContext(StoreContext);
+  const { endpoint } = store.GlobalState;
+
+  const network =
+    endpoint === "devnet" ? WalletAdapterNetwork.Devnet : WalletAdapterNetwork.Mainnet;
+
+  const endpointUrl = useMemo(() => {
+    if (endpoint === "localnet") return "http://localhost:8899";
+    else return clusterApiUrl(network);
+  }, [endpoint, network]);
   const {
     Wallet: { handleWalletError },
   } = rootStore;
@@ -40,12 +46,10 @@ const Unloc = ({ Component, pageProps }: AppProps): ReactNode => {
   const wallets = useMemo(
     () => [
       new PhantomWalletAdapter(),
-      new SlopeWalletAdapter(),
+      new GlowWalletAdapter(),
       new SolflareWalletAdapter({ network }),
-      new TorusWalletAdapter(),
       new LedgerWalletAdapter(),
-      new SolletWalletAdapter({ network }),
-      new SolletExtensionWalletAdapter({ network }),
+      new SlopeWalletAdapter(),
     ],
     [network],
   );
@@ -56,7 +60,7 @@ const Unloc = ({ Component, pageProps }: AppProps): ReactNode => {
   }, []);
 
   return (
-    <ConnectionProvider endpoint={endpoint}>
+    <ConnectionProvider endpoint={endpointUrl}>
       <WalletProvider wallets={wallets} autoConnect onError={handleWalletError}>
         <WalletModalProvider>
           <StoreContext.Provider value={rootStore}>
@@ -65,11 +69,14 @@ const Unloc = ({ Component, pageProps }: AppProps): ReactNode => {
               <meta name="viewport" content="initial-scale=1, maximum-scale=1" />
             </Head>
             {config.devnet && (
-              <div className="devnet-container">
-                <span className="devnet">
-                  <i className="icon icon--smd icon--info" />
-                  Devnet Version
-                </span>
+              <div>
+                <div className="devnet-container">
+                  <span className="devnet">
+                    <i className="icon icon--smd icon--info" />
+                    Devnet Version
+                  </span>
+                  <Airdrop />
+                </div>
               </div>
             )}
             <div className="home-bg-top" />
@@ -92,6 +99,6 @@ const Unloc = ({ Component, pageProps }: AppProps): ReactNode => {
       </WalletProvider>
     </ConnectionProvider>
   );
-};
+});
 
 export default Unloc;

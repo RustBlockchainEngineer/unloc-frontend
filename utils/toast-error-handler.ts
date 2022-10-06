@@ -1,7 +1,9 @@
-import { toast } from "react-toastify";
+import { toast, ToastOptions } from "react-toastify";
+import { errorFromCode } from "@unloc-dev/unloc-loan-solita";
+import { initCusper } from "@metaplex-foundation/cusper";
 
-const options = {
-  autoClose: 3000,
+const options: ToastOptions = {
+  autoClose: 5000,
   position: "top-center",
   hideProgressBar: false,
   closeOnClick: true,
@@ -10,16 +12,23 @@ const options = {
   progress: undefined,
 };
 
-// @ts-ignore
 const error = (string: string) => toast.error(string, options);
-// @ts-ignore
 const success = (string: string) => toast.success(string, options);
+const cusper = initCusper(errorFromCode);
 
 export const errorCase = (err: any) => {
   if (typeof err !== "string") {
     const serverErr = (err as Error).message.includes("503 Service Unavailable");
     if (serverErr) {
       return error("Solana RPC currently unavailable, please try again in a moment");
+    }
+  }
+
+  if (err?.error?.logs !== undefined) {
+    const decodedError = cusper.errorFromProgramLogs(err.error.logs);
+    if (decodedError) {
+      console.log(JSON.stringify(decodedError));
+      return error(`${decodedError.name} ${decodedError.message}`);
     }
   }
 

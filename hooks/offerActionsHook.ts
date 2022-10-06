@@ -1,15 +1,17 @@
 import { useCallback, useContext } from "react";
 
+import { Metadata } from "@metaplex-foundation/mpl-token-metadata";
+import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
 
-import { errorCase, successCase } from "@methods/toast-error-handler";
+import { useSendTransaction } from "@hooks/useSendTransaction";
 import { StoreContext } from "@pages/_app";
 import { ILightboxOffer, IsubOfferData } from "@stores/Lightbox.store";
+import { cancelOffer, cancelSubOffer, claimCollateral, repayLoan } from "@utils/spl/unlocLoan";
+import { errorCase, successCase } from "@utils/toast-error-handler";
 
 interface Sanitized {
-  nftMint: string | PublicKey;
-  name: string;
-  image: string;
+  metadata: Metadata;
   offerKey: string;
 }
 
@@ -17,23 +19,26 @@ export interface OfferActionsHook {
   handleClaimCollateral: (offerKey: PublicKey) => Promise<void>;
   refreshSubOffers: (walletKeyProp: PublicKey) => Promise<void>;
   handleCancelCollateral: (nftMint: PublicKey, name: string) => Promise<void>;
-  createOffersHandler: ({ nftMint, name, image, offerKey }: Sanitized) => void;
+  createOffersHandler: ({ offerKey, metadata }: Sanitized) => void;
   handleConfirmOffer: (offer: ILightboxOffer) => void;
-  handleCancelOffer: (subOfferKey: string) => Promise<void>;
+  handleCancelOffer: (subOffer: PublicKey) => Promise<void>;
   handleDepositClick: () => void;
   handleEditOffer: (
     subOfferKey: string,
     values: IsubOfferData,
-    { nftMint, name, image, offerKey }: Sanitized,
+    { offerKey, metadata }: Sanitized,
   ) => void;
   handleRepayLoan: (subOfferKey: string) => Promise<void>;
 }
 
 export const OfferActionsHook = (): OfferActionsHook => {
   const store = useContext(StoreContext);
+  const { connection } = useConnection();
+  const { publicKey: wallet } = useWallet();
+  const sendAndConfirm = useSendTransaction();
 
   const openLightBox = useCallback((): void => {
-    store.Lightbox.setContent("processing");
+    store.Lightbox.setContent("circleProcessing");
     store.Lightbox.setCanClose(false);
     store.Lightbox.setVisible(true);
   }, [store.Lightbox]);
@@ -45,10 +50,10 @@ export const OfferActionsHook = (): OfferActionsHook => {
   }, [store.Lightbox, store.MyOffers]);
 
   const refreshSubOffers = useCallback(
-    async (walletKeyProp: PublicKey): Promise<void> => {
+    async (walletKey: PublicKey): Promise<void> => {
       try {
-        if (walletKeyProp) {
-          await store.MyOffers.getOffersByWallet(walletKeyProp);
+        if (walletKey) {
+          await store.MyOffers.getOffersByWallet(walletKey);
           await store.MyOffers.getNFTsData();
           await store.MyOffers.getSubOffersByOffers();
         }
@@ -70,27 +75,29 @@ export const OfferActionsHook = (): OfferActionsHook => {
       openLightBox();
 
       try {
-        await store.MyOffers.handleCancelCollateral(nftMint.toBase58());
+        if (!wallet) throw new Error("Wallet not connected");
+
+        const tx = cancelOffer(wallet, nftMint);
+        await sendAndConfirm(tx);
         successCase(`NFT ${name} returned to the wallet`, name);
         store.Lightbox.setCanClose(true);
         store.Lightbox.setVisible(false);
       } catch (e) {
+        console.log(e);
         errorCase(e);
       } finally {
         await closeLightBox();
       }
     },
-    [closeLightBox, openLightBox, store.Lightbox, store.MyOffers],
+    [closeLightBox, openLightBox, store.Lightbox, wallet, sendAndConfirm],
   );
 
   const createOffersHandler = useCallback(
-    ({ nftMint, name, image, offerKey }: Sanitized): void => {
-      store.MyOffers.setActiveNftMint(nftMint);
+    ({ offerKey, metadata }: Sanitized): void => {
+      store.MyOffers.setActiveNftMint(metadata.mint);
       store.MyOffers.setSanitizedOfferData({
-        name,
-        image,
         collateralId: offerKey,
-        nftMint,
+        metadata,
       });
       store.Lightbox.setContent("loanCreate");
       store.Lightbox.setVisible(true);
@@ -99,11 +106,14 @@ export const OfferActionsHook = (): OfferActionsHook => {
   );
 
   const handleClaimCollateral = useCallback(
-    async (offerKey: PublicKey) => {
+    async (subOffer: PublicKey) => {
       openLightBox();
 
       try {
-        await store.MyOffers.handleClaimCollateral(offerKey);
+        if (!wallet) throw new Error("Wallet not connected");
+
+        const tx = await claimCollateral(connection, wallet, subOffer);
+        await sendAndConfirm(tx);
         successCase("NFT Claimed");
       } catch (e) {
         errorCase(e);
@@ -111,15 +121,18 @@ export const OfferActionsHook = (): OfferActionsHook => {
         await closeLightBox();
       }
     },
-    [closeLightBox, openLightBox, store.MyOffers],
+    [closeLightBox, openLightBox, connection, sendAndConfirm, wallet],
   );
 
   const handleCancelOffer = useCallback(
-    async (subOfferKey: string) => {
+    async (subOffer: PublicKey) => {
       openLightBox();
 
       try {
-        await store.MyOffers.handleCancelSubOffer(subOfferKey);
+        if (!wallet) throw new Error("Wallet not connected");
+
+        const tx = await cancelSubOffer(connection, wallet, subOffer);
+        await sendAndConfirm(tx);
         successCase("Offer canceled");
       } catch (e) {
         errorCase(e);
@@ -127,19 +140,17 @@ export const OfferActionsHook = (): OfferActionsHook => {
         await closeLightBox();
       }
     },
-    [closeLightBox, openLightBox, store.MyOffers],
+    [closeLightBox, openLightBox, sendAndConfirm, connection, wallet],
   );
 
   const handleEditOffer = useCallback(
-    (subOfferKey: string, values: IsubOfferData, { nftMint, name, image, offerKey }: Sanitized) => {
+    (subOfferKey: string, values: IsubOfferData, { offerKey, metadata }: Sanitized) => {
       store.Lightbox.setActiveSubOffer(subOfferKey);
       store.Lightbox.setActiveSubOfferData(values);
 
       store.MyOffers.setSanitizedOfferData({
-        name,
-        image,
         collateralId: offerKey,
-        nftMint,
+        metadata,
       });
       store.Lightbox.setContent("loanUpdate");
       store.Lightbox.setCanClose(true);
@@ -153,7 +164,10 @@ export const OfferActionsHook = (): OfferActionsHook => {
       openLightBox();
 
       try {
-        await store.MyOffers.handleRepayLoan(subOfferKey);
+        if (!wallet) throw new Error("Wallet not connected");
+        const subOffer = new PublicKey(subOfferKey);
+        const tx = await repayLoan(connection, wallet, subOffer);
+        await sendAndConfirm(tx);
         successCase("Loan Repayed, NFT is back in your wallet");
       } catch (e) {
         errorCase(e);
@@ -161,7 +175,7 @@ export const OfferActionsHook = (): OfferActionsHook => {
         await closeLightBox();
       }
     },
-    [closeLightBox, openLightBox, store.MyOffers],
+    [closeLightBox, openLightBox, connection, sendAndConfirm, wallet],
   );
 
   const handleConfirmOffer = useCallback(

@@ -1,11 +1,10 @@
 import { useContext, useMemo, useState, useCallback } from "react";
 
-import { observer } from "mobx-react";
+import { observer } from "mobx-react-lite";
 import { Form, Field } from "react-final-form";
 import { Decorator, getIn } from "final-form";
 import { StoreContext } from "@pages/_app";
 import { calculateRepayValue } from "@utils/loansMath";
-import { BlobLoader } from "@components/layout/blobLoader";
 import { getDecimalsForLoanAmount } from "@integration/getDecimalForLoanAmount";
 import { currencyMints } from "@constants/currency";
 import { getDurationFromContractData } from "@utils/timeUtils/timeUtils";
@@ -16,8 +15,13 @@ import { SwitchAdapter } from "./switchAdapter";
 import { SelectAdapter } from "./selectAdapter";
 import { formatOptions } from "@constants/config";
 import { SliderAdapter } from "./sliderAdapter";
-import { errorCase, successCase } from "@methods/toast-error-handler";
+import { errorCase, successCase } from "@utils/toast-error-handler";
 import { LoanDetails } from "@components/lightboxes/Loan/loanDetails";
+import { updateSubOffer } from "@utils/spl/unlocLoan";
+import { PublicKey } from "@solana/web3.js";
+import { useConnection, useWallet } from "@solana/wallet-adapter-react";
+import { CircleProcessing } from "../circleProcessing";
+import { useSendTransaction } from "@hooks/useSendTransaction";
 
 interface CreateLoanProps {
   mode: "new" | "update";
@@ -47,7 +51,9 @@ const getFormValues = (
 
 export const CreateLoan = observer(({ mode }: CreateLoanProps) => {
   const store = useContext(StoreContext);
-  const { connected, wallet, walletKey } = store.Wallet;
+  const { connection } = useConnection();
+  const { publicKey: wallet } = useWallet();
+  const sendAndConfirm = useSendTransaction();
   const { activeSubOffer, activeSubOfferData } = store.Lightbox;
 
   const [isDetails, setDetails] = useState(false);
@@ -122,8 +128,8 @@ export const CreateLoan = observer(({ mode }: CreateLoanProps) => {
   );
 
   const onSubmit = async (values: Values) => {
-    if (!connected || !wallet || !walletKey) {
-      return;
+    if (!connection || !wallet) {
+      throw Error("Connect your wallet");
     }
     const { amount, duration, apr, token, total } = values;
 
@@ -152,13 +158,10 @@ export const CreateLoan = observer(({ mode }: CreateLoanProps) => {
       store.Lightbox.setCanClose(false);
       setProcessing(true);
       try {
-        await store.MyOffers.handleEditSubOffer(
-          Number(amount),
-          Number(duration),
-          Number(apr),
-          Number(activeSubOfferData.minRepaidNumerator),
-          activeSubOffer,
-        );
+        const subOffer = new PublicKey(activeSubOffer);
+        const tx = await updateSubOffer(connection, wallet, subOffer, apr, duration, amount);
+        await sendAndConfirm(tx);
+
         setProcessing(false);
         successCase("Changes Saved");
       } catch (e: any) {
@@ -180,8 +183,7 @@ export const CreateLoan = observer(({ mode }: CreateLoanProps) => {
 
   return processing ? (
     <div className="create-offer-processing">
-      <BlobLoader />
-      <span>Processing Transaction</span>
+      <CircleProcessing />
     </div>
   ) : (
     <Form<Values>
