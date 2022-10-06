@@ -1,0 +1,51 @@
+.profile {
+  &__layout {
+    display: flex;
+    flex-direction: column;
+    row-gap: $mr-xl;
+    margin: $mr-2xl 0 $mr-xl;
+  }
+
+  &__header {
+    display: flex;
+    width: 100%;
+    gap: $mr-2rem 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+
+    @media (max-width: $bp-phone) {
+      width: fit-content;
+    }
+
+    @media (max-width: 1127px) {
+    }
+
+    & > .col {
+      @include theme-aware("background-color", "color-accent");
+      border-radius: $brd-rds-2tn;
+
+      //@media (max-width: 1127px) {
+      //  flex: 1;
+      //}
+
+      &:not(:last-child) {
+        @media (max-width: $bp-phone) {
+          border-radius: 0;
+          border-bottom: 2px solid;
+          @include theme-aware("border-color", "profile-separator");
+        }
+      }
+    }
+
+    @media (max-width: $bp-phone) {
+      margin: 0 14px;
+      gap: 0 20px;
+    }
+  }
+
+  &__stake-accounts {
+    display: flex;
+    flex-direction: column;
+    row-gap: $mr-md;
+  }
+}

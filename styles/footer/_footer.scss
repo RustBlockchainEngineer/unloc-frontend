@@ -1,6 +1,6 @@
 .footer {
   @include theme-aware("border-color", color-primary);
-  width: $pg-col;
+  width: 100%;
 
   display: flex;
   align-items: center;

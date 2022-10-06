@@ -153,6 +153,9 @@
   &--USDC {
     @include theme-aware("background-image", "icon-USDC");
   }
+  &--UNLOC {
+    @include theme-aware("background-image", "icon-UNLOC");
+  }
 }
 
 .icon--fb {

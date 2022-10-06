@@ -6,7 +6,7 @@ import { errorCase, successCase } from "@utils/toast-error-handler";
 import { observer } from "mobx-react-lite";
 
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
-import { createSubOffer } from "@utils/spl/unlocLoan";
+import { createSubOffer } from "@utils/spl/unloc-loan";
 import { PublicKey } from "@solana/web3.js";
 import { useOffChainMetadata } from "@hooks/useOffChainMetadata";
 import { useSendTransaction } from "@hooks/useSendTransaction";

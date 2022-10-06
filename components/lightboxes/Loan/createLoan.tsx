@@ -17,7 +17,7 @@ import { formatOptions } from "@constants/config";
 import { SliderAdapter } from "./sliderAdapter";
 import { errorCase, successCase } from "@utils/toast-error-handler";
 import { LoanDetails } from "@components/lightboxes/Loan/loanDetails";
-import { updateSubOffer } from "@utils/spl/unlocLoan";
+import { updateSubOffer } from "@utils/spl/unloc-loan";
 import { PublicKey } from "@solana/web3.js";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { CircleProcessing } from "../circleProcessing";

@@ -5,6 +5,8 @@ import { SingleOfferStore } from "./SingleOffer.store";
 import { MyOffersStore } from "./MyOffers.store";
 import { LightboxStore } from "./Lightbox.store";
 import { GlobalStateStore } from "./GlobalState.store";
+import { StakingStore } from "./Staking.store";
+import { ProfileStore } from "@stores/Profile.store";
 export class RootStore {
   Wallet: WalletStore;
   Offers: OffersStore;
@@ -13,6 +15,8 @@ export class RootStore {
   MyOffers: MyOffersStore;
   Lightbox: LightboxStore;
   GlobalState: GlobalStateStore;
+  StakingStore: StakingStore;
+  ProfileStore: ProfileStore;
 
   constructor() {
     this.Wallet = new WalletStore(this);
@@ -22,6 +26,8 @@ export class RootStore {
     this.MyOffers = new MyOffersStore(this);
     this.Lightbox = new LightboxStore(this);
     this.GlobalState = new GlobalStateStore(this);
+    this.StakingStore = new StakingStore(this);
+    this.ProfileStore = new ProfileStore(this);
   }
 }
 

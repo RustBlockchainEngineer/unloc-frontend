@@ -21,6 +21,7 @@
     "lint:eslint": "eslint \"**/*.{ts,tsx}\" --cache"
   },
   "dependencies": {
+    "@formkit/auto-animate": "^1.0.0-beta.3",
     "@metaplex-foundation/beet": "^0.4.0",
     "@metaplex-foundation/beet-solana": "^0.3.0",
     "@metaplex-foundation/cusper": "^0.0.2",
@@ -37,6 +38,7 @@
     "@solana/wallet-adapter-wallets": "^0.15.5",
     "@solana/web3.js": "^1.56.2",
     "@unloc-dev/unloc-loan-solita": "^3.0.1",
+    "@unloc-dev/unloc-staking-solita": "^2.1.0",
     "axios": "^0.26.1",
     "dayjs": "^1.11.2",
     "dotenv": "^16.0.0",
@@ -48,6 +50,7 @@
     "next": "12.1.2",
     "rc-slider": "^10.0.0",
     "react": "^18.0.0",
+    "react-circular-progressbar": "^2.1.0",
     "react-dom": "18.0.0",
     "react-final-form": "^6.5.9",
     "react-popper-tooltip": "^4.3.1",

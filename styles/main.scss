@@ -44,6 +44,11 @@
 @import "./myOffers/myOffersTop";
 @import "./myOffers/myOffersWrap";
 
+@import "./profilePage/header";
+@import "./profilePage/page";
+@import "./profilePage/stakerow";
+@import "./profilePage/create";
+
 @import "./lightboxBase";
 @import "./NFTCollateral";
 @import "./createLoan";
@@ -79,7 +84,8 @@ body {
 }
 
 .devnet-container {
-  width: $pg-col;
+  width: 100%;
+  max-width: $pg-col;
   margin: 0 auto;
   padding-top: $mr-lg;
 

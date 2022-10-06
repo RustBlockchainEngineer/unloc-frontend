@@ -7,7 +7,7 @@ import { PublicKey } from "@solana/web3.js";
 import { useSendTransaction } from "@hooks/useSendTransaction";
 import { StoreContext } from "@pages/_app";
 import { ILightboxOffer, IsubOfferData } from "@stores/Lightbox.store";
-import { cancelOffer, cancelSubOffer, claimCollateral, repayLoan } from "@utils/spl/unlocLoan";
+import { cancelOffer, cancelSubOffer, claimCollateral, repayLoan } from "@utils/spl/unloc-loan";
 import { errorCase, successCase } from "@utils/toast-error-handler";
 
 interface Sanitized {
