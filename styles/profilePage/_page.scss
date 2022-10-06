@@ -11,13 +11,22 @@
     width: 100%;
     gap: $mr-2rem 20px;
     flex-wrap: wrap;
+    justify-content: center;
+
     @media (max-width: $bp-phone) {
       width: fit-content;
+    }
+
+    @media (max-width: 1127px) {
     }
 
     & > .col {
       @include theme-aware("background-color", "color-accent");
       border-radius: $brd-rds-2tn;
+
+      //@media (max-width: 1127px) {
+      //  flex: 1;
+      //}
 
       &:not(:last-child) {
         @media (max-width: $bp-phone) {

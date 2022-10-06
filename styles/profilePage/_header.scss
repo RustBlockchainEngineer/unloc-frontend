@@ -7,6 +7,7 @@
     gap: $mr-md;
     display: flex;
     padding: $mr-2rem;
+    align-items: center;
   }
 
   &__num {
@@ -17,7 +18,6 @@
     font-weight: $wg-hv;
     text-transform: uppercase;
     padding: 0 $mr-sm;
-    margin-top: 8%;
 
     .number {
       font-size: 40px;
@@ -84,6 +84,10 @@
 
   &__plus {
     padding: $mr-2rem $mr-lg;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
 
     .title {
       display: block;
@@ -94,7 +98,7 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      margin-top: $mr-sm;
+      //margin-top: $mr-sm;
       background-color: transparent;
 
       .button--plus {
@@ -175,6 +179,11 @@
     align-items: center;
     flex-grow: 1;
 
+    @media (max-width: 1127px) {
+      width: 100%;
+      max-width: 842px;
+      flex-grow: unset;
+    }
     .top {
       font-weight: $wg-hv;
     }

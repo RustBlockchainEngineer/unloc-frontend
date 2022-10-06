@@ -1,10 +1,51 @@
 .stakerow {
-  height: 120px;
+  //height: 120px;
   @include theme-aware("background-color", "color-accent");
   @include theme-aware("color", "color-content");
   border-radius: $brd-rds-2tn;
   display: flex;
   transition: background-color 50ms ease-in-out;
+  //display: grid;
+
+  @media (max-width: 1127px) {
+    display: grid;
+    grid-template-columns: 2fr 6fr 9fr /*12fr*/ 3fr /*18fr*/;
+    //grid-template-rows: 120px 120px;
+
+    & > *:nth-child(4) {
+      grid-column-start: 1;
+      grid-column-end: 3;
+    }
+
+    & > *:nth-child(6) {
+      grid-column-start: 3;
+      grid-column-end: 6;
+    }
+
+    & > *:nth-child(4),
+    & > *:nth-child(6) {
+      border-top: 1px solid;
+      @include theme-aware("border-color", "profile-separator");
+      grid-row-start: 2;
+      grid-row-end: 3;
+    }
+  }
+
+  @media (max-width: 639px) {
+    & > *:nth-child(4),
+    & > *:nth-child(6) {
+      grid-column-start: 1;
+      grid-column-end: 6;
+    }
+    //& > *:nth-child(4) {
+    //  grid-column-start: 1;
+    //  grid-column-end: 6;
+    //}
+    & > *:nth-child(6) {
+      grid-row-start: 4;
+      grid-row-end: 5;
+    }
+  }
 
   &:hover {
     @include theme-aware("background-color", "color-accentHover");
@@ -117,13 +158,14 @@
 
   &__progress {
     width: 96px;
-    margin-bottom: 6px;
+    margin: 0 auto 6px;
   }
 
   &__actions {
     display: flex;
     gap: $mr-md;
     width: 90%;
+    justify-content: center;
 
     .btn {
       display: inline-block;

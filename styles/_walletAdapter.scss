@@ -89,6 +89,10 @@
   visibility: hidden;
   gap: $mr-sm;
   transition: opacity 200ms ease, transform 200ms ease, visibility 200ms;
+
+  @media (max-width: 1310px) {
+    right: 0;
+  }
 }
 
 .wallet-adapter-dropdown-list-active {
