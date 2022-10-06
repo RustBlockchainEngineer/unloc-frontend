@@ -23,12 +23,16 @@ import {
 import { BN } from "bn.js";
 import { isAccountInitialized } from "./unloc-loan";
 
-// CONSTANTS
+///////////////
+// CONSTANTS //
+///////////////
 export const STATE_SEED = Buffer.from("state");
 export const EXTRA_SEED = Buffer.from("extra");
 export const UNLOC_MINT = new PublicKey("Bt8KVz26uLrXrMzRKaJgX9rYd2VcfBh8J67D4s3kRmut");
 
-// PDAs
+/////////////////
+// PDA helpers //
+/////////////////
 export const getStakingState = (programId: PublicKey) => {
   return PublicKey.findProgramAddressSync([STATE_SEED], programId)[0];
 };
@@ -48,6 +52,9 @@ export const getPoolUser = (farmPool: PublicKey, authority: PublicKey, stakeSeed
   )[0];
 };
 
+/////////////////////////
+// Instruction helpers //
+/////////////////////////
 export const createUser = (wallet: PublicKey, stakeSeed: number) => {
   const state = getStakingState(UNLOC_STAKING_PID);
   const pool = getPool(UNLOC_MINT, UNLOC_STAKING_PID);
