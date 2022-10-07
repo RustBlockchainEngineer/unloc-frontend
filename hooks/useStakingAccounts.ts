@@ -5,11 +5,9 @@ import { Connection, PublicKey } from "@solana/web3.js";
 import { FarmPoolUserAccount } from "@unloc-dev/unloc-staking-solita";
 import useSWR from "swr";
 
-import { UNLOC_STAKING_PID } from "@constants/config";
-import { range } from "@utils/common";
 import { requestLogger } from "@utils/middleware";
 import { GmaBuilder } from "@utils/spl/GmaBuilder";
-import { getPool, getPoolUser, UNLOC_MINT } from "@utils/spl/unloc-staking";
+import { getUserStakingsKey } from "@utils/spl/unloc-staking";
 
 type StakingAccountState = {
   readonly address: PublicKey;
@@ -22,9 +20,8 @@ const GET_STAKING_ACCOUNTS_KEY = "GET_USER_STAKING_ACCOUNTS";
 const fetchUserStakingAccounts =
   (connection: Connection) => async (_: string, walletBase58: string) => {
     const wallet = new PublicKey(walletBase58);
-    const pool = getPool(UNLOC_MINT, UNLOC_STAKING_PID);
-    const farmPoolAddresses = range(1, 20).map((seed) => getPoolUser(pool, wallet, seed));
-    const accounts = await GmaBuilder.make(connection, farmPoolAddresses).get();
+    const farmPoolAddresses = getUserStakingsKey(wallet);
+    const accounts = await GmaBuilder.make(connection, [farmPoolAddresses]).get();
 
     return accounts.map((maybeAccount) => ({
       address: maybeAccount.publicKey,

@@ -1,217 +1,194 @@
-import { DEFAULT_PROGRAMS, UNLOC_STAKING_PID } from "@constants/config";
 import { bignum } from "@metaplex-foundation/beet";
+import { getAssociatedTokenAddressSync } from "@solana/spl-token";
+import { Connection, PublicKey, Transaction, TransactionInstruction } from "@solana/web3.js";
 import {
-  createAssociatedTokenAccountInstruction,
-  getAssociatedTokenAddressSync,
-} from "@solana/spl-token";
-import {
-  Connection,
-  PublicKey,
-  SYSVAR_CLOCK_PUBKEY,
-  Transaction,
-  TransactionInstruction,
-} from "@solana/web3.js";
-import {
+  AllowedStakingDurationMonths,
   createCreateUserInstruction,
-  createStakeInstruction,
-  createUnstakeInstruction,
-  createHarvestInstruction,
-  FarmPoolAccount,
-  FarmPoolUserAccount,
-  StateAccount,
-} from "@unloc-dev/unloc-staking-solita";
-import { BN } from "bn.js";
-import { isAccountInitialized } from "./unloc-loan";
+  createIncreaseUserStorageInstruction,
+  createMergeAccountsInstruction,
+  createRelockAccountInstruction,
+  createStakeTokensInstruction,
+  createUnstakeTokensInstruction,
+  PoolInfo,
+  PROGRAM_ADDRESS,
+  RelockOption,
+  WithdrawOption,
+} from "@unloc-dev/unloc-sdk-staking";
 
 ///////////////
 // CONSTANTS //
 ///////////////
-export const STATE_SEED = Buffer.from("state");
-export const EXTRA_SEED = Buffer.from("extra");
-export const UNLOC_MINT = new PublicKey("Bt8KVz26uLrXrMzRKaJgX9rYd2VcfBh8J67D4s3kRmut");
+export const STAKING_PID: PublicKey = new PublicKey(PROGRAM_ADDRESS);
+export const UNLOC_STAKING = Buffer.from("unloc-staking");
+export const LOCKED_TOKENS = Buffer.from("locked-tokens");
+export const USER_STAKE_INFO = Buffer.from("user-stake-info");
+export const FLEXI = Buffer.from("always-unlocked");
+export const LIQUIDITY_MINING = Buffer.from("2-months-lock");
+export const UNLOC_SCORE = Buffer.from("unloc-score");
+export const STAKING_POOL = Buffer.from("staking-pool");
+export const DATA_ACCOUNT = Buffer.from("data-account");
+export const STAKING_VAULT = Buffer.from("staking-vault");
+export const REWARDS_VAULT = Buffer.from("rewards-vault");
+export const TOKEN_ACCOUNT = Buffer.from("token-account");
+export const PENALITY_DEPOSIT_VAULT = Buffer.from("penality-deposit-vault");
+export const POOL_UPDATE_CONFIGS = Buffer.from("pool-update-configs");
 
 /////////////////
 // PDA helpers //
 /////////////////
-export const getStakingState = (programId: PublicKey) => {
-  return PublicKey.findProgramAddressSync([STATE_SEED], programId)[0];
-};
-
-export const getExtraConfig = (programId: PublicKey) => {
-  return PublicKey.findProgramAddressSync([EXTRA_SEED], programId)[0];
-};
-
-export const getPool = (mint: PublicKey, programId: PublicKey) => {
-  return PublicKey.findProgramAddressSync([mint.toBuffer()], programId)[0];
-};
-
-export const getPoolUser = (farmPool: PublicKey, authority: PublicKey, stakeSeed: number) => {
+export const getStakingPoolKey = (programId: PublicKey = STAKING_PID) => {
   return PublicKey.findProgramAddressSync(
-    [farmPool.toBuffer(), authority.toBuffer(), new BN(stakeSeed).toArrayLike(Buffer, "le", 1)],
-    UNLOC_STAKING_PID,
+    [UNLOC_STAKING, STAKING_POOL, DATA_ACCOUNT],
+    programId,
   )[0];
 };
-
+export const getUserStakingsKey = (
+  userWallet: PublicKey,
+  poolKey: PublicKey = getStakingPoolKey(),
+  programId: PublicKey = STAKING_PID,
+) => {
+  return PublicKey.findProgramAddressSync(
+    [UNLOC_STAKING, USER_STAKE_INFO, userWallet.toBuffer(), poolKey.toBuffer(), DATA_ACCOUNT],
+    programId,
+  )[0];
+};
 /////////////////////////
 // Instruction helpers //
 /////////////////////////
-export const createUser = (wallet: PublicKey, stakeSeed: number) => {
-  const state = getStakingState(UNLOC_STAKING_PID);
-  const pool = getPool(UNLOC_MINT, UNLOC_STAKING_PID);
-  const user = getPoolUser(pool, wallet, stakeSeed);
-  const ix = createCreateUserInstruction(
-    { authority: wallet, payer: wallet, state, pool, user, ...DEFAULT_PROGRAMS },
-    { stakeSeed },
-    UNLOC_STAKING_PID,
-  );
-  return ix;
-};
-
-export const createStake = async (
-  connection: Connection,
-  wallet: PublicKey,
-  stakeSeed: number,
-  amount: bignum,
-  lockDuration: bignum,
-) => {
+export const createStakingUser = async (userWallet: PublicKey) => {
+  const poolInfo = getStakingPoolKey();
+  const userStakingsInfo = getUserStakingsKey(userWallet);
   const instructions: TransactionInstruction[] = [];
-  const state = getStakingState(UNLOC_STAKING_PID);
-  const extraRewardAccount = getExtraConfig(UNLOC_STAKING_PID);
-  const pool = getPool(UNLOC_MINT, UNLOC_STAKING_PID);
-  const user = getPoolUser(pool, wallet, stakeSeed);
-  const userVault = getAssociatedTokenAddressSync(UNLOC_MINT, wallet);
-
-  const stateInfo = await StateAccount.fromAccountAddress(connection, state);
-  const poolInfo = await FarmPoolAccount.fromAccountAddress(connection, pool);
-  const userInfo = await connection.getAccountInfo(user);
-  if (!userInfo) {
-    instructions.push(createUser(wallet, stakeSeed));
-  }
-
   instructions.push(
-    createStakeInstruction(
-      {
-        authority: wallet,
-        state,
-        pool,
-        user,
-        mint: UNLOC_MINT,
-        extraRewardAccount,
-        feeVault: stateInfo.feeVault,
-        poolVault: poolInfo.vault,
-        userVault,
-        ...DEFAULT_PROGRAMS,
-      },
-      { amount, lockDuration },
-      UNLOC_STAKING_PID,
-    ),
+    createCreateUserInstruction({
+      poolInfo,
+      userWallet,
+      userStakingsInfo,
+    }),
   );
 
   return new Transaction().add(...instructions);
 };
-
-export const unstake = async (
+export const depositTokens = async (
   connection: Connection,
-  wallet: PublicKey,
+  userWallet: PublicKey,
   amount: bignum,
-  farmPoolUser: PublicKey,
+  lockDuration: AllowedStakingDurationMonths,
 ) => {
-  const state = getStakingState(UNLOC_STAKING_PID);
-  const extraRewardAccount = getExtraConfig(UNLOC_STAKING_PID);
-  const pool = getPool(UNLOC_MINT, UNLOC_STAKING_PID);
-  const userVault = getAssociatedTokenAddressSync(UNLOC_MINT, wallet);
-
-  const stateInfo = await StateAccount.fromAccountAddress(connection, state);
-  const poolInfo = await FarmPoolAccount.fromAccountAddress(connection, pool);
-
+  const poolInfo = getStakingPoolKey();
+  const poolData = await PoolInfo.fromAccountAddress(connection, poolInfo);
+  const userStakingsInfo = getUserStakingsKey(userWallet);
+  const userTokenAccountToDebit = getAssociatedTokenAddressSync(poolData.tokenMint, userWallet);
   const instructions: TransactionInstruction[] = [];
   instructions.push(
-    createUnstakeInstruction(
+    createStakeTokensInstruction(
       {
-        authority: wallet,
-        state,
-        pool,
-        user: farmPoolUser,
-        mint: UNLOC_MINT,
-        extraRewardAccount,
-        feeVault: stateInfo.feeVault,
-        poolVault: poolInfo.vault,
-        userVault,
-        ...DEFAULT_PROGRAMS,
+        userWallet,
+        poolInfo,
+        userStakingsInfo,
+        userTokenAccountToDebit,
+        stakingVault: poolData.stakingVault,
+        tokenMint: poolData.tokenMint,
       },
       {
         amount,
+        lockDuration,
       },
-      UNLOC_STAKING_PID,
     ),
   );
 
   return new Transaction().add(...instructions);
 };
 
-export const harvest = async (
+export const withdrawTokens = async (
   connection: Connection,
-  wallet: PublicKey,
-  farmPoolUser: PublicKey,
+  userWallet: PublicKey,
+  withdrawOption: WithdrawOption,
 ) => {
-  const state = getStakingState(UNLOC_STAKING_PID);
-  const extraRewardAccount = getExtraConfig(UNLOC_STAKING_PID);
-  const pool = getPool(UNLOC_MINT, UNLOC_STAKING_PID);
-  const userVault = getAssociatedTokenAddressSync(UNLOC_MINT, wallet);
-  const stateInfo = await StateAccount.fromAccountAddress(connection, state);
-
+  const poolInfo = getStakingPoolKey();
+  const poolData = await PoolInfo.fromAccountAddress(connection, poolInfo);
+  const userStakingsInfo = getUserStakingsKey(userWallet);
+  const userTokenAccountToCredit = getAssociatedTokenAddressSync(poolData.tokenMint, userWallet);
   const instructions: TransactionInstruction[] = [];
-  if (!(await isAccountInitialized(connection, userVault))) {
-    instructions.push(
-      createAssociatedTokenAccountInstruction(wallet, userVault, wallet, UNLOC_MINT),
-    );
-  }
-
   instructions.push(
-    createHarvestInstruction(
+    createUnstakeTokensInstruction(
       {
-        authority: wallet,
-        state,
-        pool,
-        user: farmPoolUser,
-        mint: UNLOC_MINT,
-        userVault,
-        extraRewardAccount,
-        rewardVault: stateInfo.rewardVault,
-        clock: SYSVAR_CLOCK_PUBKEY,
+        userWallet,
+        poolInfo,
+        userStakingsInfo,
+        userTokenAccountToCredit,
+        stakingVault: poolData.stakingVault,
+        rewardsVault: poolData.rewardsVault,
+        tokenMint: poolData.tokenMint,
+        penalityDepositVault: poolData.penalityDepositVault,
       },
-      UNLOC_STAKING_PID,
+      {
+        withdrawOption,
+      },
     ),
   );
-
   return new Transaction().add(...instructions);
 };
 
-// Used for optimistic updates
-export const getFarmPoolUserObject = (
-  wallet: PublicKey,
-  amount: bignum,
-  stakeSeed: number,
-  extraReward: number,
-  lastStakeTime: number,
-  lockDuration: number,
+export const reallocUserAccount = async (userWallet: PublicKey) => {
+  const poolInfo = getStakingPoolKey();
+  const userStakingsInfo = getUserStakingsKey(userWallet);
+  const instructions: TransactionInstruction[] = [];
+  instructions.push(
+    createIncreaseUserStorageInstruction({
+      userWallet,
+      poolInfo,
+      userStakingsInfo,
+    }),
+  );
+  return new Transaction().add(...instructions);
+};
+
+export const relockStakingAccount = async (
+  userWallet: PublicKey,
+  relockOption: RelockOption,
+  lockDuration: AllowedStakingDurationMonths,
 ) => {
-  return FarmPoolUserAccount.fromArgs({
-    amount,
-    authority: wallet,
-    stakeSeed,
-    extraReward,
-    lastStakeTime,
-    lockDuration,
-    // everything below is ignored
-    bump: 0,
-    pool: PublicKey.default,
-    profileLevel: 0,
-    rewardAmount: 0,
-    rewardDebt: 0,
-    unlocScore: 0,
-    reserved1: 0,
-    reserved2: 0,
-    reserved3: 0,
-  });
+  const poolInfo = getStakingPoolKey();
+  const userStakingsInfo = getUserStakingsKey(userWallet);
+  const instructions: TransactionInstruction[] = [];
+  instructions.push(
+    createRelockAccountInstruction(
+      {
+        userWallet,
+        poolInfo,
+        userStakingsInfo,
+      },
+      {
+        relockOption,
+        lockDuration,
+      },
+    ),
+  );
+  return new Transaction().add(...instructions);
+};
+export const mergeStakingAccounts = async (
+  userWallet: PublicKey,
+  index1: number,
+  index2: number,
+  lockDuration: AllowedStakingDurationMonths,
+) => {
+  const poolInfo = getStakingPoolKey();
+  const userStakingsInfo = getUserStakingsKey(userWallet);
+  const instructions: TransactionInstruction[] = [];
+  instructions.push(
+    createMergeAccountsInstruction(
+      {
+        userWallet,
+        poolInfo,
+        userStakingsInfo,
+      },
+      {
+        index1,
+        index2,
+        lockDuration,
+      },
+    ),
+  );
+  return new Transaction().add(...instructions);
 };

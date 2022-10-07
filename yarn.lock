@@ -1587,6 +1587,15 @@
     "@solana/web3.js" "^1.32.0"
     start-server-and-test "^1.14.0"
 
+"@solana/spl-token@^0.3.5":
+  version "0.3.5"
+  resolved "https://registry.yarnpkg.com/@solana/spl-token/-/spl-token-0.3.5.tgz#cabf9f92d755589420b46e457b9b10a879e755aa"
+  integrity sha512-0bGC6n415lGjKu02gkLOIpP1wzndSP0SHwN9PefJ+wKAhmfU1rl3AV1Pa41uap2kzSCD6F9642ngNO8KXPvh/g==
+  dependencies:
+    "@solana/buffer-layout" "^4.0.0"
+    "@solana/buffer-layout-utils" "^0.2.0"
+    buffer "^6.0.3"
+
 "@solana/wallet-adapter-base@^0.9.17":
   version "0.9.17"
   resolved "https://registry.yarnpkg.com/@solana/wallet-adapter-base/-/wallet-adapter-base-0.9.17.tgz#b388fea0ec6da40e23342068a4cfa9be65dc8f63"
@@ -2329,6 +2338,13 @@
   dependencies:
     "@solana/spl-token" "^0.2.0"
     "@solana/web3.js" "^1.47.3"
+
+"@unloc-dev/unloc-sdk-staking@^0.0.1":
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/@unloc-dev/unloc-sdk-staking/-/unloc-sdk-staking-0.0.1.tgz#89f512ee72ff696e24afc7d44196b41ad12a356b"
+  integrity sha512-5NvO0hmrYzDUwFOLH0EBNXTV7EyWMii04JSAlaZ7kjpYBlJr1kvi/QBd4hJsMuRWEYnMlxptd/XJ5Scbkm4YmA==
+  dependencies:
+    "@solana/spl-token" "^0.3.5"
 
 "@unloc-dev/unloc-staking-solita@^2.1.0":
   version "2.1.0"

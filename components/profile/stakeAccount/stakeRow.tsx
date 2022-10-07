@@ -4,10 +4,8 @@ import { DurationProgress } from "./durationProgress";
 import { StakeRowType } from "../stakeRows";
 import { amountToUiAmount, numVal } from "@utils/bignum";
 import dayjs from "dayjs";
-import { useConnection, useWallet } from "@solana/wallet-adapter-react";
+import { useWallet } from "@solana/wallet-adapter-react";
 import { WalletNotConnectedError } from "@solana/wallet-adapter-base";
-import { harvest } from "@utils/spl/unloc-staking";
-import { useSendTransaction } from "@hooks/useSendTransaction";
 import { errorCase } from "@utils/toast-error-handler";
 
 export type StakeStatus = "flexi" | "unlocked" | "locked";
@@ -23,17 +21,17 @@ export const StakeRow = ({
   startUnix,
   endUnix,
 }: StakeRowType & { id: number }) => {
-  const { connection } = useConnection();
+  // const { connection } = useConnection();
   const { publicKey: wallet } = useWallet();
-  const sendAndConfirm = useSendTransaction();
+  // const sendAndConfirm = useSendTransaction();
   const pubkey = useMemo(() => compressAddress(4, address.toString()), [address]);
   const uiAmount = amountToUiAmount(amount, UNLOC_MINT_DECIMALS);
 
   const handleHarvest = async () => {
     try {
       if (!wallet) throw new WalletNotConnectedError();
-      const tx = await harvest(connection, wallet, address);
-      await sendAndConfirm(tx);
+      // const tx = await harvest(connection, wallet, address);
+      // await sendAndConfirm(tx);
     } catch (err) {
       console.log(err);
       errorCase(err);
