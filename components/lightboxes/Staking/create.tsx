@@ -11,6 +11,8 @@ import { useStakingAccounts } from "@hooks/useStakingAccounts";
 import BN from "bn.js";
 import { amountToUiAmount, val } from "@utils/bignum";
 import { formatOptions } from "@constants/config";
+import { useSendTransaction } from "@hooks/useSendTransaction";
+import { createStakingUser } from "@utils/spl/unloc-staking";
 
 type InputEvent = ChangeEvent<HTMLInputElement>;
 
@@ -67,6 +69,7 @@ export const CreateStake = observer(() => {
   } = useStakingAccounts();
   // const sendAndConfirm = useSendTransaction();
   const [apy, setApy] = useState(50);
+  const sendAndConfirm = useSendTransaction();
 
   // Get total staked amount
   const totalStaked = useMemo(
@@ -86,25 +89,9 @@ export const CreateStake = observer(() => {
     e.preventDefault();
     try {
       if (!wallet) throw new WalletNotConnectedError();
-      if (!accounts) return;
 
-      // const stakeSeed = accounts.findIndex((state) => !state.assigned);
-      // const { uiAmount, lockDuration } = StakingStore.createFormInputs;
-      // const amount = new BN(uiAmount).muln(10 ** 6);
-      // const tx = await createStake(connection, wallet, stakeSeed + 1, amount, lockDuration);
-
-      // Lightbox.setCanClose(false);
-      // Lightbox.setContent("circleProcessing");
-      // await sendAndConfirm(tx);
-
-      // // Optimistic
-      // const unixNow = Math.floor(Date.now() / 1000);
-      // const info = getFarmPoolUserObject(wallet, amount, stakeSeed + 1, 0, unixNow, lockDuration);
-      // const address = accounts[stakeSeed].address;
-      // const newAccounts = [...accounts];
-      // newAccounts[stakeSeed] = { address, assigned: true, info };
-
-      // mutate(newAccounts, { rollbackOnError: true, populateCache: true, revalidate: true });
+      const tx = await createStakingUser(wallet);
+      await sendAndConfirm(tx, "confirmed", true);
     } catch (err) {
       errorCase(err);
     } finally {

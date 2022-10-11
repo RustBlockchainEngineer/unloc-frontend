@@ -4,9 +4,17 @@ import { DurationProgress } from "./durationProgress";
 import { StakeRowType } from "../stakeRows";
 import { amountToUiAmount, numVal } from "@utils/bignum";
 import dayjs from "dayjs";
-import { useWallet } from "@solana/wallet-adapter-react";
+import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { WalletNotConnectedError } from "@solana/wallet-adapter-base";
 import { errorCase } from "@utils/toast-error-handler";
+import { useSendTransaction } from "@hooks/useSendTransaction";
+import { depositTokens, relockStakingAccount, withdrawTokens } from "@utils/spl/unloc-staking";
+import { BN } from "bn.js";
+import {
+  AllowedStakingDurationMonths,
+  RelockType,
+  WithdrawType,
+} from "@unloc-dev/unloc-sdk-staking";
 
 export type StakeStatus = "flexi" | "unlocked" | "locked";
 
@@ -21,17 +29,49 @@ export const StakeRow = ({
   startUnix,
   endUnix,
 }: StakeRowType & { id: number }) => {
-  // const { connection } = useConnection();
+  const { connection } = useConnection();
   const { publicKey: wallet } = useWallet();
-  // const sendAndConfirm = useSendTransaction();
+  const sendAndConfirm = useSendTransaction();
   const pubkey = useMemo(() => compressAddress(4, address.toString()), [address]);
   const uiAmount = amountToUiAmount(amount, UNLOC_MINT_DECIMALS);
 
-  const handleHarvest = async () => {
+  const handleWithdraw = async () => {
     try {
       if (!wallet) throw new WalletNotConnectedError();
-      // const tx = await harvest(connection, wallet, address);
-      // await sendAndConfirm(tx);
+      const tx = await withdrawTokens(connection, wallet, {
+        withType: WithdrawType.Flexi,
+        index: 0,
+      });
+      await sendAndConfirm(tx, "confirmed", true);
+    } catch (err) {
+      console.log(err);
+      errorCase(err);
+    }
+  };
+  const handleRelock = async () => {
+    try {
+      if (!wallet) throw new WalletNotConnectedError();
+      const tx = await relockStakingAccount(
+        wallet,
+        { relockType: RelockType.Flexi, index: 0 },
+        AllowedStakingDurationMonths.Zero,
+      );
+      await sendAndConfirm(tx, "confirmed", true);
+    } catch (err) {
+      console.log(err);
+      errorCase(err);
+    }
+  };
+  const handleDeposit = async () => {
+    try {
+      if (!wallet) throw new WalletNotConnectedError();
+      const tx = await depositTokens(
+        connection,
+        wallet,
+        new BN(10 ** 6),
+        AllowedStakingDurationMonths.Zero,
+      );
+      await sendAndConfirm(tx, "confirmed", true);
     } catch (err) {
       console.log(err);
       errorCase(err);
@@ -53,13 +93,13 @@ export const StakeRow = ({
     let buttons = [];
     switch (status) {
       case "flexi":
-        buttons = ["Withdraw"];
+        buttons = ["Deposit", "Withdraw", "Relock"];
         break;
       case "unlocked":
-        buttons = ["Withdraw", "Harvest"];
+        buttons = ["Deposit", "Withdraw", "Relock"];
         break;
       case "locked":
-        buttons = ["Withdraw", "Harvest"];
+        buttons = ["Deposit", "Withdraw", "Relock"];
         break;
       default:
         throw Error("Stake status error");
@@ -67,19 +107,31 @@ export const StakeRow = ({
 
     return buttons.map((button) => {
       switch (button) {
-        case "Withdraw":
-          const locked = status === "locked";
+        // case "Withdraw":
+        //   const locked = status === "locked";
+        //   return (
+        //     <button
+        //       disabled={locked}
+        //       key={button}
+        //       className={`btn btn--md ${locked ? "btn--disabled" : "btn--primary"}`}>
+        //       {button}
+        //     </button>
+        //   );
+        case "Deposit":
           return (
-            <button
-              disabled={locked}
-              key={button}
-              className={`btn btn--md ${locked ? "btn--disabled" : "btn--primary"}`}>
+            <button onClick={handleDeposit} key={button} className="btn btn--md btn--primary">
               {button}
             </button>
           );
-        case "Harvest":
+        case "Withdraw":
           return (
-            <button onClick={handleHarvest} key={button} className="btn btn--md btn--primary">
+            <button onClick={handleWithdraw} key={button} className="btn btn--md btn--primary">
+              {button}
+            </button>
+          );
+        case "Relock":
+          return (
+            <button onClick={handleRelock} key={button} className="btn btn--md btn--primary">
               {button}
             </button>
           );

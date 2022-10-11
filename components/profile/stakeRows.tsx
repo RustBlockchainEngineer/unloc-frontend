@@ -1,4 +1,3 @@
-import { useSolanaUnixTime } from "@hooks/useSolanaUnixTime";
 import { useStakingAccounts } from "@hooks/useStakingAccounts";
 import { bignum } from "@metaplex-foundation/beet";
 import { PublicKey } from "@solana/web3.js";
@@ -17,17 +16,16 @@ export type StakeRowType = {
 
 export const StakeRows = () => {
   const { accounts } = useStakingAccounts();
-  const time = useSolanaUnixTime();
   const [parent] = useAutoAnimate<HTMLUListElement>();
 
   const rows = accounts?.reduce<StakeRowType[]>((rows, { info, address, assigned }) => {
     if (assigned && info) {
-      const endTimestamp = val(info.lastStakeTime).add(val(info.lockDuration));
-      const status: StakeStatus = val(info.lastStakeTime)
-        .add(endTimestamp)
-        .gten(time ?? 0)
-        ? "locked"
-        : "unlocked";
+      const status: StakeStatus =
+        // val(info.lastStakeTime)
+        // .add(endTimestamp)
+        // .gten(time ?? 0)
+        // ? "locked" :
+        "unlocked";
 
       const newRow: StakeRowType = {
         address: address,
