@@ -2,19 +2,15 @@ import { useMemo } from "react";
 
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { Connection, PublicKey } from "@solana/web3.js";
-import { FarmPoolUserAccount } from "@unloc-dev/unloc-staking-solita";
+import { UserStakingsInfo } from "@unloc-dev/unloc-sdk-staking";
 import useSWR from "swr";
 
-import { UNLOC_STAKING_PID } from "@constants/config";
-import { range } from "@utils/common";
 import { requestLogger } from "@utils/middleware";
-import { GmaBuilder } from "@utils/spl/GmaBuilder";
-import { getPool, getPoolUser, UNLOC_MINT } from "@utils/spl/unloc-staking";
+import { getUserStakingsKey } from "@utils/spl/unloc-staking";
 
 type StakingAccountState = {
   readonly address: PublicKey;
-  assigned: boolean;
-  info?: FarmPoolUserAccount;
+  info?: UserStakingsInfo;
 };
 
 const GET_STAKING_ACCOUNTS_KEY = "GET_USER_STAKING_ACCOUNTS";
@@ -22,15 +18,10 @@ const GET_STAKING_ACCOUNTS_KEY = "GET_USER_STAKING_ACCOUNTS";
 const fetchUserStakingAccounts =
   (connection: Connection) => async (_: string, walletBase58: string) => {
     const wallet = new PublicKey(walletBase58);
-    const pool = getPool(UNLOC_MINT, UNLOC_STAKING_PID);
-    const farmPoolAddresses = range(1, 20).map((seed) => getPoolUser(pool, wallet, seed));
-    const accounts = await GmaBuilder.make(connection, farmPoolAddresses).get();
+    const address = getUserStakingsKey(wallet);
 
-    return accounts.map((maybeAccount) => ({
-      address: maybeAccount.publicKey,
-      assigned: maybeAccount.exists,
-      info: maybeAccount.exists ? FarmPoolUserAccount.deserialize(maybeAccount.data)[0] : undefined,
-    }));
+    const info = await UserStakingsInfo.fromAccountAddress(connection, address, "confirmed");
+    return { address, info };
   };
 
 export const useStakingAccounts = () => {
@@ -38,10 +29,10 @@ export const useStakingAccounts = () => {
   const { publicKey } = useWallet();
   const fetcher = useMemo(() => fetchUserStakingAccounts(connection), [connection]);
 
-  const { error, data, mutate } = useSWR<StakingAccountState[], Error>(
+  const { error, data, mutate } = useSWR<StakingAccountState, Error>(
     publicKey ? [GET_STAKING_ACCOUNTS_KEY, publicKey.toString()] : null,
     fetcher,
-    { refreshInterval: 45000, use: [requestLogger] },
+    { refreshInterval: 45000, use: [requestLogger], errorRetryCount: 3 },
   );
 
   return {

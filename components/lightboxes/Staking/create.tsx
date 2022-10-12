@@ -1,27 +1,32 @@
 import { useStore } from "@hooks/useStore";
 import { WalletNotConnectedError } from "@solana/wallet-adapter-base";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
-import { createStake, getFarmPoolUserObject } from "@utils/spl/unloc-staking";
 import { observer } from "mobx-react-lite";
 import Slider from "rc-slider";
 import "rc-slider/assets/index.css";
-import { ChangeEvent, FormEvent, useMemo, useState } from "react";
-import { getDurationForContractData } from "@utils/timeUtils/timeUtils";
-import { useSendTransaction } from "@hooks/useSendTransaction";
+import { ChangeEvent, FormEvent, useState } from "react";
 import { errorCase } from "@utils/toast-error-handler";
 import { useStakingAccounts } from "@hooks/useStakingAccounts";
 import BN from "bn.js";
-import { amountToUiAmount, val } from "@utils/bignum";
+import { amountToUiAmount } from "@utils/bignum";
 import { formatOptions } from "@constants/config";
+import { useSendTransaction } from "@hooks/useSendTransaction";
+import {
+  convertDayDurationToEnum,
+  createStakingUserOptionally,
+  depositTokens,
+} from "@utils/spl/unloc-staking";
+import { Transaction } from "@solana/web3.js";
+import { UNLOC_MINT_DECIMALS } from "@components/profile/stakeAccount/stakeRow";
 
 type InputEvent = ChangeEvent<HTMLInputElement>;
 
 const sliderMarks = {
   0: { label: "No lock", style: { left: "3%" } },
   25: "30",
-  50: "60",
-  75: "90",
-  100: { label: "180", style: { left: "97%" } },
+  50: "90",
+  75: "180",
+  100: { label: "365", style: { left: "97%" } },
 };
 
 function markToDurationMapping(value: number) {
@@ -31,11 +36,11 @@ function markToDurationMapping(value: number) {
     case 25:
       return 30;
     case 50:
-      return 60;
-    case 75:
       return 90;
-    case 100:
+    case 75:
       return 180;
+    case 100:
+      return 365;
     default:
       return 0;
   }
@@ -62,47 +67,30 @@ export const CreateStake = observer(() => {
   const { StakingStore, Lightbox } = useStore();
   const { connection } = useConnection();
   const { publicKey: wallet } = useWallet();
-  const { accounts, isLoading, mutate } = useStakingAccounts();
-  const sendAndConfirm = useSendTransaction();
+  const {
+    isLoading,
+    // mutate
+  } = useStakingAccounts();
+  // const sendAndConfirm = useSendTransaction();
   const [apy, setApy] = useState(50);
+  const sendAndConfirm = useSendTransaction();
 
   // Get total staked amount
-  const totalStaked = useMemo(
-    () =>
-      !accounts
-        ? new BN(0)
-        : accounts?.reduce<BN>((sum, { info, assigned }) => {
-            if (assigned && info) {
-              return sum.add(val(info.amount));
-            }
-            return sum;
-          }, new BN(0)),
-    [accounts],
-  );
+  const totalStaked = new BN(0);
 
   const handleCreate = async (e: FormEvent) => {
     e.preventDefault();
     try {
       if (!wallet) throw new WalletNotConnectedError();
-      if (!accounts) return;
 
-      const stakeSeed = accounts.findIndex((state) => !state.assigned);
       const { uiAmount, lockDuration } = StakingStore.createFormInputs;
-      const amount = new BN(uiAmount).muln(10 ** 6);
-      const tx = await createStake(connection, wallet, stakeSeed + 1, amount, lockDuration);
+      const amount = new BN(uiAmount).muln(10 ** UNLOC_MINT_DECIMALS);
+      const lockDurationEnum = convertDayDurationToEnum(lockDuration);
+      const ix1 = await createStakingUserOptionally(connection, wallet);
+      const ix2 = await depositTokens(connection, wallet, amount, lockDurationEnum);
+      const tx = new Transaction().add(...ix1, ...ix2);
 
-      Lightbox.setCanClose(false);
-      Lightbox.setContent("circleProcessing");
-      await sendAndConfirm(tx);
-
-      // Optimistic
-      const unixNow = Math.floor(Date.now() / 1000);
-      const info = getFarmPoolUserObject(wallet, amount, stakeSeed + 1, 0, unixNow, lockDuration);
-      const address = accounts[stakeSeed].address;
-      const newAccounts = [...accounts];
-      newAccounts[stakeSeed] = { address, assigned: true, info };
-
-      mutate(newAccounts, { rollbackOnError: true, populateCache: true, revalidate: true });
+      await sendAndConfirm(tx, "confirmed", true);
     } catch (err) {
       errorCase(err);
     } finally {
@@ -124,10 +112,8 @@ export const CreateStake = observer(() => {
       value = value[0];
     }
     value = markToDurationMapping(value);
-    const asSeconds = getDurationForContractData(value, "days");
-    StakingStore.setCreateFormInput("lockDuration", asSeconds);
-
-    console.log(durationToApyBasisPoints(value));
+    // const asSeconds = getDurationForContractData(value, "days");
+    StakingStore.setCreateFormInput("lockDuration", value);
     setApy(durationToApyBasisPoints(value));
   };
 

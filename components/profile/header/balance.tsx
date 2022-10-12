@@ -1,7 +1,6 @@
 import { formatOptions } from "@constants/config";
-import { useSolanaUnixTime } from "@hooks/useSolanaUnixTime";
 import { useStakingAccounts } from "@hooks/useStakingAccounts";
-import { amountToUiAmount, val } from "@utils/bignum";
+import { amountToUiAmount } from "@utils/bignum";
 import BN from "bn.js";
 
 const classNames = (...classes: any[]) => {
@@ -10,30 +9,23 @@ const classNames = (...classes: any[]) => {
 
 export const StakeBalance = () => {
   const { accounts } = useStakingAccounts();
-  const time = useSolanaUnixTime();
+  const count = accounts?.info?.stakingAccounts.locked.numActiveLockedStakingAccounts ?? 0;
 
-  const count = accounts?.filter(({ assigned }) => assigned).length;
-
-  const totalLocked =
-    accounts?.reduce<BN>((sum, { info, assigned }) => {
-      if (assigned && info) {
-        return sum.add(val(info.amount));
-      }
-      return sum;
-    }, new BN(0)) || new BN(0);
+  const totalLocked = new BN(0);
 
   const totalClaimable =
-    accounts?.reduce<BN>((sum, { info, assigned }) => {
-      if (
-        assigned &&
-        info &&
-        time &&
-        val(info.lastStakeTime).add(val(info.lockDuration)).gten(time)
-      ) {
-        sum.add(val(info.amount)).add(val(info.rewardAmount));
-      }
-      return sum;
-    }, new BN(0)) || new BN(0);
+    // accounts?.reduce<BN>((sum, { info, assigned }) => {
+    //   if (
+    //     assigned &&
+    //     info &&
+    //     time &&
+    //     val(info.lastStakeTime).add(val(info.lockDuration)).gten(time)
+    //   ) {
+    //     sum.add(val(info.amount)).add(val(info.rewardAmount));
+    //   }
+    //   return sum;
+    // }, new BN(0)) ||
+    new BN(0);
 
   return (
     <article className="stake__balance col">
