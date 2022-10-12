@@ -1,7 +1,11 @@
 import { formatOptions } from "@constants/config";
 import { useStakingAccounts } from "@hooks/useStakingAccounts";
 import { amountToUiAmount } from "@utils/bignum";
-import BN from "bn.js";
+import {
+  getTotalClaimableAmount,
+  getTotalNumberOfStakingAccounts,
+  getTotalStakedAmount,
+} from "@utils/spl/unloc-staking";
 
 const classNames = (...classes: any[]) => {
   return classes.filter(Boolean).join(" ");
@@ -9,23 +13,10 @@ const classNames = (...classes: any[]) => {
 
 export const StakeBalance = () => {
   const { accounts } = useStakingAccounts();
-  const count = accounts?.info?.stakingAccounts.locked.numActiveLockedStakingAccounts ?? 0;
 
-  const totalLocked = new BN(0);
-
-  const totalClaimable =
-    // accounts?.reduce<BN>((sum, { info, assigned }) => {
-    //   if (
-    //     assigned &&
-    //     info &&
-    //     time &&
-    //     val(info.lastStakeTime).add(val(info.lockDuration)).gten(time)
-    //   ) {
-    //     sum.add(val(info.amount)).add(val(info.rewardAmount));
-    //   }
-    //   return sum;
-    // }, new BN(0)) ||
-    new BN(0);
+  const count = getTotalNumberOfStakingAccounts(accounts?.info?.stakingAccounts);
+  const totalLocked = getTotalStakedAmount(accounts?.info?.stakingAccounts);
+  const totalClaimable = getTotalClaimableAmount(accounts?.info?.stakingAccounts);
 
   return (
     <article className="stake__balance col">

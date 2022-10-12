@@ -15,9 +15,10 @@ import {
   convertDayDurationToEnum,
   createStakingUserOptionally,
   depositTokens,
+  getTotalStakedAmount,
 } from "@utils/spl/unloc-staking";
 import { Transaction } from "@solana/web3.js";
-import { UNLOC_MINT_DECIMALS } from "@components/profile/stakeAccount/stakeRow";
+import { UNLOC_MINT_DECIMALS } from "@constants/currency-constants";
 
 type InputEvent = ChangeEvent<HTMLInputElement>;
 
@@ -69,6 +70,7 @@ export const CreateStake = observer(() => {
   const { publicKey: wallet } = useWallet();
   const {
     isLoading,
+    accounts,
     // mutate
   } = useStakingAccounts();
   // const sendAndConfirm = useSendTransaction();
@@ -76,7 +78,7 @@ export const CreateStake = observer(() => {
   const sendAndConfirm = useSendTransaction();
 
   // Get total staked amount
-  const totalStaked = new BN(0);
+  const totalStaked = getTotalStakedAmount(accounts?.info?.stakingAccounts);
 
   const handleCreate = async (e: FormEvent) => {
     e.preventDefault();
@@ -92,6 +94,7 @@ export const CreateStake = observer(() => {
 
       await sendAndConfirm(tx, "confirmed", true);
     } catch (err) {
+      console.log(err);
       errorCase(err);
     } finally {
       Lightbox.setVisible(false);
@@ -126,7 +129,7 @@ export const CreateStake = observer(() => {
           <strong>{amountToUiAmount(totalStaked, 6).toLocaleString("en-us", formatOptions)}</strong>
         </div>
         <div className="create-stake__stats-item">
-          Unloc score <strong>0</strong>
+          Unloc score <strong>{0}</strong>
         </div>
       </div>
       <form onSubmit={handleCreate} className="create-stake__form">

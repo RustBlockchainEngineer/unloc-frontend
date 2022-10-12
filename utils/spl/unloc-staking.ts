@@ -12,8 +12,11 @@ import {
   PoolInfo,
   PROGRAM_ADDRESS,
   RelockOption,
+  StakingAccounts,
   WithdrawOption,
 } from "@unloc-dev/unloc-sdk-staking";
+import { val } from "@utils/bignum";
+import BN from "bn.js";
 import dayjs from "dayjs";
 import { isAccountInitialized } from "./unloc-loan";
 
@@ -243,4 +246,62 @@ export const convertDayDurationToEnum = (days: number) => {
     default:
       throw Error(`Invalid day duration: ${days}`);
   }
+};
+
+export const getTotalNumberOfStakingAccounts = (stakingInfo?: StakingAccounts) => {
+  if (!stakingInfo) return 0;
+
+  const locked = stakingInfo?.locked.numActiveLockedStakingAccounts;
+  const flexi = val(stakingInfo.flexi.stakingData.initialTokensStaked).gtn(0) ? 1 : 0;
+  const liqMin = val(stakingInfo.liqMinRwds.stakingData.initialTokensStaked).gtn(0) ? 1 : 0;
+  return locked + flexi + liqMin;
+};
+
+export const getTotalStakedAmount = (stakingInfo?: StakingAccounts) => {
+  if (!stakingInfo) return new BN(0);
+
+  const totalLocked = stakingInfo.locked.lockedStakingsData.reduce<BN>((sum, lockedAcc) => {
+    return lockedAcc.isActive ? sum.add(val(lockedAcc.stakingData.initialTokensStaked)) : sum;
+  }, new BN(0));
+
+  const flexi = stakingInfo.flexi.stakingData.initialTokensStaked;
+  const liqMin = stakingInfo.liqMinRwds.stakingData.initialTokensStaked;
+  return totalLocked.add(val(flexi)).add(val(liqMin));
+};
+
+export const getTotalClaimableAmount = (stakingInfo?: StakingAccounts) => {
+  if (!stakingInfo) return new BN(0);
+  const time = Math.round(Date.now() / 1000);
+
+  // Regular locked staking accounts
+  const totalLockedAvailable = stakingInfo.locked.lockedStakingsData.reduce<BN>(
+    (sum, lockedAcc) => {
+      if (lockedAcc.isActive) {
+        const unlockTime = val(lockedAcc.stakingData.accountLastUpdatedAt).add(
+          val(lockedAcc.stakingData.lockDuration),
+        );
+
+        return unlockTime.lten(time)
+          ? sum.add(val(lockedAcc.stakingData.initialTokensStaked))
+          : sum;
+      }
+
+      return sum;
+    },
+    new BN(0),
+  );
+
+  // Flexi is always claimable
+  const flexi = val(stakingInfo.flexi.stakingData.initialTokensStaked);
+
+  // Liquidity mining account
+  const unlockTime = val(stakingInfo.liqMinRwds.stakingData.accountLastUpdatedAt).add(
+    val(stakingInfo.liqMinRwds.stakingData.lockDuration),
+  );
+  const liqMin = unlockTime.lten(time)
+    ? val(stakingInfo.liqMinRwds.stakingData.initialTokensStaked)
+    : new BN(0);
+
+  // Total
+  return totalLockedAvailable.add(flexi).add(liqMin);
 };

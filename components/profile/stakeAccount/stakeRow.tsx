@@ -20,12 +20,13 @@ import {
   WithdrawType,
 } from "@unloc-dev/unloc-sdk-staking";
 import { Transaction } from "@solana/web3.js";
+import { UNLOC_MINT_DECIMALS } from "@constants/currency-constants";
 
-export type StakeStatus = "flexi" | "unlocked" | "locked";
+export type StakeType = "flexi" | "liqmin" | "normal";
+export type StakeRowProps = { lockedStakingAccount: LockedStakingAccount; type: StakeType };
 
-export const UNLOC_MINT_DECIMALS = 6;
-
-export const StakeRow = ({ index, stakingData }: LockedStakingAccount) => {
+export const StakeRow = ({ lockedStakingAccount, type }: StakeRowProps) => {
+  const { stakingData, index, isActive } = lockedStakingAccount;
   const { connection } = useConnection();
   const { publicKey: wallet } = useWallet();
   const sendAndConfirm = useSendTransaction();
@@ -37,7 +38,11 @@ export const StakeRow = ({ index, stakingData }: LockedStakingAccount) => {
   const APY = 40;
 
   const time = Date.now();
-  const status: StakeStatus = endUnix.gten(time) ? "locked" : "unlocked";
+  const status = type === "flexi" ? "flexi" : endUnix.gten(time) ? "locked" : "unlocked";
+
+  if (!isActive) {
+    return null;
+  }
 
   const handleWithdraw = async () => {
     try {
@@ -97,9 +102,9 @@ export const StakeRow = ({ index, stakingData }: LockedStakingAccount) => {
   const renderActions = useCallback(() => {
     let buttons = [];
     switch (status) {
-      // case "flexi":
-      //   buttons = ["Deposit", "Withdraw", "Relock"];
-      //   break;
+      case "flexi":
+        buttons = ["Deposit", "Withdraw", "Relock"];
+        break;
       case "unlocked":
         buttons = ["Deposit", "Withdraw", "Relock"];
         break;
@@ -156,19 +161,21 @@ export const StakeRow = ({ index, stakingData }: LockedStakingAccount) => {
           <span className="sub">Amount at exit</span>
         </div>
       </div>
-      <div className="stakerow__col--duration">
-        <div className="stakerow__title">
-          <p>Start date</p>
-          <p className="date">{dayjs(numVal(startUnix) * 1000).format("DD.MM.YYYY")}</p>
+      {type !== "flexi" && (
+        <div className="stakerow__col--duration">
+          <div className="stakerow__title">
+            <p>Start date</p>
+            <p className="date">{dayjs(numVal(startUnix) * 1000).format("DD.MM.YYYY")}</p>
+          </div>
+          <div className="stakerow__progress">
+            <DurationProgress startUnix={numVal(startUnix)} endUnix={numVal(endUnix)} />
+          </div>
+          <div className="stakerow__title">
+            <p>End date</p>
+            <p className="date">{dayjs(numVal(endUnix) * 1000).format("DD.MM.YYYY")}</p>
+          </div>
         </div>
-        <div className="stakerow__progress">
-          <DurationProgress startUnix={numVal(startUnix)} endUnix={numVal(endUnix)} />
-        </div>
-        <div className="stakerow__title">
-          <p>End date</p>
-          <p className="date">{dayjs(numVal(endUnix) * 1000).format("DD.MM.YYYY")}</p>
-        </div>
-      </div>
+      )}
       <div className="stakerow__col">
         <div className="stakerow__title">APY</div>
         <div className="stakerow__apr">{APY}%</div>
