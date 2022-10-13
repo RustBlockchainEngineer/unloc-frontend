@@ -18,7 +18,6 @@ import {
 import { val } from "@utils/bignum";
 import BN from "bn.js";
 import dayjs from "dayjs";
-import { isAccountInitialized } from "./unloc-loan";
 
 ///////////////
 // CONSTANTS //
@@ -68,7 +67,8 @@ export const createStakingUserOptionally = async (
   const userStakingsInfo = getUserStakingsKey(userWallet);
 
   const instructions: TransactionInstruction[] = [];
-  if (await isAccountInitialized(connection, userStakingsInfo)) {
+  const check = await isAccountInitialized(connection, userStakingsInfo);
+  if (!check) {
     // If the user account does not exist, initialize it
     instructions.push(
       createCreateUserInstruction({
@@ -304,4 +304,13 @@ export const getTotalClaimableAmount = (stakingInfo?: StakingAccounts) => {
 
   // Total
   return totalLockedAvailable.add(flexi).add(liqMin);
+};
+
+export const isAccountInitialized = async (connection: Connection, address: PublicKey) => {
+  try {
+    const result = await connection.getAccountInfo(address);
+    return !!result && !!result.data;
+  } catch (err) {
+    return false;
+  }
 };
