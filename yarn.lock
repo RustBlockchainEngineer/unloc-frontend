@@ -2338,6 +2338,14 @@
     "@solana/spl-token" "^0.2.0"
     "@solana/web3.js" "^1.47.3"
 
+"@unloc-dev/unloc-sdk-voting@^0.0.1":
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/@unloc-dev/unloc-sdk-voting/-/unloc-sdk-voting-0.0.1.tgz#54036403237f2ab28e38f16c4a43c0f0d7d17bec"
+  integrity sha512-3g8kbQQJ6nma9AAVfOrS5omdi0noF2mqJkvkIFW3gaeyLHuN46H/A+7nfF/UuXPnNIuUK69SsiH3kDNKG780OA==
+  dependencies:
+    "@solana/spl-token" "^0.2.0"
+    "@solana/web3.js" "^1.47.3"
+
 "@unloc-dev/unloc-staking-solita@^2.1.0":
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/@unloc-dev/unloc-staking-solita/-/unloc-staking-solita-2.1.0.tgz#34e32e40b050574e99524754bd9f498c9d76a70e"

@@ -56,6 +56,16 @@ export const getUserStakingsKey = (
     programId,
   )[0];
 };
+export const getUserScoreKey = (
+  userWallet: PublicKey,
+  poolKey: PublicKey = getStakingPoolKey(),
+  programId: PublicKey = STAKING_PID,
+) => {
+  return PublicKey.findProgramAddressSync(
+    [UNLOC_STAKING, UNLOC_SCORE, userWallet.toBuffer(), poolKey.toBuffer(), DATA_ACCOUNT],
+    programId,
+  )[0];
+};
 /////////////////////////
 // Instruction helpers //
 /////////////////////////
