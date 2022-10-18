@@ -72,11 +72,15 @@ export const getNftMetadataKey = (nftMint: PublicKey) => {
 /////////////////////////
 // Instruction helpers //
 /////////////////////////
-export const voteCollections = async (userWallet: PublicKey, choices: VoteChoice[] = []) => {
-  const voteSessionInfo = getVotingSessionKey();
-  const poolInfo = getStakingPoolKey();
-  const userScoreInfo = getUserScoreKey(userWallet, poolInfo);
-  const stakingProgram = STAKING_PID;
+export const voteCollections = async (
+  userWallet: PublicKey,
+  choices: VoteChoice[] = [],
+  stakingProgram: PublicKey = STAKING_PID,
+  programId: PublicKey = VOTING_PID,
+) => {
+  const voteSessionInfo = getVotingSessionKey(programId);
+  const poolInfo = getStakingPoolKey(stakingProgram);
+  const userScoreInfo = getUserScoreKey(userWallet, poolInfo, stakingProgram);
   const instructions: TransactionInstruction[] = [];
   instructions.push(
     createVoteCollectionsInstruction(
@@ -93,6 +97,7 @@ export const voteCollections = async (userWallet: PublicKey, choices: VoteChoice
           choices,
         },
       },
+      programId,
     ),
   );
 
