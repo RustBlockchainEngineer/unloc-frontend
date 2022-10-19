@@ -1,10 +1,11 @@
+import { ChangeEvent, FormEvent, useState } from "react";
+
 import { useStore } from "@hooks/useStore";
 import { WalletNotConnectedError } from "@solana/wallet-adapter-base";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { observer } from "mobx-react-lite";
 import Slider from "rc-slider";
 import "rc-slider/assets/index.css";
-import { ChangeEvent, FormEvent, useState } from "react";
 import { errorCase } from "@utils/toast-error-handler";
 import { useStakingAccounts } from "@hooks/useStakingAccounts";
 import BN from "bn.js";
@@ -59,6 +60,7 @@ function durationToApyBasisPoints(value: number) {
       return 5500;
     case 180:
       return 9000;
+    //TODO: absent case for 365 days. For now it returns 0
     default:
       return 0;
   }
@@ -68,12 +70,8 @@ export const CreateStake = observer(() => {
   const { StakingStore, Lightbox } = useStore();
   const { connection } = useConnection();
   const { publicKey: wallet } = useWallet();
-  const {
-    isLoading,
-    accounts,
-    // mutate
-  } = useStakingAccounts();
-  // const sendAndConfirm = useSendTransaction();
+  const { isLoading, accounts } = useStakingAccounts();
+
   const [apy, setApy] = useState(50);
   const sendAndConfirm = useSendTransaction();
 
@@ -115,7 +113,6 @@ export const CreateStake = observer(() => {
       value = value[0];
     }
     value = markToDurationMapping(value);
-    // const asSeconds = getDurationForContractData(value, "days");
     StakingStore.setCreateFormInput("lockDuration", value);
     setApy(durationToApyBasisPoints(value));
   };

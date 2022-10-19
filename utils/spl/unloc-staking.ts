@@ -189,29 +189,32 @@ export const relockStakingAccount = async (
   );
   return new Transaction().add(...instructions);
 };
+
 export const mergeStakingAccounts = async (
   userWallet: PublicKey,
   index1: number,
-  index2: number,
+  indexes: number[],
   lockDuration: AllowedStakingDurationMonths,
 ) => {
   const poolInfo = getStakingPoolKey();
   const userStakingsInfo = getUserStakingsKey(userWallet);
   const instructions: TransactionInstruction[] = [];
-  instructions.push(
-    createMergeAccountsInstruction(
-      {
-        userWallet,
-        poolInfo,
-        userStakingsInfo,
-      },
-      {
-        index1,
-        index2,
-        lockDuration,
-      },
-    ),
-  );
+  indexes.map((index2) => {
+    instructions.push(
+      createMergeAccountsInstruction(
+        {
+          userWallet,
+          poolInfo,
+          userStakingsInfo,
+        },
+        {
+          index1,
+          index2,
+          lockDuration,
+        },
+      ),
+    );
+  });
   return new Transaction().add(...instructions);
 };
 

@@ -34,10 +34,6 @@ export const StakeActions = observer(() => {
     const tx = await reallocUserAccount(wallet);
     await sendAndConfirm(tx, "confirmed", true);
   };
-  const handleMergeAccounts = async () => {
-    if (!wallet) throw new WalletNotConnectedError();
-    console.log("TODO");
-  };
 
   return (
     <article className="stake__actions col">
@@ -53,9 +49,6 @@ export const StakeActions = observer(() => {
       <div className="stake__buttons">
         <button onClick={handleReallocUserAccount} className="btn btn--md btn--primary">
           Level Up
-        </button>
-        <button onClick={handleMergeAccounts} className="btn btn--md btn--primary">
-          Merge Accounts
         </button>
         <button onClick={handleClaimRewards} className="btn btn--md btn--bordered">
           Claim Rewards

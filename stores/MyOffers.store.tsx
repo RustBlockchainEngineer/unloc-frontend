@@ -43,7 +43,6 @@ export class MyOffersStore {
   activeNftMint: string = "";
   lendingList: { pubkey: PublicKey; account: SubOffer; nftData: Metadata }[] = [];
   activeCategory: OfferCategory = "active";
-  // activeCategory: OfferCategory = "deposited";
   activeLoans: string = "all";
   preparedOfferData: PreparedOfferData = {
     nftMint: "",

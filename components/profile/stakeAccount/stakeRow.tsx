@@ -1,4 +1,3 @@
-import { useCallback, useMemo } from "react";
 import { DurationProgress } from "./durationProgress";
 import { amountToUiAmount, numVal, val } from "@utils/bignum";
 import dayjs from "dayjs";
@@ -21,6 +20,8 @@ import {
 } from "@unloc-dev/unloc-sdk-staking";
 import { Transaction } from "@solana/web3.js";
 import { UNLOC_MINT_DECIMALS } from "@constants/currency-constants";
+import { useStore } from "@hooks/useStore";
+import { exitAmount } from "@components/profile/stakeAccount/calculations";
 
 export type StakeType = "flexi" | "liqmin" | "normal";
 export type StakeRowProps = { lockedStakingAccount: LockedStakingAccount; type: StakeType };
@@ -29,6 +30,7 @@ export const StakeRow = ({ lockedStakingAccount, type }: StakeRowProps) => {
   const { stakingData, index, isActive } = lockedStakingAccount;
   const { connection } = useConnection();
   const { publicKey: wallet } = useWallet();
+  const { StakingStore, Lightbox } = useStore();
   const sendAndConfirm = useSendTransaction();
 
   const uiAmount = amountToUiAmount(stakingData.initialTokensStaked, UNLOC_MINT_DECIMALS);
@@ -44,7 +46,7 @@ export const StakeRow = ({ lockedStakingAccount, type }: StakeRowProps) => {
     return null;
   }
 
-  const handleWithdraw = async () => {
+  const Withdraw = async () => {
     try {
       if (!wallet) throw new WalletNotConnectedError();
       const tx = await withdrawTokens(connection, wallet, {
@@ -57,7 +59,8 @@ export const StakeRow = ({ lockedStakingAccount, type }: StakeRowProps) => {
       errorCase(err);
     }
   };
-  const handleRelock = async () => {
+
+  const Relock = async () => {
     try {
       if (!wallet) throw new WalletNotConnectedError();
       const tx = await relockStakingAccount(
@@ -71,7 +74,8 @@ export const StakeRow = ({ lockedStakingAccount, type }: StakeRowProps) => {
       errorCase(err);
     }
   };
-  const handleDeposit = async () => {
+
+  const Deposit = async () => {
     try {
       if (!wallet) throw new WalletNotConnectedError();
       const ix = await depositTokens(
@@ -88,62 +92,41 @@ export const StakeRow = ({ lockedStakingAccount, type }: StakeRowProps) => {
     }
   };
 
-  // TODO: import this from somewhere, use a proper formula
-  const exitAmount = useMemo(
-    () =>
-      (uiAmount * 1.1).toLocaleString("en-us", {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-        useGrouping: false,
-      }),
-    [uiAmount],
-  );
+  const Merge = async () => {
+    if (!wallet) throw new WalletNotConnectedError();
 
-  const renderActions = useCallback(() => {
-    let buttons = [];
-    switch (status) {
-      case "flexi":
-        buttons = ["Deposit", "Withdraw", "Relock"];
-        break;
-      case "unlocked":
-        buttons = ["Deposit", "Withdraw", "Relock"];
-        break;
-      case "locked":
-        buttons = ["Deposit", "Withdraw", "Relock"];
-        break;
-      default:
-        throw Error("Stake status error");
+    try {
+      Lightbox.setVisible(false);
+      // Reset the inputs
+      StakingStore.resetCreateFormInputs();
+      Lightbox.setContent("mergeStakes");
+      Lightbox.setVisible(true);
+      await StakingStore.setAccountToMerge(index, stakingData.lockDuration, uiAmount);
+    } catch (err) {
+      console.log(err);
+      errorCase(err);
     }
+  };
 
-    return buttons.map((button) => {
-      switch (button) {
-        case "Deposit":
-          return (
-            <button onClick={handleDeposit} key={button} className="btn btn--md btn--primary">
-              {button}
-            </button>
-          );
-        case "Withdraw":
-          return (
-            <button onClick={handleWithdraw} key={button} className="btn btn--md btn--primary">
-              {button}
-            </button>
-          );
-        case "Relock":
-          return (
-            <button onClick={handleRelock} key={button} className="btn btn--md btn--primary">
-              {button}
-            </button>
-          );
-        default:
-          return (
-            <button key={button} className="btn btn--md btn--primary">
-              {button}
-            </button>
-          );
-      }
+  const renderActions = () => {
+    const button = ["Deposit", "Relock"];
+    if (status === "flexi") {
+      button.push("Withdraw");
+    } else if (status === "unlocked" || status === "locked") {
+      button.push("Merge");
+    } else throw Error("Stake status error");
+
+    const actions = [Deposit, Withdraw, Relock, Merge];
+
+    return button.map((type) => {
+      const action = actions.filter((handler) => handler.name === type);
+      return (
+        <button onClick={action[0]} key={type} className="btn btn--md btn--primary">
+          {type}
+        </button>
+      );
     });
-  }, [status]);
+  };
 
   return (
     <li className="stakerow">
@@ -157,7 +140,7 @@ export const StakeRow = ({ lockedStakingAccount, type }: StakeRowProps) => {
           <i className={`icon icon--sm icon--currency--UNLOC`} />
         </div>
         <div className="stakerow__at-exit">
-          <p>{exitAmount}</p>
+          <p>{exitAmount(uiAmount)}</p>
           <span className="sub">Amount at exit</span>
         </div>
       </div>

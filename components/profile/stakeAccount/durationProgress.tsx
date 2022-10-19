@@ -1,4 +1,3 @@
-// import { CircularProgressBar } from "@components/layout/circularProgressBar";
 import dayjs from "dayjs";
 import { CircularProgressbarWithChildren } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
@@ -9,7 +8,6 @@ interface IDurationProgress {
 }
 
 export const DurationProgress = ({ startUnix, endUnix }: IDurationProgress) => {
-  // const time = useSolanaUnixTime();
   const time = Math.floor(Date.now() / 1000);
   const maxValue = dayjs.duration((endUnix - startUnix) * 1000).asSeconds();
   const value = dayjs.duration((time - startUnix) * 1000).asSeconds();

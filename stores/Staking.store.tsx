@@ -11,9 +11,22 @@ const createFormInitialValues = {
   lockDuration: 0,
 };
 
+type AccountToMerge = {
+  index: number;
+  lockDuration: number;
+  amount: number;
+};
+
+const accountToMergeInitialValues = {
+  index: 0,
+  lockDuration: 0,
+  amount: 0,
+};
+
 export class StakingStore {
   rootStore;
   createFormInputs: CreateFormInputs = createFormInitialValues;
+  accountToMerge: AccountToMerge = accountToMergeInitialValues;
 
   constructor(rootStore: RootStore) {
     makeAutoObservable(this);
@@ -26,5 +39,9 @@ export class StakingStore {
 
   resetCreateFormInputs = () => {
     this.createFormInputs = createFormInitialValues;
+  };
+
+  setAccountToMerge = (index: number, lockDuration: number, amount: number) => {
+    this.accountToMerge = { index, lockDuration, amount };
   };
 }

@@ -15,6 +15,7 @@ import { AcceptOffer } from "@components/lightboxes/AcceptOffer";
 import { ConfirmLoan } from "@components/lightboxes/Loan/confirmLoan";
 import { CircleProcessing } from "@components/lightboxes/circleProcessing";
 import { CreateStake } from "@components/lightboxes/Staking/create";
+import { MergeAccounts } from "@components/lightboxes/Staking/merge-accounts";
 
 export const LayoutTop = observer(() => {
   const store = useContext(StoreContext);
@@ -51,6 +52,7 @@ export const LayoutTop = observer(() => {
             {content === "acceptOffer" ? <AcceptOffer /> : <></>}
             {content === "circleProcessing" ? <CircleProcessing /> : <></>}
             {content === "createStake" && <CreateStake />}
+            {content === "mergeStakes" && <MergeAccounts />}
           </>
         </Lightbox>
       ) : (

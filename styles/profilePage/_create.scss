@@ -1,4 +1,5 @@
-.create-stake {
+.create-stake,
+.merge-stake {
   width: 380px;
   &__title {
     font-weight: $wg-hv;
@@ -102,7 +103,7 @@
   }
 
   .rc-slider-track {
-    margin-top: 0;
+    margin-top: -1.5px;
   }
 
   .rc-slider-step .rc-slider-dot {
@@ -117,6 +118,103 @@
       @include theme-aware("color", "color-secondary");
       top: 10px;
       font-size: 14px;
+    }
+  }
+  .rc-slider-handle {
+    margin-top: -8px;
+  }
+
+  .list {
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+    @include theme-aware("border-bottom", "nft-headers-border");
+  }
+
+  .list-to-merge {
+    display: flex;
+    row-gap: 10px;
+    flex-direction: column;
+    max-height: 270px;
+    height: auto;
+    overflow-y: scroll;
+    .merge-item {
+      border: 1px solid;
+      @include theme-aware("border-color", "lightbox-collection-border");
+      border-radius: 6px;
+      padding: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      @include theme-aware("background-color", "color-accent");
+      transition: background 0.3s ease-in-out;
+      height: 60px;
+
+      &:hover {
+        @include theme-aware("background-color", "color-accentDim");
+        cursor: pointer;
+      }
+      &.active {
+        @include theme-aware("background-color", "color-primary");
+        .info {
+          p:nth-child(1) {
+            @include theme-aware("color", "color-white");
+          }
+        }
+
+        &:hover {
+          @include theme-aware("background-color", "color-primary-dark");
+        }
+      }
+
+      .info {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        & p {
+          display: flex;
+          font-size: 14px;
+          align-items: center;
+        }
+
+        & p:nth-child(1) {
+          font-weight: 400;
+          @include theme-aware("color", "lightbox-collection-color");
+        }
+
+        & p:nth-child(2) {
+          font-weight: 700;
+          height: 25px;
+        }
+      }
+    }
+  }
+}
+
+.merge-stake {
+  &__stats {
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+    @include theme-aware("border-bottom", "nft-headers-border");
+    &-item {
+      display: flex;
+      align-items: center;
+      p {
+        font-size: $tp-1lg;
+        &:nth-child(2) {
+          margin-left: 5px;
+          font-weight: $wg-hv;
+          @include theme-aware("color", "color-primary");
+          display: flex;
+          align-items: center;
+        }
+        &.slider-message {
+          text-align: center;
+        }
+        i {
+          margin-left: 5px;
+        }
+      }
     }
   }
 }

@@ -10,7 +10,7 @@ interface IProps {
 export const CollateralItem = ({ metadata, onClick, chosen }: IProps) => {
   const { json, isLoading } = useOffChainMetadata(metadata.data.uri);
 
-  if (isLoading) return <div></div>;
+  if (isLoading) return null;
 
   return (
     <div
