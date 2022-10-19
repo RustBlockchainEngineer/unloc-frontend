@@ -22,9 +22,9 @@ type SimpleMetadata = {
 };
 const airdropMetadata: SimpleMetadata[] = [
   {
-    name: "Unloc Devnet Nft",
-    symbol: "UNLOC",
-    tribe: "Test 1",
+    name: "Solana Donkey Business #22",
+    symbol: "SDB",
+    tribe: "Solana Donkey Business",
     uri: "https://s3.eu-central-1.amazonaws.com/cdn.unloc.xyz/unloc_devnet/json/7yQGqnCk7hHb4YDuiirr2dVhJ6TP1BbFGRei6353WXZU.json",
     collection: "TkpSRsB8yB2qRETXLuPxuZ6Fkg2vuJnmfsQiJLfVpmG",
     collectionPK: [
@@ -35,10 +35,10 @@ const airdropMetadata: SimpleMetadata[] = [
     ],
   },
   {
-    name: "Unloc Devnet Nft",
-    symbol: "UNLOC",
-    tribe: "Test 2",
-    uri: "https://s3.eu-central-1.amazonaws.com/cdn.unloc.xyz/unloc_devnet/json/7yQGqnCk7hHb4YDuiirr2dVhJ6TP1BbFGRei6353WXZU.json",
+    name: "Solana Donkey Business 3 #18",
+    symbol: "SDN",
+    tribe: "Solana Donkey Business",
+    uri: "https://cdn-unloc-devnet.s3.eu-central-1.amazonaws.com/29Mkr5AY69pRtAfEqgjWHxQ85tWWiPgiHaX6YLF3iL73.json",
     collection: "TkpSRsB8yB2qRETXLuPxuZ6Fkg2vuJnmfsQiJLfVpmG",
     collectionPK: [
       47, 189, 147, 2, 35, 185, 143, 206, 166, 235, 121, 127, 40, 93, 77, 119, 218, 145, 244, 150,
@@ -48,10 +48,10 @@ const airdropMetadata: SimpleMetadata[] = [
     ],
   },
   {
-    name: "Unloc Devnet Nft",
-    symbol: "UNLOC",
-    tribe: "Test 3",
-    uri: "https://s3.eu-central-1.amazonaws.com/cdn.unloc.xyz/unloc_devnet/json/7yQGqnCk7hHb4YDuiirr2dVhJ6TP1BbFGRei6353WXZU.json",
+    name: "Solana Donkey Business 3 #29",
+    symbol: "SDB",
+    tribe: "Solana Donkey Business",
+    uri: "https://cdn-unloc-devnet.s3.eu-central-1.amazonaws.com/2sNX7ridj3ywYX77MvEAWbpHhkM6XhQCrTedJXqKAM9c.png",
     collection: "TkpSRsB8yB2qRETXLuPxuZ6Fkg2vuJnmfsQiJLfVpmG",
     collectionPK: [
       47, 189, 147, 2, 35, 185, 143, 206, 166, 235, 121, 127, 40, 93, 77, 119, 218, 145, 244, 150,
@@ -61,10 +61,10 @@ const airdropMetadata: SimpleMetadata[] = [
     ],
   },
   {
-    name: "Unloc Devnet Nft",
-    symbol: "UNLOC",
-    tribe: "Test 4",
-    uri: "https://s3.eu-central-1.amazonaws.com/cdn.unloc.xyz/unloc_devnet/json/7yQGqnCk7hHb4YDuiirr2dVhJ6TP1BbFGRei6353WXZU.json",
+    name: "Solana Donkey Business 3 #9",
+    symbol: "SDB",
+    tribe: "Solana Donkey Business",
+    uri: "https://cdn-unloc-devnet.s3.eu-central-1.amazonaws.com/2wPc3MK2CEJjZB9uveyL1acLHZLAcoww7wiaS6L6iDBH.json",
     collection: "TkpSRsB8yB2qRETXLuPxuZ6Fkg2vuJnmfsQiJLfVpmG",
     collectionPK: [
       47, 189, 147, 2, 35, 185, 143, 206, 166, 235, 121, 127, 40, 93, 77, 119, 218, 145, 244, 150,
@@ -74,10 +74,10 @@ const airdropMetadata: SimpleMetadata[] = [
     ],
   },
   {
-    name: "Unloc Devnet Nft",
-    symbol: "UNLOC",
-    tribe: "Test 5",
-    uri: "https://s3.eu-central-1.amazonaws.com/cdn.unloc.xyz/unloc_devnet/json/7yQGqnCk7hHb4YDuiirr2dVhJ6TP1BbFGRei6353WXZU.json",
+    name: "Solana Donkey Business 3 #7",
+    symbol: "SDB",
+    tribe: "Solana Donkey Business",
+    uri: "https://cdn-unloc-devnet.s3.eu-central-1.amazonaws.com/47UrobeLdcvgu2iUmnBK5XL1tcy8dc7yA4pRsqLYbVit.json",
     collection: "TkpSRsB8yB2qRETXLuPxuZ6Fkg2vuJnmfsQiJLfVpmG",
     collectionPK: [
       47, 189, 147, 2, 35, 185, 143, 206, 166, 235, 121, 127, 40, 93, 77, 119, 218, 145, 244, 150,
