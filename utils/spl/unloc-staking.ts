@@ -1,7 +1,13 @@
 import { UNLOC_STAKING_PID } from "@constants/config";
 import { bignum } from "@metaplex-foundation/beet";
 import { getAssociatedTokenAddressSync } from "@solana/spl-token";
-import { Connection, PublicKey, Transaction, TransactionInstruction } from "@solana/web3.js";
+import {
+  Connection,
+  PublicKey,
+  SYSVAR_INSTRUCTIONS_PUBKEY,
+  Transaction,
+  TransactionInstruction,
+} from "@solana/web3.js";
 import {
   AllowedStakingDurationMonths,
   createCreateUserInstruction,
@@ -75,7 +81,7 @@ export const createStakingUserOptionally = async (
   userWallet: PublicKey,
   programId = STAKING_PID,
 ) => {
-  const poolInfo = getStakingPoolKey(programId);
+  const stakingPoolInfo = getStakingPoolKey(programId);
   const userStakingsInfo = getUserStakingsKey(userWallet, programId);
 
   const instructions: TransactionInstruction[] = [];
@@ -85,7 +91,7 @@ export const createStakingUserOptionally = async (
     instructions.push(
       createCreateUserInstruction(
         {
-          poolInfo,
+          stakingPoolInfo,
           userWallet,
           userStakingsInfo,
         },
@@ -103,8 +109,8 @@ export const depositTokens = async (
   lockDuration: AllowedStakingDurationMonths,
   programId = STAKING_PID,
 ) => {
-  const poolInfo = getStakingPoolKey(programId);
-  const poolData = await PoolInfo.fromAccountAddress(connection, poolInfo);
+  const stakingPoolInfo = getStakingPoolKey(programId);
+  const poolData = await PoolInfo.fromAccountAddress(connection, stakingPoolInfo);
   const userStakingsInfo = getUserStakingsKey(userWallet, programId);
   const userTokenAccountToDebit = getAssociatedTokenAddressSync(poolData.tokenMint, userWallet);
   const instructions: TransactionInstruction[] = [];
@@ -112,11 +118,12 @@ export const depositTokens = async (
     createStakeTokensInstruction(
       {
         userWallet,
-        poolInfo,
+        stakingPoolInfo,
         userStakingsInfo,
         userTokenAccountToDebit,
         stakingVault: poolData.stakingVault,
         tokenMint: poolData.tokenMint,
+        instructionSysvarAccount: SYSVAR_INSTRUCTIONS_PUBKEY,
       },
       {
         amount,
@@ -135,8 +142,8 @@ export const withdrawTokens = async (
   withdrawOption: WithdrawOption,
   programId = STAKING_PID,
 ) => {
-  const poolInfo = getStakingPoolKey(programId);
-  const poolData = await PoolInfo.fromAccountAddress(connection, poolInfo);
+  const stakingPoolInfo = getStakingPoolKey(programId);
+  const poolData = await PoolInfo.fromAccountAddress(connection, stakingPoolInfo);
   const userStakingsInfo = getUserStakingsKey(userWallet, programId);
   const userTokenAccountToCredit = getAssociatedTokenAddressSync(poolData.tokenMint, userWallet);
   const instructions: TransactionInstruction[] = [];
@@ -144,7 +151,7 @@ export const withdrawTokens = async (
     createUnstakeTokensInstruction(
       {
         userWallet,
-        poolInfo,
+        stakingPoolInfo,
         userStakingsInfo,
         userTokenAccountToCredit,
         stakingVault: poolData.stakingVault,
@@ -162,14 +169,14 @@ export const withdrawTokens = async (
 };
 
 export const reallocUserAccount = async (userWallet: PublicKey, programId = STAKING_PID) => {
-  const poolInfo = getStakingPoolKey(programId);
+  const stakingPoolInfo = getStakingPoolKey(programId);
   const userStakingsInfo = getUserStakingsKey(userWallet, programId);
   const instructions: TransactionInstruction[] = [];
   instructions.push(
     createIncreaseUserStorageInstruction(
       {
         userWallet,
-        poolInfo,
+        stakingPoolInfo,
         userStakingsInfo,
       },
       programId,
@@ -184,14 +191,14 @@ export const relockStakingAccount = async (
   lockDuration: AllowedStakingDurationMonths,
   programId = STAKING_PID,
 ) => {
-  const poolInfo = getStakingPoolKey(programId);
+  const stakingPoolInfo = getStakingPoolKey(programId);
   const userStakingsInfo = getUserStakingsKey(userWallet, programId);
   const instructions: TransactionInstruction[] = [];
   instructions.push(
     createRelockAccountInstruction(
       {
         userWallet,
-        poolInfo,
+        stakingPoolInfo,
         userStakingsInfo,
       },
       {
@@ -211,7 +218,7 @@ export const mergeStakingAccounts = async (
   lockDuration: AllowedStakingDurationMonths,
   programId = STAKING_PID,
 ) => {
-  const poolInfo = getStakingPoolKey();
+  const stakingPoolInfo = getStakingPoolKey();
   const userStakingsInfo = getUserStakingsKey(userWallet);
   const instructions: TransactionInstruction[] = [];
   indexes.map((index2) => {
@@ -219,7 +226,7 @@ export const mergeStakingAccounts = async (
       createMergeAccountsInstruction(
         {
           userWallet,
-          poolInfo,
+          stakingPoolInfo,
           userStakingsInfo,
         },
         {
@@ -290,7 +297,7 @@ export const getTotalStakedAmount = (stakingInfo?: StakingAccounts) => {
   if (!stakingInfo) return new BN(0);
 
   const totalLocked = stakingInfo.locked.lockedStakingsData.reduce<BN>((sum, lockedAcc) => {
-    return lockedAcc.isActive ? sum.add(val(lockedAcc.stakingData.initialTokensStaked)) : sum;
+    return lockedAcc.indexInUse ? sum.add(val(lockedAcc.stakingData.initialTokensStaked)) : sum;
   }, new BN(0));
 
   const flexi = stakingInfo.flexi.stakingData.initialTokensStaked;
@@ -305,7 +312,7 @@ export const getTotalClaimableAmount = (stakingInfo?: StakingAccounts) => {
   // Regular locked staking accounts
   const totalLockedAvailable = stakingInfo.locked.lockedStakingsData.reduce<BN>(
     (sum, lockedAcc) => {
-      if (lockedAcc.isActive) {
+      if (lockedAcc.indexInUse) {
         const unlockTime = val(lockedAcc.stakingData.accountLastUpdatedAt).add(
           val(lockedAcc.stakingData.lockDuration),
         );

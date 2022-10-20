@@ -95,7 +95,9 @@ export const MergeAccounts = () => {
 
   const { index, lockDuration, amount } = StakingStore.accountToMerge;
   const lockedAccounts = accounts?.info?.stakingAccounts.locked.lockedStakingsData;
-  const restOfLockedAccounts = lockedAccounts?.filter((acc) => acc.index !== index && acc.isActive);
+  const restOfLockedAccounts = lockedAccounts?.filter(
+    (acc) => acc.index !== index && acc.indexInUse,
+  );
 
   const handleMerge = async (e: FormEvent) => {
     e.preventDefault();

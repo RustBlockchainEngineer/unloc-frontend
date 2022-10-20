@@ -20,7 +20,7 @@ export const getUnlocScore = (poolInfo: PoolInfo, user: UserStakingsInfo) => {
 
   // For locked acocounts, we need to sum the score of each active staking
   const scoreLocked = locked.lockedStakingsData.reduce((sum, account) => {
-    return account.isActive
+    return account.indexInUse
       ? sum.add(getUnlocScoreContribution(account.stakingData, poolInfo))
       : sum;
   }, new BN(0));

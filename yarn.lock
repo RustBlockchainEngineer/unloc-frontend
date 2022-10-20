@@ -2330,18 +2330,26 @@
     "@solana/spl-token" "^0.2.0"
     "@solana/web3.js" "^1.47.3"
 
-"@unloc-dev/unloc-sdk-staking@^0.0.4":
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/@unloc-dev/unloc-sdk-staking/-/unloc-sdk-staking-0.0.4.tgz#ce88116da807672e0ff95d85882ed8ce4ebecc5d"
-  integrity sha512-KSF565h5YNVU50qSkoPB9pKiNrFLS9iJu+GV15KuCAT4VZUMyuwL7PNbb2YBlRLBb1rMPrroIGSkxNk0WgHZmA==
+"@unloc-dev/unloc-sdk-liquidity-mining@^0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@unloc-dev/unloc-sdk-liquidity-mining/-/unloc-sdk-liquidity-mining-0.1.1.tgz#c576e45d8d7cb7f5e587169fa50f1fcde9ccd42e"
+  integrity sha512-B8L3i6G6ID9E4a5zRgaOrgQ1H+oG7939mpr3E2mV+ncWU5syaodiyXmCO5Vjk54cIH37RlaNZulLlMu+6Yuzfg==
   dependencies:
     "@solana/spl-token" "^0.2.0"
     "@solana/web3.js" "^1.47.3"
 
-"@unloc-dev/unloc-sdk-voting@^0.0.1":
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/@unloc-dev/unloc-sdk-voting/-/unloc-sdk-voting-0.0.1.tgz#54036403237f2ab28e38f16c4a43c0f0d7d17bec"
-  integrity sha512-3g8kbQQJ6nma9AAVfOrS5omdi0noF2mqJkvkIFW3gaeyLHuN46H/A+7nfF/UuXPnNIuUK69SsiH3kDNKG780OA==
+"@unloc-dev/unloc-sdk-staking@^0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@unloc-dev/unloc-sdk-staking/-/unloc-sdk-staking-0.1.1.tgz#f4d2fd58815ee990124e23300ddc659fe02a870a"
+  integrity sha512-rcmJRx+lHvMQLFIRdLSvDH0OmjBmH09L5wsJKYFS2C1hjjTxFi0P52vuALSXlMd51MotL4YEZieRwy89LK3dOg==
+  dependencies:
+    "@solana/spl-token" "^0.2.0"
+    "@solana/web3.js" "^1.47.3"
+
+"@unloc-dev/unloc-sdk-voting@^0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@unloc-dev/unloc-sdk-voting/-/unloc-sdk-voting-0.1.1.tgz#fb1f693693e33d91d4d70a8db6b3e1d29ec2b121"
+  integrity sha512-qFZntkMRyyj3nVaTVlR4/3RcL2dizTn/NPxzPqvY8CbD95y7UWHLbwUvLGXX0hA3/vMcBO3B4XbvYoEKOGHuKw==
   dependencies:
     "@solana/spl-token" "^0.2.0"
     "@solana/web3.js" "^1.47.3"

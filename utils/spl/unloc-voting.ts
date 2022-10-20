@@ -79,8 +79,8 @@ export const voteCollections = async (
   programId: PublicKey = VOTING_PID,
 ) => {
   const voteSessionInfo = getVotingSessionKey(programId);
-  const poolInfo = getStakingPoolKey(stakingProgram);
-  const userScoreInfo = getUserScoreKey(userWallet, poolInfo, stakingProgram);
+  const stakingPoolInfo = getStakingPoolKey(stakingProgram);
+  const userScoreInfo = getUserScoreKey(userWallet, stakingPoolInfo, stakingProgram);
   const instructions: TransactionInstruction[] = [];
   instructions.push(
     createVoteCollectionsInstruction(
@@ -88,7 +88,7 @@ export const voteCollections = async (
         userWallet,
         voteSessionInfo,
         userScoreInfo,
-        poolInfo,
+        stakingPoolInfo,
         stakingProgram,
         instructionSysvarAccount: SYSVAR_INSTRUCTIONS_PUBKEY,
       },

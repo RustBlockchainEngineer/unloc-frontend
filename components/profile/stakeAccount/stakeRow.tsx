@@ -27,7 +27,7 @@ export type StakeType = "flexi" | "liqmin" | "normal";
 export type StakeRowProps = { lockedStakingAccount: LockedStakingAccount; type: StakeType };
 
 export const StakeRow = ({ lockedStakingAccount, type }: StakeRowProps) => {
-  const { stakingData, index, isActive } = lockedStakingAccount;
+  const { stakingData, index, indexInUse } = lockedStakingAccount;
   const { connection } = useConnection();
   const { publicKey: wallet } = useWallet();
   const { StakingStore, Lightbox } = useStore();
@@ -42,7 +42,7 @@ export const StakeRow = ({ lockedStakingAccount, type }: StakeRowProps) => {
   const time = Date.now();
   const status = type === "flexi" ? "flexi" : endUnix.gten(time) ? "locked" : "unlocked";
 
-  if (!isActive) {
+  if (!indexInUse) {
     return null;
   }
 
