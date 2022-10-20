@@ -1,9 +1,13 @@
+import { useUserScore } from "@hooks/useUserScore";
+
 export const ProfileLevel = () => {
-  const levelBenefits: { description: string; value: number; unit: string }[] = [
-    { description: "Lending fee reduction", value: 5, unit: "%" },
-    { description: "Borrowing fee reduction", value: 5, unit: "%" },
-  ];
-  const level = 1;
+  const { profile } = useUserScore();
+
+  const level = profile.level;
+  const feeReduction =
+    profile.feeReductionBasisPoints === 0
+      ? "No benefits yet"
+      : (profile.feeReductionBasisPoints / 100).toString();
 
   return (
     <article className="profile__level col">
@@ -13,12 +17,14 @@ export const ProfileLevel = () => {
       </div>
       <div className="profile__perks">
         <ul className="perks__list">
-          {levelBenefits.map(({ description }) => (
-            <li key={description} className="perks__row">
-              <p>{description}</p>
-              <p>No benefits yet</p>
-            </li>
-          ))}
+          <li className="perks__row">
+            <p>Lending fee reduction</p>
+            <p>{feeReduction}%</p>
+          </li>
+          <li className="perks__row">
+            <p>Borrowing fee reduction</p>
+            <p>{feeReduction}%</p>
+          </li>
         </ul>
       </div>
     </article>

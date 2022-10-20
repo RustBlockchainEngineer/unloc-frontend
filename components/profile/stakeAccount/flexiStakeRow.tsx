@@ -69,8 +69,12 @@ export const FlexiStakeRow = ({ stakingData }: FlexiStakingAccount) => {
 
   return (
     <li className="stakerow">
-      <div className="stakerow__col--id">
-        <div className="stakerow__id">0</div>
+      <div className="stakerow__col--id--flexi">
+        <div
+          className="stakerow__id"
+          style={{ writingMode: "vertical-lr", transform: "rotate(180deg)" }}>
+          Flexi
+        </div>
       </div>
       <div className="stakerow__col">
         <div className="stakerow__title">Staked amount</div>

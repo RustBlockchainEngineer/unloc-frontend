@@ -78,6 +78,12 @@
       flex: 0 1 50px;
     }
 
+    &--id--flexi {
+      @extend #{ $self };
+      padding: 0 $mr-tn;
+      flex: 0 1 50px;
+    }
+
     &--duration {
       display: grid;
       padding: $mr-2rem $mr-sm 8px;
