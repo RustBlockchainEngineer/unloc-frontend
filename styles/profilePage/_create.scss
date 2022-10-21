@@ -7,9 +7,85 @@
     padding: $mr-2rem 0;
   }
 
+  &__wallet {
+    width: 100%;
+    margin-top: $mr-2rem;
+    .label {
+      font-size: $tp-md;
+      margin-bottom: 8px;
+    }
+    .balance {
+      width: 100%;
+      padding: 6px 34px;
+      @include theme-aware("background-color", "bg-input-disabled");
+      @include theme-aware("color", "disabled-input-text-color");
+      border-radius: $brd-rds-2md;
+      font-size: $tp-1lg;
+      font-weight: $wg-hv;
+      text-align: center;
+      display: flex;
+      justify-content: center;
+      position: relative;
+      i {
+        position: absolute;
+        right: 7px;
+      }
+    }
+  }
+
+  &__amount-list {
+    display: flex;
+    column-gap: 16px;
+    .amount-item {
+      border: 1px solid;
+      @include theme-aware("border-color", "lightbox-collection-border");
+      border-radius: 6px;
+      //padding: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      @include theme-aware("background-color", "color-accent");
+      transition: background 0.3s ease-in-out;
+      width: 100%;
+      //height: 60px;
+
+      p {
+        font-size: $tp-2md;
+        font-weight: $wg-hv;
+        line-height: $tp-1lg;
+        padding: 8px 0;
+        @include theme-aware("color", "color-primary");
+      }
+
+      &:hover {
+        @include theme-aware("background-color", "color-accentDim");
+        cursor: pointer;
+      }
+      &.active {
+        @include theme-aware("background-color", "color-primary");
+        p {
+          @include theme-aware("color", "text-primary-color");
+        }
+        .info {
+          p:nth-child(1) {
+            @include theme-aware("color", "color-white");
+          }
+        }
+
+        &:hover {
+          @include theme-aware("background-color", "color-primary-dark");
+        }
+      }
+    }
+  }
+
   &__stats {
     display: flex;
     justify-content: space-between;
+
+    &.col {
+      flex-direction: column;
+    }
   }
 
   &__stats-item {
@@ -55,6 +131,10 @@
     padding-bottom: $mr-sm;
     margin-bottom: $mr-2rem;
 
+    &.row-division {
+      padding-bottom: 50px;
+    }
+
     .slider-container {
       display: flex;
       justify-content: center;
@@ -81,9 +161,11 @@
     }
   }
 
-  &__score {
+  &__score__apy {
     font-size: $tp-2lg;
     display: flex;
+    flex-direction: column;
+    row-gap: 10px;
     justify-content: center;
     align-items: center;
     margin: $mr-md;
@@ -217,4 +299,13 @@
       }
     }
   }
+}
+
+.row-division {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 16px;
+  //margin-bottom: 17px;
+  margin: 0 auto 17px;
+  @include theme-aware("border-bottom", "nft-headers-border");
 }

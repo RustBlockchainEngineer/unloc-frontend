@@ -155,6 +155,9 @@
   }
   &--UNLOC {
     @include theme-aware("background-image", "icon-UNLOC");
+    &--violet {
+      @include theme-aware("background-image", "icon-UNLOC-violet");
+    }
   }
 }
 
