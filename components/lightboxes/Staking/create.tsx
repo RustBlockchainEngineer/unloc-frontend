@@ -69,7 +69,7 @@ function durationToApyBasisPoints(value: number) {
 const amountPart = [25, 50, 75, 100];
 
 export const CreateStake = observer(() => {
-  const { StakingStore, Lightbox } = useStore();
+  const { StakingStore, Lightbox, Wallet } = useStore();
   const { connection } = useConnection();
   const { publicKey: wallet } = useWallet();
   const { isLoading, accounts } = useStakingAccounts();
@@ -140,7 +140,7 @@ export const CreateStake = observer(() => {
         <div className="create-stake__wallet">
           <p className="label">Current Wallet Balance</p>
           <p className="balance">
-            10,123.12345 <i className={`icon icon--sm icon--currency--UNLOC--violet`} />
+            {Wallet.unlocAmount} <i className={`icon icon--sm icon--currency--UNLOC--violet`} />
           </p>
         </div>
       </div>
