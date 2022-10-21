@@ -122,7 +122,7 @@
     margin-top: $mr-tn;
     width: 100%;
     border: none;
-    padding: $mr-tn $mr-1sm;
+    padding: $mr-tn $mr-sm;
     @include theme-aware("color", "color-content");
     @include theme-aware("background-color", "input-bg");
   }

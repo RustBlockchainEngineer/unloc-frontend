@@ -1,4 +1,4 @@
-import { ChangeEvent, FormEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 
 import { useStore } from "@hooks/useStore";
 import { WalletNotConnectedError } from "@solana/wallet-adapter-base";
@@ -75,7 +75,13 @@ export const CreateStake = observer(() => {
   const { isLoading, accounts } = useStakingAccounts();
 
   const [apy, setApy] = useState(50);
-  const [selectedAmount, setAmount] = useState<number>(0);
+  const uiAmount = StakingStore.createFormInputs.uiAmount;
+  const [selectedAmountInPercent, setAmountInPercent] = useState<number>(0);
+
+  const [currentAmount, setCurrentAmount] = useState<number>(
+    Number(uiAmount) ? Number(uiAmount) : 0,
+  );
+
   const sendAndConfirm = useSendTransaction();
 
   // Get total staked amount
@@ -108,6 +114,12 @@ export const CreateStake = observer(() => {
     // Check for numbers
     if (!value || value.match(/^\d{1,}(\.\d{0,6})?$/)) {
       StakingStore.setCreateFormInput("uiAmount", value);
+      setAmountInPercent(0);
+      if (Number(value) >= Wallet.unlocAmount) {
+        setCurrentAmount(Wallet.unlocAmount);
+      } else {
+        setCurrentAmount(Number(value));
+      }
     }
   };
 
@@ -121,8 +133,18 @@ export const CreateStake = observer(() => {
   };
 
   const handleAmount = (amount: number) => {
-    setAmount((prevState) => (prevState === amount ? 0 : amount));
+    setAmountInPercent((prevState) => (prevState === amount ? 0 : amount));
   };
+
+  const calculateSelectedAmount = () => {
+    const percentsToAmount = Wallet.unlocAmount / (100 / selectedAmountInPercent);
+    setCurrentAmount(percentsToAmount);
+    StakingStore.setCreateFormInput("uiAmount", percentsToAmount.toString());
+  };
+
+  useEffect(() => {
+    if (selectedAmountInPercent > 0) calculateSelectedAmount();
+  }, [selectedAmountInPercent]);
 
   return (
     <div className="create-stake">
@@ -155,7 +177,7 @@ export const CreateStake = observer(() => {
               <AmountItem
                 key={amount}
                 onClick={handleAmount}
-                chosen={selectedAmount === amount}
+                chosen={selectedAmountInPercent === amount}
                 amount={amount}
               />
             );
@@ -168,7 +190,8 @@ export const CreateStake = observer(() => {
           <label htmlFor="amount">Custom Amount</label>
           <input
             lang="en"
-            value={StakingStore.createFormInputs.uiAmount}
+            // value={StakingStore.createFormInputs.uiAmount}
+            value={currentAmount || 0}
             onChange={handleAmountInput}
             placeholder=""
             name="amount"
