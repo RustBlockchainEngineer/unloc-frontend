@@ -10,6 +10,7 @@ export class WalletStore {
   walletKey: PublicKey | undefined;
   solAmount = 0;
   usdcAmount = 0;
+  unlocAmount = 0;
 
   constructor(rootStore: any) {
     makeAutoObservable(this);
@@ -52,5 +53,9 @@ export class WalletStore {
 
   setUsdcAmount(usdcAmount: number): void {
     this.usdcAmount = usdcAmount;
+  }
+
+  setUnlocAmount(unlocAmount: number): void {
+    this.unlocAmount = unlocAmount;
   }
 }

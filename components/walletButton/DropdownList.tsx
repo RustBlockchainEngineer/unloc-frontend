@@ -5,7 +5,7 @@ import { StoreContext } from "@pages/_app";
 import { observer } from "mobx-react-lite";
 import { SwitchButton } from "@components/layout/switchButton";
 import { CustomSelect } from "@components/layout/customSelect";
-import { formatOptions } from "@constants/config";
+import { config, formatOptions } from "@constants/config";
 import { Commitment } from "@solana/web3.js";
 
 interface DropdownListProps {
@@ -17,7 +17,7 @@ interface DropdownListProps {
 
 export const DropdownList = observer(({ refer, active, openModal, base58 }: DropdownListProps) => {
   const store = useContext(StoreContext);
-  const { solAmount, usdcAmount } = store.Wallet;
+  const { solAmount, usdcAmount, unlocAmount } = store.Wallet;
   const { disconnect } = useWallet();
   const { theme } = store.Interface;
   const [copied, setCopied] = useState(false);
@@ -96,6 +96,13 @@ export const DropdownList = observer(({ refer, active, openModal, base58 }: Drop
         {usdcAmount.toLocaleString(undefined, formatOptions)}
         <i className="icon icon--sm icon--currency--USDC" />
       </li>
+      {config.devnet && (
+        <li className="wallet-adapter-dropdown-list-item balance__item balance__item--unloc">
+          <i className="icon icon--sm icon--fake" />
+          {unlocAmount.toLocaleString(undefined, formatOptions)}
+          <i className="icon icon--sm icon--currency--UNLOC" />
+        </li>
+      )}
       <span className="wallet-adapter-dropdown-list-item divider" />
       <li className="wallet-adapter-dropdown-list-item theme" role="menuitem">
         Select theme

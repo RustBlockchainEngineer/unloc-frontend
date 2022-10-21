@@ -1,4 +1,4 @@
-import { ChangeEvent, FormEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 
 import { useStore } from "@hooks/useStore";
 import { WalletNotConnectedError } from "@solana/wallet-adapter-base";
@@ -66,13 +66,22 @@ function durationToApyBasisPoints(value: number) {
   }
 }
 
+const amountPart = [25, 50, 75, 100];
+
 export const CreateStake = observer(() => {
-  const { StakingStore, Lightbox } = useStore();
+  const { StakingStore, Lightbox, Wallet } = useStore();
   const { connection } = useConnection();
   const { publicKey: wallet } = useWallet();
   const { isLoading, accounts } = useStakingAccounts();
 
   const [apy, setApy] = useState(50);
+  const uiAmount = StakingStore.createFormInputs.uiAmount;
+  const [selectedAmountInPercent, setAmountInPercent] = useState<number>(0);
+
+  const [currentAmount, setCurrentAmount] = useState<number>(
+    Number(uiAmount) ? Number(uiAmount) : 0,
+  );
+
   const sendAndConfirm = useSendTransaction();
 
   // Get total staked amount
@@ -105,6 +114,12 @@ export const CreateStake = observer(() => {
     // Check for numbers
     if (!value || value.match(/^\d{1,}(\.\d{0,6})?$/)) {
       StakingStore.setCreateFormInput("uiAmount", value);
+      setAmountInPercent(0);
+      if (Number(value) >= Wallet.unlocAmount) {
+        setCurrentAmount(Wallet.unlocAmount);
+      } else {
+        setCurrentAmount(Number(value));
+      }
     }
   };
 
@@ -116,6 +131,20 @@ export const CreateStake = observer(() => {
     StakingStore.setCreateFormInput("lockDuration", value);
     setApy(durationToApyBasisPoints(value));
   };
+
+  const handleAmount = (amount: number) => {
+    setAmountInPercent((prevState) => (prevState === amount ? 0 : amount));
+  };
+
+  const calculateSelectedAmount = () => {
+    const percentsToAmount = Wallet.unlocAmount / (100 / selectedAmountInPercent);
+    setCurrentAmount(percentsToAmount);
+    StakingStore.setCreateFormInput("uiAmount", percentsToAmount.toString());
+  };
+
+  useEffect(() => {
+    if (selectedAmountInPercent > 0) calculateSelectedAmount();
+  }, [selectedAmountInPercent]);
 
   return (
     <div className="create-stake">
@@ -129,19 +158,46 @@ export const CreateStake = observer(() => {
           Unloc score <strong>{0}</strong>
         </div>
       </div>
+      <div className="create-stake__stats row-division">
+        <div className="create-stake__wallet">
+          <p className="label">Current Wallet Balance</p>
+          <p className="balance">
+            {Wallet.unlocAmount} <i className={`icon icon--sm icon--currency--UNLOC--violet`} />
+          </p>
+        </div>
+      </div>
+
+      <div className="create-stake__stats col">
+        <div className="create-stake__wallet">
+          <p className="label">Amount Settings</p>
+        </div>
+        <div className="create-stake__amount-list">
+          {amountPart.map((amount) => {
+            return (
+              <AmountItem
+                key={amount}
+                onClick={handleAmount}
+                chosen={selectedAmountInPercent === amount}
+                amount={amount}
+              />
+            );
+          })}
+        </div>
+      </div>
+
       <form onSubmit={handleCreate} className="create-stake__form">
-        <div className="create-stake__amount">
-          <label htmlFor="amount">Amount</label>
+        <div className="create-stake__amount row-division">
+          <label htmlFor="amount">Custom Amount</label>
           <input
             lang="en"
-            value={StakingStore.createFormInputs.uiAmount}
+            value={currentAmount || 0}
             onChange={handleAmountInput}
             placeholder=""
             name="amount"
             type="text"
           />
         </div>
-        <div className="create-stake__duration">
+        <div className="create-stake__duration row-division">
           <label htmlFor="duration">Duration (Days)</label>
           <div className="slider-container">
             <Slider
@@ -154,13 +210,11 @@ export const CreateStake = observer(() => {
             />
           </div>
         </div>
-        <div className="create-stake__apy">
+
+        <div className="create-stake__score__apy">
           <p>
             APY <strong>{(apy / 100).toLocaleString("en-us")}%</strong>
           </p>
-        </div>
-
-        <div className="create-stake__score">
           <p>
             New UNLOC score <strong>7.7</strong>
           </p>
@@ -173,3 +227,17 @@ export const CreateStake = observer(() => {
     </div>
   );
 });
+
+interface IProps {
+  amount: number;
+  onClick: (amount: number) => void;
+  chosen: boolean;
+}
+
+const AmountItem = ({ amount, onClick, chosen }: IProps) => {
+  return (
+    <div onClick={() => onClick(amount)} className={`amount-item ${chosen ? "active" : ""}`}>
+      <p>{amount}%</p>
+    </div>
+  );
+};

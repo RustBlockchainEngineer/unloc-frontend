@@ -57,6 +57,7 @@ $themes: (
     icon-SOL: url("/icons/SOL-icon-light.svg"),
     icon-USDC: url("/icons/USDC-icon-light.svg"),
     icon-UNLOC: url("/icons/unloc-icon-light.svg"),
+    icon-UNLOC-violet: url("/icons/unloc-icon-violet.svg"),
     wallet-adapter-bg: #ffffff,
     wallet-adapter-bg-hover: #d1c1f3,
     wallet-adapter-color: #210d48,
@@ -251,6 +252,7 @@ $themes: (
     icon-SOL: url("/icons/SOL-icon-dark.svg"),
     icon-USDC: url("/icons/USDC-icon-dark.svg"),
     icon-UNLOC: url("/icons/unloc-icon-dark.svg"),
+    icon-UNLOC-violet: url("/icons/unloc-icon-violet.svg"),
     wallet-adapter-bg: #210d48,
     wallet-adapter-bg-hover: #3e1f78,
     wallet-adapter-color: #ffffff,
@@ -382,5 +384,6 @@ $themes: (
       linear-gradient(180deg, rgba(113, 73, 191, 0.145) 0%, rgba(66, 34, 128, 0.1) 100%),
     lightbox-loan-group-border-bottom: 1px solid #6743aa,
     offers-group-div: #6743aa,
+    disabled-input-text-color: rgba(147, 106, 224, 1),
   ),
 );
