@@ -190,7 +190,6 @@ export const CreateStake = observer(() => {
           <label htmlFor="amount">Custom Amount</label>
           <input
             lang="en"
-            // value={StakingStore.createFormInputs.uiAmount}
             value={currentAmount || 0}
             onChange={handleAmountInput}
             placeholder=""
