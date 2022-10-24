@@ -8,8 +8,9 @@ import {
 } from "@unloc-dev/unloc-sdk-staking";
 import { numVal, val } from "@utils/bignum";
 import BN from "bn.js";
-import { lockDurationEnumToSeconds } from "./unloc-staking";
+import { convertDayDurationToEnum, lockDurationEnumToSeconds } from "./unloc-staking";
 import { Decimal } from "decimal.js";
+import { getDurationForContractData } from "@utils/timeUtils/timeUtils";
 
 export const getUnlocScore = (poolInfo: PoolInfo, user: UserStakingsInfo) => {
   const { liqMinRwds, locked } = user.stakingAccounts;
@@ -18,7 +19,7 @@ export const getUnlocScore = (poolInfo: PoolInfo, user: UserStakingsInfo) => {
   // Liquidity mining score contribution
   const scoreLiqMin = getUnlocScoreContribution(liqMinRwds.stakingData, poolInfo);
 
-  // For locked acocounts, we need to sum the score of each active staking
+  // For locked accounts, we need to sum the score of each active staking
   const scoreLocked = locked.lockedStakingsData.reduce((sum, account) => {
     return account.isActive
       ? sum.add(getUnlocScoreContribution(account.stakingData, poolInfo))
@@ -44,6 +45,29 @@ export const getUnlocScoreContribution = (stakingAccount: StakingData, poolInfo:
   const preciseInitialTokensStaked = new Decimal(initialTokensStaked.toString());
 
   return new BN(preciseInitialTokensStaked.mul(preciseScoreMultiplier).floor().toString());
+};
+
+export const getUnlocScoreContributionForLightbox = (
+  initialTokensStaked: bignum,
+  lockDurationInDays: number,
+  poolInfo: PoolInfo,
+): BN => {
+  const durationEnum = convertDayDurationToEnum(lockDurationInDays);
+  const lockDurationInSeconds = getDurationForContractData(lockDurationInDays, "days");
+
+  const scoreMultiplier = getScoreMultiplier(
+    poolInfo.scoreMultiplier,
+    durationEnum,
+    lockDurationInSeconds,
+  );
+
+  const preciseScoreMultiplier = new Decimal(scoreMultiplier.numerator.toString()).dividedBy(
+    scoreMultiplier.denominator.toString(),
+  );
+
+  const preciseInitialTokensStaked = new Decimal(initialTokensStaked.toString());
+
+  return new BN(preciseInitialTokensStaked.mul(preciseScoreMultiplier).toString());
 };
 
 export const getUserLevel = (poolInfo: PoolInfo, score: bignum) => {
@@ -111,7 +135,7 @@ const getScoreMultiplier = (
   } else if (remainingLockDuration > lockDurationEnumToSeconds(AllowedStakingDurationMonths.Zero)) {
     return multipliers.rldm10;
   } else {
-    return { numerator: 0, denominator: 0 };
+    return { numerator: 0, denominator: 1 };
   }
 };
 

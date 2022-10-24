@@ -1,4 +1,4 @@
-import { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import { ChangeEvent, FormEvent, useState } from "react";
 
 import { useStore } from "@hooks/useStore";
 import { WalletNotConnectedError } from "@solana/wallet-adapter-base";
@@ -8,7 +8,6 @@ import Slider from "rc-slider";
 import "rc-slider/assets/index.css";
 import { errorCase } from "@utils/toast-error-handler";
 import { useStakingAccounts } from "@hooks/useStakingAccounts";
-import BN from "bn.js";
 import { amountToUiAmount } from "@utils/bignum";
 import { formatOptions } from "@constants/config";
 import { useSendTransaction } from "@hooks/useSendTransaction";
@@ -20,6 +19,11 @@ import {
 } from "@utils/spl/unloc-staking";
 import { Transaction } from "@solana/web3.js";
 import { UNLOC_MINT_DECIMALS } from "@constants/currency-constants";
+import { useUserScore } from "@hooks/useUserScore";
+import { getUnlocScoreContributionForLightbox } from "@utils/spl/unloc-score";
+import { usePoolInfo } from "@hooks/usePoolInfo";
+import { PoolInfo } from "@unloc-dev/unloc-sdk-staking";
+import { uiAmountToAmount } from "@utils/spl/common";
 
 type InputEvent = ChangeEvent<HTMLInputElement>;
 
@@ -59,8 +63,9 @@ function durationToApyBasisPoints(value: number) {
     case 90:
       return 5500;
     case 180:
-      return 9000;
-    //TODO: absent case for 365 days. For now it returns 0
+      return 8000;
+    case 365:
+      return 12000;
     default:
       return 0;
   }
@@ -73,14 +78,12 @@ export const CreateStake = observer(() => {
   const { connection } = useConnection();
   const { publicKey: wallet } = useWallet();
   const { isLoading, accounts } = useStakingAccounts();
+  const { score } = useUserScore();
+  const { data } = usePoolInfo();
 
   const [apy, setApy] = useState(50);
-  const uiAmount = StakingStore.createFormInputs.uiAmount;
-  const [selectedAmountInPercent, setAmountInPercent] = useState<number>(0);
-
-  const [currentAmount, setCurrentAmount] = useState<number>(
-    Number(uiAmount) ? Number(uiAmount) : 0,
-  );
+  const [userScoreContribution, setUserScoreContribution] = useState<string>("0");
+  const { uiAmount, lockDuration } = StakingStore.createFormInputs;
 
   const sendAndConfirm = useSendTransaction();
 
@@ -93,7 +96,7 @@ export const CreateStake = observer(() => {
       if (!wallet) throw new WalletNotConnectedError();
 
       const { uiAmount, lockDuration } = StakingStore.createFormInputs;
-      const amount = new BN(uiAmount).muln(10 ** UNLOC_MINT_DECIMALS);
+      const amount = uiAmountToAmount(uiAmount, UNLOC_MINT_DECIMALS);
       const lockDurationEnum = convertDayDurationToEnum(lockDuration);
       const ix1 = await createStakingUserOptionally(connection, wallet);
       const ix2 = await depositTokens(connection, wallet, amount, lockDurationEnum);
@@ -114,12 +117,11 @@ export const CreateStake = observer(() => {
     // Check for numbers
     if (!value || value.match(/^\d{1,}(\.\d{0,6})?$/)) {
       StakingStore.setCreateFormInput("uiAmount", value);
-      setAmountInPercent(0);
-      if (Number(value) >= Wallet.unlocAmount) {
-        setCurrentAmount(Wallet.unlocAmount);
-      } else {
-        setCurrentAmount(Number(value));
-      }
+
+      // Set the score contribution that this stake would have
+      const amount = uiAmountToAmount(uiAmount, UNLOC_MINT_DECIMALS);
+      const score = getUnlocScoreContributionForLightbox(amount, lockDuration, data as PoolInfo);
+      setUserScoreContribution(score.toString());
     }
   };
 
@@ -127,24 +129,20 @@ export const CreateStake = observer(() => {
     if (typeof value !== "number") {
       value = value[0];
     }
-    value = markToDurationMapping(value);
-    StakingStore.setCreateFormInput("lockDuration", value);
-    setApy(durationToApyBasisPoints(value));
+    const durationInDays = markToDurationMapping(value);
+    StakingStore.setCreateFormInput("lockDuration", durationInDays);
+    setApy(durationToApyBasisPoints(durationInDays));
+
+    // Set the score contribution that this stake would have
+    const amount = uiAmountToAmount(uiAmount, UNLOC_MINT_DECIMALS);
+    const score = getUnlocScoreContributionForLightbox(amount, durationInDays, data as PoolInfo);
+    setUserScoreContribution(score.toString());
   };
 
-  const handleAmount = (amount: number) => {
-    setAmountInPercent((prevState) => (prevState === amount ? 0 : amount));
-  };
-
-  const calculateSelectedAmount = () => {
-    const percentsToAmount = Wallet.unlocAmount / (100 / selectedAmountInPercent);
-    setCurrentAmount(percentsToAmount);
+  const handleAmountPercent = (amount: number) => () => {
+    const percentsToAmount = Wallet.unlocAmount / (100 / amount);
     StakingStore.setCreateFormInput("uiAmount", percentsToAmount.toString());
   };
-
-  useEffect(() => {
-    if (selectedAmountInPercent > 0) calculateSelectedAmount();
-  }, [selectedAmountInPercent]);
 
   return (
     <div className="create-stake">
@@ -155,7 +153,7 @@ export const CreateStake = observer(() => {
           <strong>{amountToUiAmount(totalStaked, 6).toLocaleString("en-us", formatOptions)}</strong>
         </div>
         <div className="create-stake__stats-item">
-          Unloc score <strong>{0}</strong>
+          Unloc score <strong>{score.toString()}</strong>
         </div>
       </div>
       <div className="create-stake__stats row-division">
@@ -174,12 +172,13 @@ export const CreateStake = observer(() => {
         <div className="create-stake__amount-list">
           {amountPart.map((amount) => {
             return (
-              <AmountItem
+              <button
+                type="button"
                 key={amount}
-                onClick={handleAmount}
-                chosen={selectedAmountInPercent === amount}
-                amount={amount}
-              />
+                onClick={handleAmountPercent(amount)}
+                className="amount-item">
+                <p>{amount}%</p>
+              </button>
             );
           })}
         </div>
@@ -190,7 +189,7 @@ export const CreateStake = observer(() => {
           <label htmlFor="amount">Custom Amount</label>
           <input
             lang="en"
-            value={currentAmount || 0}
+            value={uiAmount || 0}
             onChange={handleAmountInput}
             placeholder=""
             name="amount"
@@ -216,7 +215,7 @@ export const CreateStake = observer(() => {
             APY <strong>{(apy / 100).toLocaleString("en-us")}%</strong>
           </p>
           <p>
-            New UNLOC score <strong>7.7</strong>
+            New UNLOC score <strong>{userScoreContribution}</strong>
           </p>
         </div>
 
@@ -227,17 +226,3 @@ export const CreateStake = observer(() => {
     </div>
   );
 });
-
-interface IProps {
-  amount: number;
-  onClick: (amount: number) => void;
-  chosen: boolean;
-}
-
-const AmountItem = ({ amount, onClick, chosen }: IProps) => {
-  return (
-    <div onClick={() => onClick(amount)} className={`amount-item ${chosen ? "active" : ""}`}>
-      <p>{amount}%</p>
-    </div>
-  );
-};

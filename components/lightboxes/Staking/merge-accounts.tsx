@@ -91,7 +91,7 @@ export const MergeAccounts = () => {
   const [sliderMin, setSliderMin] = useState<number | null>(null);
   const [durationToMerge, setDurationToMerge] = useState<number>();
 
-  const [sliderPosition, setSliderPosotion] = useState(sliderMin || 0);
+  const [sliderPosition, setSliderPosition] = useState(sliderMin || 0);
 
   const { index, lockDuration, amount } = StakingStore.accountToMerge;
   const lockedAccounts = accounts?.info?.stakingAccounts.locked.lockedStakingsData;
@@ -139,7 +139,7 @@ export const MergeAccounts = () => {
     if (typeof value !== "number") {
       value = value[0];
     }
-    setSliderPosotion(value);
+    setSliderPosition(value);
     value = markToDurationMapping(value);
     setDurationToMerge(value);
   };
