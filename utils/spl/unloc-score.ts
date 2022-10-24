@@ -5,6 +5,8 @@ import {
   PoolInfo,
   ScoreMultiplier,
   UserStakingsInfo,
+  CompoundingFrequency,
+  NumDenPair,
 } from "@unloc-dev/unloc-sdk-staking";
 import { numVal, val } from "@utils/bignum";
 import BN from "bn.js";
@@ -139,4 +141,151 @@ const getScoreMultiplier = (
   }
 };
 
-export const getTotalTokens = () => {};
+export const getTotalTokens = (stakingData: StakingData, stakingPoolInfo: PoolInfo) => {
+  let totalTokens = new BN(1);
+  const timeElapsed = timeElapsedSeconds(stakingData.accountLastUpdatedAt).toNumber();
+  const lockDurationSeconds = (stakingData.lockDuration as number) * 60 * 60 * 24 * 30;
+  if (timeElapsed > lockDurationSeconds) {
+    const flexiPeriod = timeElapsed - lockDurationSeconds;
+    const flexiPeriodConverted = secondsToCFTime(
+      stakingPoolInfo.interestRateFraction.compoundingFrequency,
+      flexiPeriod,
+    );
+    const tokenMultiplier = Math.floor(
+      getTokensMultiplier(
+        stakingPoolInfo.interestRateFraction.flexi,
+        flexiPeriodConverted,
+      ).toNumber(),
+    );
+    totalTokens = new BN(1).add(totalTokens.mul(new BN(tokenMultiplier)));
+  }
+  totalTokens = getPartialTokensContribution(
+    stakingData,
+    stakingPoolInfo,
+    totalTokens,
+    1,
+    1,
+    stakingPoolInfo.interestRateFraction.rldm10,
+  );
+  totalTokens = getPartialTokensContribution(
+    stakingData,
+    stakingPoolInfo,
+    totalTokens,
+    3,
+    2,
+    stakingPoolInfo.interestRateFraction.rldm31,
+  );
+  totalTokens = getPartialTokensContribution(
+    stakingData,
+    stakingPoolInfo,
+    totalTokens,
+    6,
+    3,
+    stakingPoolInfo.interestRateFraction.rldm63,
+  );
+  totalTokens = getPartialTokensContribution(
+    stakingData,
+    stakingPoolInfo,
+    totalTokens,
+    12,
+    6,
+    stakingPoolInfo.interestRateFraction.rldm126,
+  );
+  totalTokens = getPartialTokensContribution(
+    stakingData,
+    stakingPoolInfo,
+    totalTokens,
+    24,
+    12,
+    stakingPoolInfo.interestRateFraction.rldm2412,
+  );
+  return totalTokens.mul(new BN(stakingData.initialTokensStaked.toString()));
+};
+const secondsToCFTime = (cf: CompoundingFrequency, numSeconds: number) => {
+  let convertedTime = 0;
+  switch (cf) {
+    case CompoundingFrequency.Secondly:
+      convertedTime = numSeconds;
+      break;
+    case CompoundingFrequency.Minutely:
+      convertedTime = numSeconds / 60;
+      break;
+    case CompoundingFrequency.Hourly:
+      convertedTime = numSeconds / 3600;
+      break;
+    case CompoundingFrequency.Daily:
+      convertedTime = numSeconds / 3600 / 24;
+      break;
+    case CompoundingFrequency.Monthly:
+      convertedTime = numSeconds / 3600 / 24 / 30;
+      break;
+    default:
+      convertedTime = 1;
+      break;
+  }
+  if (convertedTime === 0) {
+    convertedTime = 1;
+  }
+  return convertedTime;
+};
+const getTokensMultiplier = (numDenPair: NumDenPair, numCompundings: number) => {
+  const preciseOne = new BN(1);
+  const f1 = preciseOne.add(new BN(numDenPair.numerator).div(new BN(numDenPair.denominator)));
+  const tokenMultiplier = new BN(f1).pow(new BN(numCompundings));
+  return tokenMultiplier;
+};
+const getPartialTokensContribution = (
+  stakingData: StakingData,
+  stakingPoolInfo: PoolInfo,
+  totalTokens: BN,
+  levelMonths: number,
+  stepPeriodMnths: number,
+  interestFraction: NumDenPair,
+) => {
+  const timeElapsed = timeElapsedSeconds(stakingData.accountLastUpdatedAt).toNumber();
+  const lockDurationSeconds = (stakingData.lockDuration as number) * 60 * 60 * 24 * 30;
+  const lockDurationMonths = lockDurationToMonths(stakingData.lockDuration);
+  if (
+    lockDurationMonths > levelMonths &&
+    timeElapsed > lockDurationSeconds - levelMonths * 60 * 60 * 24 * 30
+  ) {
+    const minTimeConverted = secondsToCFTime(
+      stakingPoolInfo.interestRateFraction.compoundingFrequency,
+      Math.min(stepPeriodMnths * 60 * 60 * 24 * 30, timeElapsed),
+    );
+    const tokenMultiplier = Math.floor(
+      getTokensMultiplier(interestFraction, minTimeConverted).toNumber(),
+    );
+    totalTokens = new BN(1).add(totalTokens.mul(new BN(tokenMultiplier)));
+  }
+  return totalTokens;
+};
+const lockDurationToMonths = (lockDuration: AllowedStakingDurationMonths) => {
+  let result = 0;
+  switch (lockDuration) {
+    case AllowedStakingDurationMonths.Zero:
+      result = 0;
+      break;
+    case AllowedStakingDurationMonths.One:
+      result = 1;
+      break;
+    case AllowedStakingDurationMonths.Two:
+      result = 2;
+      break;
+    case AllowedStakingDurationMonths.Three:
+      result = 3;
+      break;
+    case AllowedStakingDurationMonths.Six:
+      result = 6;
+      break;
+    case AllowedStakingDurationMonths.Twelve:
+      result = 12;
+      break;
+    case AllowedStakingDurationMonths.TwentyFour:
+      result = 24;
+      break;
+    default:
+      break;
+  }
+  return result;
+};
