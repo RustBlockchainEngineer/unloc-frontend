@@ -9,8 +9,12 @@ import { errorCase } from "@utils/toast-error-handler";
 import { useStakingAccounts } from "@hooks/useStakingAccounts";
 import { amountToUiAmount } from "@utils/bignum";
 import { UNLOC_MINT_DECIMALS } from "@constants/currency-constants";
-import { AllowedStakingDurationMonths, LockedStakingAccount } from "@unloc-dev/unloc-sdk-staking";
-import { mergeStakingAccounts } from "@utils/spl/unloc-staking";
+import {
+  AllowedStakingDurationMonths,
+  LockedStakingAccount,
+  RelockType,
+} from "@unloc-dev/unloc-sdk-staking";
+import { mergeStakingAccounts, relockStakingAccount } from "@utils/spl/unloc-staking";
 import { useSendTransaction } from "@hooks/useSendTransaction";
 
 const defaultSliderMarks = {
@@ -80,7 +84,11 @@ interface SelectedAccountData {
   lockDuration: number;
 }
 
-export const MergeAccounts = () => {
+interface StakingActionsProps {
+  mode: "merge" | "relock";
+}
+
+export const StakingActions = ({ mode }: StakingActionsProps) => {
   const { publicKey: wallet } = useWallet();
   const { accounts } = useStakingAccounts();
   const { StakingStore, Lightbox } = useStore();
@@ -97,6 +105,22 @@ export const MergeAccounts = () => {
   const lockedAccounts = accounts?.info?.stakingAccounts.locked.lockedStakingsData;
   const restOfLockedAccounts = lockedAccounts?.filter((acc) => acc.index !== index && acc.isActive);
 
+  const actionButton = () => {
+    if (mode === "merge") {
+      return (
+        <button onClick={handleMerge} className="lb-collateral-button">
+          Merge Accounts
+        </button>
+      );
+    } else if (mode === "relock") {
+      return (
+        <button onClick={handleRelock} className="lb-collateral-button">
+          Relock Account
+        </button>
+      );
+    } else throw Error("Wrong action");
+  };
+
   const handleMerge = async (e: FormEvent) => {
     e.preventDefault();
     try {
@@ -109,6 +133,24 @@ export const MergeAccounts = () => {
         daysToLockDuration(durationToMerge as number),
       );
 
+      await sendAndConfirm(tx, "confirmed", true);
+    } catch (err) {
+      console.log(err);
+      errorCase(err);
+    } finally {
+      Lightbox.setVisible(false);
+      Lightbox.setCanClose(true);
+    }
+  };
+
+  const handleRelock = async () => {
+    try {
+      if (!wallet) throw new WalletNotConnectedError();
+      const tx = await relockStakingAccount(
+        wallet,
+        { relockType: RelockType.Flexi, index: 0 },
+        daysToLockDuration(durationToMerge as number),
+      );
       await sendAndConfirm(tx, "confirmed", true);
     } catch (err) {
       console.log(err);
@@ -139,6 +181,7 @@ export const MergeAccounts = () => {
     if (typeof value !== "number") {
       value = value[0];
     }
+    console.log(value);
     setSliderPosition(value);
     value = markToDurationMapping(value);
     setDurationToMerge(value);
@@ -150,7 +193,11 @@ export const MergeAccounts = () => {
     const min = minLockDurationToDays(minAvailableDuration);
 
     const data = Object.keys(defaultSliderMarks).reduce((acc, step) => {
-      if (defaultSliderMarks[step] > min || defaultSliderMarks[step].label >= min) {
+      if (
+        mode === "merge"
+          ? defaultSliderMarks[step] > min || defaultSliderMarks[step].label >= min
+          : defaultSliderMarks[step] >= min || defaultSliderMarks[step].label >= min
+      ) {
         const field = { [step]: defaultSliderMarks[step] };
         return (acc = { ...acc, ...field });
       } else {
@@ -181,7 +228,9 @@ export const MergeAccounts = () => {
 
   return (
     <div className="merge-stake">
-      <h3 className="merge-stake__title">Merging accounts</h3>
+      <h3 className="merge-stake__title">
+        {mode === "merge" ? "Merging accounts" : mode === "relock" ? "Relock account" : ""}
+      </h3>
       <div className="merge-stake__stats">
         <div className="merge-stake__stats-item">
           <p>Staked amount: </p>
@@ -194,22 +243,24 @@ export const MergeAccounts = () => {
           <p>Duration: </p> <p>{minLockDurationToDays(lockDuration)} days</p>
         </div>
       </div>
-      <div className="list">
-        <div className="list-to-merge">
-          {restOfLockedAccounts?.map((acc) => {
-            const indexes = new Set(selectedAccounts.map((acc) => acc.index));
-            return (
-              <StakingItem
-                key={acc.index}
-                onClick={handleSelectedAccount}
-                accountData={acc}
-                chosen={indexes.has(acc.index)}
-              />
-            );
-          })}
+      {mode === "merge" && (
+        <div className="list">
+          <div className="list-to-merge">
+            {restOfLockedAccounts?.map((acc) => {
+              const indexes = new Set(selectedAccounts.map((acc) => acc.index));
+              return (
+                <StakingItem
+                  key={acc.index}
+                  onClick={handleSelectedAccount}
+                  accountData={acc}
+                  chosen={indexes.has(acc.index)}
+                />
+              );
+            })}
+          </div>
         </div>
-      </div>
-      {selectedAccounts.length ? (
+      )}
+      {selectedAccounts.length || mode === "relock" ? (
         sliderMin === 100 ? (
           <div className="merge-stake__stats">
             <div className="merge-stake__stats-item">
@@ -230,9 +281,7 @@ export const MergeAccounts = () => {
           />
         )
       ) : null}
-      <button onClick={handleMerge} className="lb-collateral-button">
-        Merge Accounts
-      </button>
+      {actionButton()}
     </div>
   );
 };

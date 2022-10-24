@@ -5,17 +5,11 @@ import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { WalletNotConnectedError } from "@solana/wallet-adapter-base";
 import { errorCase } from "@utils/toast-error-handler";
 import { useSendTransaction } from "@hooks/useSendTransaction";
-import {
-  depositTokens,
-  lockDurationEnumToSeconds,
-  relockStakingAccount,
-  withdrawTokens,
-} from "@utils/spl/unloc-staking";
+import { depositTokens, lockDurationEnumToSeconds, withdrawTokens } from "@utils/spl/unloc-staking";
 import { BN } from "bn.js";
 import {
   AllowedStakingDurationMonths,
   LockedStakingAccount,
-  RelockType,
   WithdrawType,
 } from "@unloc-dev/unloc-sdk-staking";
 import { Transaction } from "@solana/web3.js";
@@ -63,12 +57,11 @@ export const StakeRow = ({ lockedStakingAccount, type }: StakeRowProps) => {
   const Relock = async () => {
     try {
       if (!wallet) throw new WalletNotConnectedError();
-      const tx = await relockStakingAccount(
-        wallet,
-        { relockType: RelockType.Flexi, index: 0 },
-        AllowedStakingDurationMonths.Zero,
-      );
-      await sendAndConfirm(tx, "confirmed", true);
+      Lightbox.setVisible(false);
+      StakingStore.resetCreateFormInputs();
+      Lightbox.setContent("relockStakes");
+      Lightbox.setVisible(true);
+      await StakingStore.setAccountToMerge(index, stakingData.lockDuration, uiAmount);
     } catch (err) {
       console.log(err);
       errorCase(err);
@@ -111,7 +104,7 @@ export const StakeRow = ({ lockedStakingAccount, type }: StakeRowProps) => {
   const renderActions = () => {
     const button = ["Deposit", "Relock"];
     if (status === "flexi") {
-      button.push("Withdraw");
+      button.splice(0, 1, "Withdraw");
     } else if (status === "unlocked" || status === "locked") {
       button.push("Merge");
     } else throw Error("Stake status error");
