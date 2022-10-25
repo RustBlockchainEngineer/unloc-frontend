@@ -7,6 +7,7 @@ import {
   UserStakingsInfo,
   CompoundingFrequency,
   NumDenPair,
+  LockedStakingsData,
 } from "@unloc-dev/unloc-sdk-staking";
 import { numVal, val } from "@utils/bignum";
 import BN from "bn.js";
@@ -140,7 +141,19 @@ const getScoreMultiplier = (
     return { numerator: 0, denominator: 1 };
   }
 };
+export const getEarnedSoFar = (stakingData: StakingData, stakingPoolInfo: PoolInfo) => {
+  return getTotalTokens(stakingData, stakingPoolInfo).sub(
+    new BN(stakingData.initialTokensStaked.toString()),
+  );
+};
 
+export const getAllEarnedSoFar = (stakingsData: LockedStakingsData, stakingPoolInfo: PoolInfo) => {
+  let result = new BN(0);
+  for (const lockedStakingAccount of stakingsData.lockedStakingsData) {
+    result = result.add(getEarnedSoFar(lockedStakingAccount.stakingData, stakingPoolInfo));
+  }
+  return result;
+};
 export const getTotalTokens = (stakingData: StakingData, stakingPoolInfo: PoolInfo) => {
   let totalTokens = new BN(1);
   const timeElapsed = timeElapsedSeconds(stakingData.accountLastUpdatedAt).toNumber();
