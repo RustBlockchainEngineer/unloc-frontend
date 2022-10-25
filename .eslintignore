@@ -1,9 +1,8 @@
 # Folders to fix
-/components
-/integration
-/methods
-/stores
-/utils
+#/components
+#/integration
+#/stores
+#/utils
 
 # Config files
 package.json
