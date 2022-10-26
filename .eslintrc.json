@@ -1,13 +1,3 @@
 {
-  "root": true,
-  "extends": ["./node_modules/@unloc/eslint/.eslintrc.base"],
-  "overrides": [
-    {
-      "files": ["**/*.ts?(x)"],
-      "extends": [
-        "./node_modules/@unloc/eslint/.eslintrc.addon.typescript",
-        "plugin:@next/next/recommended"
-      ]
-    }
-  ]
+  "extends": "next/core-web-vitals"
 }

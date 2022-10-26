@@ -10,16 +10,12 @@ export const useUserScore = () => {
   const { accounts } = useStakingAccounts();
 
   if (data && accounts?.info?.stakingAccounts) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
     const score = getUnlocScore(data, accounts.info);
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
     const profile = getUserLevel(data, score);
 
     return {
       isLoading: false,
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
       score,
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
       profile,
     };
   }
