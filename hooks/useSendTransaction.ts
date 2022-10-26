@@ -23,12 +23,7 @@ export const useSendTransaction = (): ((
   const { publicKey, sendTransaction } = useWallet();
 
   return useCallback(
-    async (
-      transaction: Transaction,
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-      commitment = selectedCommitment as Commitment,
-      skipPreflight?: boolean,
-    ) => {
+    async (transaction: Transaction, commitment = selectedCommitment, skipPreflight?: boolean) => {
       if (!publicKey) throw new WalletNotConnectedError();
 
       const {
