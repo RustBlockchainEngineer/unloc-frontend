@@ -14,6 +14,7 @@ export const NFT_LOAN_PID = new PublicKey(
 );
 
 export const UNLOC_STAKING_PID = new PublicKey("65SDRmYzcAwHiSRyuij6f8LmHAwJ98fwfUnxkog17rbP");
+export const UNLOC_VOTING_PID = new PublicKey("c1hkB5vKgt98WWzEd1xEEYQMZ9evCy2n6gLzj6PFgQk");
 
 export const RPC_ENDPOINT = config.devnet ? config.devnetEndpoint : config.mainnetEndpoint;
 

@@ -58,7 +58,7 @@ const SingleNftPage: NextPage = observer(() => {
     });
   }, [subOffers, nftData, isLoading]);
 
-  const PrivateTerms = memo(() => {
+  const PrivateTerms = memo(function PrivateTerms() {
     const addNewLoan = useCallback(() => {
       const offerAddress = getQueryParamAsString(router.query.id);
       if (nftData != null) {
@@ -86,7 +86,7 @@ const SingleNftPage: NextPage = observer(() => {
     );
   });
 
-  const Loans = memo(() => {
+  const Loans = memo(function Loans() {
     if (hasActive)
       return (
         <h2 className="single-offer-active">Loan Active, can&apos;t claim any offers right now</h2>
