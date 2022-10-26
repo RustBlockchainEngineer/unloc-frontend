@@ -1,21 +1,24 @@
+// eslint-disable-next-line import/named
 import { bignum } from "@metaplex-foundation/beet";
 import {
   AllowedStakingDurationMonths,
-  StakingData,
+  CompoundingFrequency,
+  LockedStakingsData,
+  NumDenPair,
   PoolInfo,
   ScoreMultiplier,
+  StakingData,
   UserStakingsInfo,
-  CompoundingFrequency,
-  NumDenPair,
-  LockedStakingsData,
 } from "@unloc-dev/unloc-sdk-staking";
-import { numVal, val } from "@utils/bignum";
 import BN from "bn.js";
-import { convertDayDurationToEnum, lockDurationEnumToSeconds } from "./unloc-staking";
 import { Decimal } from "decimal.js";
+
+import { numVal, val } from "@utils/bignum";
 import { getDurationForContractData } from "@utils/timeUtils/timeUtils";
 
-export const getUnlocScore = (poolInfo: PoolInfo, user: UserStakingsInfo) => {
+import { convertDayDurationToEnum, lockDurationEnumToSeconds } from "./unloc-staking";
+
+export const getUnlocScore = (poolInfo: PoolInfo, user: UserStakingsInfo): BN => {
   const { liqMinRwds, locked } = user.stakingAccounts;
   // Flexi always has a score of 0
 
@@ -73,26 +76,27 @@ export const getUnlocScoreContributionForLightbox = (
   return new BN(preciseInitialTokensStaked.mul(preciseScoreMultiplier).toString());
 };
 
-export const getUserLevel = (poolInfo: PoolInfo, score: bignum) => {
+export const getUserLevel = (
+  poolInfo: PoolInfo,
+  score: bignum,
+): { level: number; feeReductionBasisPoints: number } => {
   const { level0, level1, level2, level3, level4, level5 } = poolInfo.profileLevelMultiplier;
 
   score = val(score);
-  if (score.gte(val(level5.minUnlocScore))) {
+  if (score.gte(val(level5.minUnlocScore)))
     return { level: 5, feeReductionBasisPoints: numVal(level5.feeReductionBasisPoints) };
-  } else if (score.gte(val(level4.minUnlocScore))) {
+  else if (score.gte(val(level4.minUnlocScore)))
     return { level: 4, feeReductionBasisPoints: numVal(level4.feeReductionBasisPoints) };
-  } else if (score.gte(val(level3.minUnlocScore))) {
+  else if (score.gte(val(level3.minUnlocScore)))
     return { level: 3, feeReductionBasisPoints: numVal(level3.feeReductionBasisPoints) };
-  } else if (score.gte(val(level2.minUnlocScore))) {
+  else if (score.gte(val(level2.minUnlocScore)))
     return { level: 2, feeReductionBasisPoints: numVal(level2.feeReductionBasisPoints) };
-  } else if (score.gte(val(level1.minUnlocScore))) {
+  else if (score.gte(val(level1.minUnlocScore)))
     return { level: 1, feeReductionBasisPoints: numVal(level1.feeReductionBasisPoints) };
-  } else {
-    return { level: 0, feeReductionBasisPoints: numVal(level0.feeReductionBasisPoints) };
-  }
+  else return { level: 0, feeReductionBasisPoints: numVal(level0.feeReductionBasisPoints) };
 };
 
-const timeElapsedSeconds = (accountLastUpdatedAt: bignum) => {
+const timeElapsedSeconds = (accountLastUpdatedAt: bignum): BN => {
   // TODO: Date.now() should be replaced with SYSVAR_CLOCK
   const now = Math.floor(Date.now() / 1000);
   return new BN(now).sub(val(accountLastUpdatedAt));
@@ -101,14 +105,13 @@ const timeElapsedSeconds = (accountLastUpdatedAt: bignum) => {
 const remainingLockDurationSeconds = (
   accountLastUpdatedAt: bignum,
   lockDuration: AllowedStakingDurationMonths,
-) => {
+): number => {
   // Timestamps shouldn't overflow the number primitive, at least not any time soon
   const timeElapsed = timeElapsedSeconds(accountLastUpdatedAt).toNumber();
   const lockDurationSeconds = lockDurationEnumToSeconds(lockDuration);
 
-  if (lockDurationSeconds > timeElapsed) {
-    return lockDurationSeconds - timeElapsed;
-  }
+  if (lockDurationSeconds > timeElapsed) return lockDurationSeconds - timeElapsed;
+
   return 0;
 };
 
@@ -116,45 +119,40 @@ const getScoreMultiplier = (
   multipliers: ScoreMultiplier,
   initialLockDuration: AllowedStakingDurationMonths,
   remainingLockDuration: number,
-) => {
-  if (initialLockDuration === AllowedStakingDurationMonths.Zero) {
-    return multipliers.flexi;
-  }
+): NumDenPair => {
+  if (initialLockDuration === AllowedStakingDurationMonths.Zero) return multipliers.flexi;
 
-  if (initialLockDuration === AllowedStakingDurationMonths.Two) {
-    return multipliers.liqMin;
-  }
+  if (initialLockDuration === AllowedStakingDurationMonths.Two) return multipliers.liqMin;
 
-  if (remainingLockDuration > lockDurationEnumToSeconds(AllowedStakingDurationMonths.Twelve)) {
+  if (remainingLockDuration > lockDurationEnumToSeconds(AllowedStakingDurationMonths.Twelve))
     return multipliers.rldm2412;
-  } else if (remainingLockDuration > lockDurationEnumToSeconds(AllowedStakingDurationMonths.Six)) {
+  else if (remainingLockDuration > lockDurationEnumToSeconds(AllowedStakingDurationMonths.Six))
     return multipliers.rldm126;
-  } else if (
-    remainingLockDuration > lockDurationEnumToSeconds(AllowedStakingDurationMonths.Three)
-  ) {
+  else if (remainingLockDuration > lockDurationEnumToSeconds(AllowedStakingDurationMonths.Three))
     return multipliers.rldm63;
-  } else if (remainingLockDuration > lockDurationEnumToSeconds(AllowedStakingDurationMonths.One)) {
+  else if (remainingLockDuration > lockDurationEnumToSeconds(AllowedStakingDurationMonths.One))
     return multipliers.rldm31;
-  } else if (remainingLockDuration > lockDurationEnumToSeconds(AllowedStakingDurationMonths.Zero)) {
+  else if (remainingLockDuration > lockDurationEnumToSeconds(AllowedStakingDurationMonths.Zero))
     return multipliers.rldm10;
-  } else {
-    return { numerator: 0, denominator: 1 };
-  }
+  else return { numerator: 0, denominator: 1 };
 };
-export const getEarnedSoFar = (stakingData: StakingData, stakingPoolInfo: PoolInfo) => {
+export const getEarnedSoFar = (stakingData: StakingData, stakingPoolInfo: PoolInfo): BN => {
   return getTotalTokens(stakingData, stakingPoolInfo).sub(
     new BN(stakingData.initialTokensStaked.toString()),
   );
 };
 
-export const getAllEarnedSoFar = (stakingsData: LockedStakingsData, stakingPoolInfo: PoolInfo) => {
+export const getAllEarnedSoFar = (
+  stakingsData: LockedStakingsData,
+  stakingPoolInfo: PoolInfo,
+): BN => {
   let result = new BN(0);
-  for (const lockedStakingAccount of stakingsData.lockedStakingsData) {
+  for (const lockedStakingAccount of stakingsData.lockedStakingsData)
     result = result.add(getEarnedSoFar(lockedStakingAccount.stakingData, stakingPoolInfo));
-  }
+
   return result;
 };
-export const getTotalTokens = (stakingData: StakingData, stakingPoolInfo: PoolInfo) => {
+export const getTotalTokens = (stakingData: StakingData, stakingPoolInfo: PoolInfo): BN => {
   let totalTokens = new BN(1);
   const timeElapsed = timeElapsedSeconds(stakingData.accountLastUpdatedAt).toNumber();
   const lockDurationSeconds = (stakingData.lockDuration as number) * 60 * 60 * 24 * 30;
@@ -214,7 +212,7 @@ export const getTotalTokens = (stakingData: StakingData, stakingPoolInfo: PoolIn
   );
   return totalTokens.mul(new BN(stakingData.initialTokensStaked.toString()));
 };
-const secondsToCFTime = (cf: CompoundingFrequency, numSeconds: number) => {
+const secondsToCFTime = (cf: CompoundingFrequency, numSeconds: number): number => {
   let convertedTime = 0;
   switch (cf) {
     case CompoundingFrequency.Secondly:
@@ -236,16 +234,14 @@ const secondsToCFTime = (cf: CompoundingFrequency, numSeconds: number) => {
       convertedTime = 1;
       break;
   }
-  if (convertedTime === 0) {
-    convertedTime = 1;
-  }
+  if (convertedTime === 0) convertedTime = 1;
+
   return convertedTime;
 };
-const getTokensMultiplier = (numDenPair: NumDenPair, numCompundings: number) => {
+const getTokensMultiplier = (numDenPair: NumDenPair, numCompundings: number): BN => {
   const preciseOne = new BN(1);
   const f1 = preciseOne.add(new BN(numDenPair.numerator).div(new BN(numDenPair.denominator)));
-  const tokenMultiplier = new BN(f1).pow(new BN(numCompundings));
-  return tokenMultiplier;
+  return new BN(f1).pow(new BN(numCompundings));
 };
 const getPartialTokensContribution = (
   stakingData: StakingData,
@@ -254,7 +250,7 @@ const getPartialTokensContribution = (
   levelMonths: number,
   stepPeriodMnths: number,
   interestFraction: NumDenPair,
-) => {
+): BN => {
   const timeElapsed = timeElapsedSeconds(stakingData.accountLastUpdatedAt).toNumber();
   const lockDurationSeconds = (stakingData.lockDuration as number) * 60 * 60 * 24 * 30;
   const lockDurationMonths = lockDurationToMonths(stakingData.lockDuration);
@@ -273,7 +269,7 @@ const getPartialTokensContribution = (
   }
   return totalTokens;
 };
-const lockDurationToMonths = (lockDuration: AllowedStakingDurationMonths) => {
+const lockDurationToMonths = (lockDuration: AllowedStakingDurationMonths): number => {
   let result = 0;
   switch (lockDuration) {
     case AllowedStakingDurationMonths.Zero:

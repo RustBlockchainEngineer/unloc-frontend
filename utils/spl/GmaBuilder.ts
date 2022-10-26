@@ -1,15 +1,17 @@
 // Builder for a getMultipleAccounts query, similar to GpaBuilder
 import { Commitment, PublicKey, Connection } from "@solana/web3.js";
-import { UnparsedMaybeAccount } from "@utils/spl/types";
+
 import { chunk } from "@utils/common";
+import { UnparsedMaybeAccount } from "@utils/spl/types";
+
 import { getMultipleAccounts } from "./getMultipleAccounts";
 
-export type GmaBuilderOptions = {
+export interface GmaBuilderOptions {
   chunkSize?: number;
 
   /** The level of commitment desired when querying the blockchain. */
   commitment?: Commitment;
-};
+}
 
 export class GmaBuilder {
   protected readonly connection: Connection;
@@ -24,17 +26,21 @@ export class GmaBuilder {
     this.publicKeys = publicKeys;
   }
 
-  static make(connection: Connection, publicKeys: PublicKey[], options: GmaBuilderOptions = {}) {
+  static make(
+    connection: Connection,
+    publicKeys: PublicKey[],
+    options: GmaBuilderOptions = {},
+  ): GmaBuilder {
     return new GmaBuilder(connection, publicKeys, options);
   }
 
-  chunkBy(n: number) {
+  chunkBy(n: number): any {
     this.chunkSize = n;
 
     return this;
   }
 
-  addPublicKeys(publicKeys: PublicKey[]) {
+  addPublicKeys(publicKeys: PublicKey[]): any {
     this.publicKeys.push(...publicKeys);
 
     return this;
@@ -52,13 +58,13 @@ export class GmaBuilder {
   async getFirst(n?: number): Promise<UnparsedMaybeAccount[]> {
     const end = this.boundNumber(n ?? 1);
 
-    return this.getChunks(this.getPublicKeys().slice(0, end));
+    return await this.getChunks(this.getPublicKeys().slice(0, end));
   }
 
   async getLast(n?: number): Promise<UnparsedMaybeAccount[]> {
     const start = this.boundNumber(n ?? 1);
 
-    return this.getChunks(this.getPublicKeys().slice(-start));
+    return await this.getChunks(this.getPublicKeys().slice(-start));
   }
 
   async getBetween(start: number, end: number): Promise<UnparsedMaybeAccount[]> {
@@ -66,15 +72,15 @@ export class GmaBuilder {
     end = this.boundNumber(end);
     [start, end] = start > end ? [end, start] : [start, end];
 
-    return this.getChunks(this.getPublicKeys().slice(start, end));
+    return await this.getChunks(this.getPublicKeys().slice(start, end));
   }
 
   async getPage(page: number, perPage: number): Promise<UnparsedMaybeAccount[]> {
-    return this.getBetween((page - 1) * perPage, page * perPage);
+    return await this.getBetween((page - 1) * perPage, page * perPage);
   }
 
   async get(): Promise<UnparsedMaybeAccount[]> {
-    return this.getChunks(this.getPublicKeys());
+    return await this.getChunks(this.getPublicKeys());
   }
 
   async getAndMap<T>(callback: (account: UnparsedMaybeAccount) => T): Promise<T[]> {
@@ -83,13 +89,14 @@ export class GmaBuilder {
 
   protected async getChunks(publicKeys: PublicKey[]): Promise<UnparsedMaybeAccount[]> {
     const chunks = chunk(publicKeys, this.chunkSize);
-    const chunkPromises = chunks.map((chunk) => this.getChunk(chunk));
+    const chunkPromises = chunks.map(async (chunk) => await this.getChunk(chunk));
     const resolvedChunks = await Promise.all(chunkPromises);
 
     return resolvedChunks.flat();
   }
 
   protected async getChunk(publicKeys: PublicKey[]): Promise<UnparsedMaybeAccount[]> {
+    // eslint-disable-next-line no-useless-catch
     try {
       return await getMultipleAccounts(this.connection, publicKeys, this.commitment);
     } catch (error) {

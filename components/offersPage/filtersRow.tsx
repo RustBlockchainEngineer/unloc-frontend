@@ -39,12 +39,12 @@ export const FiltersRow = observer(() => {
 
   const resetFilters = useCallback((): void => {
     clearFilters();
-    if (amountMinRef.current) amountMinRef.current.value = "";
-    if (amountMaxRef.current) amountMaxRef.current.value = "";
-    if (aprMinRef.current) aprMinRef.current.value = "";
-    if (aprAprMax.current) aprAprMax.current.value = "";
-    if (durationMinRef.current) durationMinRef.current.value = "";
-    if (durationMaxRef.current) durationMaxRef.current.value = "";
+    if (amountMinRef.current != null) amountMinRef.current.value = "";
+    if (amountMaxRef.current != null) amountMaxRef.current.value = "";
+    if (aprMinRef.current != null) aprMinRef.current.value = "";
+    if (aprAprMax.current != null) aprAprMax.current.value = "";
+    if (durationMinRef.current != null) durationMinRef.current.value = "";
+    if (durationMaxRef.current != null) durationMaxRef.current.value = "";
   }, [amountMinRef, amountMaxRef, aprMinRef, aprAprMax, durationMinRef, durationMaxRef]);
 
   return (
@@ -120,7 +120,7 @@ export const FiltersRow = observer(() => {
             minRef={durationMinRef}
             maxRef={durationMaxRef}
           />
-          <div className={`offers-filters__reset`}>
+          <div className={"offers-filters__reset"}>
             <i onClick={resetFilters} className="icon icon--sm icon--interactive icon--reset" />
           </div>
         </div>

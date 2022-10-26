@@ -1,8 +1,11 @@
 import React, { useContext } from "react";
+
+import { observer } from "mobx-react-lite";
 import Image from "next/image";
 import Link from "next/link";
-import { observer } from "mobx-react-lite";
+
 import { StoreContext } from "@pages/_app";
+
 interface UnlocLogoProps {
   classNames?: string;
 }
@@ -11,7 +14,7 @@ export const UnlocLogo: React.FC<UnlocLogoProps> = observer(({ classNames }: Unl
   const { theme } = store.Interface;
 
   return (
-    <div className={`unloc-logo ${classNames ? classNames : ""}`}>
+    <div className={`unloc-logo ${classNames ?? ""}`}>
       <Link href="/">
         <a>
           {theme === "light" ? (

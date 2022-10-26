@@ -1,18 +1,19 @@
 import { memo, useMemo } from "react";
 
-import Image from "next/image";
-import { ShowOnHover } from "@components/layout/showOnHover";
-import { ClipboardButton } from "@components/layout/clipboardButton";
-import { SolscanExplorerIcon } from "@components/layout/solscanExplorerIcon";
-import { compressAddress } from "@utils/stringUtils/compressAdress";
 import { Metadata } from "@metaplex-foundation/mpl-token-metadata";
-import { useOffChainMetadata } from "@hooks/useOffChainMetadata";
-import { useCollectionName } from "@hooks/useCollectionName";
+import Image from "next/image";
 
-type IProps = {
+import { ClipboardButton } from "@components/layout/clipboardButton";
+import { ShowOnHover } from "@components/layout/showOnHover";
+import { SolscanExplorerIcon } from "@components/layout/solscanExplorerIcon";
+import { useCollectionName } from "@hooks/useCollectionName";
+import { useOffChainMetadata } from "@hooks/useOffChainMetadata";
+import { compressAddress } from "@utils/stringUtils/compressAdress";
+
+interface IProps {
   nftData: Metadata;
   isYours?: boolean;
-};
+}
 
 export const Header = memo(({ nftData, isYours }: IProps) => {
   const mintAddress = useMemo(() => nftData.mint.toBase58(), [nftData]);

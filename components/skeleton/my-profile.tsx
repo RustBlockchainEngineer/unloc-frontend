@@ -1,6 +1,6 @@
 import { Skeleton } from "react-skeleton-generator";
 
-export const SkeletonMyProfile = () => {
+export const SkeletonMyProfile = (): JSX.Element => {
   return (
     <Skeleton.SkeletonThemeProvider color="#482688">
       <div style={{ display: "flex", justifyContent: "space-between" }}>

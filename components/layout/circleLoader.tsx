@@ -6,5 +6,5 @@ interface ICircleLoaderProps {
 }
 
 export const CircleLoader = memo(({ classNames, size }: ICircleLoaderProps) => {
-  return <div className={`circle-loader ${classNames ? classNames : ""} ${size}`}></div>;
+  return <div className={`circle-loader ${classNames ?? ""} ${size}`}></div>;
 });

@@ -1,6 +1,6 @@
-import { toast, ToastOptions } from "react-toastify";
-import { errorFromCode } from "@unloc-dev/unloc-loan-solita";
 import { initCusper } from "@metaplex-foundation/cusper";
+import { errorFromCode } from "@unloc-dev/unloc-loan-solita";
+import { toast, ToastOptions } from "react-toastify";
 
 const options: ToastOptions = {
   autoClose: 5000,
@@ -12,21 +12,19 @@ const options: ToastOptions = {
   progress: undefined,
 };
 
-const error = (string: string) => toast.error(string, options);
-const success = (string: string) => toast.success(string, options);
+const error = (string: string): string | number => toast.error(string, options);
+const success = (string: string): string | number => toast.success(string, options);
 const cusper = initCusper(errorFromCode);
 
-export const errorCase = (err: any) => {
+export const errorCase = (err: any): string | number => {
   if (typeof err !== "string") {
     const serverErr = (err as Error).message.includes("503 Service Unavailable");
-    if (serverErr) {
-      return error("Solana RPC currently unavailable, please try again in a moment");
-    }
+    if (serverErr) return error("Solana RPC currently unavailable, please try again in a moment");
   }
 
   if (err?.error?.logs !== undefined) {
     const decodedError = cusper.errorFromProgramLogs(err.error.logs);
-    if (decodedError) {
+    if (decodedError != null) {
       console.log(JSON.stringify(decodedError));
       return error(`${decodedError.name} ${decodedError.message}`);
     }
@@ -44,7 +42,7 @@ export const errorCase = (err: any) => {
   }
 };
 
-export const successCase = (status: string, param?: string) => {
+export const successCase = (status: string, param?: string): string | number => {
   switch (status) {
     case "Loan Offer Created":
       return success(status);
@@ -60,9 +58,9 @@ export const successCase = (status: string, param?: string) => {
       return success(status);
     case "Loan Repayed, NFT is back in your wallet":
       return success(status);
-    case `NFT ${param} returned to the wallet`:
-      return success(`NFT ${param} returned to the wallet`);
+    case `NFT ${param as string} returned to the wallet`:
+      return success(`NFT ${param as string} returned to the wallet`);
     default:
-      return;
+      return success("Unexpected message");
   }
 };

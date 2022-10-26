@@ -1,8 +1,9 @@
 import { ReactNode } from "react";
 
-import { Duration } from "dayjs/plugin/duration";
-import { getTimeLeft } from "@utils/timeUtils/timeUtils";
 import BN from "bn.js";
+import { Duration } from "dayjs/plugin/duration";
+
+import { getTimeLeft } from "@utils/timeUtils/timeUtils";
 
 export const lendsTimeLeftHelpers = (timeLeft: Duration): ReactNode => {
   const [days, hours, minutes] = [
@@ -11,7 +12,7 @@ export const lendsTimeLeftHelpers = (timeLeft: Duration): ReactNode => {
     Math.max(timeLeft.minutes(), 0),
   ];
 
-  const format = (...durations: [number, string][]) => {
+  const format = (...durations: Array<[number, string]>): JSX.Element[] => {
     return durations.map(([len, name], i) => (
       <span key={i}>
         {len}
@@ -23,22 +24,22 @@ export const lendsTimeLeftHelpers = (timeLeft: Duration): ReactNode => {
   return format([days, "d"], [hours, "h"], [minutes, "m"]);
 };
 
-export const loanStatus = (color: string, isLends: boolean = false, status: string) => {
-  if (status === "0" || status === "6") {
-    return <p>Proposed</p>;
-  }
-  if (status === "1") {
+export const loanStatus = (
+  color: string,
+  isLends: boolean = false,
+  status: string,
+): JSX.Element => {
+  if (status === "0" || status === "6") return <p>Proposed</p>;
+
+  if (status === "1")
     if (isLends) {
       const statusText = color === "red" ? "Defaulted" : "NFT Locked, Loan Offer Given";
       return <p>{statusText}</p>;
-    } else {
-      return <p>NFT Locked, Loan Offer Taken</p>;
-    }
-  }
-  return;
+    } else return <p>NFT Locked, Loan Offer Taken</p>;
+  else return <p />;
 };
 
-export const correctTimeLeftDescription = (duration: BN, startTime: BN) => {
+export const correctTimeLeftDescription = (duration: BN, startTime: BN): string => {
   const timeLeft = getTimeLeft(duration.toNumber(), startTime.toNumber());
   return timeLeft.days() > 0
     ? `${timeLeft.days()} Day${timeLeft.days() > 1 ? "s" : ""}`

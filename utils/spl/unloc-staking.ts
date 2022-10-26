@@ -1,4 +1,4 @@
-import { UNLOC_STAKING_PID } from "@constants/config";
+// eslint-disable-next-line import/named
 import { bignum } from "@metaplex-foundation/beet";
 import { getAssociatedTokenAddressSync } from "@solana/spl-token";
 import { Connection, PublicKey, Transaction, TransactionInstruction } from "@solana/web3.js";
@@ -11,18 +11,20 @@ import {
   createStakeTokensInstruction,
   createUnstakeTokensInstruction,
   PoolInfo,
-  //PROGRAM_ID,
+  // PROGRAM_ID,
   RelockOption,
   StakingAccounts,
   WithdrawOption,
 } from "@unloc-dev/unloc-sdk-staking";
-import { val } from "@utils/bignum";
 import BN from "bn.js";
 import dayjs from "dayjs";
 
-///////////////
+import { UNLOC_STAKING_PID } from "@constants/config";
+import { val } from "@utils/bignum";
+
+/// ////////////
 // CONSTANTS //
-///////////////
+/// ////////////
 export const STAKING_PID = UNLOC_STAKING_PID;
 export const UNLOC_STAKING = Buffer.from("unloc-staking");
 export const LOCKED_TOKENS = Buffer.from("locked-tokens");
@@ -38,10 +40,10 @@ export const TOKEN_ACCOUNT = Buffer.from("token-account");
 export const PENALITY_DEPOSIT_VAULT = Buffer.from("penality-deposit-vault");
 export const POOL_UPDATE_CONFIGS = Buffer.from("pool-update-configs");
 
-/////////////////
+/// //////////////
 // PDA helpers //
-/////////////////
-export const getStakingPoolKey = (programId: PublicKey = STAKING_PID) => {
+/// //////////////
+export const getStakingPoolKey = (programId: PublicKey = STAKING_PID): PublicKey => {
   return PublicKey.findProgramAddressSync(
     [UNLOC_STAKING, STAKING_POOL, DATA_ACCOUNT],
     programId,
@@ -51,7 +53,7 @@ export const getUserStakingsKey = (
   userWallet: PublicKey,
   poolKey: PublicKey = getStakingPoolKey(),
   programId: PublicKey = STAKING_PID,
-) => {
+): PublicKey => {
   return PublicKey.findProgramAddressSync(
     [UNLOC_STAKING, USER_STAKE_INFO, userWallet.toBuffer(), poolKey.toBuffer(), DATA_ACCOUNT],
     programId,
@@ -61,26 +63,26 @@ export const getUserScoreKey = (
   userWallet: PublicKey,
   poolKey: PublicKey = getStakingPoolKey(),
   programId: PublicKey = STAKING_PID,
-) => {
+): PublicKey => {
   return PublicKey.findProgramAddressSync(
     [UNLOC_STAKING, UNLOC_SCORE, userWallet.toBuffer(), poolKey.toBuffer(), DATA_ACCOUNT],
     programId,
   )[0];
 };
-/////////////////////////
+/// //////////////////////
 // Instruction helpers //
-/////////////////////////
+/// //////////////////////
 export const createStakingUserOptionally = async (
   connection: Connection,
   userWallet: PublicKey,
   programId = STAKING_PID,
-) => {
+): Promise<TransactionInstruction[]> => {
   const poolInfo = getStakingPoolKey(programId);
   const userStakingsInfo = getUserStakingsKey(userWallet, programId);
 
   const instructions: TransactionInstruction[] = [];
   const check = await isAccountInitialized(connection, userStakingsInfo);
-  if (!check) {
+  if (!check)
     // If the user account does not exist, initialize it
     instructions.push(
       createCreateUserInstruction(
@@ -92,7 +94,6 @@ export const createStakingUserOptionally = async (
         programId,
       ),
     );
-  }
 
   return instructions;
 };
@@ -102,7 +103,7 @@ export const depositTokens = async (
   amount: bignum,
   lockDuration: AllowedStakingDurationMonths,
   programId = STAKING_PID,
-) => {
+): Promise<TransactionInstruction[]> => {
   const poolInfo = getStakingPoolKey(programId);
   const poolData = await PoolInfo.fromAccountAddress(connection, poolInfo);
   const userStakingsInfo = getUserStakingsKey(userWallet, programId);
@@ -134,7 +135,7 @@ export const withdrawTokens = async (
   userWallet: PublicKey,
   withdrawOption: WithdrawOption,
   programId = STAKING_PID,
-) => {
+): Promise<Transaction> => {
   const poolInfo = getStakingPoolKey(programId);
   const poolData = await PoolInfo.fromAccountAddress(connection, poolInfo);
   const userStakingsInfo = getUserStakingsKey(userWallet, programId);
@@ -161,7 +162,10 @@ export const withdrawTokens = async (
   return new Transaction().add(...instructions);
 };
 
-export const reallocUserAccount = async (userWallet: PublicKey, programId = STAKING_PID) => {
+export const reallocUserAccount = async (
+  userWallet: PublicKey,
+  programId = STAKING_PID,
+): Promise<Transaction> => {
   const poolInfo = getStakingPoolKey(programId);
   const userStakingsInfo = getUserStakingsKey(userWallet, programId);
   const instructions: TransactionInstruction[] = [];
@@ -183,7 +187,7 @@ export const relockStakingAccount = async (
   relockOption: RelockOption,
   lockDuration: AllowedStakingDurationMonths,
   programId = STAKING_PID,
-) => {
+): Promise<Transaction> => {
   const poolInfo = getStakingPoolKey(programId);
   const userStakingsInfo = getUserStakingsKey(userWallet, programId);
   const instructions: TransactionInstruction[] = [];
@@ -210,10 +214,11 @@ export const mergeStakingAccounts = async (
   indexes: number[],
   lockDuration: AllowedStakingDurationMonths,
   programId = STAKING_PID,
-) => {
+): Promise<Transaction> => {
   const poolInfo = getStakingPoolKey();
   const userStakingsInfo = getUserStakingsKey(userWallet);
   const instructions: TransactionInstruction[] = [];
+  // eslint-disable-next-line array-callback-return
   indexes.map((index2) => {
     instructions.push(
       createMergeAccountsInstruction(
@@ -234,10 +239,10 @@ export const mergeStakingAccounts = async (
   return new Transaction().add(...instructions);
 };
 
-/////////////////////
+/// //////////////////
 // Other utilities //
-/////////////////////
-export const lockDurationEnumToSeconds = (duration: AllowedStakingDurationMonths) => {
+/// //////////////////
+export const lockDurationEnumToSeconds = (duration: AllowedStakingDurationMonths): number => {
   switch (duration) {
     case AllowedStakingDurationMonths.Zero:
       return 0;
@@ -256,7 +261,7 @@ export const lockDurationEnumToSeconds = (duration: AllowedStakingDurationMonths
   }
 };
 
-export const convertDayDurationToEnum = (days: number) => {
+export const convertDayDurationToEnum = (days: number): number => {
   switch (days) {
     case 0:
       return AllowedStakingDurationMonths.Zero;
@@ -277,8 +282,8 @@ export const convertDayDurationToEnum = (days: number) => {
   }
 };
 
-export const getTotalNumberOfStakingAccounts = (stakingInfo?: StakingAccounts) => {
-  if (!stakingInfo) return 0;
+export const getTotalNumberOfStakingAccounts = (stakingInfo?: StakingAccounts): number => {
+  if (stakingInfo == null) return 0;
 
   const locked = stakingInfo?.locked.numActiveLockedStakingAccounts;
   const flexi = val(stakingInfo.flexi.stakingData.initialTokensStaked).gtn(0) ? 1 : 0;
@@ -286,8 +291,8 @@ export const getTotalNumberOfStakingAccounts = (stakingInfo?: StakingAccounts) =
   return locked + flexi + liqMin;
 };
 
-export const getTotalStakedAmount = (stakingInfo?: StakingAccounts) => {
-  if (!stakingInfo) return new BN(0);
+export const getTotalStakedAmount = (stakingInfo?: StakingAccounts): BN => {
+  if (stakingInfo == null) return new BN(0);
 
   const totalLocked = stakingInfo.locked.lockedStakingsData.reduce<BN>((sum, lockedAcc) => {
     return lockedAcc.isActive ? sum.add(val(lockedAcc.stakingData.initialTokensStaked)) : sum;
@@ -298,8 +303,8 @@ export const getTotalStakedAmount = (stakingInfo?: StakingAccounts) => {
   return totalLocked.add(val(flexi)).add(val(liqMin));
 };
 
-export const getTotalClaimableAmount = (stakingInfo?: StakingAccounts) => {
-  if (!stakingInfo) return new BN(0);
+export const getTotalClaimableAmount = (stakingInfo?: StakingAccounts): BN => {
+  if (stakingInfo == null) return new BN(0);
   const time = Math.round(Date.now() / 1000);
 
   // Regular locked staking accounts
@@ -335,10 +340,13 @@ export const getTotalClaimableAmount = (stakingInfo?: StakingAccounts) => {
   return totalLockedAvailable.add(flexi).add(liqMin);
 };
 
-export const isAccountInitialized = async (connection: Connection, address: PublicKey) => {
+export const isAccountInitialized = async (
+  connection: Connection,
+  address: PublicKey,
+): Promise<boolean> => {
   try {
     const result = await connection.getAccountInfo(address);
-    return !!result && !!result.data;
+    return !(result == null) && !!result.data;
   } catch (err) {
     return false;
   }

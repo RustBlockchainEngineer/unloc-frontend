@@ -1,17 +1,15 @@
-import Image from "next/image";
+import { Metadata } from "@metaplex-foundation/mpl-token-metadata";
+import { PublicKey } from "@solana/web3.js";
 import { observer } from "mobx-react-lite";
+import Image from "next/image";
+import { usePopperTooltip } from "react-popper-tooltip";
 
-import { compressAddress } from "@utils/stringUtils/compressAdress";
 import { ClipboardButton } from "@components/layout/clipboardButton";
 import { ShowOnHover } from "@components/layout/showOnHover";
-
-import { usePopperTooltip } from "react-popper-tooltip";
-import { PublicKey } from "@solana/web3.js";
-
 import { OfferActionsHook } from "@hooks/offerActionsHook";
-import { Metadata } from "@metaplex-foundation/mpl-token-metadata";
-import { useOffChainMetadata } from "@hooks/useOffChainMetadata";
 import { useCollectionName } from "@hooks/useCollectionName";
+import { useOffChainMetadata } from "@hooks/useOffChainMetadata";
+import { compressAddress } from "@utils/stringUtils/compressAdress";
 
 interface DepositTemplateData {
   pubkey: PublicKey;
@@ -34,7 +32,7 @@ export const DepositTemplate = observer(({ pubkey, metadata }: DepositTemplateDa
           <div className="info">
             <div className="image">
               {isLoading && <div>Loading</div>}
-              {isError && <div>Error: {isError.message}</div>}
+              {isError != null && <div>Error: {isError.message}</div>}
               {json && <Image src={json.image} alt="NFT Picture" width={55} height={55} />}
             </div>
             <div className="details">
@@ -69,7 +67,7 @@ export const DepositTemplate = observer(({ pubkey, metadata }: DepositTemplateDa
       <div className="data-row actions">
         <button
           className="btn btn--md btn--bordered"
-          onClick={() => handleCancelCollateral(metadata.mint, metadata.data.name)}>
+          onClick={async () => await handleCancelCollateral(metadata.mint, metadata.data.name)}>
           Cancel Collateral
         </button>
         <button

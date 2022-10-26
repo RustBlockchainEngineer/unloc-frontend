@@ -5,7 +5,7 @@ const { REDIS_URL = "" } = process.env;
 const client = new Redis(REDIS_URL);
 
 export const getCollections = async (): Promise<string[]> => {
-  return client.hkeys("collections");
+  return await client.hkeys("collections");
 };
 
 export const getCollectionFromNft = async (nft: string): Promise<string | null> => {
@@ -14,9 +14,7 @@ export const getCollectionFromNft = async (nft: string): Promise<string | null> 
   for (const key in hash) {
     const data = hash[key].split(",");
 
-    if (data.includes(nft)) {
-      return key;
-    }
+    if (data.includes(nft)) return key;
   }
 
   return null;

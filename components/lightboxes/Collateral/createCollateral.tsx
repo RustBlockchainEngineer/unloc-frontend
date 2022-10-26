@@ -1,19 +1,22 @@
 import { useContext, useMemo, useState } from "react";
 
-import { observer } from "mobx-react-lite";
-import { StoreContext } from "@pages/_app";
-import { StoreDataAdapter } from "@components/storeDataAdapter";
-import { CollateralItem } from "./collateralItem";
-import { CustomSelect } from "@components/layout/customSelect";
-import { errorCase, successCase } from "@utils/toast-error-handler";
-import { PublicKey } from "@solana/web3.js";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
-import { createOffer } from "@utils/spl/unloc-loan";
-import { fetchWhitelistedUserNfts } from "@utils/spl/metadata";
+import { PublicKey } from "@solana/web3.js";
+import { observer } from "mobx-react-lite";
 import useSWR from "swr";
-import { CircleProcessing } from "../circleProcessing";
-import { useSendTransaction } from "@hooks/useSendTransaction";
+
+import { CustomSelect } from "@components/layout/customSelect";
 import { SkeletonRectangle } from "@components/skeleton/rectangle";
+import { StoreDataAdapter } from "@components/storeDataAdapter";
+import { useSendTransaction } from "@hooks/useSendTransaction";
+import { StoreContext } from "@pages/_app";
+import { fetchWhitelistedUserNfts } from "@utils/spl/metadata";
+import { createOffer } from "@utils/spl/unloc-loan";
+import { errorCase, successCase } from "@utils/toast-error-handler";
+
+import { CircleProcessing } from "../circleProcessing";
+
+import { CollateralItem } from "./collateralItem";
 
 export const CreateCollateral = observer(() => {
   const store = useContext(StoreContext);
@@ -24,29 +27,25 @@ export const CreateCollateral = observer(() => {
   const { data, error } = useSWR([connection, wallet], fetchWhitelistedUserNfts, {
     refreshInterval: 20000,
   });
-  const loading = useMemo(() => !data && !error, [data, error]);
+  const loading = useMemo(() => data == null && !error, [data, error]);
   const [selectedMint, setSelectedMint] = useState<PublicKey | null>(null);
   const [sortOption, setSortOption] = useState("Default");
   const [processing, setProcessing] = useState(false);
 
-  const chooseNFT = (mint: PublicKey) => {
-    if (selectedMint?.equals(mint)) {
-      setSelectedMint(null);
-    } else {
-      setSelectedMint(mint);
-    }
+  const chooseNFT = (mint: PublicKey): void => {
+    if (selectedMint?.equals(mint)) setSelectedMint(null);
+    else setSelectedMint(mint);
   };
 
-  const sortNFT = (option: string) => {
+  const sortNFT = (option: string): void => {
     setSortOption(option);
   };
 
-  const handleDepositNft = async () => {
+  const handleDepositNft = async (): Promise<void> => {
     try {
-      if (!wallet) {
-        throw new Error("Connect your wallet!");
-      }
-      if (!selectedMint) throw new Error("Select an NFT");
+      if (wallet == null) throw new Error("Connect your wallet!");
+
+      if (selectedMint == null) throw new Error("Select an NFT");
 
       store.Lightbox.setCanClose(false);
       setProcessing(true);
@@ -75,14 +74,14 @@ export const CreateCollateral = observer(() => {
   return (
     <StoreDataAdapter>
       <div className="collateral-lightbox">
-        {data && data.length === 0 && (
+        {data != null && data.length === 0 && (
           <div className="collateral-empty">
             <div />
             <h2>No whitelisted NFTs in your wallet</h2>
           </div>
         )}
         {loading && <SkeletonRectangle offerType="wallet" />}
-        {data && (
+        {data != null && (
           <>
             <div className="NFT-lb-header">
               <h1>Choose an NFT for collateral</h1>

@@ -29,7 +29,7 @@ const Home: NextPage = observer(() => {
   }, [buildFilters, refetchOffers]);
 
   useEffect(() => {
-    if (wallet) void handleOffers();
+    if (wallet != null) void handleOffers();
   }, [wallet, handleOffers, store.Wallet.connection]);
 
   return (
@@ -46,4 +46,5 @@ const Home: NextPage = observer(() => {
   );
 });
 
+// eslint-disable-next-line import/no-default-export
 export default Home;

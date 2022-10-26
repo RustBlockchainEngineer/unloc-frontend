@@ -1,17 +1,18 @@
 import { useContext, useMemo } from "react";
 
-import { StoreContext } from "@pages/_app";
-import Image from "next/image";
-import { compressAddress } from "@utils/stringUtils/compressAdress";
-import { BlobLoader } from "@components/layout/blobLoader";
 import { observer } from "mobx-react-lite";
-import { useOffChainMetadata } from "@hooks/useOffChainMetadata";
+import Image from "next/image";
 
-interface LoanDetails {
+import { BlobLoader } from "@components/layout/blobLoader";
+import { useOffChainMetadata } from "@hooks/useOffChainMetadata";
+import { StoreContext } from "@pages/_app";
+import { compressAddress } from "@utils/stringUtils/compressAdress";
+
+interface ILoanDetails {
   isDetails: boolean;
 }
 
-export const LoanDetails = observer(({ isDetails }: LoanDetails) => {
+export const LoanDetails = observer(({ isDetails }: ILoanDetails) => {
   const store = useContext(StoreContext);
   const {
     sanitized: { collateralId, metadata },

@@ -3,14 +3,14 @@ import { AccountInfo, PublicKey } from "@solana/web3.js";
 import { Offer, SubOffer } from "@unloc-dev/unloc-loan-solita";
 
 // AccountInfo with publicKey
-export type Account<T> = {
+export interface Account<T> {
   readonly publicKey: PublicKey;
   readonly executable: boolean;
   readonly owner: PublicKey;
   readonly lamports: number;
   readonly data: T;
   readonly rentEpoch?: number;
-};
+}
 
 export type MaybeAccount<T> =
   | (Account<T> & { readonly exists: true })
@@ -23,9 +23,7 @@ export function getUnparsedMaybeAccount(
   publicKey: PublicKey,
   accountInfo: AccountInfo<Buffer> | null,
 ): UnparsedMaybeAccount {
-  if (!accountInfo) {
-    return { publicKey, exists: false };
-  }
+  if (accountInfo == null) return { publicKey, exists: false };
 
   return { publicKey, exists: true, ...accountInfo };
 }

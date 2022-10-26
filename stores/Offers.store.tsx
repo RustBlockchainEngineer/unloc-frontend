@@ -1,16 +1,18 @@
-import { action, makeAutoObservable, runInAction } from "mobx";
-import { PublicKey } from "@solana/web3.js";
-import axios from "axios";
-import { getFrontPageSubOffers } from "@integration/nftLoan";
-import { getDecimalsForOfferMint } from "@integration/getDecimalForLoanAmount";
-import { currencyMints } from "@constants/currency";
-import { SubOffer } from "@unloc-dev/unloc-loan-solita";
-import BN from "bn.js";
 import { Metadata } from "@metaplex-foundation/mpl-token-metadata";
-import { GmaBuilder } from "@utils/spl/GmaBuilder";
-import { SubOfferAccount } from "@utils/spl/types";
-import { findMetadataPda } from "@utils/spl/metadata";
+import { PublicKey } from "@solana/web3.js";
+import { SubOffer } from "@unloc-dev/unloc-loan-solita";
+import axios from "axios";
+import BN from "bn.js";
+import { action, makeAutoObservable, runInAction } from "mobx";
+
+import { currencyMints } from "@constants/currency";
+import { getDecimalsForOfferMint } from "@integration/getDecimalForLoanAmount";
+import { getFrontPageSubOffers } from "@integration/nftLoan";
 import { zipMap } from "@utils/common";
+import { GmaBuilder } from "@utils/spl/GmaBuilder";
+import { findMetadataPda } from "@utils/spl/metadata";
+import { SubOfferAccount } from "@utils/spl/types";
+
 import { RootStore } from "./Root.store";
 
 export interface SubOfferData {
@@ -28,7 +30,7 @@ export class OffersStore {
   currentPage = 1;
   maxPage = 1;
   itemsPerPage = 16;
-  filterCollection: { label: string; value: string }[] = [];
+  filterCollection: Array<{ label: string; value: string }> = [];
   filterCollectionSelected: string[] = [];
   viewType: "grid" | "table" = "grid";
   isLoading = true;
@@ -56,12 +58,12 @@ export class OffersStore {
 
   private async fetchCollectionNamesForOffers<T extends SubOfferAccount>(
     offers: T[],
-  ): Promise<(T & { collection: string })[]> {
+  ): Promise<Array<T & { collection: string }>> {
     try {
       const requests = offers.map((item) => ({
         request: axios.post("/api/collections/nft", { id: item.account.nftMint.toBase58() }),
       }));
-      const responses = await axios.all(requests.map((request) => request.request));
+      const responses = await axios.all(requests.map(async (request) => await request.request));
 
       responses.forEach((response) => {
         this.addFilterCollection(response.data);
@@ -78,22 +80,18 @@ export class OffersStore {
   }
 
   @action.bound addFilterCollection = (name: string): void => {
-    if (this.filterCollection.find(({ value }) => value === name) === undefined) {
+    if (this.filterCollection.find(({ value }) => value === name) === undefined)
       this.filterCollection.push({ label: name, value: name });
-    }
   };
 
   @action.bound setFilterCollection = (value: string): void => {
     const hasValue = this.filterCollectionSelected.map((e) => e).indexOf(value);
 
-    if (hasValue === -1) {
-      this.filterCollectionSelected = [...this.filterCollectionSelected, value];
-    } else {
-      this.filterCollectionSelected.splice(hasValue, 1);
-    }
+    if (hasValue === -1) this.filterCollectionSelected = [...this.filterCollectionSelected, value];
+    else this.filterCollectionSelected.splice(hasValue, 1);
 
     this.currentPage = 1;
-    this.refetchOffers();
+    void this.refetchOffers();
   };
 
   @action.bound setOffersData(data: SubOfferData[]): void {
@@ -109,13 +107,13 @@ export class OffersStore {
 
     this.filterCurrency = filterCurrency;
     this.currentPage = 1;
-    this.refetchOffers();
+    void this.refetchOffers();
   }
 
   @action.bound setCurrentPage(page: number): void {
     this.currentPage = page;
     this.setPageOfferData([]);
-    this.getOffersForListings();
+    void this.getOffersForListings();
   }
 
   @action.bound setFilteredOffers(offers: SubOfferData[]): void {
@@ -129,40 +127,49 @@ export class OffersStore {
   @action.bound setFilterAprMin = (value: number): void => {
     this.filterAprMin = value;
     this.currentPage = 1;
-    this.refetchOffers();
+    void this.refetchOffers();
   };
 
   @action.bound setFilterAprMax = (value: number): void => {
     this.filterAprMax = value;
     this.currentPage = 1;
-    this.refetchOffers();
+    void this.refetchOffers();
   };
 
   @action.bound setFilterAmountMin = (value: number): void => {
     this.filterAmountMin = value;
     this.currentPage = 1;
-    this.refetchOffers();
+    void this.refetchOffers();
   };
 
   @action.bound setFilterAmountMax = (value: number): void => {
     this.filterAmountMax = value;
     this.currentPage = 1;
-    this.refetchOffers();
+    void this.refetchOffers();
   };
 
   @action.bound setFilterDurationMin = (value: number): void => {
     this.filterDurationMin = value;
     this.currentPage = 1;
-    this.refetchOffers();
+    void this.refetchOffers();
   };
 
   @action.bound setFilterDurationMax = (value: number): void => {
     this.filterDurationMax = value;
     this.currentPage = 1;
-    this.refetchOffers();
+    void this.refetchOffers();
   };
 
-  private getFiltersMinMaxValues = (data: SubOfferData[]) => {
+  private readonly getFiltersMinMaxValues = (
+    data: SubOfferData[],
+  ): {
+    amountMax: number;
+    durationsMin: number;
+    aprMax: number;
+    durationsMax: number;
+    amountMin: number;
+    aprMin: number;
+  } => {
     const amounts: number[] = [];
     const durations: number[] = [];
     const aprs: number[] = [];
@@ -186,7 +193,7 @@ export class OffersStore {
     };
   };
 
-  private static inRange(x: number, min: number, max: number) {
+  private static inRange(x: number, min: number, max: number): boolean {
     return (x - min) * (x - max) <= 0;
   }
 
@@ -216,15 +223,14 @@ export class OffersStore {
       );
 
       let collectionCheck: boolean = true;
-      if (this.filterCollectionSelected.length > 0) {
+      if (this.filterCollectionSelected.length > 0)
         collectionCheck = this.filterCollectionSelected.includes(collection);
-      }
 
       return currencyCheck && aprCheck && amountCheck && durationCheck && collectionCheck;
     });
   }
 
-  @action.bound buildFilters = () => {
+  @action.bound buildFilters = (): void => {
     const filterDef = this.getFiltersMinMaxValues(this.filteredOffers);
     this.filterAprMin = filterDef.aprMin;
     this.filterAprMax = filterDef.aprMax;
@@ -249,7 +255,7 @@ export class OffersStore {
     runInAction(() => (this.isLoading = true));
 
     const connection = this.rootStore.Wallet.connection;
-    if (!connection) {
+    if (connection == null) {
       console.error("Not connected");
       return;
     }
@@ -292,7 +298,7 @@ export class OffersStore {
     this.filtersVisible = visible;
   };
 
-  @action.bound refetchOffers = async () => {
+  @action.bound refetchOffers = async (): Promise<void> => {
     if (this.readyToFilter) {
       console.log("filter run");
 
@@ -302,9 +308,9 @@ export class OffersStore {
     }
   };
 
-  @action.bound clearFilters = () => {
+  @action.bound clearFilters = (): void => {
     this.filterCollectionSelected = [];
     this.setFilterCurrency("All");
-    this.refetchOffers();
+    void this.refetchOffers();
   };
 }

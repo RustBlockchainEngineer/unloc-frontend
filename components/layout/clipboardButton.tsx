@@ -1,5 +1,6 @@
-import { useClipboard } from "@hooks/useClipboard";
 import { PublicKey } from "@solana/web3.js";
+
+import { useClipboard } from "@hooks/useClipboard";
 
 interface ClipboardButtonProps {
   data: string | PublicKey;
@@ -7,13 +8,13 @@ interface ClipboardButtonProps {
   state?: boolean;
 }
 
-export const ClipboardButton = ({ data, classNames, state }: ClipboardButtonProps) => {
+export const ClipboardButton = ({ data, classNames, state }: ClipboardButtonProps): JSX.Element => {
   data = typeof data === "string" ? data : data?.toBase58();
   const [visible, setVisible] = useClipboard(data);
 
   return (
     <i
-      className={`icon icon--vs-wide-width icon--copy clipboard-icon ${classNames}`}
+      className={`icon icon--vs-wide-width icon--copy clipboard-icon ${classNames ?? ""}`}
       onClick={() => setVisible()}>
       <span className={`popup popup--clipboard ${visible || state ? "" : "hidden"}`}>
         Copied to Clipboard!

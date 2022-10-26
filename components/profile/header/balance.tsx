@@ -7,11 +7,11 @@ import {
   getTotalStakedAmount,
 } from "@utils/spl/unloc-staking";
 
-const classNames = (...classes: any[]) => {
+const classNames = (...classes: any[]): string => {
   return classes.filter(Boolean).join(" ");
 };
 
-export const StakeBalance = () => {
+export const StakeBalance = (): JSX.Element => {
   const { accounts } = useStakingAccounts();
 
   const count = getTotalNumberOfStakingAccounts(accounts?.info?.stakingAccounts);

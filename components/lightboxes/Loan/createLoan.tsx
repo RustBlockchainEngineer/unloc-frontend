@@ -1,27 +1,29 @@
 import { useContext, useMemo, useState, useCallback } from "react";
 
+import { useConnection, useWallet } from "@solana/wallet-adapter-react";
+import { PublicKey } from "@solana/web3.js";
+import { Decorator, getIn } from "final-form";
+import createDecorator from "final-form-calculate";
 import { observer } from "mobx-react-lite";
 import { Form, Field } from "react-final-form";
-import { Decorator, getIn } from "final-form";
-import { StoreContext } from "@pages/_app";
-import { calculateRepayValue } from "@utils/loansMath";
-import { getDecimalsForLoanAmount } from "@integration/getDecimalForLoanAmount";
-import { currencyMints } from "@constants/currency";
-import { getDurationFromContractData } from "@utils/timeUtils/timeUtils";
-import { CurrencyTypes, USDC } from "@constants/currency-constants";
-import createDecorator from "final-form-calculate";
-import { calculateApr, calculateInterest } from "@utils/loansMath";
-import { SwitchAdapter } from "./switchAdapter";
-import { SelectAdapter } from "./selectAdapter";
-import { formatOptions } from "@constants/config";
-import { SliderAdapter } from "./sliderAdapter";
-import { errorCase, successCase } from "@utils/toast-error-handler";
+
 import { LoanDetails } from "@components/lightboxes/Loan/loanDetails";
-import { updateSubOffer } from "@utils/spl/unloc-loan";
-import { PublicKey } from "@solana/web3.js";
-import { useConnection, useWallet } from "@solana/wallet-adapter-react";
-import { CircleProcessing } from "../circleProcessing";
+import { formatOptions } from "@constants/config";
+import { currencyMints } from "@constants/currency";
+import { CurrencyTypes, USDC } from "@constants/currency-constants";
 import { useSendTransaction } from "@hooks/useSendTransaction";
+import { getDecimalsForLoanAmount } from "@integration/getDecimalForLoanAmount";
+import { StoreContext } from "@pages/_app";
+import { calculateRepayValue, calculateApr, calculateInterest } from "@utils/loansMath";
+import { updateSubOffer } from "@utils/spl/unloc-loan";
+import { getDurationFromContractData } from "@utils/timeUtils/timeUtils";
+import { errorCase, successCase } from "@utils/toast-error-handler";
+
+import { CircleProcessing } from "../circleProcessing";
+
+import { SelectAdapter } from "./selectAdapter";
+import { SliderAdapter } from "./sliderAdapter";
+import { SwitchAdapter } from "./switchAdapter";
 
 interface CreateLoanProps {
   mode: "new" | "update";
@@ -39,11 +41,11 @@ interface Values {
 const getFormValues = (
   state: Object | undefined,
 ): { formState: string; amount: number; duration: number; apr: number; interest: number } => {
-  const formState = getIn(state || {}, "state");
-  const amount = parseFloat(getIn(state || {}, "amount"));
-  const duration = parseFloat(getIn(state || {}, "duration"));
-  const apr = parseFloat(getIn(state || {}, "apr"));
-  const interest = parseFloat(getIn(state || {}, "interest"));
+  const formState = getIn(state !== null ? (state as Object) : {}, "state");
+  const amount = parseFloat(getIn(state !== null ? (state as Object) : {}, "amount"));
+  const duration = parseFloat(getIn(state !== null ? (state as Object) : {}, "duration"));
+  const apr = parseFloat(getIn(state !== null ? (state as Object) : {}, "apr"));
+  const interest = parseFloat(getIn(state !== null ? (state as Object) : {}, "interest"));
 
   // This is safe, the state object and values should never be null
   return { formState, amount, duration, apr, interest };
@@ -86,54 +88,52 @@ export const CreateLoan = observer(({ mode }: CreateLoanProps) => {
           field: ["amount", "duration"],
           updates: (_, __, allValues) => {
             const { formState, amount, apr, duration, interest } = getFormValues(allValues);
-            if (formState === "apr_input") {
+            if (formState === "apr_input")
               return {
-                ["total"]: calculateRepayValue(amount, apr, duration, 100),
-                ["interest"]: calculateInterest(amount, apr, duration, 100).toFixed(2),
+                total: calculateRepayValue(amount, apr, duration, 100),
+                interest: calculateInterest(amount, apr, duration, 100).toFixed(2),
               };
-            } else {
+            else
               return {
-                ["total"]: (amount + interest).toLocaleString("en-us", formatOptions),
-                ["apr"]: calculateApr(amount, interest, duration, 100).toFixed(2),
+                total: (amount + interest).toLocaleString("en-us", formatOptions),
+                apr: calculateApr(amount, interest, duration, 100).toFixed(2),
               };
-            }
           },
         },
         {
           field: "apr",
           updates: (_, __, allValues) => {
             const { formState, amount, apr, duration } = getFormValues(allValues);
-            if (formState === "apr_input") {
+            if (formState === "apr_input")
               return {
-                ["total"]: calculateRepayValue(amount, apr, duration, 100),
-                ["interest"]: calculateInterest(amount, apr, duration, 100).toFixed(2),
+                total: calculateRepayValue(amount, apr, duration, 100),
+                interest: calculateInterest(amount, apr, duration, 100).toFixed(2),
               };
-            } else return {};
+            else return {};
           },
         },
         {
           field: "interest",
           updates: (_, __, allValues) => {
             const { formState, amount, duration, interest } = getFormValues(allValues);
-            if (formState === "interest_input") {
+            if (formState === "interest_input")
               return {
-                ["total"]: (amount + interest).toLocaleString("en-us", formatOptions),
-                ["apr"]: calculateApr(amount, interest, duration, 100).toFixed(2),
+                total: (amount + interest).toLocaleString("en-us", formatOptions),
+                apr: calculateApr(amount, interest, duration, 100).toFixed(2),
               };
-            } else return {};
+            else return {};
           },
         },
       ) as Decorator<Values, object>,
     [],
   );
 
-  const onSubmit = async (values: Values) => {
-    if (!connection || !wallet) {
-      throw Error("Connect your wallet");
-    }
+  const onSubmit = async (values: Values): Promise<void> => {
+    if (!connection || wallet == null) throw Error("Connect your wallet");
+
     const { amount, duration, apr, token, total } = values;
 
-    if (mode === "new") {
+    if (mode === "new")
       try {
         if (store.Lightbox.content === "loanCreate" && store.MyOffers.activeNftMint) {
           store.Lightbox.setVisible(false);
@@ -154,7 +154,7 @@ export const CreateLoan = observer(({ mode }: CreateLoanProps) => {
       } catch (e: any) {
         errorCase(e);
       }
-    } else if (mode === "update") {
+    else if (mode === "update") {
       store.Lightbox.setCanClose(false);
       setProcessing(true);
       try {
@@ -193,7 +193,7 @@ export const CreateLoan = observer(({ mode }: CreateLoanProps) => {
       onSubmit={onSubmit}
       render={({ handleSubmit, submitting, values }) => (
         <form className="create-offer" onSubmit={handleSubmit}>
-          <h1>{mode === "new" ? `Create a Loan Offer` : `Update Loan Offer`}</h1>
+          <h1>{mode === "new" ? "Create a Loan Offer" : "Update Loan Offer"}</h1>
           <div className="offer-form">
             <div className="form-line form-amount">
               <div>
@@ -285,7 +285,7 @@ export const CreateLoan = observer(({ mode }: CreateLoanProps) => {
             </div>
             <div className="actions">
               <button type="submit" className="btn btn--md btn--primary" disabled={submitting}>
-                {mode === "new" ? `Create` : `Save Changes`}
+                {mode === "new" ? "Create" : "Save Changes"}
               </button>
               <button
                 type="button"

@@ -1,21 +1,21 @@
 import { FormEvent, useEffect, useState } from "react";
 
-import Slider from "rc-slider";
-
-import { useWallet } from "@solana/wallet-adapter-react";
-import { useStore } from "@hooks/useStore";
 import { WalletNotConnectedError } from "@solana/wallet-adapter-base";
-import { errorCase } from "@utils/toast-error-handler";
-import { useStakingAccounts } from "@hooks/useStakingAccounts";
-import { amountToUiAmount } from "@utils/bignum";
-import { UNLOC_MINT_DECIMALS } from "@constants/currency-constants";
+import { useWallet } from "@solana/wallet-adapter-react";
 import {
   AllowedStakingDurationMonths,
   LockedStakingAccount,
   RelockType,
 } from "@unloc-dev/unloc-sdk-staking";
-import { mergeStakingAccounts, relockStakingAccount } from "@utils/spl/unloc-staking";
+import Slider from "rc-slider";
+
+import { UNLOC_MINT_DECIMALS } from "@constants/currency-constants";
 import { useSendTransaction } from "@hooks/useSendTransaction";
+import { useStakingAccounts } from "@hooks/useStakingAccounts";
+import { useStore } from "@hooks/useStore";
+import { amountToUiAmount } from "@utils/bignum";
+import { mergeStakingAccounts, relockStakingAccount } from "@utils/spl/unloc-staking";
+import { errorCase } from "@utils/toast-error-handler";
 
 const defaultSliderMarks = {
   0: { label: "No lock", style: { left: "3%" } },
@@ -26,7 +26,7 @@ const defaultSliderMarks = {
   100: { label: "730", style: { left: "97%" } },
 };
 
-const minLockDurationToDays = (minLockDuration: number) => {
+const minLockDurationToDays = (minLockDuration: number): number => {
   switch (minLockDuration) {
     case 1:
       return 30;
@@ -60,7 +60,7 @@ const daysToLockDuration = (days: number): AllowedStakingDurationMonths => {
   }
 };
 
-function markToDurationMapping(value: number) {
+function markToDurationMapping(value: number): number {
   switch (value) {
     case 0:
       return 0;
@@ -88,7 +88,7 @@ interface StakingActionsProps {
   mode: "merge" | "relock";
 }
 
-export const StakingActions = ({ mode }: StakingActionsProps) => {
+export const StakingActions = ({ mode }: StakingActionsProps): JSX.Element => {
   const { publicKey: wallet } = useWallet();
   const { accounts } = useStakingAccounts();
   const { StakingStore, Lightbox } = useStore();
@@ -99,37 +99,37 @@ export const StakingActions = ({ mode }: StakingActionsProps) => {
   const [sliderMin, setSliderMin] = useState<number | null>(null);
   const [durationToMerge, setDurationToMerge] = useState<number>();
 
-  const [sliderPosition, setSliderPosition] = useState(sliderMin || 0);
+  const [sliderPosition, setSliderPosition] = useState(sliderMin ?? 0);
 
   const { index, lockDuration, amount } = StakingStore.accountToMerge;
   const lockedAccounts = accounts?.info?.stakingAccounts.locked.lockedStakingsData;
   const restOfLockedAccounts = lockedAccounts?.filter((acc) => acc.index !== index && acc.isActive);
 
-  const actionButton = () => {
-    if (mode === "merge") {
+  const actionButton = (): JSX.Element => {
+    if (mode === "merge")
       return (
         <button onClick={handleMerge} className="lb-collateral-button">
           Merge Accounts
         </button>
       );
-    } else if (mode === "relock") {
+    else if (mode === "relock")
       return (
         <button onClick={handleRelock} className="lb-collateral-button">
           Relock Account
         </button>
       );
-    } else throw Error("Wrong action");
+    else throw Error("Wrong action");
   };
 
-  const handleMerge = async (e: FormEvent) => {
+  const handleMerge = async (e: FormEvent): Promise<void> => {
     e.preventDefault();
     try {
-      if (!wallet) throw new WalletNotConnectedError();
+      if (wallet == null) throw new WalletNotConnectedError();
       const selectedAccountIndexes = selectedAccounts.map((acc) => acc.index);
       const tx = await mergeStakingAccounts(
         wallet,
         index,
-        selectedAccountIndexes as number[],
+        selectedAccountIndexes,
         daysToLockDuration(durationToMerge as number),
       );
 
@@ -143,9 +143,9 @@ export const StakingActions = ({ mode }: StakingActionsProps) => {
     }
   };
 
-  const handleRelock = async () => {
+  const handleRelock = async (): Promise<void> => {
     try {
-      if (!wallet) throw new WalletNotConnectedError();
+      if (wallet == null) throw new WalletNotConnectedError();
       const tx = await relockStakingAccount(
         wallet,
         { relockType: RelockType.Flexi, index: 0 },
@@ -161,7 +161,7 @@ export const StakingActions = ({ mode }: StakingActionsProps) => {
     }
   };
 
-  const handleSelectedAccount = (index: number, lockDuration: number) => {
+  const handleSelectedAccount = (index: number, lockDuration: number): void => {
     setSelectedAccountsData((prevState) => {
       const selectedAccount = { index, lockDuration };
 
@@ -177,17 +177,15 @@ export const StakingActions = ({ mode }: StakingActionsProps) => {
     });
   };
 
-  const handleNewDuration = (value: number | number[]) => {
-    if (typeof value !== "number") {
-      value = value[0];
-    }
-    console.log(value);
+  const handleNewDuration = (value: number | number[]): void => {
+    if (typeof value !== "number") value = value[0];
+
     setSliderPosition(value);
     value = markToDurationMapping(value);
     setDurationToMerge(value);
   };
 
-  const generateSliderMarks = () => {
+  const generateSliderMarks = (): void => {
     const accountDurations = selectedAccounts.map((acc) => acc.lockDuration);
     const minAvailableDuration = Math.max(lockDuration, ...accountDurations);
     const min = minLockDurationToDays(minAvailableDuration);
@@ -200,22 +198,17 @@ export const StakingActions = ({ mode }: StakingActionsProps) => {
       ) {
         const field = { [step]: defaultSliderMarks[step] };
         return (acc = { ...acc, ...field });
-      } else {
-        return acc;
-      }
+      } else return acc;
     }, {});
 
     setSliderMarks(data);
   };
 
-  const setSliderDefaultValue = () => {
+  const setSliderDefaultValue = (): void => {
     const minSliderValue = Number(Object.keys(sliderMarks)[0]);
     setSliderMin(minSliderValue);
-    if (minSliderValue === 100) {
-      setDurationToMerge(Number(sliderMarks[minSliderValue].label));
-    } else {
-      setDurationToMerge(Number(sliderMarks[minSliderValue]));
-    }
+    if (minSliderValue === 100) setDurationToMerge(Number(sliderMarks[minSliderValue].label));
+    else setDurationToMerge(Number(sliderMarks[minSliderValue]));
   };
 
   useEffect(() => {
@@ -236,7 +229,7 @@ export const StakingActions = ({ mode }: StakingActionsProps) => {
           <p>Staked amount: </p>
           <p>
             {amount}
-            <i className={`icon icon--sm icon--currency--UNLOC`} />
+            <i className={"icon icon--sm icon--currency--UNLOC"} />
           </p>
         </div>
         <div className="merge-stake__stats-item">
@@ -260,7 +253,7 @@ export const StakingActions = ({ mode }: StakingActionsProps) => {
           </div>
         </div>
       )}
-      {selectedAccounts.length || mode === "relock" ? (
+      {selectedAccounts.length > 0 || mode === "relock" ? (
         sliderMin === 100 ? (
           <div className="merge-stake__stats">
             <div className="merge-stake__stats-item">
@@ -292,7 +285,7 @@ interface IProps {
   chosen: boolean;
 }
 
-const StakingItem = ({ onClick, accountData, chosen }: IProps) => {
+const StakingItem = ({ onClick, accountData, chosen }: IProps): JSX.Element => {
   const amount = amountToUiAmount(
     accountData.stakingData.initialTokensStaked,
     UNLOC_MINT_DECIMALS,
@@ -307,7 +300,7 @@ const StakingItem = ({ onClick, accountData, chosen }: IProps) => {
       <div className="info">
         <p>Staked amount</p>
         <p>
-          {amount} <i className={`icon icon--sm icon--currency--UNLOC`} />
+          {amount} <i className={"icon icon--sm icon--currency--UNLOC"} />
         </p>
       </div>
       <div className="info">

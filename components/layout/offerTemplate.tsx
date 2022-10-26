@@ -1,37 +1,36 @@
 import { useContext } from "react";
 
-import Image from "next/image";
+import { Metadata } from "@metaplex-foundation/mpl-token-metadata";
+import { PublicKey } from "@solana/web3.js";
+import { OfferState, SubOffer } from "@unloc-dev/unloc-loan-solita";
+import BN from "bn.js";
+import { Duration } from "dayjs/plugin/duration";
 import { observer } from "mobx-react-lite";
-import {
-  getDurationColor,
-  getDurationFromContractData,
-  getTimeLeft,
-} from "@utils/timeUtils/timeUtils";
+import Image from "next/image";
+import { useRouter } from "next/router";
+import { usePopperTooltip } from "react-popper-tooltip";
+
+import { ClipboardButton } from "@components/layout/clipboardButton";
+import { ShowOnHover } from "@components/layout/showOnHover";
 import {
   correctTimeLeftDescription,
   lendsTimeLeftHelpers,
   loanStatus,
 } from "@components/myOffers/controllers/lendsTimeLeftHelpers";
 import { currencyMints } from "@constants/currency";
-import { compressAddress } from "@utils/stringUtils/compressAdress";
-import { ClipboardButton } from "@components/layout/clipboardButton";
-import { ShowOnHover } from "@components/layout/showOnHover";
-import { getDecimalsForLoanAmountAsString } from "@integration/getDecimalForLoanAmount";
-import BN from "bn.js";
-
-import { StoreContext } from "@pages/_app";
-import { usePopperTooltip } from "react-popper-tooltip";
-import { PublicKey } from "@solana/web3.js";
-import { Duration } from "dayjs/plugin/duration";
-import { calculateRepayValue } from "@utils/loansMath";
-
 import { OfferActionsHook } from "@hooks/offerActionsHook";
-import { useRouter } from "next/router";
-import { getQueryParamAsString } from "@utils/common";
-import { OfferState, SubOffer } from "@unloc-dev/unloc-loan-solita";
-import { Metadata } from "@metaplex-foundation/mpl-token-metadata";
-import { useOffChainMetadata } from "@hooks/useOffChainMetadata";
 import { useCollectionName } from "@hooks/useCollectionName";
+import { useOffChainMetadata } from "@hooks/useOffChainMetadata";
+import { getDecimalsForLoanAmountAsString } from "@integration/getDecimalForLoanAmount";
+import { StoreContext } from "@pages/_app";
+import { getQueryParamAsString } from "@utils/common";
+import { calculateRepayValue } from "@utils/loansMath";
+import { compressAddress } from "@utils/stringUtils/compressAdress";
+import {
+  getDurationColor,
+  getDurationFromContractData,
+  getTimeLeft,
+} from "@utils/timeUtils/timeUtils";
 
 interface OfferTemplateData {
   hideImage?: boolean;
@@ -102,11 +101,15 @@ export const OfferTemplate = observer(
     const currency = currencyMints[offerMint?.toBase58()];
     const duration = getDurationFromContractData(new BN(loanDuration).toNumber(), "days");
 
-    const canClaim = (timeLeft: Duration) => {
+    const canClaim = (timeLeft: Duration): boolean => {
       return timeLeft.asSeconds() <= 0;
     };
 
-    const offerTimeData = (offersState: number, loanDuration: BN, loanStartedTime: BN) => {
+    const offerTimeData = (
+      offersState: number,
+      loanDuration: BN,
+      loanStartedTime: BN,
+    ): JSX.Element => {
       return (
         <>
           <p>{offersState.toString() === "1" ? "Time left" : "Duration"}</p>
@@ -130,7 +133,7 @@ export const OfferTemplate = observer(
         className={`offer ${isSingleOffer ? "default" : ""}
         ${withWrap ? (activeCategory === "active" ? "borrows" : "proposed") : ""} ${
           state === 1 ? timeColor : "green"
-        } ${isLends ? `lends` : ""} ${withWrap ? "with-wrap" : ""} ${
+        } ${isLends ? "lends" : ""} ${withWrap ? "with-wrap" : ""} ${
           activeCategory === "proposed" ? "siblings" : ""
         }
         `}>
@@ -236,7 +239,7 @@ export const OfferTemplate = observer(
               canClaim(timeLeft) ? (
                 <button
                   className="btn btn--md btn--primary"
-                  onClick={() => handleClaimCollateral(pubkey)}>
+                  onClick={async () => await handleClaimCollateral(pubkey)}>
                   Claim NFT
                 </button>
               ) : (
@@ -251,7 +254,7 @@ export const OfferTemplate = observer(
                 <button
                   ref={setTriggerRef}
                   className="btn btn--md btn--primary"
-                  onClick={() => handleRepayLoan(activeSubOffer as string)}>
+                  onClick={async () => await handleRepayLoan(activeSubOffer as string)}>
                   Repay Loan
                 </button>
                 {visible && (
@@ -297,7 +300,9 @@ export const OfferTemplate = observer(
           </div>
         ) : (
           <div className="data-row actions">
-            <button className="btn btn--md btn--bordered" onClick={() => handleCancelOffer(pubkey)}>
+            <button
+              className="btn btn--md btn--bordered"
+              onClick={async () => await handleCancelOffer(pubkey)}>
               Cancel Offer
             </button>
             <button

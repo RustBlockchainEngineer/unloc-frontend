@@ -20,7 +20,7 @@ export const useOffChainMetadata = (
   return {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     json: data as IArweaveMetadata,
-    isLoading: !error && !data,
+    isLoading: error == null && data == null,
     isError: error,
   };
 };

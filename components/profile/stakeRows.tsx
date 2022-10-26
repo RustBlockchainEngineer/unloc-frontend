@@ -1,16 +1,16 @@
-import { useStakingAccounts } from "@hooks/useStakingAccounts";
-import { StakeRow } from "./stakeAccount/stakeRow";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
-import { val } from "@utils/bignum";
-import { FlexiStakeRow } from "./stakeAccount/flexiStakeRow";
 
-export const StakeRows = () => {
+import { useStakingAccounts } from "@hooks/useStakingAccounts";
+import { val } from "@utils/bignum";
+
+import { FlexiStakeRow } from "./stakeAccount/flexiStakeRow";
+import { StakeRow } from "./stakeAccount/stakeRow";
+
+export const StakeRows = (): JSX.Element | null => {
   const { accounts, isLoading, isError } = useStakingAccounts();
   const [parent] = useAutoAnimate<HTMLUListElement>();
 
-  if (isError || isLoading || !accounts || !accounts.info) {
-    return null;
-  }
+  if (isError != null || isLoading || accounts == null || accounts.info == null) return null;
 
   const lockedAccounts = accounts.info.stakingAccounts.locked.lockedStakingsData;
   const flexiData = accounts.info.stakingAccounts.flexi;

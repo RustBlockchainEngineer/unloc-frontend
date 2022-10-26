@@ -15,7 +15,7 @@ interface Sanitized {
   offerKey: string;
 }
 
-export interface OfferActionsHook {
+export interface IOfferActionsHook {
   handleClaimCollateral: (offerKey: PublicKey) => Promise<void>;
   refreshSubOffers: (walletKeyProp: PublicKey) => Promise<void>;
   handleCancelCollateral: (nftMint: PublicKey, name: string) => Promise<void>;
@@ -31,7 +31,7 @@ export interface OfferActionsHook {
   handleRepayLoan: (subOfferKey: string) => Promise<void>;
 }
 
-export const OfferActionsHook = (): OfferActionsHook => {
+export const OfferActionsHook = (): IOfferActionsHook => {
   const store = useContext(StoreContext);
   const { connection } = useConnection();
   const { publicKey: wallet } = useWallet();
@@ -75,7 +75,7 @@ export const OfferActionsHook = (): OfferActionsHook => {
       openLightBox();
 
       try {
-        if (!wallet) throw new Error("Wallet not connected");
+        if (wallet == null) throw new Error("Wallet not connected");
 
         const tx = cancelOffer(wallet, nftMint);
         await sendAndConfirm(tx);
@@ -110,7 +110,7 @@ export const OfferActionsHook = (): OfferActionsHook => {
       openLightBox();
 
       try {
-        if (!wallet) throw new Error("Wallet not connected");
+        if (wallet == null) throw new Error("Wallet not connected");
 
         const tx = await claimCollateral(connection, wallet, subOffer);
         await sendAndConfirm(tx);
@@ -129,7 +129,7 @@ export const OfferActionsHook = (): OfferActionsHook => {
       openLightBox();
 
       try {
-        if (!wallet) throw new Error("Wallet not connected");
+        if (wallet == null) throw new Error("Wallet not connected");
 
         const tx = await cancelSubOffer(connection, wallet, subOffer);
         await sendAndConfirm(tx);
@@ -164,7 +164,7 @@ export const OfferActionsHook = (): OfferActionsHook => {
       openLightBox();
 
       try {
-        if (!wallet) throw new Error("Wallet not connected");
+        if (wallet == null) throw new Error("Wallet not connected");
         const subOffer = new PublicKey(subOfferKey);
         const tx = await repayLoan(connection, wallet, subOffer);
         await sendAndConfirm(tx);

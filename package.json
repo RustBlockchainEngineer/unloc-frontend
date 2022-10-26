@@ -13,7 +13,7 @@
     "clean:coverage": "rm -rf coverage",
     "lint": "yarn lint:prettier && yarn lint:eslint",
     "lint:prettier": "prettier --loglevel warn --check --write \"**/*.{scss,css,js,jsx,ts,tsx,html}\"",
-    "lint:eslint": "eslint \"**/*.{ts,tsx}\" --cache"
+    "lint:eslint": "eslint \"**/*.{ts,tsx}\" --cache --fix"
   },
   "dependencies": {
     "@formkit/auto-animate": "^1.0.0-beta.3",
@@ -32,11 +32,13 @@
     "@solana/wallet-adapter-solflare": "^0.6.16",
     "@solana/wallet-adapter-wallets": "^0.15.5",
     "@solana/web3.js": "^1.56.2",
+    "@types/ws": "^8.5.3",
     "@unloc-dev/unloc-loan-solita": "^3.0.1",
     "@unloc-dev/unloc-sdk-staking": "^0.0.4",
     "@unloc-dev/unloc-sdk-voting": "^0.0.1",
     "@unloc-dev/unloc-staking-solita": "^2.1.0",
     "axios": "^0.26.1",
+    "bn.js": "^5.2.1",
     "dayjs": "^1.11.2",
     "decimal.js": "^10.4.2",
     "dotenv": "^16.0.0",
@@ -69,6 +71,7 @@
     "eslint": "^8.0.1",
     "eslint-config-prettier": "^8.5.0",
     "eslint-config-standard-with-typescript": "^23.0.0",
+    "eslint-import-resolver-typescript": "^3.5.2",
     "eslint-plugin-import": "^2.25.2",
     "eslint-plugin-n": "^15.0.0",
     "eslint-plugin-prettier": "^4.2.1",

@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import { TopMenu } from "./topMenu";
 import { UserToolbox } from "./userToolbox";
 
-export const LayoutTopMobile = () => {
+export const LayoutTopMobile = (): JSX.Element => {
   const [menuVisible, setMenuVisibility] = useState(false);
 
   useEffect(() => {
@@ -20,7 +20,7 @@ export const LayoutTopMobile = () => {
 
   return (
     <>
-      <div className={`layout-top-mobile`}>
+      <div className={"layout-top-mobile"}>
         <UserToolbox hideMenu={setMenuVisibility} isMenuHidden={menuVisible} />
         <TopMenu mobileVisible={menuVisible} />
       </div>

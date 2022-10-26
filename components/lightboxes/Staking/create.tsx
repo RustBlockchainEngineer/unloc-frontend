@@ -1,29 +1,30 @@
 import { ChangeEvent, FormEvent, useState } from "react";
 
-import { useStore } from "@hooks/useStore";
 import { WalletNotConnectedError } from "@solana/wallet-adapter-base";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
+import { Transaction } from "@solana/web3.js";
+import { PoolInfo } from "@unloc-dev/unloc-sdk-staking";
 import { observer } from "mobx-react-lite";
 import Slider from "rc-slider";
+
 import "rc-slider/assets/index.css";
-import { errorCase } from "@utils/toast-error-handler";
-import { useStakingAccounts } from "@hooks/useStakingAccounts";
-import { amountToUiAmount } from "@utils/bignum";
 import { formatOptions } from "@constants/config";
+import { UNLOC_MINT_DECIMALS } from "@constants/currency-constants";
+import { usePoolInfo } from "@hooks/usePoolInfo";
 import { useSendTransaction } from "@hooks/useSendTransaction";
+import { useStakingAccounts } from "@hooks/useStakingAccounts";
+import { useStore } from "@hooks/useStore";
+import { useUserScore } from "@hooks/useUserScore";
+import { amountToUiAmount } from "@utils/bignum";
+import { uiAmountToAmount } from "@utils/spl/common";
+import { getUnlocScoreContributionForLightbox } from "@utils/spl/unloc-score";
 import {
   convertDayDurationToEnum,
   createStakingUserOptionally,
   depositTokens,
   getTotalStakedAmount,
 } from "@utils/spl/unloc-staking";
-import { Transaction } from "@solana/web3.js";
-import { UNLOC_MINT_DECIMALS } from "@constants/currency-constants";
-import { useUserScore } from "@hooks/useUserScore";
-import { getUnlocScoreContributionForLightbox } from "@utils/spl/unloc-score";
-import { usePoolInfo } from "@hooks/usePoolInfo";
-import { PoolInfo } from "@unloc-dev/unloc-sdk-staking";
-import { uiAmountToAmount } from "@utils/spl/common";
+import { errorCase } from "@utils/toast-error-handler";
 
 type InputEvent = ChangeEvent<HTMLInputElement>;
 
@@ -35,7 +36,7 @@ const sliderMarks = {
   100: { label: "365", style: { left: "97%" } },
 };
 
-function markToDurationMapping(value: number) {
+function markToDurationMapping(value: number): number {
   switch (value) {
     case 0:
       return 0;
@@ -52,7 +53,7 @@ function markToDurationMapping(value: number) {
   }
 }
 
-function durationToApyBasisPoints(value: number) {
+function durationToApyBasisPoints(value: number): number {
   switch (value) {
     case 0:
       return 50;
@@ -90,10 +91,10 @@ export const CreateStake = observer(() => {
   // Get total staked amount
   const totalStaked = getTotalStakedAmount(accounts?.info?.stakingAccounts);
 
-  const handleCreate = async (e: FormEvent) => {
+  const handleCreate = async (e: FormEvent): Promise<void> => {
     e.preventDefault();
     try {
-      if (!wallet) throw new WalletNotConnectedError();
+      if (wallet == null) throw new WalletNotConnectedError();
 
       const { uiAmount, lockDuration } = StakingStore.createFormInputs;
       const amount = uiAmountToAmount(uiAmount, UNLOC_MINT_DECIMALS);
@@ -112,10 +113,10 @@ export const CreateStake = observer(() => {
     }
   };
 
-  const handleAmountInput = (e: InputEvent) => {
+  const handleAmountInput = (e: InputEvent): void => {
     const value = e.target.value;
     // Check for numbers
-    if (!value || value.match(/^\d{1,}(\.\d{0,6})?$/)) {
+    if (!value || value.match(/^\d{1,}(\.\d{0,6})?$/) != null) {
       StakingStore.setCreateFormInput("uiAmount", value);
 
       // Set the score contribution that this stake would have
@@ -125,10 +126,9 @@ export const CreateStake = observer(() => {
     }
   };
 
-  const handleDurationInput = (value: number | number[]) => {
-    if (typeof value !== "number") {
-      value = value[0];
-    }
+  const handleDurationInput = (value: number | number[]): void => {
+    if (typeof value !== "number") value = value[0];
+
     const durationInDays = markToDurationMapping(value);
     StakingStore.setCreateFormInput("lockDuration", durationInDays);
     setApy(durationToApyBasisPoints(durationInDays));
@@ -160,7 +160,7 @@ export const CreateStake = observer(() => {
         <div className="create-stake__wallet">
           <p className="label">Current Wallet Balance</p>
           <p className="balance">
-            {Wallet.unlocAmount} <i className={`icon icon--sm icon--currency--UNLOC--violet`} />
+            {Wallet.unlocAmount} <i className={"icon icon--sm icon--currency--UNLOC--violet"} />
           </p>
         </div>
       </div>

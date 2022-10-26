@@ -10,10 +10,10 @@ import {
 
 import { config } from "./config";
 
-type CurrencyInfo = {
+interface CurrencyInfo {
   mint: string;
   decimals: number;
-};
+}
 
 export const currencyMints: Record<string, CurrencyTypes> = config.devnet
   ? {

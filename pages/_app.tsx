@@ -101,4 +101,5 @@ const Unloc = observer(({ Component, pageProps }: AppProps) => {
   );
 });
 
+// eslint-disable-next-line import/no-default-export
 export default Unloc;

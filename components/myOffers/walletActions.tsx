@@ -1,15 +1,15 @@
 import { useCallback, useContext, MouseEvent, useState, Fragment } from "react";
 
+import { useWallet } from "@solana/wallet-adapter-react";
 import { observer } from "mobx-react-lite";
 import { usePopperTooltip } from "react-popper-tooltip";
 
 import { ConnectWallet } from "@components/connectWallet/ConnectWallet";
+import { CustomSelect } from "@components/layout/customSelect";
 import { StoreContext } from "@pages/_app";
 import { OfferCategory } from "@stores/MyOffers.store";
-import { CustomSelect } from "@components/layout/customSelect";
-import { useWallet } from "@solana/wallet-adapter-react";
 
-const categories: { label: string; value: OfferCategory; options?: string[] }[] = [
+const categories: Array<{ label: string; value: OfferCategory; options?: string[] }> = [
   { label: "Active Loans", value: "active", options: ["All", "Borrows", "Lends"] },
   { label: "Active Offers", value: "proposed" },
   { label: "My Vault", value: "deposited" },
@@ -31,12 +31,12 @@ export const WalletActions = observer(() => {
     store.MyOffers.setActiveCategory(event.currentTarget.name as OfferCategory);
   }, []);
 
-  const sortNFT = (option: string) => {
+  const sortNFT = (option: string): void => {
     setSortOption(option);
     store.MyOffers.setActiveLoan(option.toLowerCase());
   };
 
-  return wallet ? (
+  return wallet != null ? (
     <div className="my-offers-top">
       <div className="my-offers-top__heading">
         {categories.map((category) => (
@@ -50,7 +50,7 @@ export const WalletActions = observer(() => {
               onClick={handleCategoryClick}>
               {category.label}
             </button>
-            {category.options && activeCategory === "active" && (
+            {category.options != null && activeCategory === "active" && (
               <CustomSelect
                 key={`${category.value}-select`}
                 options={category.options}

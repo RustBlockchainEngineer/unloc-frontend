@@ -5,11 +5,14 @@ interface MenuShowButtonProps {
   changeMenuVisibility: Dispatch<SetStateAction<boolean>> | undefined;
 }
 
-export const MenuShowButton = ({ menuVisibleState, changeMenuVisibility }: MenuShowButtonProps) => {
+export const MenuShowButton = ({
+  menuVisibleState,
+  changeMenuVisibility,
+}: MenuShowButtonProps): JSX.Element => {
   return (
     <div
       className="menu-show-button mobile-only"
-      onClick={() => (changeMenuVisibility ? changeMenuVisibility(!menuVisibleState) : "")}>
+      onClick={() => (changeMenuVisibility != null ? changeMenuVisibility(!menuVisibleState) : "")}>
       <div className={`menu-show-button-hamburger ${menuVisibleState ? "clicked" : ""}`}>
         <div className="menu-show-button-hamburger_strips">
           <div className="strip" />

@@ -1,5 +1,7 @@
 import React from "react";
+
 import Image from "next/image";
+
 import { config } from "@constants/config";
 
 interface SolscanExplorerButtonProps {
@@ -13,7 +15,7 @@ export const SolscanExplorerButton: React.FC<SolscanExplorerButtonProps> = ({
   address,
   classNames,
 }: SolscanExplorerButtonProps) => {
-  const handleOnClick = () => {
+  const handleOnClick = (): void => {
     window
       .open(
         `https://solscan.io/${type}/${address}?cluster=${config.devnet ? "devnet" : "mainnet"}`,
@@ -24,7 +26,7 @@ export const SolscanExplorerButton: React.FC<SolscanExplorerButtonProps> = ({
 
   return (
     <button
-      className={`btn btn--solana-explorer btn--light btn--rounded ${classNames}`}
+      className={`btn btn--solana-explorer btn--light btn--rounded ${classNames ?? ""}`}
       onClick={() => handleOnClick()}>
       See more on{" "}
       <Image src="/icons/solscan-icon.svg" width={270} height={29} alt="Solscan Explorer" />

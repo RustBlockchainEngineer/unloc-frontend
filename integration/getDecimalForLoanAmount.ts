@@ -13,13 +13,12 @@ export const getDecimalsForLoanAmountAsString = (
 ): string => {
   const uiAmount = amount / 10 ** currencies[currencyMints[offerMint]]?.decimals;
 
-  if (minDigits || maxDigits) {
+  if (minDigits ?? maxDigits)
     return uiAmount.toLocaleString("en-US", {
-      minimumFractionDigits: minDigits || 2,
-      maximumFractionDigits: maxDigits || 4,
+      minimumFractionDigits: minDigits ?? 2,
+      maximumFractionDigits: maxDigits ?? 4,
       useGrouping: false,
     });
-  }
 
   return uiAmount.toLocaleString("en-US", formatOptions);
 };

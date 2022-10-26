@@ -1,7 +1,8 @@
-import { useOffChainMetadata } from "@hooks/useOffChainMetadata";
 import { Metadata } from "@metaplex-foundation/mpl-token-metadata";
 import { observer } from "mobx-react-lite";
 import Image from "next/image";
+
+import { useOffChainMetadata } from "@hooks/useOffChainMetadata";
 
 interface IAcceptHeader {
   nftData: Metadata;

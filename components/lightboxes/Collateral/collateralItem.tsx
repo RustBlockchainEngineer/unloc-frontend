@@ -1,4 +1,5 @@
 import { Metadata } from "@metaplex-foundation/mpl-token-metadata";
+
 import { useOffChainMetadata } from "@hooks/useOffChainMetadata";
 
 interface IProps {
@@ -7,7 +8,7 @@ interface IProps {
   chosen: boolean;
 }
 
-export const CollateralItem = ({ metadata, onClick, chosen }: IProps) => {
+export const CollateralItem = ({ metadata, onClick, chosen }: IProps): JSX.Element | null => {
   const { json, isLoading } = useOffChainMetadata(metadata.data.uri);
 
   if (isLoading) return null;

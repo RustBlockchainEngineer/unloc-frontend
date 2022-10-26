@@ -1,26 +1,31 @@
-import { DurationProgress } from "./durationProgress";
-import { amountToUiAmount, numVal, val } from "@utils/bignum";
-import dayjs from "dayjs";
-import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { WalletNotConnectedError } from "@solana/wallet-adapter-base";
-import { errorCase } from "@utils/toast-error-handler";
-import { useSendTransaction } from "@hooks/useSendTransaction";
-import { depositTokens, lockDurationEnumToSeconds, withdrawTokens } from "@utils/spl/unloc-staking";
-import { BN } from "bn.js";
+import { useConnection, useWallet } from "@solana/wallet-adapter-react";
+import { Transaction } from "@solana/web3.js";
 import {
   AllowedStakingDurationMonths,
   LockedStakingAccount,
   WithdrawType,
 } from "@unloc-dev/unloc-sdk-staking";
-import { Transaction } from "@solana/web3.js";
-import { UNLOC_MINT_DECIMALS } from "@constants/currency-constants";
-import { useStore } from "@hooks/useStore";
+import BN from "bn.js";
+import dayjs from "dayjs";
+
 import { exitAmount } from "@components/profile/stakeAccount/calculations";
+import { UNLOC_MINT_DECIMALS } from "@constants/currency-constants";
+import { useSendTransaction } from "@hooks/useSendTransaction";
+import { useStore } from "@hooks/useStore";
+import { amountToUiAmount, numVal, val } from "@utils/bignum";
+import { depositTokens, lockDurationEnumToSeconds, withdrawTokens } from "@utils/spl/unloc-staking";
+import { errorCase } from "@utils/toast-error-handler";
+
+import { DurationProgress } from "./durationProgress";
 
 export type StakeType = "flexi" | "liqmin" | "normal";
-export type StakeRowProps = { lockedStakingAccount: LockedStakingAccount; type: StakeType };
+export interface StakeRowProps {
+  lockedStakingAccount: LockedStakingAccount;
+  type: StakeType;
+}
 
-export const StakeRow = ({ lockedStakingAccount, type }: StakeRowProps) => {
+export const StakeRow = ({ lockedStakingAccount, type }: StakeRowProps): JSX.Element | null => {
   const { stakingData, index, isActive } = lockedStakingAccount;
   const { connection } = useConnection();
   const { publicKey: wallet } = useWallet();
@@ -36,13 +41,11 @@ export const StakeRow = ({ lockedStakingAccount, type }: StakeRowProps) => {
   const time = Date.now();
   const status = type === "flexi" ? "flexi" : endUnix.gten(time) ? "locked" : "unlocked";
 
-  if (!isActive) {
-    return null;
-  }
+  if (!isActive) return null;
 
-  const Withdraw = async () => {
+  const Withdraw = async (): Promise<void> => {
     try {
-      if (!wallet) throw new WalletNotConnectedError();
+      if (wallet == null) throw new WalletNotConnectedError();
       const tx = await withdrawTokens(connection, wallet, {
         withType: WithdrawType.Flexi,
         index: 0,
@@ -54,9 +57,9 @@ export const StakeRow = ({ lockedStakingAccount, type }: StakeRowProps) => {
     }
   };
 
-  const Relock = async () => {
+  const Relock = async (): Promise<void> => {
     try {
-      if (!wallet) throw new WalletNotConnectedError();
+      if (wallet == null) throw new WalletNotConnectedError();
       Lightbox.setVisible(false);
       StakingStore.resetCreateFormInputs();
       Lightbox.setContent("relockStakes");
@@ -68,9 +71,9 @@ export const StakeRow = ({ lockedStakingAccount, type }: StakeRowProps) => {
     }
   };
 
-  const Deposit = async () => {
+  const Deposit = async (): Promise<void> => {
     try {
-      if (!wallet) throw new WalletNotConnectedError();
+      if (wallet == null) throw new WalletNotConnectedError();
       const ix = await depositTokens(
         connection,
         wallet,
@@ -85,8 +88,8 @@ export const StakeRow = ({ lockedStakingAccount, type }: StakeRowProps) => {
     }
   };
 
-  const Merge = async () => {
-    if (!wallet) throw new WalletNotConnectedError();
+  const Merge = async (): Promise<void> => {
+    if (wallet == null) throw new WalletNotConnectedError();
 
     try {
       Lightbox.setVisible(false);
@@ -101,13 +104,11 @@ export const StakeRow = ({ lockedStakingAccount, type }: StakeRowProps) => {
     }
   };
 
-  const renderActions = () => {
+  const renderActions = (): JSX.Element[] => {
     const button = ["Deposit", "Relock"];
-    if (status === "flexi") {
-      button.splice(0, 1, "Withdraw");
-    } else if (status === "unlocked" || status === "locked") {
-      button.push("Merge");
-    } else throw Error("Stake status error");
+    if (status === "flexi") button.splice(0, 1, "Withdraw");
+    else if (status === "unlocked" || status === "locked") button.push("Merge");
+    else throw Error("Stake status error");
 
     const actions = [Deposit, Withdraw, Relock, Merge];
 
@@ -130,7 +131,7 @@ export const StakeRow = ({ lockedStakingAccount, type }: StakeRowProps) => {
         <div className="stakerow__title">Staked amount</div>
         <div className="stakerow__amount">
           {uiAmount.toLocaleString("en-us")}
-          <i className={`icon icon--sm icon--currency--UNLOC`} />
+          <i className={"icon icon--sm icon--currency--UNLOC"} />
         </div>
         <div className="stakerow__at-exit">
           <p>{exitAmount(uiAmount)}</p>

@@ -28,7 +28,7 @@ interface IFilterOffersInterface {
   actionValidatorMax?: number;
   values?: string[];
   valuesRange?: { min: number; max: number };
-  items?: { label: string; value: string }[];
+  items?: Array<{ label: string; value: string }>;
 }
 
 export const Filter = memo(
@@ -48,8 +48,8 @@ export const Filter = memo(
     minRef,
     maxRef,
   }: IFilterOffersInterface) => {
-    const localMinRef = minRef || useRef<HTMLInputElement>(null);
-    const localMaxRef = maxRef || useRef<HTMLInputElement>(null);
+    const localMinRef = minRef != null || useRef<HTMLInputElement>(null);
+    const localMaxRef = maxRef != null || useRef<HTMLInputElement>(null);
 
     const debounce = (
       func: (val: number) => void,
@@ -65,39 +65,33 @@ export const Filter = memo(
     };
 
     const handleCheckedItem = (itemValue: string): boolean => {
-      if (values) {
-        return values.includes(itemValue);
-      }
+      if (values != null) return values.includes(itemValue);
+
       return false;
     };
 
     const handleDevCollectionsLabels = (label: string): string => {
-      if (label === "Dave test collection 2") {
-        return "Dev Only 1";
-      } else if (label === "Youtube") {
-        return "Dev Only 2";
-      } else {
-        return label;
-      }
+      if (label === "Dave test collection 2") return "Dev Only 1";
+      else if (label === "Youtube") return "Dev Only 2";
+      else return label;
     };
 
     const handleAction = useCallback(
       (event: SyntheticEvent<HTMLInputElement, Event>): void => {
         const inputValue = event.currentTarget.name;
-        if (inputValue && validateFilterInput(inputValue) && action) {
+        if (inputValue !== "" && validateFilterInput(inputValue) && action != null)
           action(inputValue);
-        }
       },
       [action],
     );
 
     const debounceMin = useCallback(
-      debounce((val) => actionMin && actionMin(val)),
+      debounce((val) => actionMin?.(val)),
       [valuesRange],
     );
 
     const debounceMax = useCallback(
-      debounce((val) => actionMax && actionMax(val)),
+      debounce((val) => actionMax?.(val)),
       [valuesRange],
     );
 
@@ -106,35 +100,32 @@ export const Filter = memo(
         const rangeType = event.target.name;
         const inputValue = parseFloat(event.target.value);
 
-        if (rangeType === "min" && localMinRef.current) {
+        if (rangeType === "min" && typeof localMinRef !== "boolean" && localMinRef.current != null)
           localMinRef.current.value = inputValue !== 0 ? inputValue.toString() : "";
-        } else if (localMaxRef.current) {
+        else if (typeof localMaxRef !== "boolean" && localMaxRef.current != null)
           localMaxRef.current.value = inputValue !== 0 ? inputValue.toString() : "";
-        }
 
         let actionValidator, isValid;
         if (rangeType === "min") {
-          actionValidator = actionValidatorMin ? actionValidatorMin : 1;
-          isValid = validateFilterRangeInput(inputValue, actionValidator, rangeType);
+          actionValidator = actionValidatorMin != null || 1;
+          isValid = validateFilterRangeInput(inputValue, actionValidator as number, rangeType);
         } else {
-          actionValidator = actionValidatorMax ? actionValidatorMax : 10000;
-          isValid = validateFilterRangeInput(inputValue, actionValidator, rangeType);
+          actionValidator = actionValidatorMax != null || 10000;
+          isValid = validateFilterRangeInput(inputValue, actionValidator as number, rangeType);
         }
 
-        if (rangeType === "min") {
-          isValid ? debounceMin(inputValue) : debounceMin(actionValidator);
-        } else {
-          isValid ? debounceMax(inputValue) : debounceMax(actionValidator);
-        }
+        if (rangeType === "min")
+          isValid ? debounceMin(inputValue) : debounceMin(actionValidator as number);
+        else isValid ? debounceMax(inputValue) : debounceMax(actionValidator as number);
       },
       [actionValidatorMax, actionValidatorMin, debounceMax, debounceMin],
     );
 
     const handleArrows = useCallback((arrowType: string, value: number): void => {
-      if (arrowType === "min" && localMinRef.current) {
+      if (arrowType === "min" && typeof localMinRef !== "boolean" && localMinRef.current != null) {
         localMinRef.current.value = value !== 0 ? value.toString() : "";
         debounceMin(value);
-      } else if (localMaxRef.current) {
+      } else if (typeof localMaxRef !== "boolean" && localMaxRef.current != null) {
         localMaxRef.current.value = value !== 0 ? value.toString() : "";
         debounceMax(value);
       }
@@ -142,7 +133,7 @@ export const Filter = memo(
 
     const renderList = (): ReactNode => {
       const data =
-        items && items.length && action
+        items != null && items.length > 0 && action != null
           ? items.map((item) => (
               <li key={`filter-item--${item.value}`}>
                 <label className="checkbox-label">
@@ -170,11 +161,11 @@ export const Filter = memo(
     };
 
     const renderMinMax = (): ReactNode => {
-      return valuesRange && actionMin && actionMax ? (
+      return valuesRange != null && actionMin != null && actionMax != null ? (
         <div className="filter-generic">
           <div className="filter-generic__top">
             <h5>{title}</h5>
-            {titleComponent ? titleComponent : ""}
+            {titleComponent !== null || ""}
           </div>
           <div className="filter-minmax">
             <div className="filter-line">
@@ -188,7 +179,11 @@ export const Filter = memo(
               />
               <InputNumberArrows
                 arrowType="min"
-                value={localMinRef.current ? Number(localMinRef.current.value) : 0}
+                value={
+                  typeof localMinRef !== "boolean" && localMinRef.current != null
+                    ? Number(localMinRef.current.value)
+                    : 0
+                }
                 onChange={handleArrows}
               />
             </div>
@@ -203,7 +198,11 @@ export const Filter = memo(
               />
               <InputNumberArrows
                 arrowType="max"
-                value={localMaxRef.current ? Number(localMaxRef.current.value) : 0}
+                value={
+                  typeof localMaxRef !== "boolean" && localMaxRef.current != null
+                    ? Number(localMaxRef.current.value)
+                    : 0
+                }
                 onChange={handleArrows}
               />
             </div>
@@ -219,7 +218,7 @@ export const Filter = memo(
         <div className="filter-generic">
           <div className="filter-generic__top">
             <h5>{title}</h5>
-            {titleComponent ? titleComponent : ""}
+            {titleComponent !== null || ""}
           </div>
           {customComponent}
         </div>
@@ -227,13 +226,11 @@ export const Filter = memo(
     };
 
     const renderFilterByType = (): ReactNode => {
-      if ((type === "single" || type === "multi") && items && Array.isArray(items)) {
+      if ((type === "single" || type === "multi") && items != null && Array.isArray(items))
         return renderList();
-      } else if (type === "minmax") {
-        return renderMinMax();
-      } else if (type === "custom") {
-        return renderCustom();
-      } else return <div />;
+      else if (type === "minmax") return renderMinMax();
+      else if (type === "custom") return renderCustom();
+      else return <div />;
     };
 
     return renderFilterByType() as ReactElement<any, string | JSXElementConstructor<any>>;

@@ -9,11 +9,12 @@ import {
   PROGRAM_ADDRESS,
   VoteChoice,
 } from "@unloc-dev/unloc-sdk-voting";
+
 import { getStakingPoolKey, getUserScoreKey, STAKING_PID } from "./unloc-staking";
 
-///////////////
+/// ////////////
 // CONSTANTS //
-///////////////
+/// ////////////
 export const VOTING_PID: PublicKey = new PublicKey(PROGRAM_ADDRESS);
 export const BPF_LOADER_UPGRADEABLE_PROGRAM_ID = new PublicKey(
   "BPFLoaderUpgradeab1e11111111111111111111111",
@@ -33,22 +34,22 @@ export const LIQ_MIN_RWDS_VAULT = Buffer.from("liq-min-rwds-vault");
 export const PROJECT_EMISSIONS = Buffer.from("project-emissions-info");
 export const UNLOC_STAKING = Buffer.from("unloc-staking");
 
-/////////////////
+/// //////////////
 // PDA helpers //
-/////////////////
-export const getVotingSessionKey = (programId: PublicKey = VOTING_PID) => {
+/// //////////////
+export const getVotingSessionKey = (programId: PublicKey = VOTING_PID): PublicKey => {
   return PublicKey.findProgramAddressSync(
     [UNLOC_VOTING, VOTING_SESSION, DATA_ACCOUNT],
     programId,
   )[0];
 };
-export const getVotingProgramDataKey = (programId: PublicKey = VOTING_PID) => {
+export const getVotingProgramDataKey = (programId: PublicKey = VOTING_PID): PublicKey => {
   return PublicKey.findProgramAddressSync(
     [programId.toBytes()],
     BPF_LOADER_UPGRADEABLE_PROGRAM_ID,
   )[0];
 };
-export const getLiqMinRwdsVaultKey = (programId: PublicKey = VOTING_PID) => {
+export const getLiqMinRwdsVaultKey = (programId: PublicKey = VOTING_PID): PublicKey => {
   return PublicKey.findProgramAddressSync(
     [UNLOC_LIQ_MIN_RWDS, LIQ_MIN_RWDS_VAULT, TOKEN_ACCOUNT],
     programId,
@@ -57,27 +58,27 @@ export const getLiqMinRwdsVaultKey = (programId: PublicKey = VOTING_PID) => {
 export const getProjectEmissionsKey = (
   collectionNft: PublicKey,
   programId: PublicKey = VOTING_PID,
-) => {
+): PublicKey => {
   return PublicKey.findProgramAddressSync(
     [UNLOC_VOTING, PROJECT_EMISSIONS, collectionNft.toBuffer(), DATA_ACCOUNT],
     programId,
   )[0];
 };
-export const getNftMetadataKey = (nftMint: PublicKey) => {
+export const getNftMetadataKey = (nftMint: PublicKey): PublicKey => {
   return PublicKey.findProgramAddressSync(
     [Buffer.from("metadata"), METAPLEX_PID.toBuffer(), nftMint.toBuffer()],
     METAPLEX_PID,
   )[0];
 };
-/////////////////////////
+/// //////////////////////
 // Instruction helpers //
-/////////////////////////
+/// //////////////////////
 export const voteCollections = async (
   userWallet: PublicKey,
   choices: VoteChoice[] = [],
   stakingProgram: PublicKey = STAKING_PID,
   programId: PublicKey = VOTING_PID,
-) => {
+): Promise<Transaction> => {
   const voteSessionInfo = getVotingSessionKey(programId);
   const poolInfo = getStakingPoolKey(stakingProgram);
   const userScoreInfo = getUserScoreKey(userWallet, poolInfo, stakingProgram);

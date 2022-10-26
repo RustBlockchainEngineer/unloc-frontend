@@ -1,6 +1,6 @@
 import { Skeleton } from "react-skeleton-generator";
 
-export const SkeletonTable = () => {
+export const SkeletonTable = (): JSX.Element => {
   const brows = new Array(8).fill(0);
   const cols = new Array(5).fill(0);
 

@@ -1,18 +1,7 @@
-/////////////////////////
+/// //////////////////////
 // Transaction helpers //
-/////////////////////////
+/// //////////////////////
 
-import {
-  CHAINLINK_PROGRAMS,
-  DEFAULT_PROGRAMS,
-  GLOBAL_STATE_TAG,
-  METADATA,
-  NFT_LOAN_PID,
-  OFFER_TAG,
-  SUB_OFFER_TAG,
-  TREASURY_VAULT_TAG,
-} from "@constants/config";
-import { currencies, currencyMints } from "@constants/currency";
 import {
   getAssociatedTokenAddressSync,
   getAccount,
@@ -34,11 +23,23 @@ import {
   Offer,
   SubOffer,
 } from "@unloc-dev/unloc-loan-solita";
-import { getDurationForContractData } from "@utils/timeUtils/timeUtils";
 import BN from "bn.js";
 
+import {
+  CHAINLINK_PROGRAMS,
+  DEFAULT_PROGRAMS,
+  GLOBAL_STATE_TAG,
+  METADATA,
+  NFT_LOAN_PID,
+  OFFER_TAG,
+  SUB_OFFER_TAG,
+  TREASURY_VAULT_TAG,
+} from "@constants/config";
+import { currencies, currencyMints } from "@constants/currency";
+import { getDurationForContractData } from "@utils/timeUtils/timeUtils";
+
 // Borrower actions
-export const createOffer = (wallet: PublicKey, nftMint: PublicKey) => {
+export const createOffer = (wallet: PublicKey, nftMint: PublicKey): Transaction => {
   const userVault = getAssociatedTokenAddressSync(nftMint, wallet);
   const nftMetadata = PublicKey.findProgramAddressSync(
     [Buffer.from("metadata"), METADATA.toBuffer(), nftMint.toBuffer()],
@@ -70,7 +71,7 @@ export const createOffer = (wallet: PublicKey, nftMint: PublicKey) => {
   return new Transaction().add(ix);
 };
 
-export const cancelOffer = (wallet: PublicKey, nftMint: PublicKey) => {
+export const cancelOffer = (wallet: PublicKey, nftMint: PublicKey): Transaction => {
   const [offer] = PublicKey.findProgramAddressSync(
     [OFFER_TAG, wallet.toBuffer(), nftMint.toBuffer()],
     NFT_LOAN_PID,
@@ -105,7 +106,7 @@ export const createSubOffer = async (
   aprNumerator: number,
   durationInDays: number,
   uiAmount: number,
-) => {
+): Promise<Transaction> => {
   const [globalState] = PublicKey.findProgramAddressSync([GLOBAL_STATE_TAG], NFT_LOAN_PID);
   const globalStateInfo = await GlobalState.fromAccountAddress(connection, globalState);
   const [offer] = PublicKey.findProgramAddressSync(
@@ -157,7 +158,7 @@ export const updateSubOffer = async (
   aprNumerator: number,
   duration: number,
   amount: number,
-) => {
+): Promise<Transaction> => {
   const [globalState] = PublicKey.findProgramAddressSync([GLOBAL_STATE_TAG], NFT_LOAN_PID);
   const globalStateInfo = await GlobalState.fromAccountAddress(connection, globalState);
   const subOfferInfo = await SubOffer.fromAccountAddress(connection, subOffer);
@@ -199,7 +200,7 @@ export const cancelSubOffer = async (
   connection: Connection,
   wallet: PublicKey,
   subOffer: PublicKey,
-) => {
+): Promise<Transaction> => {
   const subOfferInfo = await SubOffer.fromAccountAddress(connection, subOffer);
   const [offer] = PublicKey.findProgramAddressSync(
     [OFFER_TAG, wallet.toBuffer(), subOfferInfo.nftMint.toBuffer()],
@@ -216,7 +217,11 @@ export const cancelSubOffer = async (
   return new Transaction().add(ix);
 };
 
-export const repayLoan = async (connection: Connection, wallet: PublicKey, subOffer: PublicKey) => {
+export const repayLoan = async (
+  connection: Connection,
+  wallet: PublicKey,
+  subOffer: PublicKey,
+): Promise<Transaction> => {
   const subOfferInfo = await SubOffer.fromAccountAddress(connection, subOffer);
   const offer = subOfferInfo.offer;
   const lender = subOfferInfo.lender;
@@ -250,12 +255,11 @@ export const repayLoan = async (connection: Connection, wallet: PublicKey, subOf
   }
   const tx = new Transaction();
 
-  if (!(await isAccountInitialized(connection, lenderOfferVault))) {
+  if (!(await isAccountInitialized(connection, lenderOfferVault)))
     tx.add(createAssociatedTokenAccountInstruction(wallet, lenderOfferVault, lender, offerMint));
-  }
-  if (!(await isAccountInitialized(connection, borrowerOfferVault))) {
+
+  if (!(await isAccountInitialized(connection, borrowerOfferVault)))
     tx.add(createAssociatedTokenAccountInstruction(wallet, borrowerOfferVault, wallet, offerMint));
-  }
 
   const ix = createRepayLoanInstruction(
     {
@@ -286,7 +290,7 @@ export const acceptOffer = async (
   connection: Connection,
   wallet: PublicKey,
   subOffer: PublicKey,
-) => {
+): Promise<Transaction> => {
   const [globalState] = PublicKey.findProgramAddressSync([GLOBAL_STATE_TAG], NFT_LOAN_PID);
   const globalStateInfo = await GlobalState.fromAccountAddress(connection, globalState);
   const { rewardVault } = globalStateInfo;
@@ -306,14 +310,13 @@ export const acceptOffer = async (
   }
   const tx = new Transaction();
 
-  if (!(await isAccountInitialized(connection, lenderOfferVault))) {
+  if (!(await isAccountInitialized(connection, lenderOfferVault)))
     tx.add(createAssociatedTokenAccountInstruction(wallet, lenderOfferVault, wallet, offerMint));
-  }
-  if (!(await isAccountInitialized(connection, borrowerOfferVault))) {
+
+  if (!(await isAccountInitialized(connection, borrowerOfferVault)))
     tx.add(
       createAssociatedTokenAccountInstruction(wallet, borrowerOfferVault, borrower, offerMint),
     );
-  }
 
   const ix = createAcceptOfferInstruction(
     {
@@ -339,7 +342,7 @@ export const claimCollateral = async (
   connection: Connection,
   wallet: PublicKey,
   subOffer: PublicKey,
-) => {
+): Promise<Transaction> => {
   const [globalState] = PublicKey.findProgramAddressSync([GLOBAL_STATE_TAG], NFT_LOAN_PID);
   const globalStateInfo = await GlobalState.fromAccountAddress(connection, globalState);
   const { treasuryWallet, rewardVault } = globalStateInfo;
@@ -361,12 +364,11 @@ export const claimCollateral = async (
   const lenderOfferVault = getAssociatedTokenAddressSync(offerMint, wallet);
   const tx = new Transaction();
 
-  if (!(await isAccountInitialized(connection, lenderNftVault))) {
+  if (!(await isAccountInitialized(connection, lenderNftVault)))
     tx.add(createAssociatedTokenAccountInstruction(wallet, lenderNftVault, wallet, nftMint));
-  }
-  if (!(await isAccountInitialized(connection, lenderOfferVault))) {
+
+  if (!(await isAccountInitialized(connection, lenderOfferVault)))
     tx.add(createAssociatedTokenAccountInstruction(wallet, lenderOfferVault, wallet, offerMint));
-  }
 
   const ix = createClaimCollateralInstruction(
     {
@@ -404,10 +406,8 @@ export const isAccountInitialized = async (
     if (
       error instanceof TokenAccountNotFoundError ||
       error instanceof TokenInvalidAccountOwnerError
-    ) {
+    )
       return false;
-    } else {
-      throw Error();
-    }
+    else throw Error();
   }
 };

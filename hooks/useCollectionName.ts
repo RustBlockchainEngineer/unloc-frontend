@@ -18,7 +18,7 @@ export const useCollectionName = (
   return {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     collection: String(data),
-    isLoading: !error && !data,
+    isLoading: error == null && !data,
     isError: error,
   };
 };

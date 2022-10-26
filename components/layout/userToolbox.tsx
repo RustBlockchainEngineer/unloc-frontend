@@ -1,8 +1,10 @@
 import { Dispatch, SetStateAction } from "react";
 
 import { observer } from "mobx-react-lite";
-import { MenuShowButton } from "./menuShowButton";
+
 import { WalletCustomButton } from "@components/walletButton/WalletCustomButton";
+
+import { MenuShowButton } from "./menuShowButton";
 
 interface UserToolboxProps {
   isMenuHidden: boolean | undefined;
@@ -13,8 +15,8 @@ export const UserToolbox = observer(({ hideMenu, isMenuHidden }: UserToolboxProp
   return (
     <div className="user-toolbox">
       <MenuShowButton
-        menuVisibleState={isMenuHidden ? isMenuHidden : false}
-        changeMenuVisibility={hideMenu ? hideMenu : undefined}
+        menuVisibleState={isMenuHidden ?? false}
+        changeMenuVisibility={hideMenu != null ? hideMenu : undefined}
       />
       <WalletCustomButton />
     </div>
