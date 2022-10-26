@@ -1,5 +1,6 @@
 import { useContext, useMemo } from "react";
 
+import { Metadata } from "@metaplex-foundation/mpl-token-metadata";
 import { observer } from "mobx-react-lite";
 import Image from "next/image";
 
@@ -17,7 +18,7 @@ export const LoanDetails = observer(({ isDetails }: ILoanDetails) => {
   const {
     sanitized: { collateralId, metadata },
   } = store.MyOffers;
-  const { isLoading, json } = useOffChainMetadata(metadata.data.uri);
+  const { isLoading, json } = useOffChainMetadata((metadata as Metadata).data.uri);
 
   const attributes = useMemo(() => {
     if (!isLoading) return null;
@@ -47,15 +48,15 @@ export const LoanDetails = observer(({ isDetails }: ILoanDetails) => {
           </div>
           <div className="info">
             <span className="label">Mint address</span>
-            <span>{compressAddress(4, metadata.mint)}</span>
+            <span>{compressAddress(4, (metadata as Metadata).mint)}</span>
           </div>
           <div className="info">
             <span className="label">Collection</span>
-            <span>{metadata.data.name}</span>
+            <span>{(metadata as Metadata).data.name}</span>
           </div>
           <div className="info">
             <span className="label">Artist royalties</span>
-            <span>{metadata.data.sellerFeeBasisPoints * 0.01}%</span>
+            <span>{(metadata as Metadata).data.sellerFeeBasisPoints * 0.01}%</span>
           </div>
         </div>
       </div>

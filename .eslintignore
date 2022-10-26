@@ -1,9 +1,3 @@
-# Folders to fix
-#/components
-#/integration
-#/stores
-#/utils
-
 # Config files
 package.json
 .lintstagedrc.json
