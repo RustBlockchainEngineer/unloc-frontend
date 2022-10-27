@@ -26,7 +26,7 @@ export interface StakeRowProps {
 }
 
 export const StakeRow = ({ lockedStakingAccount, type }: StakeRowProps): JSX.Element | null => {
-  const { stakingData, index, isActive } = lockedStakingAccount;
+  const { stakingData, index, indexInUse } = lockedStakingAccount;
   const { connection } = useConnection();
   const { publicKey: wallet } = useWallet();
   const { StakingStore, Lightbox } = useStore();
@@ -41,7 +41,7 @@ export const StakeRow = ({ lockedStakingAccount, type }: StakeRowProps): JSX.Ele
   const time = Date.now();
   const status = type === "flexi" ? "flexi" : endUnix.gten(time) ? "locked" : "unlocked";
 
-  if (!isActive) return null;
+  if (!indexInUse) return null;
 
   const Withdraw = async (): Promise<void> => {
     try {

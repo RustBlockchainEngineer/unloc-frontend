@@ -2,6 +2,7 @@ import { useContext, useMemo, useState, useCallback } from "react";
 
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
+import BN from "bn.js";
 import { Decorator, getIn } from "final-form";
 import createDecorator from "final-form-calculate";
 import { observer } from "mobx-react-lite";
@@ -15,7 +16,7 @@ import { useSendTransaction } from "@hooks/useSendTransaction";
 import { getDecimalsForLoanAmount } from "@integration/getDecimalForLoanAmount";
 import { StoreContext } from "@pages/_app";
 import { calculateRepayValue, calculateApr, calculateInterest } from "@utils/loansMath";
-import { updateSubOffer } from "@utils/spl/unloc-loan";
+import { updateLoanSubOffer } from "@utils/spl/unloc-loan";
 import { getDurationFromContractData } from "@utils/timeUtils/timeUtils";
 import { errorCase, successCase } from "@utils/toast-error-handler";
 
@@ -159,7 +160,14 @@ export const CreateLoan = observer(({ mode }: CreateLoanProps) => {
       setProcessing(true);
       try {
         const subOffer = new PublicKey(activeSubOffer);
-        const tx = await updateSubOffer(connection, wallet, subOffer, apr, duration, amount);
+        const tx = await updateLoanSubOffer(
+          connection,
+          wallet,
+          new BN(amount),
+          new BN(duration),
+          new BN(apr),
+          subOffer,
+        );
         await sendAndConfirm(tx);
 
         setProcessing(false);

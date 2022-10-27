@@ -2,7 +2,7 @@ import { useMemo } from "react";
 
 import { useConnection } from "@solana/wallet-adapter-react";
 import { Connection } from "@solana/web3.js";
-import { PoolInfo } from "@unloc-dev/unloc-sdk-staking";
+import { StakingPoolInfo } from "@unloc-dev/unloc-sdk-staking";
 import useSWR from "swr";
 
 import { UNLOC_STAKING_PID } from "@constants/config";
@@ -14,18 +14,18 @@ const GET_POOLINFO_KEY = "GET_POOLINFO_ACCOUNT";
 const fetchPoolInfo = (connection: Connection) => async () => {
   const poolInfoKey = getStakingPoolKey(UNLOC_STAKING_PID);
 
-  return await PoolInfo.fromAccountAddress(connection, poolInfoKey);
+  return await StakingPoolInfo.fromAccountAddress(connection, poolInfoKey);
 };
 
 export const usePoolInfo = (): {
   isLoading: boolean;
   isError: Error | undefined;
-  data: PoolInfo | undefined;
+  data: StakingPoolInfo | undefined;
 } => {
   const { connection } = useConnection();
   const fetcher = useMemo(() => fetchPoolInfo(connection), [connection]);
 
-  const { error, data } = useSWR<PoolInfo, Error>(GET_POOLINFO_KEY, fetcher, {
+  const { error, data } = useSWR<StakingPoolInfo, Error>(GET_POOLINFO_KEY, fetcher, {
     revalidateIfStale: false,
     revalidateOnFocus: false,
     revalidateOnReconnect: false,
