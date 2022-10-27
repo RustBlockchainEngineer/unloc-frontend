@@ -1,12 +1,13 @@
 import { useCallback, useContext, useEffect, useState, RefObject } from "react";
 
 import { useWallet } from "@solana/wallet-adapter-react";
-import { StoreContext } from "@pages/_app";
-import { observer } from "mobx-react-lite";
-import { SwitchButton } from "@components/layout/switchButton";
-import { CustomSelect } from "@components/layout/customSelect";
-import { config, formatOptions } from "@constants/config";
 import { Commitment } from "@solana/web3.js";
+import { observer } from "mobx-react-lite";
+
+import { CustomSelect } from "@components/layout/customSelect";
+import { SwitchButton } from "@components/layout/switchButton";
+import { config, formatOptions } from "@constants/config";
+import { StoreContext } from "@pages/_app";
 
 interface DropdownListProps {
   refer: RefObject<HTMLUListElement>;
@@ -28,7 +29,7 @@ export const DropdownList = observer(({ refer, active, openModal, base58 }: Drop
     localStorage.setItem("endpoint", endpointString);
   };
 
-  const handleThemeSet = () => {
+  const handleThemeSet = (): void => {
     store.Interface.setTheme(theme === "dark" ? "light" : "dark");
     localStorage.setItem("unloc-theme", theme === "dark" ? "light" : "dark");
   };
@@ -41,9 +42,8 @@ export const DropdownList = observer(({ refer, active, openModal, base58 }: Drop
 
   useEffect(() => {
     const savedTheme = localStorage.getItem("unloc-theme");
-    if (savedTheme && savedTheme.length && (savedTheme === "dark" || savedTheme === "light")) {
+    if (savedTheme?.length && (savedTheme === "dark" || savedTheme === "light"))
       store.Interface.setTheme(savedTheme);
-    }
   });
 
   useEffect(() => {
@@ -66,7 +66,9 @@ export const DropdownList = observer(({ refer, active, openModal, base58 }: Drop
   return (
     <ul
       aria-label="dropdown-list"
-      className={`wallet-adapter-dropdown-list ${active && "wallet-adapter-dropdown-list-active"}`}
+      className={`wallet-adapter-dropdown-list ${
+        active ? "wallet-adapter-dropdown-list-active" : ""
+      }`}
       ref={refer}
       role="menu">
       <li onClick={copyAddress} className="wallet-adapter-dropdown-list-item hover" role="menuitem">
@@ -107,7 +109,7 @@ export const DropdownList = observer(({ refer, active, openModal, base58 }: Drop
       <li className="wallet-adapter-dropdown-list-item theme" role="menuitem">
         Select theme
         <SwitchButton
-          state={theme == "light"}
+          state={theme === "light"}
           classNames={"theme-switcher--switch"}
           onClick={handleThemeSet}
           theme={true}

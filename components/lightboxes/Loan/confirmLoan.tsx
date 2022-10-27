@@ -1,15 +1,16 @@
 import { useCallback, useContext } from "react";
 
-import Image from "next/image";
-import { StoreContext } from "@pages/_app";
-import { errorCase, successCase } from "@utils/toast-error-handler";
-import { observer } from "mobx-react-lite";
-
+import { Metadata } from "@metaplex-foundation/mpl-token-metadata";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
-import { createSubOffer } from "@utils/spl/unloc-loan";
 import { PublicKey } from "@solana/web3.js";
+import { observer } from "mobx-react-lite";
+import Image from "next/image";
+
 import { useOffChainMetadata } from "@hooks/useOffChainMetadata";
 import { useSendTransaction } from "@hooks/useSendTransaction";
+import { StoreContext } from "@pages/_app";
+import { createSubOffer } from "@utils/spl/unloc-loan";
+import { errorCase, successCase } from "@utils/toast-error-handler";
 
 export const ConfirmLoan = observer(() => {
   const store = useContext(StoreContext);
@@ -20,10 +21,10 @@ export const ConfirmLoan = observer(() => {
     preparedOfferData: { amount, duration, currency, APR, repayValue },
     sanitized: { metadata },
   } = store.MyOffers;
-  const { isLoading, json } = useOffChainMetadata(metadata.data.uri);
+  const { isLoading, json } = useOffChainMetadata((metadata as Metadata).data.uri);
 
   const confirm = useCallback(async (): Promise<void> => {
-    if (wallet) {
+    if (wallet != null) {
       store.Lightbox.setContent("circleProcessing");
       store.Lightbox.setCanClose(false);
       store.Lightbox.setVisible(true);
@@ -53,14 +54,13 @@ export const ConfirmLoan = observer(() => {
   }, []);
 
   const edit = useCallback(async (): Promise<void> => {
-    if (wallet) {
+    if (wallet != null)
       try {
         store.Lightbox.setContent("loanCreate");
         store.Lightbox.setVisible(true);
       } catch (e: any) {
         errorCase(e);
       }
-    }
   }, []);
 
   return (

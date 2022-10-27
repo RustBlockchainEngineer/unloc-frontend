@@ -18,7 +18,7 @@ const MyOffers: NextPage = observer(() => {
   const { refreshSubOffers } = OfferActionsHook();
 
   useEffect(() => {
-    if (publicKey) void refreshSubOffers(publicKey);
+    if (publicKey != null) void refreshSubOffers(publicKey);
   }, [publicKey, refreshSubOffers, Wallet.connection]);
 
   return (
@@ -33,4 +33,5 @@ const MyOffers: NextPage = observer(() => {
   );
 });
 
+// eslint-disable-next-line import/no-default-export
 export default MyOffers;

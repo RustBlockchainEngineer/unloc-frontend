@@ -100,13 +100,9 @@ export type DurationColorStatus = "green" | "yellow" | "red";
 export const getDurationColor = (duration: Duration): DurationColorStatus => {
   const seconds = duration.asSeconds();
 
-  if (seconds > GREEN_LOAN_BREAKPOINT) {
-    return "green";
-  } else if (seconds > ORANGE_LOAN_BREAKPOINT) {
-    return "yellow";
-  } else {
-    return "red";
-  }
+  if (seconds > GREEN_LOAN_BREAKPOINT) return "green";
+  else if (seconds > ORANGE_LOAN_BREAKPOINT) return "yellow";
+  else return "red";
 };
 
 /**

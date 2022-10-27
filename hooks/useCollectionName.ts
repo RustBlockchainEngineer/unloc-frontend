@@ -15,7 +15,7 @@ export const useCollectionName = (
 
   return {
     collection: String(data),
-    isLoading: !error && !data,
+    isLoading: error == null && !data,
     isError: error,
   };
 };

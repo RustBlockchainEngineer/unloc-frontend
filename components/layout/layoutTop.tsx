@@ -2,20 +2,21 @@ import { useContext, useEffect } from "react";
 
 import { observer } from "mobx-react-lite";
 
-import { StoreContext } from "@pages/_app";
-import { UnlocLogo } from "./unlocLogo";
-import { TopMenu } from "./topMenu";
-import { UserToolbox } from "./userToolbox";
-import { Lightbox } from "@components/lightboxes/lightbox";
-import { CreateCollateral } from "@components/lightboxes/Collateral/createCollateral";
-import { CreateLoan } from "@components/lightboxes/Loan/createLoan";
-import { Processing } from "@components/lightboxes/processing";
-import { LendConfirmation } from "@components/lightboxes/LendConfirm";
 import { AcceptOffer } from "@components/lightboxes/AcceptOffer";
+import { CreateCollateral } from "@components/lightboxes/Collateral/createCollateral";
+import { LendConfirmation } from "@components/lightboxes/LendConfirm";
 import { ConfirmLoan } from "@components/lightboxes/Loan/confirmLoan";
-import { CircleProcessing } from "@components/lightboxes/circleProcessing";
+import { CreateLoan } from "@components/lightboxes/Loan/createLoan";
 import { CreateStake } from "@components/lightboxes/Staking/create";
 import { StakingActions } from "@components/lightboxes/Staking/staking-actions";
+import { CircleProcessing } from "@components/lightboxes/circleProcessing";
+import { Lightbox } from "@components/lightboxes/lightbox";
+import { Processing } from "@components/lightboxes/processing";
+import { StoreContext } from "@pages/_app";
+
+import { TopMenu } from "./topMenu";
+import { UnlocLogo } from "./unlocLogo";
+import { UserToolbox } from "./userToolbox";
 
 export const LayoutTop = observer(() => {
   const store = useContext(StoreContext);
@@ -35,7 +36,7 @@ export const LayoutTop = observer(() => {
         <UserToolbox hideMenu={undefined} isMenuHidden={undefined} />
       </div>
       <button className="rewards-button" type="button">
-        <i className={`icon icon--svs icon--reward-light`} />
+        <i className={"icon icon--svs icon--reward-light"} />
         <p>
           Unloc Rewards <span>3</span>
         </p>

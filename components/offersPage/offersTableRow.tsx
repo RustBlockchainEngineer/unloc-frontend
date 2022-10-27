@@ -1,13 +1,14 @@
 import { useCallback, useContext, SyntheticEvent } from "react";
+
 import { Metadata } from "@metaplex-foundation/mpl-token-metadata";
 import { useConnection } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
 import Image from "next/image";
 import Link from "next/link";
 
-import { ILightboxOffer } from "@stores/Lightbox.store";
-import { StoreContext } from "@pages/_app";
 import { useOffChainMetadata } from "@hooks/useOffChainMetadata";
+import { StoreContext } from "@pages/_app";
+import { ILightboxOffer } from "@stores/Lightbox.store";
 import { calculateRepayValue } from "@utils/loansMath";
 
 interface OffersTableItemInterface {
@@ -37,7 +38,7 @@ export const OffersTableRow = ({
   isYours,
   collection,
   totalRepay,
-}: OffersTableItemInterface) => {
+}: OffersTableItemInterface): JSX.Element => {
   const store = useContext(StoreContext);
   const { denominator } = store.GlobalState;
   const { connection } = useConnection();

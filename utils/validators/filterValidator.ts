@@ -1,5 +1,5 @@
 export const validateFilterInput = (value: string): boolean => {
-  return value != undefined;
+  return value !== undefined;
 };
 
 export const validateFilterRangeInput = (
@@ -7,13 +7,8 @@ export const validateFilterRangeInput = (
   toCompare: number,
   rangeType: string,
 ): boolean => {
-  if (isNaN(value)) {
-    return false;
-  }
+  if (isNaN(value)) return false;
 
-  if (rangeType === "min") {
-    return value >= 0 && value >= toCompare;
-  } else {
-    return value >= 0 && value <= toCompare;
-  }
+  if (rangeType === "min") return value >= 0 && value >= toCompare;
+  else return value >= 0 && value <= toCompare;
 };

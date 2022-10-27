@@ -1,11 +1,11 @@
-import { getDecimalsForLoanAmountAsString } from "@integration/getDecimalForLoanAmount";
-
-import { currencyMints } from "@constants/currency";
-import { calculateRepayValue } from "@utils/loansMath";
-import { SubOfferData } from "@stores/Offers.store";
+import { Metadata } from "@metaplex-foundation/mpl-token-metadata";
 import { PublicKey } from "@solana/web3.js";
 import BN from "bn.js";
-import { Metadata } from "@metaplex-foundation/mpl-token-metadata";
+
+import { currencyMints } from "@constants/currency";
+import { getDecimalsForLoanAmountAsString } from "@integration/getDecimalForLoanAmount";
+import { SubOfferData } from "@stores/Offers.store";
+import { calculateRepayValue } from "@utils/loansMath";
 
 export interface ITransformedOffer {
   subOfferKey: string;

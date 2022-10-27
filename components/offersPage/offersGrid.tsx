@@ -1,26 +1,27 @@
 import { ReactElement, useContext } from "react";
 
+import { useWallet } from "@solana/wallet-adapter-react";
+import { SubOfferState } from "@unloc-dev/unloc-loan-solita";
+import BN from "bn.js";
 import { observer } from "mobx-react-lite";
-import { StoreContext } from "@pages/_app";
-import { OffersGridItem } from "./offersGridItem";
 
+import { SkeletonRectangle } from "@components/skeleton/rectangle";
 import {
   getDecimalsForLoanAmountAsString,
   getDecimalsForOfferMint,
 } from "@integration/getDecimalForLoanAmount";
-import { calculateRepayValue } from "@utils/loansMath";
+import { StoreContext } from "@pages/_app";
 import { ILightboxOffer } from "@stores/Lightbox.store";
+import { calculateRepayValue } from "@utils/loansMath";
 import { errorCase } from "@utils/toast-error-handler";
-import { useWallet } from "@solana/wallet-adapter-react";
-import { SubOfferState } from "@unloc-dev/unloc-loan-solita";
-import BN from "bn.js";
-import { SkeletonRectangle } from "@components/skeleton/rectangle";
+
+import { OffersGridItem } from "./offersGridItem";
 
 export const OffersGrid = observer(() => {
   const store = useContext(StoreContext);
   const { publicKey: wallet } = useWallet();
   const { pageOfferData, currentPage, maxPage, isLoading } = store.Offers;
-  const handleAcceptOffer = async (offer: ILightboxOffer) => {
+  const handleAcceptOffer = async (offer: ILightboxOffer): Promise<void> => {
     try {
       store.Lightbox.setAcceptOfferData(offer);
       store.Lightbox.setContent("acceptOffer");
@@ -53,13 +54,9 @@ export const OffersGrid = observer(() => {
     };
 
     const getClassName = (page: number, current: number): string => {
-      if (page + 1 === current) {
-        return "active";
-      }
+      if (page + 1 === current) return "active";
 
-      if (page + 3 === current || page === current + 1) {
-        return "mobile-hide";
-      }
+      if (page + 3 === current || page === current + 1) return "mobile-hide";
 
       return "";
     };
@@ -86,7 +83,10 @@ export const OffersGrid = observer(() => {
     );
   };
 
-  const renderPaginator = (active: number, last: number): ReactElement<NodeListOf<Element>>[] => {
+  const renderPaginator = (
+    active: number,
+    last: number,
+  ): Array<ReactElement<NodeListOf<Element>>> => {
     const beforePages = (index: number, active: number): boolean => {
       return index < active && index > active - 4;
     };
@@ -94,7 +94,7 @@ export const OffersGrid = observer(() => {
       return index > active && index < active + 2;
     };
     const firstLastCurrent = (index: number, active: number, last: number): boolean => {
-      return index == last - 1 || index == active || index == 0;
+      return index === last - 1 || index === active || index === 0;
     };
 
     return [...Array(last).keys()]
@@ -107,23 +107,20 @@ export const OffersGrid = observer(() => {
       .map((page) => pageBtn(page, active, last));
   };
 
-  if (isLoading) {
-    return <SkeletonRectangle offerType="grid" />;
-  }
+  if (isLoading) return <SkeletonRectangle offerType="grid" />;
 
-  if (pageOfferData.length === 0) {
+  if (pageOfferData.length === 0)
     return (
       <div className="offers-grid--empty">
         <h2 className="no-offers">No Offers Created yet</h2>
       </div>
     );
-  }
 
   return (
     <>
       <div className="offers-grid">
         {pageOfferData.map(({ account, pubkey, nftData, collection }, index) => {
-          if (account.state === SubOfferState.Proposed) {
+          if (account.state === SubOfferState.Proposed)
             return (
               <OffersGridItem
                 key={`offer-${pubkey.toString()}-${index}`}
@@ -149,7 +146,7 @@ export const OffersGrid = observer(() => {
                 )}
               />
             );
-          } else return;
+          else return null;
         })}
       </div>
       <div className="offers-pagination">

@@ -6,10 +6,10 @@ import { Commitment, RpcResponseAndContext, SignatureResult, Transaction } from 
 
 import { StoreContext } from "@pages/_app";
 
-type SendTransactionReturnType = {
+interface SendTransactionReturnType {
   signature: string;
   result: RpcResponseAndContext<SignatureResult>;
-};
+}
 
 export const useSendTransaction = (): ((
   transaction: Transaction,
@@ -23,8 +23,13 @@ export const useSendTransaction = (): ((
   const { publicKey, sendTransaction } = useWallet();
 
   return useCallback(
-    async (transaction: Transaction, commitment = selectedCommitment, skipPreflight?: boolean) => {
-      if (!publicKey) throw new WalletNotConnectedError();
+    async (
+      transaction: Transaction,
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+      commitment = selectedCommitment as Commitment,
+      skipPreflight?: boolean,
+    ) => {
+      if (publicKey === null) throw new WalletNotConnectedError();
 
       const {
         context: { slot: minContextSlot },

@@ -1,8 +1,9 @@
-import { makeAutoObservable, runInAction } from "mobx";
 import { Commitment, Connection, PublicKey } from "@solana/web3.js";
-import { GLOBAL_STATE_TAG, NFT_LOAN_PID } from "@constants/config";
 import { GlobalState } from "@unloc-dev/unloc-loan-solita";
 import BN from "bn.js";
+import { makeAutoObservable, runInAction } from "mobx";
+
+import { GLOBAL_STATE_TAG, NFT_LOAN_PID } from "@constants/config";
 
 export class GlobalStateStore {
   rootStore;
@@ -21,7 +22,7 @@ export class GlobalStateStore {
     this.rootStore = rootStore;
   }
 
-  async fetchGlobalState(connection: Connection) {
+  async fetchGlobalState(connection: Connection): Promise<void> {
     const [globalState] = PublicKey.findProgramAddressSync([GLOBAL_STATE_TAG], NFT_LOAN_PID);
     const data = await GlobalState.fromAccountAddress(connection, globalState);
 

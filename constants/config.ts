@@ -46,9 +46,9 @@ export const CHAINLINK_PROGRAMS = {
   usdcFeed: CHAINLINK_USDC_FEED,
 };
 
-////////////////////////////
+/// /////////////////////////
 // Loan Program Constants //
-////////////////////////////
+/// /////////////////////////
 export const GLOBAL_STATE_TAG = Buffer.from("GLOBAL_STATE_SEED");
 export const REWARD_VAULT_TAG = Buffer.from("REWARD_VAULT_SEED");
 export const OFFER_TAG = Buffer.from("OFFER_SEED");

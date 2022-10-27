@@ -1,10 +1,12 @@
-import Link from "next/link";
-import { ILightboxOffer } from "@stores/Lightbox.store";
-import { SyntheticEvent, useCallback, useContext } from "react";
-import { StoreContext } from "@pages/_app";
+import { SyntheticEvent, useCallback, useContext, FC } from "react";
+
 import { useConnection } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
 import { observer } from "mobx-react-lite";
+import Link from "next/link";
+
+import { StoreContext } from "@pages/_app";
+import { ILightboxOffer } from "@stores/Lightbox.store";
 
 interface IProps {
   visible: boolean;
@@ -21,7 +23,7 @@ interface IProps {
   isYours?: boolean;
 }
 
-const OffersGridItemHover: React.FC<IProps> = observer(
+export const OffersGridItemHover: FC<IProps> = observer(
   ({
     visible,
     APR,
@@ -97,5 +99,3 @@ const OffersGridItemHover: React.FC<IProps> = observer(
     );
   },
 );
-
-export default OffersGridItemHover;

@@ -1,14 +1,17 @@
 import React, { useMemo, useState } from "react";
-import OffersGridItemHover from "./offersGridItemHover";
-import Image from "next/image";
-import Link from "next/link";
-import { ILightboxOffer } from "@stores/Lightbox.store";
-import { SubOffer } from "@unloc-dev/unloc-loan-solita";
+
 import { Metadata } from "@metaplex-foundation/mpl-token-metadata";
 import { PublicKey } from "@solana/web3.js";
-import { useOffChainMetadata } from "@hooks/useOffChainMetadata";
-import { currencyMints } from "@constants/currency";
+import { SubOffer } from "@unloc-dev/unloc-loan-solita";
 import BN from "bn.js";
+import Image from "next/image";
+import Link from "next/link";
+
+import { currencyMints } from "@constants/currency";
+import { useOffChainMetadata } from "@hooks/useOffChainMetadata";
+import { ILightboxOffer } from "@stores/Lightbox.store";
+
+import { OffersGridItemHover } from "./offersGridItemHover";
 
 interface OffersGridItemInterface {
   subOffer: PublicKey;
@@ -32,7 +35,7 @@ export const OffersGridItem = ({
   amount,
   collection,
   isYours,
-}: OffersGridItemInterface) => {
+}: OffersGridItemInterface): JSX.Element => {
   const [hover, setHover] = useState<boolean>(false);
   const offerAddress = useMemo(() => offer.toBase58(), [offer]);
   const subOfferAddress = useMemo(() => subOffer.toBase58(), [subOffer]);

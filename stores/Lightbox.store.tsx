@@ -51,6 +51,7 @@ export class LightboxStore {
     totalRepay: "",
     currency: "",
   };
+
   isAdditionalInfoOpened: boolean = false;
 
   constructor(rootStore: any) {
@@ -58,36 +59,36 @@ export class LightboxStore {
     this.rootStore = rootStore;
   }
 
-  @action.bound setVisible(visible: boolean) {
+  @action.bound setVisible(visible: boolean): void {
     this.visible = visible;
     this.isAdditionalInfoOpened = false;
   }
 
-  @action.bound setContent(content: LightboxContent) {
+  @action.bound setContent(content: LightboxContent): void {
     this.content = content;
   }
 
-  @action.bound setCanClose(canClose: boolean) {
+  @action.bound setCanClose(canClose: boolean): void {
     this.canClose = canClose;
   }
 
-  @action.bound setActiveSubOffer(subOfferKey: string) {
+  @action.bound setActiveSubOffer(subOfferKey: string): void {
     this.activeSubOffer = subOfferKey;
   }
 
-  @action.bound setActiveSubOfferData(subOfferData: IsubOfferData) {
+  @action.bound setActiveSubOfferData(subOfferData: IsubOfferData): void {
     this.activeSubOfferData = subOfferData;
   }
 
-  @action.bound setLendConfirmationData(offer: any) {
+  @action.bound setLendConfirmationData(offer: any): void {
     this.lendConfirmationData = offer;
   }
 
-  @action.bound setAcceptOfferData(offer: ILightboxOffer) {
+  @action.bound setAcceptOfferData(offer: ILightboxOffer): void {
     this.acceptOfferData = offer;
   }
 
-  @action.bound setAdditionalInfoOpened(isOpened: boolean) {
+  @action.bound setAdditionalInfoOpened(isOpened: boolean): void {
     this.isAdditionalInfoOpened = isOpened;
   }
 }

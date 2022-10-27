@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useMemo, SyntheticEvent, useCallback } fro
 
 interface CustomMultiSelectProps {
   classNames?: string;
-  options: { label: string; value: string }[];
+  options: Array<{ label: string; value: string }>;
   title: string;
   disabled?: boolean;
   values?: string[];
@@ -16,25 +16,24 @@ export const CustomMultiSelect = ({
   options,
   values,
   onCheck,
-}: CustomMultiSelectProps) => {
+}: CustomMultiSelectProps): JSX.Element => {
   const [hidden, setHidden] = useState(true);
-  const [collectionsList, updateCollectionsList] = useState<{ label: string; value: string }[]>();
+  const [collectionsList, updateCollectionsList] =
+    useState<Array<{ label: string; value: string }>>();
   const container = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     updateCollectionsList(options);
   }, [options]);
 
-  const toggleOptions = () => {
+  const toggleOptions = (): void => {
     !disabled && setHidden(!hidden);
   };
 
   useEffect(() => {
-    const handleOutsideClick = (event: MouseEvent) => {
+    const handleOutsideClick = (event: MouseEvent): void => {
       const target = event.target;
-      if (target instanceof Element && !container.current?.contains(target)) {
-        setHidden(true);
-      }
+      if (target instanceof Element && !container.current?.contains(target)) setHidden(true);
     };
 
     document.addEventListener("click", handleOutsideClick);
@@ -46,8 +45,8 @@ export const CustomMultiSelect = ({
   const searchFilterHandler = useCallback(
     (event: SyntheticEvent<HTMLInputElement, Event>): void => {
       const searchString = event.currentTarget.value;
-      const result = options.filter(
-        (el) => el.value.toUpperCase().indexOf(searchString.toUpperCase()) >= 0,
+      const result = options.filter((el) =>
+        el.value.toUpperCase().includes(searchString.toUpperCase()),
       );
       updateCollectionsList(searchString.length ? result : options);
     },
@@ -66,7 +65,7 @@ export const CustomMultiSelect = ({
         <div className="custom-multi-select__input">
           <input type="text" placeholder="Search for collection" onChange={searchFilterHandler} />
         </div>
-        {collectionsList && (
+        {collectionsList != null && (
           <CollectionList
             options={collectionsList}
             values={values}
@@ -82,24 +81,28 @@ export const CustomMultiSelect = ({
 
 type ICollection = Pick<CustomMultiSelectProps, "options" | "values" | "disabled" | "onCheck">;
 
-interface CollectionList extends ICollection {
+interface ICollectionList extends ICollection {
   setHidden: (state: boolean) => any;
 }
 
-export const CollectionList = ({ options, values, disabled, onCheck }: CollectionList) => {
+export const CollectionList = ({
+  options,
+  values,
+  disabled,
+  onCheck,
+}: ICollectionList): JSX.Element => {
   const handleCheckedItem = (itemValue: string): boolean => {
-    if (values) {
-      return values.includes(itemValue);
-    }
+    if (values != null) return values.includes(itemValue);
+
     return false;
   };
 
-  const handleCheckOption = (e: SyntheticEvent, option: string) => {
+  const handleCheckOption = (e: SyntheticEvent, option: string): void => {
     e.stopPropagation();
     !disabled && onCheck(option);
   };
 
-  const MemoizedList = () =>
+  const MemoizedList = (): JSX.Element =>
     useMemo(() => {
       return (
         <ul>

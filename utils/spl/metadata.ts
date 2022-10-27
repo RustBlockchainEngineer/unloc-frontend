@@ -1,10 +1,11 @@
-import { Connection, PublicKey } from "@solana/web3.js";
 import { Metadata, PROGRAM_ID } from "@metaplex-foundation/mpl-token-metadata";
 import { TOKEN_PROGRAM_ID } from "@solana/spl-token";
+import { Connection, PublicKey } from "@solana/web3.js";
 import axios from "axios";
+
 import { GmaBuilder } from "./GmaBuilder";
 
-export function findMetadataPda(mint: PublicKey) {
+export function findMetadataPda(mint: PublicKey): PublicKey {
   return PublicKey.findProgramAddressSync(
     [Buffer.from("metadata"), PROGRAM_ID.toBuffer(), mint.toBuffer()],
     PROGRAM_ID,
@@ -14,10 +15,9 @@ export function findMetadataPda(mint: PublicKey) {
 export const fetchWhitelistedUserNfts = async (
   connection: Connection,
   wallet: PublicKey | null,
-) => {
-  if (!wallet) {
-    throw Error("Connect your wallet");
-  }
+): Promise<any[] | Metadata[]> => {
+  if (wallet == null) throw Error("Connect your wallet");
+
   const { value: tokenAccounts } = await connection.getParsedTokenAccountsByOwner(wallet, {
     programId: TOKEN_PROGRAM_ID,
   });
@@ -35,9 +35,8 @@ export const fetchWhitelistedUserNfts = async (
 
   const response = await axios.post("/api/nfts/whitelisted");
 
-  if (!(response?.data?.length > 0)) {
-    return [];
-  }
+  if (!(response?.data?.length > 0)) return [];
+
   const whitelisted = nftMints.filter((nftMint) => response.data.includes(nftMint.toBase58()));
   const metadataPdas = whitelisted.map(findMetadataPda);
 

@@ -1,13 +1,14 @@
 import { useContext, useEffect, useMemo, useState } from "react";
 
 import { observer } from "mobx-react-lite";
+import Image from "next/image";
+
+import { OfferTemplate } from "@components/layout/offerTemplate";
 import { SanitizedOffer } from "@components/myOffers/offersWrap";
 import { OfferActionsHook } from "@hooks/offerActionsHook";
-import { StoreContext } from "@pages/_app";
-import Image from "next/image";
-import { OfferTemplate } from "@components/layout/offerTemplate";
-import { useOffChainMetadata } from "@hooks/useOffChainMetadata";
 import { useCollectionName } from "@hooks/useCollectionName";
+import { useOffChainMetadata } from "@hooks/useOffChainMetadata";
+import { StoreContext } from "@pages/_app";
 
 export const OfferHead = observer(({ subOffers, metadata, offer, state }: SanitizedOffer) => {
   const [subOfferCount, setSubOfferCount] = useState(0);
@@ -28,16 +29,14 @@ export const OfferHead = observer(({ subOffers, metadata, offer, state }: Saniti
   const activeSubOffer = useMemo(() => {
     let output = "";
     subOffers.forEach((offer) => {
-      if (offer.account.state === 1) {
-        output = offer.pubkey.toBase58();
-      }
+      if (offer.account.state === 1) output = offer.pubkey.toBase58();
     });
 
     return output;
   }, [subOffers]);
 
-  const setNFTActions = (status: number) => {
-    if (status === 0) {
+  const setNFTActions = (status: number): JSX.Element | null => {
+    if (status === 0)
       return (
         <div className="nft-wallet-actions">
           {subOfferCount < 3 && (
@@ -57,7 +56,7 @@ export const OfferHead = observer(({ subOffers, metadata, offer, state }: Saniti
           )}
           <button
             className="btn--md btn--bordered active-offer--tooltip--parent"
-            onClick={() => handleCancelCollateral(metadata.mint, metadata.data.name)}>
+            onClick={async () => await handleCancelCollateral(metadata.mint, metadata.data.name)}>
             <span className="sign">&minus;</span>
             <div className="tooltip-container active-offer--tooltip">
               <span>Return NFT to wallet</span>
@@ -65,7 +64,6 @@ export const OfferHead = observer(({ subOffers, metadata, offer, state }: Saniti
           </button>
         </div>
       );
-    }
 
     return null;
   };

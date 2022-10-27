@@ -1,4 +1,4 @@
-export type UnlocNftLoan = {
+export interface UnlocNftLoan {
   version: "0.1.0";
   name: "unloc_nft_loan";
   constants: [
@@ -1342,7 +1342,7 @@ export type UnlocNftLoan = {
       msg: "InvalidDenominator";
     },
   ];
-};
+}
 
 export const IDL: UnlocNftLoan = {
   version: "0.1.0",

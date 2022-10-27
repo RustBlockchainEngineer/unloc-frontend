@@ -1,14 +1,15 @@
 import { useContext } from "react";
 
-import { observer } from "mobx-react-lite";
-
-import { StoreContext } from "@pages/_app";
-import { errorCase, successCase } from "@utils/toast-error-handler";
-import { LendConfirmHeader } from "./LendConfirmHeader";
-import { acceptOffer } from "@utils/spl/unloc-loan";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
+import { observer } from "mobx-react-lite";
+
 import { useSendTransaction } from "@hooks/useSendTransaction";
+import { StoreContext } from "@pages/_app";
+import { acceptOffer } from "@utils/spl/unloc-loan";
+import { errorCase, successCase } from "@utils/toast-error-handler";
+
+import { LendConfirmHeader } from "./LendConfirmHeader";
 
 export const LendConfirmation = observer(() => {
   const store = useContext(StoreContext);
@@ -19,9 +20,9 @@ export const LendConfirmation = observer(() => {
   const { nftData } = store.SingleOffer;
   const { amount, duration, APR, totalRepay, currency, offerPublicKey } = lendConfirmationData;
 
-  const handleAcceptOffer = async (offerPublicKey: string) => {
+  const handleAcceptOffer = async (offerPublicKey: string): Promise<void> => {
     try {
-      if (!wallet) throw Error("Connect your wallet");
+      if (wallet == null) throw Error("Connect your wallet");
 
       store.Lightbox.setContent("circleProcessing");
       store.Lightbox.setCanClose(false);
@@ -41,7 +42,7 @@ export const LendConfirmation = observer(() => {
   return (
     <div className="lend-confirmation">
       <h2>Lend Funds</h2>
-      {nftData && <LendConfirmHeader nftData={nftData} />}
+      {nftData != null && <LendConfirmHeader nftData={nftData} />}
       <div className="offer-data">
         <div className="offer-data-top">Loan terms:</div>
         <div className="offer-data-liner">
@@ -67,7 +68,7 @@ export const LendConfirmation = observer(() => {
       </div>
       <button
         className="btn btn--md btn--primary"
-        onClick={() => handleAcceptOffer(offerPublicKey)}>
+        onClick={async () => await handleAcceptOffer(offerPublicKey)}>
         Confirm
       </button>
     </div>

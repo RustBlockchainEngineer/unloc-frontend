@@ -15,4 +15,5 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<string[]>): Pro
   } else res.status(404).end();
 };
 
+// eslint-disable-next-line import/no-default-export
 export default handler;

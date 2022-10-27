@@ -1,14 +1,15 @@
 import { useContext } from "react";
 
-import { observer } from "mobx-react-lite";
-
-import { StoreContext } from "@pages/_app";
-import { errorCase, successCase } from "@utils/toast-error-handler";
-import { AcceptHeader } from "./acceptHeader";
-import { acceptOffer } from "@utils/spl/unloc-loan";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
+import { observer } from "mobx-react-lite";
+
 import { useSendTransaction } from "@hooks/useSendTransaction";
+import { StoreContext } from "@pages/_app";
+import { acceptOffer } from "@utils/spl/unloc-loan";
+import { errorCase, successCase } from "@utils/toast-error-handler";
+
+import { AcceptHeader } from "./acceptHeader";
 
 export const AcceptOffer = observer(() => {
   const store = useContext(StoreContext);
@@ -21,7 +22,7 @@ export const AcceptOffer = observer(() => {
 
   const handleAcceptOffer = async (offerPublicKey: string): Promise<void> => {
     try {
-      if (!wallet) throw Error("Connect your wallet");
+      if (wallet == null) throw Error("Connect your wallet");
 
       store.Lightbox.setContent("circleProcessing");
       store.Lightbox.setCanClose(false);
@@ -41,7 +42,7 @@ export const AcceptOffer = observer(() => {
   return (
     <div className="accept-offer">
       <h2>Lend Tokens</h2>
-      {nftData && <AcceptHeader nftData={nftData} />}
+      {nftData != null && <AcceptHeader nftData={nftData} />}
       <div className="collateral">
         <div className="nft-pill">
           <div className="data">
@@ -76,7 +77,7 @@ export const AcceptOffer = observer(() => {
       </div>
       <button
         className="btn btn--md btn--primary"
-        onClick={() => handleAcceptOffer(offerPublicKey)}>
+        onClick={async () => await handleAcceptOffer(offerPublicKey)}>
         Confirm
       </button>
     </div>

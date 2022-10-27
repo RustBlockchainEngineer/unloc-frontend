@@ -1,26 +1,27 @@
 import { ReactNode, useContext, useEffect, useMemo, useState } from "react";
 
+import { Metadata } from "@metaplex-foundation/mpl-token-metadata";
+import { useConnection, useWallet } from "@solana/wallet-adapter-react";
+import { PublicKey } from "@solana/web3.js";
+import { OfferState, SubOfferState } from "@unloc-dev/unloc-loan-solita";
 import { observer } from "mobx-react-lite";
-import { StoreContext } from "@pages/_app";
-import { OfferAccount, SubOfferAccount } from "@utils/spl/types";
+import { usePopperTooltip } from "react-popper-tooltip";
+
+import { DepositTemplate } from "@components/layout/depositTemplate";
 import { OfferHead } from "@components/layout/offerHead";
 import { OfferTemplate } from "@components/layout/offerTemplate";
-import { usePopperTooltip } from "react-popper-tooltip";
-import { OfferActionsHook } from "@hooks/offerActionsHook";
-import { eq, gt, gte } from "@utils/bignum";
-import { OfferState, SubOfferState } from "@unloc-dev/unloc-loan-solita";
-import { DepositTemplate } from "@components/layout/depositTemplate";
-import { Metadata } from "@metaplex-foundation/mpl-token-metadata";
-import { PublicKey } from "@solana/web3.js";
-import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { SkeletonRectangle } from "@components/skeleton/rectangle";
+import { OfferActionsHook } from "@hooks/offerActionsHook";
+import { StoreContext } from "@pages/_app";
+import { eq, gt, gte } from "@utils/bignum";
+import { OfferAccount, SubOfferAccount } from "@utils/spl/types";
 
-export type SanitizedOffer = {
+export interface SanitizedOffer {
   offer: PublicKey;
   metadata: Metadata;
   state: OfferState;
   subOffers: SubOfferAccount[];
-};
+}
 
 export const OffersWrap = observer(() => {
   const { connection } = useConnection();
@@ -32,7 +33,7 @@ export const OffersWrap = observer(() => {
 
   const { getTooltipProps, setTooltipRef, setTriggerRef, visible } = usePopperTooltip();
 
-  const depositButton = (isMobile?: boolean) => (
+  const depositButton = (isMobile?: boolean): JSX.Element => (
     <>
       <button
         ref={setTriggerRef}
@@ -49,25 +50,21 @@ export const OffersWrap = observer(() => {
   );
 
   useEffect(() => {
-    const fetchUserLended = async () => {
-      if (publicKey) {
-        await store.MyOffers.fetchUserLendedOffers(connection, publicKey);
-      }
+    const fetchUserLended = async (): Promise<void> => {
+      if (publicKey != null) await store.MyOffers.fetchUserLendedOffers(connection, publicKey);
     };
-    fetchUserLended();
+    void fetchUserLended();
   }, [connection, publicKey]);
 
   const accepted = useMemo(() => {
     // Offers in the accepted state
     const acceptedOffers = selectAcceptedOffers(offers, subOffers, nftData);
-    if (acceptedOffers.length) {
+    if (acceptedOffers.length > 0) {
       setLoader(false);
       return acceptedOffers.map((sanitizedOffer) => (
         <OfferHead key={sanitizedOffer.offer.toBase58()} {...sanitizedOffer} />
       ));
-    } else {
-      return null;
-    }
+    } else return null;
   }, [offers, subOffers]);
 
   const lends = useMemo(() => {
@@ -80,27 +77,24 @@ export const OffersWrap = observer(() => {
     // Offers that have at least 1 proposed subOffer
     const proposedOffers = selectProposedOffers(offers, subOffers, nftData);
 
-    if (proposedOffers.length) {
+    if (proposedOffers.length > 0) {
       setLoader(false);
       return proposedOffers.map((sanitizedOffer) => (
         <OfferHead key={sanitizedOffer.offer.toBase58()} {...sanitizedOffer} />
       ));
-    } else {
-      return <h2 className="no-offers">No offers offered!</h2>;
-    }
+    } else return <h2 className="no-offers">No offers offered!</h2>;
   }, [offers, subOffers, nftData]);
 
   const deposited = useMemo(() => {
     const depositedOffers = selectDepositedOffers(offers, subOffers);
 
-    if (depositedOffers.length) {
+    if (depositedOffers.length > 0) {
       setLoader(false);
       return depositedOffers.map((offer) => {
         const selectedNft = nftData.find((nft) => nft.mint.equals(offer.account.nftMint));
-        if (!selectedNft) {
+        if (selectedNft == null)
           // Fail-safe
           return null;
-        }
 
         return (
           <DepositTemplate
@@ -110,9 +104,7 @@ export const OffersWrap = observer(() => {
           />
         );
       });
-    } else {
-      return depositButton();
-    }
+    } else return depositButton();
   }, [offers, subOffers, nftData]);
 
   const loansGroups = (): ReactNode => {
@@ -177,16 +169,15 @@ const selectAcceptedOffers = (
     //   throw Error("Multiple accepted subOffers, check the transaction history");
     // }
     const selectedNft = nftData.find((nft) => nft.mint.equals(offer.account.nftMint));
-    if (!selectedNft) return sanitized;
+    if (selectedNft == null) return sanitized;
 
-    if (filtered.length > 0) {
+    if (filtered.length > 0)
       sanitized.push({
         offer: offer.pubkey,
         state: offer.account.state,
         subOffers: filtered,
         metadata: selectedNft,
       });
-    }
 
     return sanitized;
   }, []);
@@ -217,16 +208,15 @@ const selectProposedOffers = (
     );
 
     const selectedNft = nftData.find((nft) => nft.mint.equals(offer.account.nftMint));
-    if (!selectedNft) return sanitized;
+    if (selectedNft == null) return sanitized;
 
-    if (filtered.length > 0) {
+    if (filtered.length > 0)
       sanitized.push({
         offer: offer.pubkey,
         state: offer.account.state,
         subOffers: filtered,
         metadata: selectedNft,
       });
-    }
 
     return sanitized;
   }, []);
@@ -239,15 +229,16 @@ const selectProposedOffers = (
  * @param offers Offers that have the same borrower
  * @param subOffers All subOffers that also have the same borrower
  */
-const selectDepositedOffers = (offers: OfferAccount[], subOffers: SubOfferAccount[]) => {
+const selectDepositedOffers = (
+  offers: OfferAccount[],
+  subOffers: SubOfferAccount[],
+): OfferAccount[] => {
   return offers.filter(({ pubkey, account }) => {
     // Short-circuit
-    if (account.state !== OfferState.Proposed) {
-      return false;
-    }
-    if (eq(account.startSubOfferNum, account.subOfferCount)) {
-      return true;
-    }
+    if (account.state !== OfferState.Proposed) return false;
+
+    if (eq(account.startSubOfferNum, account.subOfferCount)) return true;
+
     return (
       subOffers.filter(
         (subOffer) =>

@@ -1,6 +1,8 @@
-import { makeAutoObservable, runInAction } from "mobx";
+import { Metadata } from "@metaplex-foundation/mpl-token-metadata";
 import { Connection, PublicKey } from "@solana/web3.js";
-import { BN } from "bn.js";
+import { Offer, SubOffer, SubOfferState } from "@unloc-dev/unloc-loan-solita";
+import BN from "bn.js";
+import { makeAutoObservable, runInAction } from "mobx";
 
 import {
   getOffersBy,
@@ -8,6 +10,9 @@ import {
   getSubOfferMultiple,
   getSubOffersInRange,
 } from "@integration/nftLoan";
+import { range, zipMap } from "@utils/common";
+import { GmaBuilder } from "@utils/spl/GmaBuilder";
+import { findMetadataPda } from "@utils/spl/metadata";
 import type {
   OfferAccount,
   PreparedOfferData,
@@ -15,12 +20,7 @@ import type {
   SubOfferAccount,
 } from "@utils/spl/types";
 
-import { range, zipMap } from "@utils/common";
-import { Offer, SubOffer, SubOfferState } from "@unloc-dev/unloc-loan-solita";
 import { RootStore } from "./Root.store";
-import { findMetadataPda } from "@utils/spl/metadata";
-import { GmaBuilder } from "@utils/spl/GmaBuilder";
-import { Metadata } from "@metaplex-foundation/mpl-token-metadata";
 
 /**
  * Active: offer that was accepted by someone and needs to be repayed
@@ -29,11 +29,11 @@ import { Metadata } from "@metaplex-foundation/mpl-token-metadata";
  */
 export type OfferCategory = "active" | "proposed" | "deposited";
 
-type SubOfferData = {
+interface SubOfferData {
   pubkey: PublicKey;
   account: SubOffer;
   nftData: Metadata;
-};
+}
 
 export class MyOffersStore {
   rootStore: RootStore;
@@ -41,7 +41,7 @@ export class MyOffersStore {
   subOffers: SubOfferAccount[] = [];
   nftData: Metadata[] = [];
   activeNftMint: string = "";
-  lendingList: { pubkey: PublicKey; account: SubOffer; nftData: Metadata }[] = [];
+  lendingList: Array<{ pubkey: PublicKey; account: SubOffer; nftData: Metadata }> = [];
   activeCategory: OfferCategory = "active";
   activeLoans: string = "all";
   preparedOfferData: PreparedOfferData = {
@@ -52,9 +52,10 @@ export class MyOffersStore {
     currency: "",
     repayValue: "0.00",
   };
+
   sanitized = {
     collateralId: "",
-    metadata: {} as Metadata,
+    metadata: {},
   };
 
   constructor(rootStore: any) {
@@ -62,13 +63,13 @@ export class MyOffersStore {
     this.rootStore = rootStore;
   }
 
-  setOffers(offers: { pubkey: PublicKey; account: Offer }[]): void {
+  setOffers(offers: Array<{ pubkey: PublicKey; account: Offer }>): void {
     this.offers = offers;
   }
 
   async getOffersByWallet(wallet: PublicKey): Promise<void> {
     const connection = this.rootStore.Wallet.connection;
-    if (!connection) {
+    if (connection == null) {
       console.error("Not connected");
       return;
     }
@@ -82,14 +83,14 @@ export class MyOffersStore {
 
   async getSubOffersByOffers(): Promise<void> {
     const connection = this.rootStore.Wallet.connection;
-    if (!connection) {
+    if (connection == null) {
       console.error("Not connected");
       return;
     }
 
     if (this.offers.length > 0) {
       const data: SubOfferAccount[] = [];
-      for (const offer of this.offers) {
+      for (const offer of this.offers)
         if (offer) {
           const { startSubOfferNum, subOfferCount } = offer.account;
           const subOfferRange = range(
@@ -99,7 +100,7 @@ export class MyOffersStore {
           const subOfferData = await getSubOffersInRange(connection, offer.pubkey, subOfferRange);
           data.push(...subOfferData);
         }
-      }
+
       runInAction(() => {
         this.subOffers = data;
       });
@@ -108,7 +109,7 @@ export class MyOffersStore {
 
   async getNFTsData(): Promise<void> {
     const connection = this.rootStore.Wallet.connection;
-    if (!connection) {
+    if (connection == null) {
       console.error("Not connected");
       return;
     }
@@ -129,24 +130,24 @@ export class MyOffersStore {
     }
   }
 
-  setActiveNftMint = (nftMint: string | PublicKey) => {
+  setActiveNftMint = (nftMint: string | PublicKey): void => {
     this.activeNftMint = typeof nftMint === "string" ? nftMint : nftMint.toBase58();
   };
 
-  refetchStoreData = async () => {
-    if (!this.rootStore.Wallet.walletKey) return;
+  refetchStoreData = async (): Promise<void> => {
+    if (this.rootStore.Wallet.walletKey == null) return;
 
     await this.getOffersByWallet(this.rootStore.Wallet.walletKey);
     await this.getNFTsData();
     await this.getSubOffersByOffers();
   };
 
-  async fetchUserLendedOffers(connection: Connection, wallet: PublicKey) {
+  async fetchUserLendedOffers(connection: Connection, wallet: PublicKey): Promise<void> {
     const activeOffersKeys = await getSubOfferKeys(connection, {
       state: SubOfferState.Accepted,
       lender: wallet,
     });
-    if (activeOffersKeys && activeOffersKeys.length) {
+    if (activeOffersKeys && activeOffersKeys.length > 0) {
       const offersData = await getSubOfferMultiple(connection, activeOffersKeys);
 
       const nftPdas = offersData.map(({ account }) => findMetadataPda(account.nftMint));

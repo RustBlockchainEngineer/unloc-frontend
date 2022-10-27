@@ -12,14 +12,14 @@ export const ShowOnHover = ({
   children,
   labelClassName,
   classNames = "",
-}: ShowOnHoverProps) => {
+}: ShowOnHoverProps): JSX.Element => {
   const [hoverState, setHoverState] = useState(false);
 
-  const handleHover = () => {
+  const handleHover = (): void => {
     setHoverState(true);
   };
 
-  const handleLeave = () => {
+  const handleLeave = (): void => {
     setHoverState(false);
   };
 
@@ -28,7 +28,7 @@ export const ShowOnHover = ({
       className={`on-hover ${classNames}`}
       onMouseOver={() => handleHover()}
       onMouseLeave={() => handleLeave()}>
-      <p className={`on-hover__label ${labelClassName ? labelClassName : ""}`}>{label}</p>
+      <p className={`on-hover__label ${labelClassName ?? ""}`}>{label}</p>
       <div className={`on-hover__elements ${hoverState ? "active" : ""}`}>
         <div className="on-hover__elements__wrap">{children}</div>
       </div>

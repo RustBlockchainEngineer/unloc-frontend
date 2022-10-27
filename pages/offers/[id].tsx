@@ -35,12 +35,12 @@ const SingleNftPage: NextPage = observer(() => {
     [subOffers],
   );
   const isYours = useMemo(
-    () => (!!offer && !!wallet ? wallet?.equals(offer.account.borrower) : false),
+    () => (!(offer == null) && !(wallet == null) ? wallet?.equals(offer.account.borrower) : false),
     [wallet, offer],
   );
 
   const LoanOffers = useMemo(() => {
-    if (isLoading || !nftData) return null;
+    if (isLoading || nftData == null) return null;
 
     return subOffers.map((subOffer) => {
       const { account, pubkey } = subOffer;
@@ -61,7 +61,7 @@ const SingleNftPage: NextPage = observer(() => {
   const PrivateTerms = memo(function PrivateTerms() {
     const addNewLoan = useCallback(() => {
       const offerAddress = getQueryParamAsString(router.query.id);
-      if (nftData) {
+      if (nftData != null) {
         store.MyOffers.setActiveNftMint(nftData.mint);
         store.MyOffers.setSanitizedOfferData({
           collateralId: offerAddress,
@@ -106,13 +106,14 @@ const SingleNftPage: NextPage = observer(() => {
       <div className="page my-offers">
         <LayoutTop />
         {error && <div>Not found</div>}
-        {/*{isLoading && <BlobLoader />}*/}
+        {/* {isLoading && <BlobLoader />} */}
         {isLoading && <SkeletonOfferId />}
-        {nftData && <Header nftData={nftData} isYours={isYours} />}
+        {nftData != null && <Header nftData={nftData} isYours={isYours} />}
         <Loans />
       </div>
     </StoreDataAdapter>
   );
 });
 
+// eslint-disable-next-line import/no-default-export
 export default SingleNftPage;

@@ -7,7 +7,7 @@ interface IDurationProgress {
   endUnix: number;
 }
 
-export const DurationProgress = ({ startUnix, endUnix }: IDurationProgress) => {
+export const DurationProgress = ({ startUnix, endUnix }: IDurationProgress): JSX.Element => {
   const time = Math.floor(Date.now() / 1000);
   const maxValue = dayjs.duration((endUnix - startUnix) * 1000).asSeconds();
   const value = dayjs.duration((time - startUnix) * 1000).asSeconds();

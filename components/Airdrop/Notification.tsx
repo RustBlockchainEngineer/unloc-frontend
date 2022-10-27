@@ -1,4 +1,5 @@
 import React from "react";
+
 import { toast, ToastContent, ToastOptions } from "react-toastify";
 
 const options: ToastOptions = {
@@ -11,8 +12,8 @@ const options: ToastOptions = {
   progress: undefined,
 };
 
-const error = (content: ToastContent) => toast.error(content, options);
-const success = (content: ToastContent) => toast.success(content, options);
+const error = (content: ToastContent): string | number => toast.error(content, options);
+const success = (content: ToastContent): string | number => toast.success(content, options);
 
 export function notify({
   message,
@@ -22,12 +23,12 @@ export function notify({
   message: string;
   txid?: string;
   type?: string;
-}) {
-  type == "success"
+}): void {
+  type === "success"
     ? success(
         <div>
           <span>{message}</span>
-          {txid && (
+          {txid != null && (
             <a
               rel="noreferrer"
               target="_blank"

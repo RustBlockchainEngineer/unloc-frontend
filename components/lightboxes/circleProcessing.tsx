@@ -8,7 +8,7 @@ interface ICircleProcessingProps {
 
 export const CircleProcessing = memo(({ classNames }: ICircleProcessingProps) => {
   return (
-    <div className={`circle-loader-lightbox ${classNames ? classNames : ""}`}>
+    <div className={`circle-loader-lightbox ${classNames ?? ""}`}>
       <CircleLoader size="large" />
       <div className={"circle-loader-lightbox__caption"}>Processing Transaction</div>
     </div>

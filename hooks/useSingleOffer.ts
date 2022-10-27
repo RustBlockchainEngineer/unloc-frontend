@@ -30,7 +30,7 @@ export const useSingleOffer = (offerKey: PublicKey | null): UseSingleOfferInterf
 
   const run = useCallback(async (): Promise<void> => {
     try {
-      if (!offerKey) throw Error("Invalid offer address");
+      if (offerKey == null) throw Error("Invalid offer address");
 
       const offerInfo = await Offer.fromAccountAddress(connection, offerKey);
       const metadataPda = findMetadataPda(offerInfo.nftMint);

@@ -13,9 +13,7 @@ export const useAccountChange = (
     _solAmount,
     _usdcAmount,
     _unlocAmount,
-  ): void => {
-    return;
-  },
+  ): void => {},
 ): [() => Promise<void>, () => void] => {
   const store = useContext(StoreContext);
   const [accountChangeEventIds, setAccountChangeEventIds] = useState<number[]>([]);
@@ -25,14 +23,13 @@ export const useAccountChange = (
   const { publicKey } = useWallet();
   const { connection } = useConnection();
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(
     () => callback(solAmount, usdcAmount, unlocAmount),
     [solAmount, usdcAmount, unlocAmount],
   );
 
   const fetchSolBalance = async (): Promise<void> => {
-    if (!publicKey) return;
+    if (publicKey == null) return;
 
     const newSolAmount = await connection.getBalance(publicKey);
     setSolAmount(newSolAmount / 10 ** currencies.SOL.decimals);
@@ -40,7 +37,7 @@ export const useAccountChange = (
   };
 
   const fetchUlocBalance = async (): Promise<void> => {
-    if (!publicKey) return;
+    if (publicKey == null) return;
 
     let newUnlocAmount = 0;
 
@@ -63,7 +60,7 @@ export const useAccountChange = (
   };
 
   const fetchUsdcBalance = async (): Promise<void> => {
-    if (!publicKey) return;
+    if (publicKey == null) return;
 
     let newUsdcAmount = 0;
 
@@ -86,13 +83,16 @@ export const useAccountChange = (
   };
 
   const onAccountChange = async (): Promise<void> => {
-    if (!publicKey) return;
+    if (publicKey == null) return;
 
     await fetchSolBalance();
     await fetchUsdcBalance();
     await fetchUlocBalance();
 
-    const solChangeEventId = connection.onAccountChange(publicKey, () => void fetchSolBalance());
+    const solChangeEventId = connection.onAccountChange(
+      publicKey,
+      async (): Promise<void> => await fetchSolBalance(),
+    );
 
     setAccountChangeEventIds(accountChangeEventIds.concat(solChangeEventId));
 
@@ -105,7 +105,7 @@ export const useAccountChange = (
     for (const account of usdcTokenAccounts) {
       const usdcChangeEventId = connection.onAccountChange(
         account.pubkey,
-        () => void fetchUsdcBalance(),
+        async (): Promise<void> => await fetchUsdcBalance(),
       );
 
       setAccountChangeEventIds(accountChangeEventIds.concat(usdcChangeEventId));
@@ -113,8 +113,8 @@ export const useAccountChange = (
   };
 
   const accountChangeDestructor = (): void => {
-    const promises = accountChangeEventIds.map((changeEventId) =>
-      connection.removeAccountChangeListener(changeEventId),
+    const promises = accountChangeEventIds.map(
+      async (changeEventId) => await connection.removeAccountChangeListener(changeEventId),
     );
 
     void Promise.all(promises);

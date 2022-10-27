@@ -1,21 +1,22 @@
 import { makeAutoObservable } from "mobx";
+
 import { RootStore } from "./Root.store";
 
-type CreateFormInputs = {
+interface CreateFormInputs {
   lockDuration: number;
   uiAmount: string;
-};
+}
 
 const createFormInitialValues = {
   uiAmount: "",
   lockDuration: 0,
 };
 
-type AccountToMerge = {
+interface AccountToMerge {
   index: number;
   lockDuration: number;
   amount: number;
-};
+}
 
 const accountToMergeInitialValues = {
   index: 0,
@@ -33,15 +34,15 @@ export class StakingStore {
     this.rootStore = rootStore;
   }
 
-  setCreateFormInput = (input: keyof CreateFormInputs, value: number | string) => {
+  setCreateFormInput = (input: keyof CreateFormInputs, value: number | string): void => {
     this.createFormInputs = { ...this.createFormInputs, [input]: value };
   };
 
-  resetCreateFormInputs = () => {
+  resetCreateFormInputs = (): void => {
     this.createFormInputs = createFormInitialValues;
   };
 
-  setAccountToMerge = (index: number, lockDuration: number, amount: number) => {
+  setAccountToMerge = (index: number, lockDuration: number, amount: number): void => {
     this.accountToMerge = { index, lockDuration, amount };
   };
 }

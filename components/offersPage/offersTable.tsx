@@ -1,13 +1,14 @@
 import { useContext, useMemo, useState, useCallback, useEffect } from "react";
 
 import { observer } from "mobx-react-lite";
-import { StoreContext } from "@pages/_app";
-import { OffersTableRow } from "./offersTableRow";
 
-import { ITransformedOffer, transformOffersData } from "@utils/spl/transformOffersData";
-import { ILightboxOffer } from "@stores/Lightbox.store";
-import { errorCase } from "@utils/toast-error-handler";
 import { SkeletonTable } from "@components/skeleton/table";
+import { StoreContext } from "@pages/_app";
+import { ILightboxOffer } from "@stores/Lightbox.store";
+import { ITransformedOffer, transformOffersData } from "@utils/spl/transformOffersData";
+import { errorCase } from "@utils/toast-error-handler";
+
+import { OffersTableRow } from "./offersTableRow";
 
 type CompareType = "string" | "number";
 
@@ -41,22 +42,20 @@ export const OffersTable = observer(() => {
   const [compareType, setCompareType] = useState<CompareType>();
 
   useEffect(() => {
-    if (walletKey) {
+    if (walletKey != null) {
       const newList = transformOffersData(pageOfferData, denominator, walletKey);
 
       if (label && compareType) {
         const compare = comparatorFactory(label, compareType);
         newList.sort(compare);
 
-        if (!order) {
-          newList.reverse();
-        }
+        if (!order) newList.reverse();
       }
       updateList(newList);
     }
   }, [pageOfferData, walletKey, denominator]);
 
-  const Sort = (row: EventTarget, type: CompareType = "string") => {
+  const Sort = (row: EventTarget, type: CompareType = "string"): void => {
     const element = row as Element;
 
     const compare = comparatorFactory(element.id, type);
@@ -110,11 +109,11 @@ export const OffersTable = observer(() => {
     });
   }, [list, handleConfirmOffer, inc]);
 
-  return list.length ? (
+  return list.length > 0 ? (
     <>
       <div className="offers-table">
         <div className="offers-table-heading">
-          {/*TODO: map it */}
+          {/* TODO: map it */}
           <div className="row-cell">
             <button id="name" onClick={(e) => Sort(e.target)}>
               Name
@@ -185,7 +184,7 @@ export const OffersTable = observer(() => {
           </button>
         </div>
         <div className="offers-pagination__pages">
-          {[...Array(maxPage)].map((page, index) => (
+          {[...Array(maxPage).keys()].map((page, index) => (
             <button
               key={`${page}-${index}`}
               className={`page ${index + 1 === currentPage ? "active" : ""}`}

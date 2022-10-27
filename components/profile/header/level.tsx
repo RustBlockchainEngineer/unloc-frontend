@@ -1,6 +1,6 @@
 import { useUserScore } from "@hooks/useUserScore";
 
-export const ProfileLevel = () => {
+export const ProfileLevel = (): JSX.Element => {
   const { profile } = useUserScore();
 
   const level = profile.level;

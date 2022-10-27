@@ -1,6 +1,6 @@
 import { Skeleton } from "react-skeleton-generator";
 
-export const SkeletonOfferId = () => {
+export const SkeletonOfferId = (): JSX.Element => {
   return (
     <Skeleton.SkeletonThemeProvider color="#482688">
       <div

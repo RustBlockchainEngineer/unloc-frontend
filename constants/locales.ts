@@ -18,7 +18,7 @@ export const localesFooterCommunity: DynamicKeyStringPair = {
   medium: "https://unlocnft.medium.com/",
 };
 
-//TODO: What was initial idea of constants below? 'cause seems like there are newer used
+// TODO: What was initial idea of constants below? 'cause seems like there are newer used
 const termsAndConditions = "terms & conditions";
 const privacyPolicy = "privacy policy";
 const aboutUs = "about us";

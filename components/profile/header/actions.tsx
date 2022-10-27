@@ -1,18 +1,20 @@
-import { useSendTransaction } from "@hooks/useSendTransaction";
-import { StoreContext } from "@pages/_app";
+import { useContext } from "react";
+
 import { WalletNotConnectedError } from "@solana/wallet-adapter-base";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { WithdrawType } from "@unloc-dev/unloc-sdk-staking";
-import { reallocUserAccount, withdrawTokens } from "@utils/spl/unloc-staking";
 import { observer } from "mobx-react-lite";
-import { useContext } from "react";
+
+import { useSendTransaction } from "@hooks/useSendTransaction";
+import { StoreContext } from "@pages/_app";
+import { reallocUserAccount, withdrawTokens } from "@utils/spl/unloc-staking";
 
 export const StakeActions = observer(() => {
   const { connection } = useConnection();
   const { publicKey: wallet } = useWallet();
   const { Lightbox, StakingStore } = useContext(StoreContext);
   const sendAndConfirm = useSendTransaction();
-  const handleNewStake = () => {
+  const handleNewStake = (): void => {
     Lightbox.setVisible(false);
     // Reset the inputs
     StakingStore.resetCreateFormInputs();
@@ -20,16 +22,16 @@ export const StakeActions = observer(() => {
     Lightbox.setVisible(true);
   };
 
-  const handleClaimRewards = async () => {
-    if (!wallet) throw new WalletNotConnectedError();
+  const handleClaimRewards = async (): Promise<void> => {
+    if (wallet == null) throw new WalletNotConnectedError();
     const tx = await withdrawTokens(connection, wallet, {
       withType: WithdrawType.LiqMining,
       index: 0,
     });
     await sendAndConfirm(tx, "confirmed", true);
   };
-  const handleReallocUserAccount = async () => {
-    if (!wallet) throw new WalletNotConnectedError();
+  const handleReallocUserAccount = async (): Promise<void> => {
+    if (wallet == null) throw new WalletNotConnectedError();
 
     const tx = await reallocUserAccount(wallet);
     await sendAndConfirm(tx, "confirmed", true);

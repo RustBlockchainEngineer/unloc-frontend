@@ -1,12 +1,14 @@
-import { WalletStore } from "./Wallet.store";
-import { OffersStore } from "./Offers.store";
-import { InterfaceStore } from "./Interface.store";
-import { SingleOfferStore } from "./SingleOffer.store";
-import { MyOffersStore } from "./MyOffers.store";
-import { LightboxStore } from "./Lightbox.store";
-import { GlobalStateStore } from "./GlobalState.store";
-import { StakingStore } from "./Staking.store";
 import { ProfileStore } from "@stores/Profile.store";
+
+import { GlobalStateStore } from "./GlobalState.store";
+import { InterfaceStore } from "./Interface.store";
+import { LightboxStore } from "./Lightbox.store";
+import { MyOffersStore } from "./MyOffers.store";
+import { OffersStore } from "./Offers.store";
+import { SingleOfferStore } from "./SingleOffer.store";
+import { StakingStore } from "./Staking.store";
+import { WalletStore } from "./Wallet.store";
+
 export class RootStore {
   Wallet: WalletStore;
   Offers: OffersStore;

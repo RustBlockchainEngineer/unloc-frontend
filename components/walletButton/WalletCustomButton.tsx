@@ -16,6 +16,7 @@ import {
   WalletModalButton,
   WalletIcon,
 } from "@solana/wallet-adapter-react-ui";
+
 import { Button, ButtonProps } from "./Button";
 import { DropdownList } from "./DropdownList";
 
@@ -32,7 +33,7 @@ export const WalletCustomButton = memo(({ children, ...props }: WalletCustomButt
   const base58 = useMemo(() => publicKey?.toBase58(), [publicKey]);
   const content = useMemo(() => {
     if (children) return children;
-    if (!wallet || !base58) return null;
+    if (wallet == null || !base58) return null;
     return base58.slice(0, 4) + ".." + base58.slice(-4);
   }, [children, wallet, base58]);
 
@@ -50,11 +51,11 @@ export const WalletCustomButton = memo(({ children, ...props }: WalletCustomButt
   }, [closeDropdown]);
 
   useEffect((): (() => void) => {
-    const listener = (event: MouseEvent | TouchEvent) => {
+    const listener = (event: MouseEvent | TouchEvent): void => {
       const node = ref.current;
 
       // Do nothing if clicking dropdown or its descendants
-      if (!node || node.contains(event.target as Node)) return;
+      if (node == null || node.contains(event.target as Node)) return;
 
       closeDropdown();
     };
@@ -68,7 +69,7 @@ export const WalletCustomButton = memo(({ children, ...props }: WalletCustomButt
     };
   }, [ref, closeDropdown]);
 
-  if (!wallet)
+  if (wallet == null)
     return (
       <WalletModalButton
         {...{

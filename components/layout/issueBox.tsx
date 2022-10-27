@@ -4,8 +4,6 @@ interface IssueBoxProps {
   textContent: string;
 }
 
-const IssueBox: React.FC<IssueBoxProps> = ({ textContent }: IssueBoxProps) => {
+export const IssueBox: React.FC<IssueBoxProps> = ({ textContent }: IssueBoxProps) => {
   return <div className="issue-box">{textContent}</div>;
 };
-
-export default IssueBox;

@@ -1,12 +1,14 @@
-import { Skeleton } from "react-skeleton-generator";
 import { useContext } from "react";
+
+import { Skeleton } from "react-skeleton-generator";
+
 import { StoreContext } from "@pages/_app";
 
-interface SkeletonRectangle {
+interface ISkeletonRectangle {
   offerType: string;
 }
 
-export const SkeletonRectangle = ({ offerType }: SkeletonRectangle) => {
+export const SkeletonRectangle = ({ offerType }: ISkeletonRectangle): JSX.Element => {
   const { MyOffers } = useContext(StoreContext);
   let count!: number;
   let childClass: string;
@@ -23,7 +25,7 @@ export const SkeletonRectangle = ({ offerType }: SkeletonRectangle) => {
       height: "98px",
       borderRadius: "6px",
     },
-    ["my-offers"]: {
+    "my-offers": {
       width: "49%",
       maxWidth: "626px",
       height: "232px",
@@ -40,11 +42,9 @@ export const SkeletonRectangle = ({ offerType }: SkeletonRectangle) => {
     childClass = "collateral-list-item";
     parentClass = "NFT-lb-collateral-list";
   } else if (offerType === "my-offers") {
-    if (MyOffers.activeCategory === "active") {
-      count = 2;
-    } else {
-      count = 4;
-    }
+    if (MyOffers.activeCategory === "active") count = 2;
+    else count = 4;
+
     parentClass = "list-row";
     childClass = "offer";
   }

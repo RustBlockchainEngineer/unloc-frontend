@@ -2,6 +2,7 @@ import { ReactNode } from "react";
 
 import { Html, Head, Main, NextScript } from "next/document";
 
+// eslint-disable-next-line import/no-default-export
 export default function Document(): ReactNode {
   return (
     <Html>

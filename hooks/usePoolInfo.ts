@@ -17,7 +17,11 @@ const fetchPoolInfo = (connection: Connection) => async () => {
   return await PoolInfo.fromAccountAddress(connection, poolInfoKey);
 };
 
-export const usePoolInfo = () => {
+export const usePoolInfo = (): {
+  isLoading: boolean;
+  isError: Error | undefined;
+  data: PoolInfo | undefined;
+} => {
   const { connection } = useConnection();
   const fetcher = useMemo(() => fetchPoolInfo(connection), [connection]);
 
@@ -31,7 +35,7 @@ export const usePoolInfo = () => {
 
   return {
     data,
-    isLoading: !error && !data,
+    isLoading: error == null && data == null,
     isError: error,
   };
 };

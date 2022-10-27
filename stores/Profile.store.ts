@@ -1,4 +1,5 @@
 import { action, makeAutoObservable } from "mobx";
+
 import { RootStore } from "@stores/Root.store";
 
 export class ProfileStore {

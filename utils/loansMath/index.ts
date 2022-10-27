@@ -15,9 +15,7 @@ export const calculateApr = (
   days: number,
   denominator: number,
 ): number => {
-  if (isNaN(amount) || isNaN(interest) || isNaN(days) || isNaN(denominator)) {
-    return 0;
-  }
+  if (isNaN(amount) || isNaN(interest) || isNaN(days) || isNaN(denominator)) return 0;
 
   return (interest * denominator * 365) / (amount * days);
 };
@@ -37,9 +35,7 @@ export const calculateInterest = (
   days: number,
   denominator: number,
 ): number => {
-  if (isNaN(amount) || isNaN(apr) || isNaN(days) || isNaN(denominator)) {
-    return 0;
-  }
+  if (isNaN(amount) || isNaN(apr) || isNaN(days) || isNaN(denominator)) return 0;
 
   return (amount * apr * days) / (365 * denominator);
 };
@@ -64,9 +60,8 @@ export const calculateRepayValue = (
     Number.isNaN(apr) ||
     Number.isNaN(duration) ||
     Number.isNaN(denominator)
-  ) {
+  )
     return "0";
-  }
 
   const gain = amount * ((apr / 36500) * duration);
   return (amount + gain).toLocaleString("en-us", formatOptions);

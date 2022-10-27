@@ -1,8 +1,17 @@
-import * as web3 from "@solana/web3.js";
-import * as splToken from "@solana/spl-token";
-import { WalletContextState } from "@solana/wallet-adapter-react";
-import { PublicKey } from "@solana/web3.js";
 import { PROGRAM_ADDRESS as MetaplexPid } from "@metaplex-foundation/mpl-token-metadata";
+import {
+  getAssociatedTokenAddress,
+  TOKEN_PROGRAM_ID,
+  ASSOCIATED_TOKEN_PROGRAM_ID,
+  createAssociatedTokenAccountInstruction,
+  getMinimumBalanceForRentExemptMint,
+  MintLayout,
+  createInitializeMintInstruction,
+  createMintToInstruction,
+} from "@solana/spl-token";
+import { WalletContextState } from "@solana/wallet-adapter-react";
+import * as web3 from "@solana/web3.js";
+import { PublicKey } from "@solana/web3.js";
 
 export async function withFindOrInitAssociatedTokenAccount(
   transaction: web3.Transaction,
@@ -12,26 +21,26 @@ export async function withFindOrInitAssociatedTokenAccount(
   payer: web3.PublicKey,
   allowOwnerOffCurve?: boolean,
 ): Promise<web3.PublicKey> {
-  const associatedAddress = await splToken.getAssociatedTokenAddress(
+  const associatedAddress = await getAssociatedTokenAddress(
     mint,
     owner,
     allowOwnerOffCurve,
-    splToken.TOKEN_PROGRAM_ID,
-    splToken.ASSOCIATED_TOKEN_PROGRAM_ID,
+    TOKEN_PROGRAM_ID,
+    ASSOCIATED_TOKEN_PROGRAM_ID,
   );
   const account = await connection.getAccountInfo(associatedAddress);
-  if (!account) {
+  if (account == null)
     transaction.add(
-      splToken.createAssociatedTokenAccountInstruction(
+      createAssociatedTokenAccountInstruction(
         payer,
         associatedAddress,
         owner,
         mint,
-        splToken.TOKEN_PROGRAM_ID,
-        splToken.ASSOCIATED_TOKEN_PROGRAM_ID,
+        TOKEN_PROGRAM_ID,
+        ASSOCIATED_TOKEN_PROGRAM_ID,
       ),
     );
-  }
+
   return associatedAddress;
 }
 
@@ -50,20 +59,19 @@ export const createMintTransaction = async (
   amount = 1,
   freezeAuthority: web3.PublicKey = recipient,
 ): Promise<[web3.PublicKey, web3.Transaction]> => {
-  const mintBalanceNeeded = await splToken.getMinimumBalanceForRentExemptMint(connection);
+  console.log("IN createMintTransaction -----");
+  const mintBalanceNeeded = await getMinimumBalanceForRentExemptMint(connection);
   transaction.add(
     web3.SystemProgram.createAccount({
       fromPubkey: wallet.publicKey!,
       newAccountPubkey: mintId,
       lamports: mintBalanceNeeded,
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      space: splToken.MintLayout.span,
-      programId: splToken.TOKEN_PROGRAM_ID,
+      space: MintLayout.span,
+      programId: TOKEN_PROGRAM_ID,
     }),
   );
-  transaction.add(
-    splToken.createInitializeMintInstruction(mintId, 0, wallet.publicKey!, freezeAuthority),
-  );
+  transaction.add(createInitializeMintInstruction(mintId, 0, wallet.publicKey!, freezeAuthority));
   const walletAta = await withFindOrInitAssociatedTokenAccount(
     transaction,
     connection,
@@ -71,29 +79,29 @@ export const createMintTransaction = async (
     wallet.publicKey!,
     wallet.publicKey!,
   );
-  if (amount > 0) {
-    transaction.add(splToken.createMintToInstruction(mintId, walletAta, wallet.publicKey!, amount));
-  }
+  if (amount > 0)
+    transaction.add(createMintToInstruction(mintId, walletAta, wallet.publicKey!, amount));
+
   return [walletAta, transaction];
 };
 
 export const META_PREFIX = "metadata";
 export const EDITION_PREFIX = "edition";
 
-export const findEditionPda = async (nft_mint: PublicKey) => {
-  return PublicKey.findProgramAddress(
+export const findEditionPda = async (NFT_MINT: PublicKey): Promise<[web3.PublicKey, number]> => {
+  return await PublicKey.findProgramAddress(
     [
       Buffer.from(META_PREFIX),
       new PublicKey(MetaplexPid).toBuffer(),
-      nft_mint.toBuffer(),
+      NFT_MINT.toBuffer(),
       Buffer.from(EDITION_PREFIX),
     ],
     new PublicKey(MetaplexPid),
   );
 };
-export const findNftMetadata = async (nft_mint: PublicKey) => {
-  return PublicKey.findProgramAddress(
-    [Buffer.from(META_PREFIX), new PublicKey(MetaplexPid).toBuffer(), nft_mint.toBuffer()],
+export const findNftMetadata = async (NFT_MINT: PublicKey): Promise<[web3.PublicKey, number]> => {
+  return await PublicKey.findProgramAddress(
+    [Buffer.from(META_PREFIX), new PublicKey(MetaplexPid).toBuffer(), NFT_MINT.toBuffer()],
     new PublicKey(MetaplexPid),
   );
 };

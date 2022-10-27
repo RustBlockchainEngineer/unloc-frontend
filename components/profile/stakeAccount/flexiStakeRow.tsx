@@ -1,5 +1,3 @@
-import { UNLOC_MINT_DECIMALS } from "@constants/currency-constants";
-import { useSendTransaction } from "@hooks/useSendTransaction";
 import { WalletNotConnectedError } from "@solana/wallet-adapter-base";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { Transaction } from "@solana/web3.js";
@@ -9,12 +7,15 @@ import {
   RelockType,
   WithdrawType,
 } from "@unloc-dev/unloc-sdk-staking";
+import BN from "bn.js";
+
+import { UNLOC_MINT_DECIMALS } from "@constants/currency-constants";
+import { useSendTransaction } from "@hooks/useSendTransaction";
 import { amountToUiAmount } from "@utils/bignum";
 import { depositTokens, relockStakingAccount, withdrawTokens } from "@utils/spl/unloc-staking";
 import { errorCase } from "@utils/toast-error-handler";
-import BN from "bn.js";
 
-export const FlexiStakeRow = ({ stakingData }: FlexiStakingAccount) => {
+export const FlexiStakeRow = ({ stakingData }: FlexiStakingAccount): JSX.Element => {
   const { connection } = useConnection();
   const { publicKey: wallet } = useWallet();
   const sendAndConfirm = useSendTransaction();
@@ -22,9 +23,9 @@ export const FlexiStakeRow = ({ stakingData }: FlexiStakingAccount) => {
   const uiAmount = amountToUiAmount(stakingData.initialTokensStaked, UNLOC_MINT_DECIMALS);
   const APY = 0.5;
 
-  const handleWithdraw = async () => {
+  const handleWithdraw = async (): Promise<void> => {
     try {
-      if (!wallet) throw new WalletNotConnectedError();
+      if (wallet == null) throw new WalletNotConnectedError();
       const tx = await withdrawTokens(connection, wallet, {
         withType: WithdrawType.Flexi,
         index: 0,
@@ -36,9 +37,9 @@ export const FlexiStakeRow = ({ stakingData }: FlexiStakingAccount) => {
     }
   };
 
-  const handleRelock = async () => {
+  const handleRelock = async (): Promise<void> => {
     try {
-      if (!wallet) throw new WalletNotConnectedError();
+      if (wallet == null) throw new WalletNotConnectedError();
       const tx = await relockStakingAccount(
         wallet,
         { relockType: RelockType.Flexi, index: 0 },
@@ -50,9 +51,9 @@ export const FlexiStakeRow = ({ stakingData }: FlexiStakingAccount) => {
       errorCase(err);
     }
   };
-  const handleDeposit = async () => {
+  const handleDeposit = async (): Promise<void> => {
     try {
-      if (!wallet) throw new WalletNotConnectedError();
+      if (wallet == null) throw new WalletNotConnectedError();
       const ix = await depositTokens(
         connection,
         wallet,
@@ -80,7 +81,7 @@ export const FlexiStakeRow = ({ stakingData }: FlexiStakingAccount) => {
         <div className="stakerow__title">Staked amount</div>
         <div className="stakerow__amount">
           {uiAmount.toLocaleString("en-us")}
-          <i className={`icon icon--sm icon--currency--UNLOC`} />
+          <i className={"icon icon--sm icon--currency--UNLOC"} />
         </div>
       </div>
       <div className="stakerow__col">

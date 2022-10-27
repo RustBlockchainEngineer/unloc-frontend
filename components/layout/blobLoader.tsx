@@ -6,7 +6,7 @@ interface IBlobLoaderProps {
 
 export const BlobLoader = memo(({ classNames }: IBlobLoaderProps) => {
   return (
-    <div className={`blob-loader ${classNames ? classNames : ""}`}>
+    <div className={`blob-loader ${classNames ?? ""}`}>
       <div className="blobs">
         <div className="blob-center" />
         <div className="blob" />

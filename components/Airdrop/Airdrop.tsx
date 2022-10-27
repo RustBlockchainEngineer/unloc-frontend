@@ -1,25 +1,32 @@
-import React from "react";
-import { useState } from "react";
-import { useConnection, useWallet, WalletContextState } from "@solana/wallet-adapter-react";
-import { Connection, Keypair, PublicKey, Transaction } from "@solana/web3.js";
-import { notify } from "./Notification";
-import { config } from "@constants/config";
-import BN from "bn.js";
-import { createMintTransaction, findEditionPda, findNftMetadata } from "./utils";
+import { useState, FC } from "react";
+
 import {
   createCreateMasterEditionV3Instruction,
   createCreateMetadataAccountV2Instruction,
   createVerifyCollectionInstruction,
 } from "@metaplex-foundation/mpl-token-metadata";
+import { useConnection, useWallet, WalletContextState } from "@solana/wallet-adapter-react";
+import { Connection, Keypair, PublicKey, Transaction } from "@solana/web3.js";
+import BN from "bn.js";
 
-type SimpleMetadata = {
+import { config } from "@constants/config";
+
+import { notify } from "./Notification";
+import { createMintTransaction, findEditionPda, findNftMetadata } from "./utils";
+
+interface SimpleMetadata {
   name: string;
   symbol: string;
   tribe: string;
   uri: string;
   collection: string;
-  collectionPK: Array<number>;
-};
+  collectionPK: number[];
+}
+const collectionPK = [
+  47, 189, 147, 2, 35, 185, 143, 206, 166, 235, 121, 127, 40, 93, 77, 119, 218, 145, 244, 150, 137,
+  160, 216, 101, 52, 63, 167, 94, 29, 247, 100, 9, 6, 218, 165, 102, 171, 1, 147, 54, 252, 194, 104,
+  184, 176, 181, 47, 128, 191, 35, 101, 142, 248, 78, 127, 51, 163, 185, 60, 116, 105, 183, 199, 3,
+];
 const airdropMetadata: SimpleMetadata[] = [
   {
     name: "Solana Donkey Business #22",
@@ -27,12 +34,7 @@ const airdropMetadata: SimpleMetadata[] = [
     tribe: "Solana Donkey Business",
     uri: "https://s3.eu-central-1.amazonaws.com/cdn.unloc.xyz/unloc_devnet/json/7yQGqnCk7hHb4YDuiirr2dVhJ6TP1BbFGRei6353WXZU.json",
     collection: "TkpSRsB8yB2qRETXLuPxuZ6Fkg2vuJnmfsQiJLfVpmG",
-    collectionPK: [
-      47, 189, 147, 2, 35, 185, 143, 206, 166, 235, 121, 127, 40, 93, 77, 119, 218, 145, 244, 150,
-      137, 160, 216, 101, 52, 63, 167, 94, 29, 247, 100, 9, 6, 218, 165, 102, 171, 1, 147, 54, 252,
-      194, 104, 184, 176, 181, 47, 128, 191, 35, 101, 142, 248, 78, 127, 51, 163, 185, 60, 116, 105,
-      183, 199, 3,
-    ],
+    collectionPK,
   },
   {
     name: "Solana Donkey Business 3 #18",
@@ -40,12 +42,7 @@ const airdropMetadata: SimpleMetadata[] = [
     tribe: "Solana Donkey Business",
     uri: "https://cdn-unloc-devnet.s3.eu-central-1.amazonaws.com/29Mkr5AY69pRtAfEqgjWHxQ85tWWiPgiHaX6YLF3iL73.json",
     collection: "TkpSRsB8yB2qRETXLuPxuZ6Fkg2vuJnmfsQiJLfVpmG",
-    collectionPK: [
-      47, 189, 147, 2, 35, 185, 143, 206, 166, 235, 121, 127, 40, 93, 77, 119, 218, 145, 244, 150,
-      137, 160, 216, 101, 52, 63, 167, 94, 29, 247, 100, 9, 6, 218, 165, 102, 171, 1, 147, 54, 252,
-      194, 104, 184, 176, 181, 47, 128, 191, 35, 101, 142, 248, 78, 127, 51, 163, 185, 60, 116, 105,
-      183, 199, 3,
-    ],
+    collectionPK,
   },
   {
     name: "Solana Donkey Business 3 #29",
@@ -53,12 +50,7 @@ const airdropMetadata: SimpleMetadata[] = [
     tribe: "Solana Donkey Business",
     uri: "https://cdn-unloc-devnet.s3.eu-central-1.amazonaws.com/2sNX7ridj3ywYX77MvEAWbpHhkM6XhQCrTedJXqKAM9c.png",
     collection: "TkpSRsB8yB2qRETXLuPxuZ6Fkg2vuJnmfsQiJLfVpmG",
-    collectionPK: [
-      47, 189, 147, 2, 35, 185, 143, 206, 166, 235, 121, 127, 40, 93, 77, 119, 218, 145, 244, 150,
-      137, 160, 216, 101, 52, 63, 167, 94, 29, 247, 100, 9, 6, 218, 165, 102, 171, 1, 147, 54, 252,
-      194, 104, 184, 176, 181, 47, 128, 191, 35, 101, 142, 248, 78, 127, 51, 163, 185, 60, 116, 105,
-      183, 199, 3,
-    ],
+    collectionPK,
   },
   {
     name: "Solana Donkey Business 3 #9",
@@ -66,12 +58,7 @@ const airdropMetadata: SimpleMetadata[] = [
     tribe: "Solana Donkey Business",
     uri: "https://cdn-unloc-devnet.s3.eu-central-1.amazonaws.com/2wPc3MK2CEJjZB9uveyL1acLHZLAcoww7wiaS6L6iDBH.json",
     collection: "TkpSRsB8yB2qRETXLuPxuZ6Fkg2vuJnmfsQiJLfVpmG",
-    collectionPK: [
-      47, 189, 147, 2, 35, 185, 143, 206, 166, 235, 121, 127, 40, 93, 77, 119, 218, 145, 244, 150,
-      137, 160, 216, 101, 52, 63, 167, 94, 29, 247, 100, 9, 6, 218, 165, 102, 171, 1, 147, 54, 252,
-      194, 104, 184, 176, 181, 47, 128, 191, 35, 101, 142, 248, 78, 127, 51, 163, 185, 60, 116, 105,
-      183, 199, 3,
-    ],
+    collectionPK,
   },
   {
     name: "Solana Donkey Business 3 #7",
@@ -79,16 +66,11 @@ const airdropMetadata: SimpleMetadata[] = [
     tribe: "Solana Donkey Business",
     uri: "https://cdn-unloc-devnet.s3.eu-central-1.amazonaws.com/47UrobeLdcvgu2iUmnBK5XL1tcy8dc7yA4pRsqLYbVit.json",
     collection: "TkpSRsB8yB2qRETXLuPxuZ6Fkg2vuJnmfsQiJLfVpmG",
-    collectionPK: [
-      47, 189, 147, 2, 35, 185, 143, 206, 166, 235, 121, 127, 40, 93, 77, 119, 218, 145, 244, 150,
-      137, 160, 216, 101, 52, 63, 167, 94, 29, 247, 100, 9, 6, 218, 165, 102, 171, 1, 147, 54, 252,
-      194, 104, 184, 176, 181, 47, 128, 191, 35, 101, 142, 248, 78, 127, 51, 163, 185, 60, 116, 105,
-      183, 199, 3,
-    ],
+    collectionPK,
   },
 ];
 
-export const Airdrop = () => {
+export const Airdrop: FC = () => {
   const { connection } = useConnection();
   const wallet = useWallet();
   const [loadingAirdrop, setLoadingAirdrop] = useState(false);
@@ -203,9 +185,9 @@ export const Airdrop = () => {
     connection: Connection,
     wallet: WalletContextState,
     count: number,
-  ): Promise<[string, PublicKey][]> => {
-    const txids: [string, PublicKey][] = [];
-    for (let i = 0; i < count; i++) {
+  ): Promise<Array<[string, PublicKey]>> => {
+    const txids: Array<[string, PublicKey]> = [];
+    for (let i = 0; i < count; i++)
       try {
         const [txid, mintId] = await airdropNft(connection, wallet, i);
         notify({ message: `Mint successful ${i + 1}/${count}`, txid });
@@ -214,8 +196,21 @@ export const Airdrop = () => {
         console.log(e);
         notify({ message: `Mint failed ${i + 1}/${count}` });
       }
-    }
+
     return txids;
+  };
+
+  const requestAirdrop = async (): Promise<void> => {
+    if (!wallet.connected) return;
+    try {
+      setLoadingAirdrop(true);
+      await airdropNfts(connection, wallet, 1);
+    } catch (e) {
+      console.log(e);
+      notify({ message: "Airdrop failed", type: "error" });
+    } finally {
+      setLoadingAirdrop(false);
+    }
   };
 
   return (
@@ -224,18 +219,7 @@ export const Airdrop = () => {
         <button
           className="btn btn--md btn--bordered"
           disabled={!wallet.connected}
-          onClick={async () => {
-            if (!wallet.connected) return;
-            try {
-              setLoadingAirdrop(true);
-              await airdropNfts(connection, wallet, 1);
-            } catch (e) {
-              console.log(e);
-              notify({ message: "Airdrop failed", type: "error" });
-            } finally {
-              setLoadingAirdrop(false);
-            }
-          }}>
+          onClick={requestAirdrop}>
           {loadingAirdrop ? "Running" : "Airdrop"}
         </button>
       )}

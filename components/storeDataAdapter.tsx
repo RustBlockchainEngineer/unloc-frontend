@@ -1,16 +1,16 @@
 import { useContext, useEffect, ReactNode } from "react";
+
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
-import { observer } from "mobx-react-lite";
 import axios from "axios";
+import { observer } from "mobx-react-lite";
 
-import { StoreContext } from "@pages/_app";
-
-import { errorCase } from "@utils/toast-error-handler";
 import { useAccountChange } from "@hooks/useAccountChange";
+import { StoreContext } from "@pages/_app";
+import { errorCase } from "@utils/toast-error-handler";
 
-type Props = {
+interface Props {
   children?: ReactNode;
-};
+}
 
 export const StoreDataAdapter = observer(({ children }: Props) => {
   const { wallet, disconnect, publicKey } = useWallet();
@@ -21,16 +21,16 @@ export const StoreDataAdapter = observer(({ children }: Props) => {
 
   useEffect(() => {
     const setWallet = async (): Promise<void> => {
-      if (wallet && publicKey) {
+      if (wallet != null && publicKey != null) {
         const response = await axios.post("/api/auth", { user: publicKey.toBase58() });
 
-        if (!(response && response.data)) return;
+        if (!response?.data) return;
 
         const { isWhitelisted } = response.data;
 
         if (!isWhitelisted) {
           errorCase("You are not whitelisted!");
-          disconnect();
+          void disconnect();
           return;
         }
 
@@ -43,7 +43,7 @@ export const StoreDataAdapter = observer(({ children }: Props) => {
       }
     };
 
-    setWallet();
+    void setWallet();
 
     return accountChangeDestructor;
   }, [wallet, publicKey, connection]);

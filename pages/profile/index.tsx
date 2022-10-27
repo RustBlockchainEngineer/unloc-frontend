@@ -14,7 +14,7 @@ const Profile: NextPage = observer(() => {
   const store = useContext(StoreContext);
   const { isLoading, switchLoading } = store.ProfileStore;
   useEffect(() => {
-    //TODO: temporary solution for loading simulation
+    // TODO: temporary solution for loading simulation
     setTimeout(() => switchLoading(false), 2000);
 
     return () => switchLoading(true);
@@ -39,4 +39,5 @@ const Profile: NextPage = observer(() => {
   );
 });
 
+// eslint-disable-next-line import/no-default-export
 export default Profile;

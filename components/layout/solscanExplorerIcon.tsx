@@ -1,4 +1,5 @@
 import React from "react";
+
 import { config } from "@constants/config";
 
 interface SolscanExplorerIconProps {
@@ -12,7 +13,7 @@ export const SolscanExplorerIcon: React.FC<SolscanExplorerIconProps> = ({
   address,
   classNames,
 }: SolscanExplorerIconProps) => {
-  const handleOnClick = () => {
+  const handleOnClick = (): void => {
     window
       .open(
         `https://solscan.io/${type}/${address}?cluster=${config.devnet ? "devnet" : "mainnet"}`,
@@ -23,7 +24,7 @@ export const SolscanExplorerIcon: React.FC<SolscanExplorerIconProps> = ({
 
   return (
     <i
-      className={`icon icon--sm icon--eye icon--interactive ${classNames}`}
+      className={`icon icon--sm icon--eye icon--interactive ${classNames ?? ""}`}
       onClick={() => handleOnClick()}
     />
   );

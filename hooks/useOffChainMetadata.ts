@@ -17,7 +17,7 @@ export const useOffChainMetadata = (
 
   return {
     json: data as IArweaveMetadata,
-    isLoading: !error && !data,
+    isLoading: error == null && data == null,
     isError: error,
   };
 };

@@ -1,22 +1,24 @@
 import { useContext, useMemo } from "react";
 
-import { StoreContext } from "@pages/_app";
-import Image from "next/image";
-import { compressAddress } from "@utils/stringUtils/compressAdress";
-import { BlobLoader } from "@components/layout/blobLoader";
+import { Metadata } from "@metaplex-foundation/mpl-token-metadata";
 import { observer } from "mobx-react-lite";
-import { useOffChainMetadata } from "@hooks/useOffChainMetadata";
+import Image from "next/image";
 
-interface LoanDetails {
+import { BlobLoader } from "@components/layout/blobLoader";
+import { useOffChainMetadata } from "@hooks/useOffChainMetadata";
+import { StoreContext } from "@pages/_app";
+import { compressAddress } from "@utils/stringUtils/compressAdress";
+
+interface ILoanDetails {
   isDetails: boolean;
 }
 
-export const LoanDetails = observer(({ isDetails }: LoanDetails) => {
+export const LoanDetails = observer(({ isDetails }: ILoanDetails) => {
   const store = useContext(StoreContext);
   const {
     sanitized: { collateralId, metadata },
   } = store.MyOffers;
-  const { isLoading, json } = useOffChainMetadata(metadata.data.uri);
+  const { isLoading, json } = useOffChainMetadata((metadata as Metadata).data.uri);
 
   const attributes = useMemo(() => {
     if (!isLoading) return null;
@@ -46,15 +48,15 @@ export const LoanDetails = observer(({ isDetails }: LoanDetails) => {
           </div>
           <div className="info">
             <span className="label">Mint address</span>
-            <span>{compressAddress(4, metadata.mint)}</span>
+            <span>{compressAddress(4, (metadata as Metadata).mint)}</span>
           </div>
           <div className="info">
             <span className="label">Collection</span>
-            <span>{metadata.data.name}</span>
+            <span>{(metadata as Metadata).data.name}</span>
           </div>
           <div className="info">
             <span className="label">Artist royalties</span>
-            <span>{metadata.data.sellerFeeBasisPoints * 0.01}%</span>
+            <span>{(metadata as Metadata).data.sellerFeeBasisPoints * 0.01}%</span>
           </div>
         </div>
       </div>
