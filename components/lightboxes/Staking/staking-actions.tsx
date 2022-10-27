@@ -103,7 +103,9 @@ export const StakingActions = ({ mode }: StakingActionsProps): JSX.Element => {
 
   const { index, lockDuration, amount } = StakingStore.accountToMerge;
   const lockedAccounts = accounts?.info?.stakingAccounts.locked.lockedStakingsData;
-  const restOfLockedAccounts = lockedAccounts?.filter((acc) => acc.index !== index && acc.isActive);
+  const restOfLockedAccounts = lockedAccounts?.filter(
+    (acc) => acc.index !== index && acc.indexInUse,
+  );
 
   const actionButton = (): JSX.Element => {
     if (mode === "merge")

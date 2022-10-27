@@ -3,7 +3,7 @@ import { ChangeEvent, FormEvent, useState } from "react";
 import { WalletNotConnectedError } from "@solana/wallet-adapter-base";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { Transaction } from "@solana/web3.js";
-import { PoolInfo } from "@unloc-dev/unloc-sdk-staking";
+import { StakingPoolInfo } from "@unloc-dev/unloc-sdk-staking";
 import { observer } from "mobx-react-lite";
 import Slider from "rc-slider";
 
@@ -121,7 +121,11 @@ export const CreateStake = observer(() => {
 
       // Set the score contribution that this stake would have
       const amount = uiAmountToAmount(uiAmount, UNLOC_MINT_DECIMALS);
-      const score = getUnlocScoreContributionForLightbox(amount, lockDuration, data as PoolInfo);
+      const score = getUnlocScoreContributionForLightbox(
+        amount,
+        lockDuration,
+        data as StakingPoolInfo,
+      );
       setUserScoreContribution(score.toString());
     }
   };
@@ -135,7 +139,11 @@ export const CreateStake = observer(() => {
 
     // Set the score contribution that this stake would have
     const amount = uiAmountToAmount(uiAmount, UNLOC_MINT_DECIMALS);
-    const score = getUnlocScoreContributionForLightbox(amount, durationInDays, data as PoolInfo);
+    const score = getUnlocScoreContributionForLightbox(
+      amount,
+      durationInDays,
+      data as StakingPoolInfo,
+    );
     setUserScoreContribution(score.toString());
   };
 

@@ -5,7 +5,7 @@ import {
   CompoundingFrequency,
   LockedStakingsData,
   NumDenPair,
-  PoolInfo,
+  StakingPoolInfo,
   ScoreMultiplier,
   StakingData,
   UserStakingsInfo,
@@ -18,7 +18,7 @@ import { getDurationForContractData } from "@utils/timeUtils/timeUtils";
 
 import { convertDayDurationToEnum, lockDurationEnumToSeconds } from "./unloc-staking";
 
-export const getUnlocScore = (poolInfo: PoolInfo, user: UserStakingsInfo): BN => {
+export const getUnlocScore = (poolInfo: StakingPoolInfo, user: UserStakingsInfo): BN => {
   const { liqMinRwds, locked } = user.stakingAccounts;
   // Flexi always has a score of 0
 
@@ -27,7 +27,7 @@ export const getUnlocScore = (poolInfo: PoolInfo, user: UserStakingsInfo): BN =>
 
   // For locked accounts, we need to sum the score of each active staking
   const scoreLocked = locked.lockedStakingsData.reduce((sum, account) => {
-    return account.isActive
+    return account.indexInUse
       ? sum.add(getUnlocScoreContribution(account.stakingData, poolInfo))
       : sum;
   }, new BN(0));
@@ -35,7 +35,10 @@ export const getUnlocScore = (poolInfo: PoolInfo, user: UserStakingsInfo): BN =>
   return scoreLiqMin.add(scoreLocked);
 };
 
-export const getUnlocScoreContribution = (stakingAccount: StakingData, poolInfo: PoolInfo): BN => {
+export const getUnlocScoreContribution = (
+  stakingAccount: StakingData,
+  poolInfo: StakingPoolInfo,
+): BN => {
   const { accountLastUpdatedAt, initialTokensStaked, lockDuration } = stakingAccount;
 
   const remainingLockDuration = remainingLockDurationSeconds(accountLastUpdatedAt, lockDuration);
@@ -56,7 +59,7 @@ export const getUnlocScoreContribution = (stakingAccount: StakingData, poolInfo:
 export const getUnlocScoreContributionForLightbox = (
   initialTokensStaked: bignum,
   lockDurationInDays: number,
-  poolInfo: PoolInfo,
+  poolInfo: StakingPoolInfo,
 ): BN => {
   const durationEnum = convertDayDurationToEnum(lockDurationInDays);
   const lockDurationInSeconds = getDurationForContractData(lockDurationInDays, "days");
@@ -77,7 +80,7 @@ export const getUnlocScoreContributionForLightbox = (
 };
 
 export const getUserLevel = (
-  poolInfo: PoolInfo,
+  poolInfo: StakingPoolInfo,
   score: bignum,
 ): { level: number; feeReductionBasisPoints: number } => {
   const { level0, level1, level2, level3, level4, level5 } = poolInfo.profileLevelMultiplier;
@@ -136,7 +139,7 @@ const getScoreMultiplier = (
     return multipliers.rldm10;
   else return { numerator: 0, denominator: 1 };
 };
-export const getEarnedSoFar = (stakingData: StakingData, stakingPoolInfo: PoolInfo): BN => {
+export const getEarnedSoFar = (stakingData: StakingData, stakingPoolInfo: StakingPoolInfo): BN => {
   return getTotalTokens(stakingData, stakingPoolInfo).sub(
     new BN(stakingData.initialTokensStaked.toString()),
   );
@@ -144,7 +147,7 @@ export const getEarnedSoFar = (stakingData: StakingData, stakingPoolInfo: PoolIn
 
 export const getAllEarnedSoFar = (
   stakingsData: LockedStakingsData,
-  stakingPoolInfo: PoolInfo,
+  stakingPoolInfo: StakingPoolInfo,
 ): BN => {
   let result = new BN(0);
   for (const lockedStakingAccount of stakingsData.lockedStakingsData)
@@ -152,7 +155,7 @@ export const getAllEarnedSoFar = (
 
   return result;
 };
-export const getTotalTokens = (stakingData: StakingData, stakingPoolInfo: PoolInfo): BN => {
+export const getTotalTokens = (stakingData: StakingData, stakingPoolInfo: StakingPoolInfo): BN => {
   let totalTokens = new BN(1);
   const timeElapsed = timeElapsedSeconds(stakingData.accountLastUpdatedAt).toNumber();
   const lockDurationSeconds = (stakingData.lockDuration as number) * 60 * 60 * 24 * 30;
@@ -245,7 +248,7 @@ const getTokensMultiplier = (numDenPair: NumDenPair, numCompundings: number): BN
 };
 const getPartialTokensContribution = (
   stakingData: StakingData,
-  stakingPoolInfo: PoolInfo,
+  stakingPoolInfo: StakingPoolInfo,
   totalTokens: BN,
   levelMonths: number,
   stepPeriodMnths: number,
