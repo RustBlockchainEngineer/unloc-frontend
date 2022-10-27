@@ -2,12 +2,17 @@ import { useCallback, useContext } from "react";
 
 import { Metadata } from "@metaplex-foundation/mpl-token-metadata";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
-import { PublicKey } from "@solana/web3.js";
+import { Keypair, PublicKey } from "@solana/web3.js";
 
 import { useSendTransaction } from "@hooks/useSendTransaction";
 import { StoreContext } from "@pages/_app";
 import { ILightboxOffer, IsubOfferData } from "@stores/Lightbox.store";
-import { cancelOffer, cancelSubOffer, claimCollateral, repayLoan } from "@utils/spl/unloc-loan";
+import {
+  claimLoanCollateral,
+  deleteLoanOffer,
+  deleteLoanSubOffer,
+  repayLoan,
+} from "@utils/spl/unloc-loan";
 import { errorCase, successCase } from "@utils/toast-error-handler";
 
 interface Sanitized {
@@ -76,8 +81,9 @@ export const OfferActionsHook = (): IOfferActionsHook => {
 
       try {
         if (wallet == null) throw new Error("Wallet not connected");
-
-        const tx = cancelOffer(wallet, nftMint);
+        const signers: Keypair[] = [];
+        const tx = await deleteLoanOffer(connection, wallet, nftMint, signers);
+        tx.sign(...signers);
         await sendAndConfirm(tx);
         successCase(`NFT ${name} returned to the wallet`, name);
         store.Lightbox.setCanClose(true);
@@ -111,8 +117,9 @@ export const OfferActionsHook = (): IOfferActionsHook => {
 
       try {
         if (wallet == null) throw new Error("Wallet not connected");
-
-        const tx = await claimCollateral(connection, wallet, subOffer);
+        const signers: Keypair[] = [];
+        const tx = await claimLoanCollateral(connection, wallet, subOffer, signers);
+        tx.sign(...signers);
         await sendAndConfirm(tx);
         successCase("NFT Claimed");
       } catch (e) {
@@ -131,7 +138,7 @@ export const OfferActionsHook = (): IOfferActionsHook => {
       try {
         if (wallet == null) throw new Error("Wallet not connected");
 
-        const tx = await cancelSubOffer(connection, wallet, subOffer);
+        const tx = await deleteLoanSubOffer(connection, wallet, subOffer);
         await sendAndConfirm(tx);
         successCase("Offer canceled");
       } catch (e) {
@@ -166,8 +173,10 @@ export const OfferActionsHook = (): IOfferActionsHook => {
       try {
         if (wallet == null) throw new Error("Wallet not connected");
         const subOffer = new PublicKey(subOfferKey);
-        const tx = await repayLoan(connection, wallet, subOffer);
-        await sendAndConfirm(tx);
+        const signers: Keypair[] = [];
+        const tx = await repayLoan(connection, wallet, subOffer, signers);
+        tx?.sign(...signers);
+        await sendAndConfirm(tx!);
         successCase("Loan Repayed, NFT is back in your wallet");
       } catch (e) {
         errorCase(e);

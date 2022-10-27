@@ -1,413 +1,503 @@
-/// //////////////////////
-// Transaction helpers //
-/// //////////////////////
-
+import { PROGRAM_ID as TOKEN_META_PID } from "@metaplex-foundation/mpl-token-metadata";
+import { NATIVE_MINT } from "@solana/spl-token";
 import {
-  getAssociatedTokenAddressSync,
-  getAccount,
-  TokenAccountNotFoundError,
-  TokenInvalidAccountOwnerError,
-  createAssociatedTokenAccountInstruction,
-  NATIVE_MINT,
-} from "@solana/spl-token";
-import { Connection, PublicKey, Transaction } from "@solana/web3.js";
+  Connection,
+  Keypair,
+  PublicKey,
+  SYSVAR_CLOCK_PUBKEY,
+  Transaction,
+  TransactionInstruction,
+} from "@solana/web3.js";
 import {
   createAcceptOfferInstruction,
-  createCancelOfferInstruction,
-  createCancelSubOfferInstruction,
   createClaimCollateralInstruction,
+  createCreateOfferInstruction,
+  createCreateSubOfferInstruction,
+  createDeleteOfferInstruction,
+  createDeleteSubOfferInstruction,
   createRepayLoanInstruction,
-  createSetOfferInstruction,
-  createSetSubOfferInstruction,
+  createUpdateSubOfferInstruction,
   GlobalState,
   Offer,
+  PROGRAM_ID,
   SubOffer,
-} from "@unloc-dev/unloc-loan-solita";
+} from "@unloc-dev/unloc-sdk-loan";
 import BN from "bn.js";
 
 import {
-  CHAINLINK_PROGRAMS,
-  DEFAULT_PROGRAMS,
-  GLOBAL_STATE_TAG,
-  METADATA,
-  NFT_LOAN_PID,
-  OFFER_TAG,
-  SUB_OFFER_TAG,
-  TREASURY_VAULT_TAG,
-} from "@constants/config";
-import { currencies, currencyMints } from "@constants/currency";
-import { getDurationForContractData } from "@utils/timeUtils/timeUtils";
+  addTokenAccountInstruction,
+  getEditionKey,
+  getNftMetadataKey,
+  getWalletTokenAccount,
+} from "./common";
+import { BPF_LOADER_UPGRADEABLE_PROGRAM_ID, WSOL_MINT } from "./unloc-constants";
+import { getStakingPoolKey, getUserScoreKey, STAKING_PID } from "./unloc-staking";
 
-// Borrower actions
-export const createOffer = (wallet: PublicKey, nftMint: PublicKey): Transaction => {
-  const userVault = getAssociatedTokenAddressSync(nftMint, wallet);
-  const nftMetadata = PublicKey.findProgramAddressSync(
-    [Buffer.from("metadata"), METADATA.toBuffer(), nftMint.toBuffer()],
-    METADATA,
-  )[0];
-  const edition = PublicKey.findProgramAddressSync(
-    [Buffer.from("metadata"), METADATA.toBuffer(), nftMint.toBuffer(), Buffer.from("edition")],
-    METADATA,
-  )[0];
-  const offer = PublicKey.findProgramAddressSync(
-    [OFFER_TAG, wallet.toBuffer(), nftMint.toBuffer()],
-    NFT_LOAN_PID,
-  )[0];
+/// ////////////
+// CONSTANTS //
+/// ////////////
+export const LOAN_PID: PublicKey = PROGRAM_ID;
 
-  const ix = createSetOfferInstruction(
-    {
-      borrower: wallet,
-      nftMint,
-      payer: wallet,
-      nftMetadata,
-      edition,
-      userVault,
-      offer,
-      ...DEFAULT_PROGRAMS,
-    },
-    NFT_LOAN_PID,
-  );
+export const GLOBAL_STATE_TAG = Buffer.from("GLOBAL_STATE_SEED");
+export const REWARD_VAULT_TAG = Buffer.from("REWARD_VAULT_SEED");
+export const OFFER_TAG = Buffer.from("OFFER_SEED");
+export const SUB_OFFER_TAG = Buffer.from("SUB_OFFER_SEED");
+export const NFT_VAULT_TAG = Buffer.from("NFT_VAULT_SEED");
+export const OFFER_VAULT_TAG = Buffer.from("OFFER_VAULT_SEED");
+export const TREASURY_VAULT_TAG = Buffer.from("TREASURY_VAULT_SEED");
 
-  return new Transaction().add(ix);
+export const META_PREFIX = Buffer.from("metadata");
+export const EDITION_PREFIX = Buffer.from("edition");
+
+export const SUB_OFFER_COUNT_PER_LEVEL = 5;
+export const DEFULT_SUB_OFFER_COUNT = 3;
+export const PRICE_DECIMALS_AMP = 100_000_000;
+export const SHARE_PRECISION = 1000_000_000_000;
+export const DIFF_SOL_USDC_DECIMALS = 1000;
+export const UNIX_DAY = 86400;
+export const DEFAULT_STAKE_DURATION = 5184000;
+
+/// //////////////
+// PDA helpers //
+/// //////////////
+export const getLoanProgramDataKey = (programId: PublicKey = LOAN_PID) => {
+  return PublicKey.findProgramAddressSync(
+    [programId.toBytes()],
+    BPF_LOADER_UPGRADEABLE_PROGRAM_ID,
+  )[0];
 };
-
-export const cancelOffer = (wallet: PublicKey, nftMint: PublicKey): Transaction => {
-  const [offer] = PublicKey.findProgramAddressSync(
-    [OFFER_TAG, wallet.toBuffer(), nftMint.toBuffer()],
-    NFT_LOAN_PID,
-  );
-  const userVault = getAssociatedTokenAddressSync(nftMint, wallet);
-
-  const [edition] = PublicKey.findProgramAddressSync(
-    [Buffer.from("metadata"), METADATA.toBuffer(), nftMint.toBuffer(), Buffer.from("edition")],
-    METADATA,
-  );
-
-  const ix = createCancelOfferInstruction(
-    {
-      borrower: wallet,
-      nftMint,
-      offer,
-      userVault,
-      edition,
-      ...DEFAULT_PROGRAMS,
-    },
-    NFT_LOAN_PID,
-  );
-
-  return new Transaction().add(ix);
+export const getLoanGlobalStateKey = (programId: PublicKey = LOAN_PID) => {
+  return PublicKey.findProgramAddressSync([GLOBAL_STATE_TAG], programId)[0];
 };
-
-export const createSubOffer = async (
-  connection: Connection,
-  wallet: PublicKey,
+export const getOfferKey = (
+  borrower: PublicKey,
   nftMint: PublicKey,
-  currency: string,
-  aprNumerator: number,
-  durationInDays: number,
-  uiAmount: number,
-): Promise<Transaction> => {
-  const [globalState] = PublicKey.findProgramAddressSync([GLOBAL_STATE_TAG], NFT_LOAN_PID);
-  const globalStateInfo = await GlobalState.fromAccountAddress(connection, globalState);
-  const [offer] = PublicKey.findProgramAddressSync(
-    [OFFER_TAG, wallet.toBuffer(), nftMint.toBuffer()],
-    NFT_LOAN_PID,
+  programId: PublicKey = LOAN_PID,
+) => {
+  return PublicKey.findProgramAddressSync(
+    [OFFER_TAG, borrower.toBuffer(), nftMint.toBuffer()],
+    programId,
+  )[0];
+};
+export const getSubOfferKey = (
+  offer: PublicKey,
+  subOfferNumber: BN,
+  programId: PublicKey = LOAN_PID,
+) => {
+  return PublicKey.findProgramAddressSync(
+    [SUB_OFFER_TAG, offer.toBuffer(), subOfferNumber.toArrayLike(Buffer, "be", 8)],
+    programId,
+  )[0];
+};
+export const getTreasuryVaultKey = (
+  offerMint: PublicKey,
+  treasuryWallet: PublicKey,
+  programId: PublicKey = LOAN_PID,
+) => {
+  return PublicKey.findProgramAddressSync(
+    [TREASURY_VAULT_TAG, offerMint.toBuffer(), treasuryWallet.toBuffer()],
+    programId,
+  )[0];
+};
+/// //////////////////////
+// Instruction helpers //
+/// //////////////////////
+export const createLoanOffer = async (
+  connection: Connection,
+  borrower: PublicKey,
+  nftMint: PublicKey,
+  programId = LOAN_PID,
+) => {
+  const borrowerNftVault: PublicKey = await getWalletTokenAccount(connection, borrower, nftMint);
+  const offer = getOfferKey(borrower, nftMint, programId);
+  const nftMetadata = getNftMetadataKey(nftMint);
+  const edition = getEditionKey(nftMint);
+  const metadataProgram = TOKEN_META_PID;
+  const instructions: TransactionInstruction[] = [];
+  instructions.push(
+    createCreateOfferInstruction(
+      {
+        borrower,
+        payer: borrower,
+        offer,
+        nftMint,
+        nftMetadata,
+        userVault: borrowerNftVault,
+        edition,
+        metadataProgram,
+        clock: SYSVAR_CLOCK_PUBKEY,
+      },
+      programId,
+    ),
   );
-  const offerInfo = await Offer.fromAccountAddress(connection, offer);
-  const subOfferCount = new BN(offerInfo.subOfferCount);
-  const [subOffer] = PublicKey.findProgramAddressSync(
-    [SUB_OFFER_TAG, offer.toBuffer(), subOfferCount.toArrayLike(Buffer, "be", 8)],
-    NFT_LOAN_PID,
-  );
-  const offerMint = new PublicKey(currencies[currency].mint);
-  const [treasuryVault] = PublicKey.findProgramAddressSync(
-    [TREASURY_VAULT_TAG, offerMint.toBuffer(), globalStateInfo.treasuryWallet.toBuffer()],
-    NFT_LOAN_PID,
-  );
-  const decimals = currencies[currency].decimals;
-  const offerAmount = new BN(uiAmount).mul(new BN(10).pow(new BN(decimals)));
 
-  const ix = createSetSubOfferInstruction(
-    {
-      borrower: wallet,
-      payer: wallet,
-      globalState,
-      offerMint,
-      offer,
-      subOffer,
-      treasuryVault,
-      treasuryWallet: globalStateInfo.treasuryWallet,
-      ...DEFAULT_PROGRAMS,
-    },
-    {
-      offerAmount,
-      aprNumerator,
-      loanDuration: getDurationForContractData(durationInDays, "days"),
-      subOfferNumber: subOfferCount,
-    },
-    NFT_LOAN_PID,
-  );
-
-  return new Transaction().add(ix);
+  return new Transaction().add(...instructions);
 };
 
-export const updateSubOffer = async (
+export const deleteLoanOffer = async (
   connection: Connection,
-  wallet: PublicKey,
-  subOffer: PublicKey,
-  aprNumerator: number,
-  duration: number,
-  amount: number,
-): Promise<Transaction> => {
-  const [globalState] = PublicKey.findProgramAddressSync([GLOBAL_STATE_TAG], NFT_LOAN_PID);
-  const globalStateInfo = await GlobalState.fromAccountAddress(connection, globalState);
-  const subOfferInfo = await SubOffer.fromAccountAddress(connection, subOffer);
+  borrower: PublicKey,
+  nftMint: PublicKey,
+  signers: Keypair[] = [],
+  programId = LOAN_PID,
+) => {
+  const instructions: TransactionInstruction[] = [];
+  let borrowerNftVault: PublicKey = await getWalletTokenAccount(connection, borrower, nftMint);
+  if (!borrowerNftVault)
+    borrowerNftVault = await addTokenAccountInstruction(
+      connection,
+      nftMint,
+      borrower,
+      instructions,
+      borrower,
+      signers,
+    );
 
-  const offer = subOfferInfo.offer;
-  const subOfferNumber = subOfferInfo.subOfferNumber;
-  const offerMint = subOfferInfo.offerMint;
-  const [treasuryVault] = PublicKey.findProgramAddressSync(
-    [TREASURY_VAULT_TAG, offerMint.toBuffer(), globalStateInfo.treasuryWallet.toBuffer()],
-    NFT_LOAN_PID,
+  const offer = getOfferKey(borrower, nftMint, programId);
+  const edition = getEditionKey(nftMint);
+  const metadataProgram = TOKEN_META_PID;
+
+  instructions.push(
+    createDeleteOfferInstruction(
+      {
+        borrower,
+        offer,
+        nftMint,
+        userVault: borrowerNftVault,
+        edition,
+        metadataProgram,
+      },
+      programId,
+    ),
   );
-
-  const treasuryWallet = globalStateInfo.treasuryWallet;
-  const ix = createSetSubOfferInstruction(
-    {
-      borrower: wallet,
-      payer: wallet,
-      globalState,
-      offerMint,
-      offer,
-      subOffer,
-      treasuryVault,
-      treasuryWallet,
-      ...DEFAULT_PROGRAMS,
-    },
-    {
-      aprNumerator,
-      loanDuration: getDurationForContractData(duration, "days"),
-      offerAmount: new BN(amount * 10 ** currencies[currencyMints[offerMint.toString()]].decimals),
-      subOfferNumber,
-    },
-    NFT_LOAN_PID,
-  );
-
-  return new Transaction().add(ix);
+  return new Transaction().add(...instructions);
 };
 
-export const cancelSubOffer = async (
+export const createLoanSubOffer = async (
   connection: Connection,
-  wallet: PublicKey,
+  borrower: PublicKey,
+  offerAmount: BN,
+  loanDuration: BN,
+  aprNumerator: BN,
+  nftMint: PublicKey,
+  offerMint: PublicKey,
+  programId = LOAN_PID,
+  stakingProgram = STAKING_PID,
+) => {
+  if (offerMint.equals(NATIVE_MINT)) offerMint = WSOL_MINT;
+
+  const globalState = getLoanGlobalStateKey(programId);
+  const offer = getOfferKey(borrower, nftMint, programId);
+  const offerData = await Offer.fromAccountAddress(connection, offer);
+  const subOfferNumber = offerData.subOfferCount;
+  const subOffer = getSubOfferKey(offer, new BN(subOfferNumber), programId);
+  const stakingPoolInfo = getStakingPoolKey(stakingProgram);
+  const userScoreInfo = getUserScoreKey(borrower, stakingPoolInfo, stakingProgram);
+  const instructions: TransactionInstruction[] = [];
+  instructions.push(
+    createCreateSubOfferInstruction(
+      {
+        borrower,
+        payer: borrower,
+        globalState,
+        offer,
+        subOffer,
+        offerMint,
+        stakingPoolInfo,
+        userScoreInfo,
+        stakingProgram,
+        clock: SYSVAR_CLOCK_PUBKEY,
+      } as any,
+      {
+        offerAmount,
+        loanDuration,
+        aprNumerator,
+      },
+      programId,
+    ),
+  );
+
+  return new Transaction().add(...instructions);
+};
+
+export const updateLoanSubOffer = async (
+  connection: Connection,
+  borrower: PublicKey,
+  offerAmount: BN,
+  loanDuration: BN,
+  aprNumerator: BN,
   subOffer: PublicKey,
-): Promise<Transaction> => {
-  const subOfferInfo = await SubOffer.fromAccountAddress(connection, subOffer);
-  const [offer] = PublicKey.findProgramAddressSync(
-    [OFFER_TAG, wallet.toBuffer(), subOfferInfo.nftMint.toBuffer()],
-    NFT_LOAN_PID,
+  programId = LOAN_PID,
+) => {
+  const subOfferData = await SubOffer.fromAccountAddress(connection, subOffer);
+  const offerMint: PublicKey = subOfferData.offerMint;
+  const offer = subOfferData.offer;
+  const instructions: TransactionInstruction[] = [];
+  instructions.push(
+    createUpdateSubOfferInstruction(
+      {
+        borrower,
+        offer,
+        subOffer,
+        offerMint,
+      },
+      {
+        offerAmount,
+        loanDuration,
+        aprNumerator,
+      },
+      programId,
+    ),
   );
-  const ix = createCancelSubOfferInstruction(
-    {
-      borrower: wallet,
-      offer,
-      subOffer,
-    },
-    NFT_LOAN_PID,
+
+  return new Transaction().add(...instructions);
+};
+
+export const deleteLoanSubOffer = async (
+  connection: Connection,
+  borrower: PublicKey,
+  subOffer: PublicKey,
+  programId = LOAN_PID,
+) => {
+  const subOfferData = await SubOffer.fromAccountAddress(connection, subOffer);
+  const offer = subOfferData.offer;
+  const instructions: TransactionInstruction[] = [];
+  instructions.push(
+    createDeleteSubOfferInstruction(
+      {
+        borrower,
+        offer,
+        subOffer,
+      },
+      programId,
+    ),
   );
-  return new Transaction().add(ix);
+  return new Transaction().add(...instructions);
+};
+
+export const acceptLoanOffer = async (
+  connection: Connection,
+  lender: PublicKey,
+  subOffer: PublicKey,
+  signers: Keypair[] = [],
+  programId = LOAN_PID,
+) => {
+  const instructions: TransactionInstruction[] = [];
+  const subOfferData = await SubOffer.fromAccountAddress(connection, subOffer);
+  const offer = subOfferData.offer;
+  const offerMint = subOfferData.offerMint;
+  const offerData = await Offer.fromAccountAddress(connection, subOfferData.offer);
+  const borrower = offerData.borrower;
+
+  const globalState = getLoanGlobalStateKey(programId);
+  const globalStateData = await GlobalState.fromAccountAddress(connection, globalState);
+
+  let borrowerOfferVault = await getWalletTokenAccount(connection, borrower, offerMint);
+  let lenderOfferVault = await getWalletTokenAccount(connection, lender, offerMint);
+  if (offerMint.equals(WSOL_MINT)) {
+    const treasuryVault = getTreasuryVaultKey(offerMint, globalStateData.treasuryWallet, programId);
+    lenderOfferVault = treasuryVault;
+    borrowerOfferVault = treasuryVault;
+  } else {
+    if (!borrowerOfferVault) {
+      console.log("borrower doesn't have offer token account!");
+      borrowerOfferVault = await addTokenAccountInstruction(
+        connection,
+        offerMint,
+        borrower,
+        instructions,
+        lender,
+        signers,
+      );
+    }
+    if (!lenderOfferVault) {
+      console.log("lender doesn't have offer token!");
+      return null;
+    }
+  }
+  instructions.push(
+    createAcceptOfferInstruction(
+      {
+        lender,
+        borrower,
+        globalState,
+        offer,
+        subOffer,
+        offerMint,
+        borrowerOfferVault,
+        lenderOfferVault,
+        clock: SYSVAR_CLOCK_PUBKEY,
+      },
+      programId,
+    ),
+  );
+  return new Transaction().add(...instructions);
 };
 
 export const repayLoan = async (
   connection: Connection,
-  wallet: PublicKey,
+  borrower: PublicKey,
   subOffer: PublicKey,
-): Promise<Transaction> => {
-  const subOfferInfo = await SubOffer.fromAccountAddress(connection, subOffer);
-  const offer = subOfferInfo.offer;
-  const lender = subOfferInfo.lender;
-  const nftMint = subOfferInfo.nftMint;
-  const offerMint = subOfferInfo.offerMint;
+  signers: Keypair[] = [],
+  programId = LOAN_PID,
+  stakingProgram = STAKING_PID,
+) => {
+  const instructions: TransactionInstruction[] = [];
+  const globalState = getLoanGlobalStateKey(programId);
+  const globalStateData = await GlobalState.fromAccountAddress(connection, globalState);
+  const treasuryWallet = globalStateData.treasuryWallet;
+  const subOfferData = await SubOffer.fromAccountAddress(connection, subOffer);
+  const offer = subOfferData.offer;
+  const lender = subOfferData.lender;
+  const offerData = await Offer.fromAccountAddress(connection, offer);
+  const offerMint = subOfferData.offerMint;
+  const nftMint = offerData.nftMint;
+  const treasuryVault = getTreasuryVaultKey(offerMint, globalStateData.treasuryWallet, programId);
 
-  const [globalState] = PublicKey.findProgramAddressSync([GLOBAL_STATE_TAG], NFT_LOAN_PID);
-  const globalStateInfo = await GlobalState.fromAccountAddress(connection, globalState);
-  const treasuryWallet = globalStateInfo.treasuryWallet;
-  const rewardVault = globalStateInfo.rewardVault;
-
-  const [treasuryVault] = PublicKey.findProgramAddressSync(
-    [TREASURY_VAULT_TAG, offerMint.toBuffer(), treasuryWallet.toBuffer()],
-    NFT_LOAN_PID,
-  );
-  const [edition] = PublicKey.findProgramAddressSync(
-    [Buffer.from("metadata"), METADATA.toBuffer(), nftMint.toBuffer(), Buffer.from("edition")],
-    METADATA,
-  );
-
-  const borrowerNftVault = getAssociatedTokenAddressSync(nftMint, wallet);
-  let lenderOfferVault: PublicKey;
-  let borrowerOfferVault: PublicKey;
-
-  if (offerMint.equals(NATIVE_MINT)) {
-    lenderOfferVault = rewardVault;
-    borrowerOfferVault = rewardVault;
-  } else {
-    lenderOfferVault = getAssociatedTokenAddressSync(offerMint, lender);
-    borrowerOfferVault = getAssociatedTokenAddressSync(offerMint, wallet);
+  let borrowerOfferVault = await getWalletTokenAccount(connection, borrower, offerMint);
+  let borrowerNftVault = await getWalletTokenAccount(connection, borrower, nftMint);
+  let lenderOfferVault = await getWalletTokenAccount(connection, lender, offerMint);
+  if (offerMint.equals(WSOL_MINT)) {
+    lenderOfferVault = treasuryVault;
+    borrowerOfferVault = treasuryVault;
   }
-  const tx = new Transaction();
 
-  if (!(await isAccountInitialized(connection, lenderOfferVault)))
-    tx.add(createAssociatedTokenAccountInstruction(wallet, lenderOfferVault, lender, offerMint));
-
-  if (!(await isAccountInitialized(connection, borrowerOfferVault)))
-    tx.add(createAssociatedTokenAccountInstruction(wallet, borrowerOfferVault, wallet, offerMint));
-
-  const ix = createRepayLoanInstruction(
-    {
-      borrower: wallet,
-      globalState,
-      offer,
-      subOffer,
-      lender,
+  if (!borrowerOfferVault) {
+    console.log("borrower doesn't have offer token!");
+    return;
+  }
+  if (!borrowerNftVault) {
+    console.log("borrower doesn't have nft token token account!");
+    borrowerNftVault = await addTokenAccountInstruction(
+      connection,
       nftMint,
-      edition,
-      treasuryWallet,
-      treasuryVault,
-      rewardVault,
-      borrowerOfferVault,
-      borrowerNftVault,
-      lenderOfferVault,
-      ...DEFAULT_PROGRAMS,
-      ...CHAINLINK_PROGRAMS,
-    },
-    NFT_LOAN_PID,
-  );
-
-  return new Transaction().add(ix);
-};
-
-// Lender actions
-export const acceptOffer = async (
-  connection: Connection,
-  wallet: PublicKey,
-  subOffer: PublicKey,
-): Promise<Transaction> => {
-  const [globalState] = PublicKey.findProgramAddressSync([GLOBAL_STATE_TAG], NFT_LOAN_PID);
-  const globalStateInfo = await GlobalState.fromAccountAddress(connection, globalState);
-  const { rewardVault } = globalStateInfo;
-
-  const subOfferInfo = await SubOffer.fromAccountAddress(connection, subOffer);
-  const { offer, borrower, offerMint } = subOfferInfo;
-
-  let lenderOfferVault: PublicKey;
-  let borrowerOfferVault: PublicKey;
-
-  if (offerMint.equals(NATIVE_MINT)) {
-    lenderOfferVault = rewardVault;
-    borrowerOfferVault = rewardVault;
-  } else {
-    lenderOfferVault = getAssociatedTokenAddressSync(offerMint, wallet);
-    borrowerOfferVault = getAssociatedTokenAddressSync(offerMint, borrower);
-  }
-  const tx = new Transaction();
-
-  if (!(await isAccountInitialized(connection, lenderOfferVault)))
-    tx.add(createAssociatedTokenAccountInstruction(wallet, lenderOfferVault, wallet, offerMint));
-
-  if (!(await isAccountInitialized(connection, borrowerOfferVault)))
-    tx.add(
-      createAssociatedTokenAccountInstruction(wallet, borrowerOfferVault, borrower, offerMint),
-    );
-
-  const ix = createAcceptOfferInstruction(
-    {
-      lender: wallet,
       borrower,
-      globalState,
-      offer,
-      subOffer,
-      offerMint,
-      rewardVault,
-      lenderOfferVault,
-      borrowerOfferVault,
-      ...CHAINLINK_PROGRAMS,
-      ...DEFAULT_PROGRAMS,
-    },
-    NFT_LOAN_PID,
-  );
-
-  return tx.add(ix);
-};
-
-export const claimCollateral = async (
-  connection: Connection,
-  wallet: PublicKey,
-  subOffer: PublicKey,
-): Promise<Transaction> => {
-  const [globalState] = PublicKey.findProgramAddressSync([GLOBAL_STATE_TAG], NFT_LOAN_PID);
-  const globalStateInfo = await GlobalState.fromAccountAddress(connection, globalState);
-  const { treasuryWallet, rewardVault } = globalStateInfo;
-
-  const subOfferInfo = await SubOffer.fromAccountAddress(connection, subOffer);
-  const { offerMint, offer, nftMint, borrower } = subOfferInfo;
-  const [edition] = PublicKey.findProgramAddressSync(
-    [Buffer.from("metadata"), METADATA.toBuffer(), nftMint.toBuffer(), Buffer.from("edition")],
-    METADATA,
-  );
-
-  const [treasuryVault] = PublicKey.findProgramAddressSync(
-    [TREASURY_VAULT_TAG, offerMint.toBuffer(), globalStateInfo.treasuryWallet.toBuffer()],
-    NFT_LOAN_PID,
-  );
-
-  const lenderNftVault = getAssociatedTokenAddressSync(nftMint, wallet);
-  const borrowerNftVault = getAssociatedTokenAddressSync(nftMint, borrower); // Should always exist
-  const lenderOfferVault = getAssociatedTokenAddressSync(offerMint, wallet);
-  const tx = new Transaction();
-
-  if (!(await isAccountInitialized(connection, lenderNftVault)))
-    tx.add(createAssociatedTokenAccountInstruction(wallet, lenderNftVault, wallet, nftMint));
-
-  if (!(await isAccountInitialized(connection, lenderOfferVault)))
-    tx.add(createAssociatedTokenAccountInstruction(wallet, lenderOfferVault, wallet, offerMint));
-
-  const ix = createClaimCollateralInstruction(
-    {
-      lender: wallet,
-      globalState,
-      offer,
-      subOffer,
-      nftMint,
-      lenderNftVault,
-      borrowerNftVault,
-      lenderOfferVault,
-      rewardVault,
-      treasuryWallet,
-      treasuryVault,
-      edition,
-      ...CHAINLINK_PROGRAMS,
-      ...DEFAULT_PROGRAMS,
-    },
-    NFT_LOAN_PID,
-  );
-
-  return tx.add(ix);
-};
-
-// Utils
-
-export const isAccountInitialized = async (
-  connection: Connection,
-  account: PublicKey,
-): Promise<boolean> => {
-  try {
-    await getAccount(connection, account);
-    return true;
-  } catch (error: unknown) {
-    if (
-      error instanceof TokenAccountNotFoundError ||
-      error instanceof TokenInvalidAccountOwnerError
-    )
-      return false;
-    else throw Error();
+      instructions,
+      borrower,
+      signers,
+    );
   }
+  if (!lenderOfferVault) {
+    console.log("lender doesn't have offer token account!", lender.toBase58());
+    lenderOfferVault = await addTokenAccountInstruction(
+      connection,
+      offerMint,
+      lender,
+      instructions,
+      borrower,
+      signers,
+    );
+  }
+  const edition = getEditionKey(nftMint);
+  const stakingPoolInfo = getStakingPoolKey(stakingProgram);
+  const borrowerUserScoreInfo = getUserScoreKey(borrower, stakingPoolInfo, stakingProgram);
+  const lenderUserScoreInfo = getUserScoreKey(lender, stakingPoolInfo, stakingProgram);
+  const metadataProgram = TOKEN_META_PID;
+  instructions.push(
+    createRepayLoanInstruction(
+      {
+        borrower,
+        payer: borrower,
+        lender,
+        globalState,
+        treasuryWallet,
+        offer,
+        subOffer,
+        nftMint,
+        borrowerNftVault,
+        lenderOfferVault,
+        borrowerOfferVault,
+        offerMint,
+        treasuryVault,
+        stakingPoolInfo,
+        borrowerUserScoreInfo,
+        lenderUserScoreInfo,
+        stakingProgram,
+        edition,
+        metadataProgram,
+        clock: SYSVAR_CLOCK_PUBKEY,
+      } as any,
+      programId,
+    ),
+  );
+  return new Transaction().add(...instructions);
+};
+
+export const claimLoanCollateral = async (
+  connection: Connection,
+  lender: PublicKey,
+  subOffer: PublicKey,
+  signers: Keypair[] = [],
+  programId = LOAN_PID,
+  stakingProgram = STAKING_PID,
+) => {
+  const instructions: TransactionInstruction[] = [];
+  const globalState = getLoanGlobalStateKey(programId);
+  const globalStateData = await GlobalState.fromAccountAddress(connection, globalState);
+  const treasuryWallet = globalStateData.treasuryWallet;
+  const subOfferData = await SubOffer.fromAccountAddress(connection, subOffer);
+  const offer = subOfferData.offer;
+  const offerData = await Offer.fromAccountAddress(connection, offer);
+  const offerMint = subOfferData.offerMint;
+  const nftMint = offerData.nftMint;
+  const treasuryVault = getTreasuryVaultKey(offerMint, treasuryWallet, programId);
+
+  const borrowerNftVault = await getWalletTokenAccount(connection, offerData.borrower, nftMint);
+  let lenderNftVault = await getWalletTokenAccount(connection, lender, nftMint);
+  let lenderOfferVault = await getWalletTokenAccount(connection, lender, offerMint);
+  const preInstructions: TransactionInstruction[] = [];
+  if (offerMint.equals(WSOL_MINT)) lenderOfferVault = treasuryVault;
+
+  if (!lenderNftVault) {
+    console.log("lender doesn't have nft token token account!");
+    lenderNftVault = await addTokenAccountInstruction(
+      connection,
+      nftMint,
+      lender,
+      preInstructions,
+      lender,
+      signers,
+    );
+  }
+  if (!lenderOfferVault) {
+    console.log("lender doesn't have offer token account!", lender.toBase58());
+    lenderOfferVault = await addTokenAccountInstruction(
+      connection,
+      offerMint,
+      lender,
+      preInstructions,
+      lender,
+      signers,
+    );
+  }
+  const edition = getEditionKey(nftMint);
+  const stakingPoolInfo = getStakingPoolKey(stakingProgram);
+  const lenderUserScoreInfo = getUserScoreKey(lender, stakingPoolInfo, stakingProgram);
+  const metadataProgram = TOKEN_META_PID;
+  instructions.push(
+    createClaimCollateralInstruction(
+      {
+        lender,
+        payer: lender,
+        globalState,
+        treasuryWallet,
+        offer,
+        subOffer,
+        nftMint,
+        lenderNftVault,
+        borrowerNftVault,
+        lenderOfferVault,
+        offerMint,
+        treasuryVault,
+        edition,
+        stakingPoolInfo,
+        lenderUserScoreInfo,
+        stakingProgram,
+        metadataProgram,
+        clock: SYSVAR_CLOCK_PUBKEY,
+      } as any,
+      programId,
+    ),
+  );
+  return new Transaction().add(...instructions);
 };

@@ -1343,18 +1343,34 @@
     "@solana/spl-token" "^0.2.0"
     "@solana/web3.js" "^1.47.3"
 
-"@unloc-dev/unloc-sdk-staking@^0.1.24":
-  version "0.1.24"
-  resolved "https://registry.yarnpkg.com/@unloc-dev/unloc-sdk-staking/-/unloc-sdk-staking-0.1.24.tgz#9bb05e65e97a7fa37d64ca19b3fa4f04870f3c67"
-  integrity sha512-r00tBeFPMuxX5SfhMFlWdTMJ5z5X5mnVshrXwX3xGonwBGMOX2xhln+WW5+18kRfkwuoI032JkEJsQ/yLVTKfg==
+"@unloc-dev/unloc-sdk-liquidity-mining@0.1.26":
+  version "0.1.26"
+  resolved "https://registry.yarnpkg.com/@unloc-dev/unloc-sdk-liquidity-mining/-/unloc-sdk-liquidity-mining-0.1.26.tgz#59fc090ad41c440da864dcd4bdc04e30946bb2f8"
+  integrity sha512-LBpD8jRm1i5mwkgIv2ROl4MFywL4o7T7QRF9VBZLDj+4AcGGKJOVUumUZHgsc2dG64zn+mm8UyYGYUgw14WlaQ==
   dependencies:
     "@solana/spl-token" "^0.2.0"
     "@solana/web3.js" "^1.47.3"
 
-"@unloc-dev/unloc-sdk-voting@^0.1.24":
-  version "0.1.24"
-  resolved "https://registry.yarnpkg.com/@unloc-dev/unloc-sdk-voting/-/unloc-sdk-voting-0.1.24.tgz#074ad936894a63f5ab2285f2cce864fff8b2ece7"
-  integrity sha512-Aa1wW5L68nH3Sfoadub5YCfBsZZcxF/pcMaCBvDl8zAaO+/N6nQFqHTs6ZrWchU7mnUdPVybDgopiJQqHripNQ==
+"@unloc-dev/unloc-sdk-loan@0.1.26":
+  version "0.1.26"
+  resolved "https://registry.yarnpkg.com/@unloc-dev/unloc-sdk-loan/-/unloc-sdk-loan-0.1.26.tgz#61b1b15188fd8ea7e93df94d2888cd3f11679b6a"
+  integrity sha512-UDQvFe41I8NpPMBwagu3TOXDutcpUtLzz+08LgwsjMgKIeYOgmqnDy8EtB/6Fv/Vq1WQPLtmj+PWmEnoaGeouQ==
+  dependencies:
+    "@solana/spl-token" "^0.2.0"
+    "@solana/web3.js" "^1.47.3"
+
+"@unloc-dev/unloc-sdk-staking@0.1.26":
+  version "0.1.26"
+  resolved "https://registry.yarnpkg.com/@unloc-dev/unloc-sdk-staking/-/unloc-sdk-staking-0.1.26.tgz#6a9a970fadf105f7d73b262162a0eee7ba458faf"
+  integrity sha512-XCETlye6pzNg2NTaEnhXBamL4zzJa2MCYpkDSzzbY1td+1p1nULuDmr2w2uUaCo5b1McVf8ky5f+qdD5drajSQ==
+  dependencies:
+    "@solana/spl-token" "^0.2.0"
+    "@solana/web3.js" "^1.47.3"
+
+"@unloc-dev/unloc-sdk-voting@0.1.26":
+  version "0.1.26"
+  resolved "https://registry.yarnpkg.com/@unloc-dev/unloc-sdk-voting/-/unloc-sdk-voting-0.1.26.tgz#888c414f5075a1779e31c072d553250540818c69"
+  integrity sha512-HQ6I7gqGFxxikToIcFNAln1gvGsflV8KCkJmRq5a5cCE3iGbuhijSFx0ZOPlMP+L7FLT8L7VAdww0/ZPWiYd0A==
   dependencies:
     "@solana/spl-token" "^0.2.0"
     "@solana/web3.js" "^1.47.3"
