@@ -1,15 +1,16 @@
 import { useContext } from "react";
 
 import { WalletNotConnectedError } from "@solana/wallet-adapter-base";
-import { useWallet } from "@solana/wallet-adapter-react";
+import { useConnection, useWallet } from "@solana/wallet-adapter-react";
+import { WithdrawType } from "@unloc-dev/unloc-sdk-staking";
 import { observer } from "mobx-react-lite";
 
 import { useSendTransaction } from "@hooks/useSendTransaction";
 import { StoreContext } from "@pages/_app";
-import { reallocUserAccount } from "@utils/spl/unloc-staking";
+import { withdrawTokens } from "@utils/spl/unloc-staking";
 
 export const StakeActions = observer(() => {
-  // const { connection } = useConnection();
+  const { connection } = useConnection();
   const { publicKey: wallet } = useWallet();
   const { Lightbox, StakingStore } = useContext(StoreContext);
   const sendAndConfirm = useSendTransaction();
@@ -21,18 +22,12 @@ export const StakeActions = observer(() => {
     Lightbox.setVisible(true);
   };
 
-  // const handleClaimRewards = async (): Promise<void> => {
-  //   if (wallet == null) throw new WalletNotConnectedError();
-  //   const tx = await withdrawTokens(connection, wallet, {
-  //     withType: WithdrawType.LiqMining,
-  //     index: 0,
-  //   });
-  //   await sendAndConfirm(tx, { skipPreflight: true });
-  // };
-  const handleReallocUserAccount = async (): Promise<void> => {
+  const handleClaimRewards = async (): Promise<void> => {
     if (wallet == null) throw new WalletNotConnectedError();
-
-    const tx = await reallocUserAccount(wallet);
+    const tx = await withdrawTokens(connection, wallet, {
+      withType: WithdrawType.LiqMining,
+      index: 0,
+    });
     await sendAndConfirm(tx, { skipPreflight: true });
   };
 
@@ -48,7 +43,7 @@ export const StakeActions = observer(() => {
       </div>
       <div className="separator" />
       <div className="stake__buttons">
-        <button onClick={handleReallocUserAccount} className="btn btn--md btn--primary">
+        <button onClick={handleClaimRewards} className="btn btn--md btn--primary">
           Claim Rewards
         </button>
         {/* <button onClick={handleClaimRewards} className="btn btn--md btn--bordered">

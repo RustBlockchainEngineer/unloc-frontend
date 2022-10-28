@@ -120,7 +120,7 @@ export const CreateStake = observer(() => {
       const { result } = await sendAndConfirm(tx);
       if (result.value.err) {
         console.log({ err: result.value.err });
-        throw Error("Failed to create a staking account.", { cause: result.value.err });
+        throw Error("Failed to create a staking account.");
       }
       successCase("Staking account created");
       void mutate();
