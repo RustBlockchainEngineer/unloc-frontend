@@ -1,13 +1,13 @@
 import { WalletNotConnectedError } from "@solana/wallet-adapter-base";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
-import { Transaction } from "@solana/web3.js";
+// import { Transaction } from "@solana/web3.js";
 import {
-  AllowedStakingDurationMonths,
+  // AllowedStakingDurationMonths,
   LockedStakingAccount,
   StakingPoolInfo,
   WithdrawType,
 } from "@unloc-dev/unloc-sdk-staking";
-import BN from "bn.js";
+// import BN from "bn.js";
 import dayjs from "dayjs";
 
 // import { exitAmount } from "@components/profile/stakeAccount/calculations";
@@ -17,7 +17,7 @@ import { useSendTransaction } from "@hooks/useSendTransaction";
 import { useStore } from "@hooks/useStore";
 import { amountToUiAmount, numVal, val } from "@utils/bignum";
 import { getEarnedSoFar } from "@utils/spl/unloc-score";
-import { depositTokens, lockDurationEnumToSeconds, withdrawTokens } from "@utils/spl/unloc-staking";
+import { lockDurationEnumToSeconds, withdrawTokens } from "@utils/spl/unloc-staking";
 import { errorCase } from "@utils/toast-error-handler";
 
 import { DurationProgress } from "./durationProgress";
@@ -46,7 +46,7 @@ export const StakeRow = ({ lockedStakingAccount }: StakeRowProps): JSX.Element |
 
   if (!indexInUse) return null;
 
-  const Withdraw = async (): Promise<void> => {
+  const handleWithdraw = async (): Promise<void> => {
     try {
       if (wallet == null) throw new WalletNotConnectedError();
       const tx = await withdrawTokens(connection, wallet, {
@@ -60,7 +60,7 @@ export const StakeRow = ({ lockedStakingAccount }: StakeRowProps): JSX.Element |
     }
   };
 
-  const Relock = async (): Promise<void> => {
+  const handleRelock = () => {
     try {
       if (wallet == null) throw new WalletNotConnectedError();
       Lightbox.setVisible(false);
@@ -74,24 +74,7 @@ export const StakeRow = ({ lockedStakingAccount }: StakeRowProps): JSX.Element |
     }
   };
 
-  const Deposit = async (): Promise<void> => {
-    try {
-      if (wallet == null) throw new WalletNotConnectedError();
-      const ix = await depositTokens(
-        connection,
-        wallet,
-        new BN(10 ** 6),
-        AllowedStakingDurationMonths.Zero,
-      );
-      const tx = new Transaction().add(...ix);
-      await sendAndConfirm(tx, { skipPreflight: true });
-    } catch (err) {
-      console.log(err);
-      errorCase(err);
-    }
-  };
-
-  const Merge = async (): Promise<void> => {
+  const handleMerge = (): void => {
     if (wallet == null) throw new WalletNotConnectedError();
 
     try {
@@ -105,21 +88,6 @@ export const StakeRow = ({ lockedStakingAccount }: StakeRowProps): JSX.Element |
       console.log(err);
       errorCase(err);
     }
-  };
-
-  const renderActions = (): JSX.Element[] => {
-    const button = ["Relock", "Merge"];
-
-    const actions = [Deposit, Withdraw, Relock, Merge];
-
-    return button.map((type) => {
-      const action = actions.filter((handler) => handler.name === type);
-      return (
-        <button onClick={action[0]} key={type} className="btn btn--md btn--primary">
-          {type}
-        </button>
-      );
-    });
   };
 
   return (
@@ -163,12 +131,17 @@ export const StakeRow = ({ lockedStakingAccount }: StakeRowProps): JSX.Element |
         <div className="stakerow__actions">
           <button
             type="button"
-            onClick={Withdraw}
+            onClick={handleWithdraw}
             disabled={status === "locked"}
             className={`btn btn--md ${status === "locked" ? "btn--disabled" : "btn--primary"}`}>
             Withdraw
           </button>
-          {renderActions()}
+          <button onClick={handleRelock} className="btn btn--md btn--primary">
+            Relock
+          </button>
+          <button onClick={handleMerge} className="btn btn--md btn--primary">
+            Merge
+          </button>
         </div>
       </div>
     </li>

@@ -14,6 +14,7 @@ export const StakeActions = observer(() => {
   const { publicKey: wallet } = useWallet();
   const { Lightbox, StakingStore } = useContext(StoreContext);
   const sendAndConfirm = useSendTransaction();
+
   const handleNewStake = (): void => {
     Lightbox.setVisible(false);
     // Reset the inputs
