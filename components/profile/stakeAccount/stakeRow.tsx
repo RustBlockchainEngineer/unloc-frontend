@@ -4,19 +4,19 @@ import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import {
   // AllowedStakingDurationMonths,
   LockedStakingAccount,
-  StakingPoolInfo,
+  // StakingPoolInfo,
   WithdrawType,
 } from "@unloc-dev/unloc-sdk-staking";
 // import BN from "bn.js";
 import dayjs from "dayjs";
 
-// import { exitAmount } from "@components/profile/stakeAccount/calculations";
+import { exitAmount } from "@components/profile/stakeAccount/calculations";
 import { UNLOC_MINT_DECIMALS } from "@constants/currency-constants";
-import { usePoolInfo } from "@hooks/usePoolInfo";
+// import { usePoolInfo } from "@hooks/usePoolInfo";
 import { useSendTransaction } from "@hooks/useSendTransaction";
 import { useStore } from "@hooks/useStore";
 import { amountToUiAmount, numVal, val } from "@utils/bignum";
-import { getEarnedSoFar } from "@utils/spl/unloc-score";
+// import { getEarnedSoFar } from "@utils/spl/unloc-score";
 import { lockDurationEnumToSeconds, withdrawTokens } from "@utils/spl/unloc-staking";
 import { errorCase } from "@utils/toast-error-handler";
 
@@ -31,7 +31,7 @@ export const StakeRow = ({ lockedStakingAccount }: StakeRowProps): JSX.Element |
   const { connection } = useConnection();
   const { publicKey: wallet } = useWallet();
   const { StakingStore, Lightbox } = useStore();
-  const { data, isLoading } = usePoolInfo();
+  // const { data, isLoading } = usePoolInfo();
   const sendAndConfirm = useSendTransaction();
 
   const uiAmount = amountToUiAmount(stakingData.initialTokensStaked, UNLOC_MINT_DECIMALS);
@@ -39,7 +39,8 @@ export const StakeRow = ({ lockedStakingAccount }: StakeRowProps): JSX.Element |
   const lockDurationInSeconds = lockDurationEnumToSeconds(stakingData.lockDuration);
   const endUnix = startUnix.addn(lockDurationInSeconds);
   const APY = 40;
-  const earned = isLoading ? "Loading..." : getEarnedSoFar(stakingData, data as StakingPoolInfo);
+  // const earned = isLoading ? "Loading..." : getEarnedSoFar(stakingData, data as StakingPoolInfo);
+  const earned = exitAmount(uiAmount);
 
   const time = Date.now();
   const status = endUnix.gten(time) ? "locked" : "unlocked";
