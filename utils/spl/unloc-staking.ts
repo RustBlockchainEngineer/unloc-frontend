@@ -96,7 +96,7 @@ export const createStakingUserOptionally = async (
   programId = STAKING_PID,
 ) => {
   const stakingPoolInfo = getStakingPoolKey(programId);
-  const userStakingsInfo = getUserStakingsKey(userWallet, programId);
+  const userStakingsInfo = getUserStakingsKey(userWallet, stakingPoolInfo, programId);
   const unlocScoreInfo = getUserScoreKey(userWallet, stakingPoolInfo, programId);
 
   const instructions: TransactionInstruction[] = [];
@@ -126,7 +126,7 @@ export const depositTokens = async (
 ) => {
   const stakingPoolInfo = getStakingPoolKey(programId);
   const poolData = await StakingPoolInfo.fromAccountAddress(connection, stakingPoolInfo);
-  const userStakingsInfo = getUserStakingsKey(userWallet, programId);
+  const userStakingsInfo = getUserStakingsKey(userWallet, stakingPoolInfo, programId);
   const userUnlocAtaToDebit = getAssociatedTokenAddressSync(poolData.unlocTokenMint, userWallet);
   const instructions: TransactionInstruction[] = [];
   instructions.push(
@@ -159,7 +159,7 @@ export const withdrawTokens = async (
 ) => {
   const stakingPoolInfo = getStakingPoolKey(programId);
   const poolData = await StakingPoolInfo.fromAccountAddress(connection, stakingPoolInfo);
-  const userStakingsInfo = getUserStakingsKey(userWallet, programId);
+  const userStakingsInfo = getUserStakingsKey(userWallet, stakingPoolInfo, programId);
   const userUnlocAtaToCredit = getAssociatedTokenAddressSync(poolData.unlocTokenMint, userWallet);
   const instructions: TransactionInstruction[] = [];
   instructions.push(
@@ -185,7 +185,7 @@ export const withdrawTokens = async (
 
 export const reallocUserAccount = async (userWallet: PublicKey, programId = STAKING_PID) => {
   const stakingPoolInfo = getStakingPoolKey(programId);
-  const userStakingsInfo = getUserStakingsKey(userWallet, programId);
+  const userStakingsInfo = getUserStakingsKey(userWallet, stakingPoolInfo, programId);
   const instructions: TransactionInstruction[] = [];
   instructions.push(
     createIncreaseUserStorageInstruction(
@@ -207,7 +207,7 @@ export const relockStakingAccount = async (
   programId = STAKING_PID,
 ) => {
   const stakingPoolInfo = getStakingPoolKey(programId);
-  const userStakingsInfo = getUserStakingsKey(userWallet, programId);
+  const userStakingsInfo = getUserStakingsKey(userWallet, stakingPoolInfo, programId);
   const instructions: TransactionInstruction[] = [];
   instructions.push(
     createRelockAccountInstruction(
