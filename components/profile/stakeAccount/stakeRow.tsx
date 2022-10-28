@@ -127,15 +127,22 @@ export const StakeRow = ({ lockedStakingAccount, type }: StakeRowProps): JSX.Ele
       <div className="stakerow__col--id">
         <div className="stakerow__id">{index + 1}</div>
       </div>
-      <div className="stakerow__col">
-        <div className="stakerow__title">Staked amount</div>
-        <div className="stakerow__amount">
-          {uiAmount.toLocaleString("en-us")}
-          <i className={"icon icon--sm icon--currency--UNLOC"} />
+      <div className="stakerow__col--amount">
+        <div className="wrap">
+          <div className="stakerow__title">
+            Staked amount <i className={"icon icon--tn icon--currency--UNLOC"} />
+          </div>
+          <div className="stakerow__amount">{uiAmount.toLocaleString("en-us")}</div>
         </div>
-        <div className="stakerow__at-exit">
-          <p>{exitAmount(uiAmount)}</p>
-          <span className="sub">Amount at exit</span>
+        <div className="wrap earned">
+          <div className="stakerow__title">
+            AMOUNT EARNED <i className={"icon icon--tn icon--currency--UNLOC"} />
+          </div>
+          <div className="stakerow__amount">{exitAmount(uiAmount)}</div>
+          <div className="stakerow__amount rise">
+            <i className={"icon icon--svs rise-reward"} /> +
+            {(Number(exitAmount(uiAmount)) - Number(uiAmount.toLocaleString("en-us"))).toFixed(2)}
+          </div>
         </div>
       </div>
       {type !== "flexi" && (
@@ -153,7 +160,7 @@ export const StakeRow = ({ lockedStakingAccount, type }: StakeRowProps): JSX.Ele
           </div>
         </div>
       )}
-      <div className="stakerow__col">
+      <div className="stakerow__col apy">
         <div className="stakerow__title">APY</div>
         <div className="stakerow__apr">{APY}%</div>
       </div>

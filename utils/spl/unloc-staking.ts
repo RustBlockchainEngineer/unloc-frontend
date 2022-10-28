@@ -79,7 +79,6 @@ export const createStakingUserOptionally = async (
 ): Promise<TransactionInstruction[]> => {
   const poolInfo = getStakingPoolKey(programId);
   const userStakingsInfo = getUserStakingsKey(userWallet, programId);
-
   const instructions: TransactionInstruction[] = [];
   const check = await isAccountInitialized(connection, userStakingsInfo);
   if (!check)

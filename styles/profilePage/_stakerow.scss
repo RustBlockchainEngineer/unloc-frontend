@@ -12,6 +12,15 @@
     grid-template-columns: 2fr 6fr 9fr /*12fr*/ 3fr /*18fr*/;
     //grid-template-rows: 120px 120px;
 
+    .apy {
+      grid-column-start: 2;
+      grid-column-end: 3;
+    }
+
+    & > *:nth-child(3) {
+      width: 100%;
+    }
+
     & > *:nth-child(4) {
       grid-column-start: 1;
       grid-column-end: 3;
@@ -58,12 +67,13 @@
 
   // Third element can grow
   & > *:nth-child(3) {
-    flex-grow: 1;
+    //flex-grow: 1;
   }
 
   // Last element of the row is a bit bigger
   & > *:last-child {
-    flex: 0 1 460px;
+    //flex: 0 1 460px;
+    flex: 0 0 460px;
   }
 
   &__col {
@@ -107,6 +117,29 @@
         margin: 0;
       }
     }
+    &--amount {
+      display: flex;
+      padding: 16px 28px;
+      justify-content: space-around;
+      flex-grow: 4;
+    }
+  }
+
+  .wrap {
+    &.earned {
+      & > * {
+        &:not(.stakerow__title) {
+          @include theme-aware("color", "status-proposed-color");
+        }
+      }
+    }
+    & > div {
+      display: flex;
+      justify-content: center;
+      &:not(:last-child) {
+        margin-bottom: 18px;
+      }
+    }
   }
 
   &__id,
@@ -129,6 +162,12 @@
   &__title {
     text-transform: uppercase;
     font-size: $tp-sm;
+    display: flex;
+    align-items: center;
+
+    i {
+      margin-left: 12px;
+    }
   }
 
   &__id {
@@ -141,6 +180,15 @@
     display: flex;
     font-size: 24px;
     cursor: default;
+
+    &.rise {
+      display: flex;
+      align-items: center;
+      font-size: $tp-md;
+      i {
+        margin-right: 6px;
+      }
+    }
 
     .icon {
       margin-left: 4px;
