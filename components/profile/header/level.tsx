@@ -5,9 +5,11 @@ export const ProfileLevel = (): JSX.Element => {
 
   const level = profile.level;
   const feeReduction =
-    profile.feeReductionBasisPoints === 0
-      ? "No benefits yet"
-      : (profile.feeReductionBasisPoints / 100).toString();
+    profile.feeReductionBasisPoints === 0 ? (
+      "No benefits yet"
+    ) : (
+      <>{(profile.feeReductionBasisPoints / 100).toString()}%</>
+    );
 
   return (
     <article className="profile__level col">
@@ -19,11 +21,11 @@ export const ProfileLevel = (): JSX.Element => {
         <ul className="perks__list">
           <li className="perks__row">
             <p>Lending fee reduction</p>
-            <p>{feeReduction}%</p>
+            <p>{feeReduction}</p>
           </li>
           <li className="perks__row">
             <p>Borrowing fee reduction</p>
-            <p>{feeReduction}%</p>
+            <p>{feeReduction}</p>
           </li>
         </ul>
       </div>

@@ -1,16 +1,15 @@
 import { useContext } from "react";
 
 import { WalletNotConnectedError } from "@solana/wallet-adapter-base";
-import { useConnection, useWallet } from "@solana/wallet-adapter-react";
-import { WithdrawType } from "@unloc-dev/unloc-sdk-staking";
+import { useWallet } from "@solana/wallet-adapter-react";
 import { observer } from "mobx-react-lite";
 
 import { useSendTransaction } from "@hooks/useSendTransaction";
 import { StoreContext } from "@pages/_app";
-import { reallocUserAccount, withdrawTokens } from "@utils/spl/unloc-staking";
+import { reallocUserAccount } from "@utils/spl/unloc-staking";
 
 export const StakeActions = observer(() => {
-  const { connection } = useConnection();
+  // const { connection } = useConnection();
   const { publicKey: wallet } = useWallet();
   const { Lightbox, StakingStore } = useContext(StoreContext);
   const sendAndConfirm = useSendTransaction();
@@ -22,19 +21,19 @@ export const StakeActions = observer(() => {
     Lightbox.setVisible(true);
   };
 
-  const handleClaimRewards = async (): Promise<void> => {
-    if (wallet == null) throw new WalletNotConnectedError();
-    const tx = await withdrawTokens(connection, wallet, {
-      withType: WithdrawType.LiqMining,
-      index: 0,
-    });
-    await sendAndConfirm(tx, "confirmed", true);
-  };
+  // const handleClaimRewards = async (): Promise<void> => {
+  //   if (wallet == null) throw new WalletNotConnectedError();
+  //   const tx = await withdrawTokens(connection, wallet, {
+  //     withType: WithdrawType.LiqMining,
+  //     index: 0,
+  //   });
+  //   await sendAndConfirm(tx, { skipPreflight: true });
+  // };
   const handleReallocUserAccount = async (): Promise<void> => {
     if (wallet == null) throw new WalletNotConnectedError();
 
     const tx = await reallocUserAccount(wallet);
-    await sendAndConfirm(tx, "confirmed", true);
+    await sendAndConfirm(tx, { skipPreflight: true });
   };
 
   return (
@@ -50,11 +49,11 @@ export const StakeActions = observer(() => {
       <div className="separator" />
       <div className="stake__buttons">
         <button onClick={handleReallocUserAccount} className="btn btn--md btn--primary">
-          Level Up
-        </button>
-        <button onClick={handleClaimRewards} className="btn btn--md btn--bordered">
           Claim Rewards
         </button>
+        {/* <button onClick={handleClaimRewards} className="btn btn--md btn--bordered">
+          Claim Rewards
+        </button> */}
       </div>
     </article>
   );

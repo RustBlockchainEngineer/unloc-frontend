@@ -135,7 +135,7 @@ export const StakingActions = ({ mode }: StakingActionsProps): JSX.Element => {
         daysToLockDuration(durationToMerge as number),
       );
 
-      await sendAndConfirm(tx, "confirmed", true);
+      await sendAndConfirm(tx, { skipPreflight: true });
     } catch (err) {
       console.log(err);
       errorCase(err);
@@ -153,7 +153,7 @@ export const StakingActions = ({ mode }: StakingActionsProps): JSX.Element => {
         { relockType: RelockType.Flexi, index: 0 },
         daysToLockDuration(durationToMerge as number),
       );
-      await sendAndConfirm(tx, "confirmed", true);
+      await sendAndConfirm(tx, { skipPreflight: true });
     } catch (err) {
       console.log(err);
       errorCase(err);

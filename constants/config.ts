@@ -13,8 +13,8 @@ export const NFT_LOAN_PID = new PublicKey(
     : "H87mP39hQqZvh3GESPCAV426Gp3vJcraz1YgtU21i5RV",
 );
 
-export const UNLOC_STAKING_PID = new PublicKey("65SDRmYzcAwHiSRyuij6f8LmHAwJ98fwfUnxkog17rbP");
-export const UNLOC_VOTING_PID = new PublicKey("c1hkB5vKgt98WWzEd1xEEYQMZ9evCy2n6gLzj6PFgQk");
+export const UNLOC_STAKING_PID = new PublicKey("Stkmjz1k2Ak9sj57reGuei8jY28r2eRFRmB49mTN7u8");
+export const UNLOC_VOTING_PID = new PublicKey("Voti8b8TVbqgS5TQ5oiDU3eHNqAjsZQuuMUKe4JwufU");
 
 export const RPC_ENDPOINT = config.devnet ? config.devnetEndpoint : config.mainnetEndpoint;
 

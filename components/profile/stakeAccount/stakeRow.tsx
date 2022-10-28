@@ -50,7 +50,7 @@ export const StakeRow = ({ lockedStakingAccount, type }: StakeRowProps): JSX.Ele
         withType: WithdrawType.Flexi,
         index: 0,
       });
-      await sendAndConfirm(tx, "confirmed", true);
+      await sendAndConfirm(tx, { skipPreflight: true });
     } catch (err) {
       console.log(err);
       errorCase(err);
@@ -81,7 +81,7 @@ export const StakeRow = ({ lockedStakingAccount, type }: StakeRowProps): JSX.Ele
         AllowedStakingDurationMonths.Zero,
       );
       const tx = new Transaction().add(...ix);
-      await sendAndConfirm(tx, "confirmed", true);
+      await sendAndConfirm(tx, { skipPreflight: true });
     } catch (err) {
       console.log(err);
       errorCase(err);

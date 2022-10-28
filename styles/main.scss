@@ -88,6 +88,8 @@ body {
   max-width: $pg-col;
   margin: 0 auto;
   padding-top: $mr-lg;
+  display: flex;
+  row-gap: 25px;
 
   @media (max-width: $bp-tablet) {
     display: none;
@@ -104,6 +106,7 @@ body {
     align-items: center;
     border-radius: 12px;
     padding: 0 $mr-xl;
+    margin-right: 24px;
 
     i {
       margin-left: -25px;

@@ -17,7 +17,7 @@ export const VotingView = observer(() => {
     const choices: VoteChoice[] = [];
 
     const tx = await voteCollections(wallet, choices);
-    await sendAndConfirm(tx, "confirmed", true);
+    await sendAndConfirm(tx, { skipPreflight: true });
   };
 
   return (

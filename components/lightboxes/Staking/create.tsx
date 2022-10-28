@@ -103,7 +103,7 @@ export const CreateStake = observer(() => {
       const ix2 = await depositTokens(connection, wallet, amount, lockDurationEnum);
       const tx = new Transaction().add(...ix1, ...ix2);
 
-      await sendAndConfirm(tx, "confirmed", true);
+      await sendAndConfirm(tx, { skipPreflight: true });
     } catch (err) {
       console.log(err);
       errorCase(err);
