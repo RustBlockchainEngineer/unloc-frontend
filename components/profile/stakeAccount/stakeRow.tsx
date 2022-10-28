@@ -164,6 +164,7 @@ export const StakeRow = ({ lockedStakingAccount }: StakeRowProps): JSX.Element |
           <button
             type="button"
             onClick={Withdraw}
+            disabled={status === "locked"}
             className={`btn btn--md ${status === "locked" ? "btn--disabled" : "btn--primary"}`}>
             Withdraw
           </button>

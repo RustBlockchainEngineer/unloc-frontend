@@ -135,9 +135,10 @@ export const StakingActions = ({ mode }: StakingActionsProps): JSX.Element => {
         daysToLockDuration(durationToMerge as number),
       );
 
-      await sendAndConfirm(tx, { skipPreflight: true });
+      const { result } = await sendAndConfirm(tx, { skipPreflight: true });
+      if (result.value.err) throw Error("Merging transaction failed");
     } catch (err) {
-      console.log(err);
+      console.log({ err });
       errorCase(err);
     } finally {
       Lightbox.setVisible(false);
