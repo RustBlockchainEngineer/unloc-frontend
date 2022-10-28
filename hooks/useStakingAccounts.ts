@@ -13,7 +13,7 @@ interface StakingAccountState {
   info?: UserStakingsInfo;
 }
 
-const GET_STAKING_ACCOUNTS_KEY = "GET_USER_STAKING_ACCOUNTS";
+export const GET_STAKING_ACCOUNTS_KEY = "GET_USER_STAKING_ACCOUNTS";
 
 const fetchUserStakingAccounts =
   (connection: Connection) => async (_: string, walletBase58: string) => {
