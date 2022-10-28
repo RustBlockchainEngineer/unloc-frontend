@@ -2,7 +2,7 @@ import { ChangeEvent, FormEvent, useState } from "react";
 
 import { WalletNotConnectedError } from "@solana/wallet-adapter-base";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
-import { Transaction } from "@solana/web3.js";
+import { Transaction, TransactionInstruction } from "@solana/web3.js";
 import { StakingPoolInfo } from "@unloc-dev/unloc-sdk-staking";
 import { observer } from "mobx-react-lite";
 import Slider from "rc-slider";
@@ -23,6 +23,7 @@ import {
   createStakingUserOptionally,
   depositTokens,
   getTotalStakedAmount,
+  reallocUserAccountOptionally,
 } from "@utils/spl/unloc-staking";
 import { errorCase, successCase } from "@utils/toast-error-handler";
 
@@ -78,7 +79,7 @@ export const CreateStake = observer(() => {
   const { StakingStore, Lightbox, Wallet } = useStore();
   const { connection } = useConnection();
   const { publicKey: wallet } = useWallet();
-  const { isLoading, accounts } = useStakingAccounts();
+  const { isLoading, accounts, mutate } = useStakingAccounts();
   const { score } = useUserScore();
   const { data } = usePoolInfo();
 
@@ -99,15 +100,22 @@ export const CreateStake = observer(() => {
       const { uiAmount, lockDuration } = StakingStore.createFormInputs;
       const amount = uiAmountToAmount(uiAmount, UNLOC_MINT_DECIMALS);
       const lockDurationEnum = convertDayDurationToEnum(lockDuration);
+
       const ix1 = await createStakingUserOptionally(connection, wallet, UNLOC_STAKING_PID);
-      const ix2 = await depositTokens(
+
+      // Maybe we need to realloc?
+      let ix2: TransactionInstruction[] = [];
+      if (accounts?.info?.stakingAccounts)
+        ix2 = reallocUserAccountOptionally(wallet, accounts.info);
+
+      const ix3 = await depositTokens(
         connection,
         wallet,
         amount,
         lockDurationEnum,
         UNLOC_STAKING_PID,
       );
-      const tx = new Transaction().add(...ix1, ...ix2);
+      const tx = new Transaction().add(...ix1, ...ix2, ...ix3);
 
       const { result } = await sendAndConfirm(tx);
       if (result.value.err) {
@@ -115,6 +123,7 @@ export const CreateStake = observer(() => {
         throw Error("Failed to create a staking account.", { cause: result.value.err });
       }
       successCase("Staking account created");
+      void mutate();
     } catch (err) {
       console.log({ err });
       errorCase(err);

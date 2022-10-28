@@ -20,7 +20,7 @@ export const StakeRows = (): JSX.Element | null => {
     <ul role="list" ref={parent} className="profile__stake-accounts">
       {isFlexiActive && <FlexiStakeRow stakingData={flexiData.stakingData} />}
       {lockedAccounts?.map((row) => (
-        <StakeRow key={row.index} lockedStakingAccount={row} type="normal" />
+        <StakeRow key={row.index} lockedStakingAccount={row} />
       ))}
     </ul>
   );

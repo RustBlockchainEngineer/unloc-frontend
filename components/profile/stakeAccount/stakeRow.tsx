@@ -4,32 +4,34 @@ import { Transaction } from "@solana/web3.js";
 import {
   AllowedStakingDurationMonths,
   LockedStakingAccount,
+  StakingPoolInfo,
   WithdrawType,
 } from "@unloc-dev/unloc-sdk-staking";
 import BN from "bn.js";
 import dayjs from "dayjs";
 
-import { exitAmount } from "@components/profile/stakeAccount/calculations";
+// import { exitAmount } from "@components/profile/stakeAccount/calculations";
 import { UNLOC_MINT_DECIMALS } from "@constants/currency-constants";
+import { usePoolInfo } from "@hooks/usePoolInfo";
 import { useSendTransaction } from "@hooks/useSendTransaction";
 import { useStore } from "@hooks/useStore";
 import { amountToUiAmount, numVal, val } from "@utils/bignum";
+import { getEarnedSoFar } from "@utils/spl/unloc-score";
 import { depositTokens, lockDurationEnumToSeconds, withdrawTokens } from "@utils/spl/unloc-staking";
 import { errorCase } from "@utils/toast-error-handler";
 
 import { DurationProgress } from "./durationProgress";
 
-export type StakeType = "flexi" | "liqmin" | "normal";
 export interface StakeRowProps {
   lockedStakingAccount: LockedStakingAccount;
-  type: StakeType;
 }
 
-export const StakeRow = ({ lockedStakingAccount, type }: StakeRowProps): JSX.Element | null => {
+export const StakeRow = ({ lockedStakingAccount }: StakeRowProps): JSX.Element | null => {
   const { stakingData, index, indexInUse } = lockedStakingAccount;
   const { connection } = useConnection();
   const { publicKey: wallet } = useWallet();
   const { StakingStore, Lightbox } = useStore();
+  const { data, isLoading } = usePoolInfo();
   const sendAndConfirm = useSendTransaction();
 
   const uiAmount = amountToUiAmount(stakingData.initialTokensStaked, UNLOC_MINT_DECIMALS);
@@ -37,9 +39,10 @@ export const StakeRow = ({ lockedStakingAccount, type }: StakeRowProps): JSX.Ele
   const lockDurationInSeconds = lockDurationEnumToSeconds(stakingData.lockDuration);
   const endUnix = startUnix.addn(lockDurationInSeconds);
   const APY = 40;
+  const earned = isLoading ? "Loading..." : getEarnedSoFar(stakingData, data as StakingPoolInfo);
 
   const time = Date.now();
-  const status = type === "flexi" ? "flexi" : endUnix.gten(time) ? "locked" : "unlocked";
+  const status = endUnix.gten(time) ? "locked" : "unlocked";
 
   if (!indexInUse) return null;
 
@@ -64,7 +67,7 @@ export const StakeRow = ({ lockedStakingAccount, type }: StakeRowProps): JSX.Ele
       StakingStore.resetCreateFormInputs();
       Lightbox.setContent("relockStakes");
       Lightbox.setVisible(true);
-      await StakingStore.setAccountToMerge(index, stakingData.lockDuration, uiAmount);
+      StakingStore.setAccountToMerge(index, stakingData.lockDuration, uiAmount);
     } catch (err) {
       console.log(err);
       errorCase(err);
@@ -97,7 +100,7 @@ export const StakeRow = ({ lockedStakingAccount, type }: StakeRowProps): JSX.Ele
       StakingStore.resetCreateFormInputs();
       Lightbox.setContent("mergeStakes");
       Lightbox.setVisible(true);
-      await StakingStore.setAccountToMerge(index, stakingData.lockDuration, uiAmount);
+      StakingStore.setAccountToMerge(index, stakingData.lockDuration, uiAmount);
     } catch (err) {
       console.log(err);
       errorCase(err);
@@ -105,10 +108,7 @@ export const StakeRow = ({ lockedStakingAccount, type }: StakeRowProps): JSX.Ele
   };
 
   const renderActions = (): JSX.Element[] => {
-    const button = ["Deposit", "Relock"];
-    if (status === "flexi") button.splice(0, 1, "Withdraw");
-    else if (status === "unlocked" || status === "locked") button.push("Merge");
-    else throw Error("Stake status error");
+    const button = ["Relock", "Merge"];
 
     const actions = [Deposit, Withdraw, Relock, Merge];
 
@@ -134,25 +134,24 @@ export const StakeRow = ({ lockedStakingAccount, type }: StakeRowProps): JSX.Ele
           <i className={"icon icon--sm icon--currency--UNLOC"} />
         </div>
         <div className="stakerow__at-exit">
-          <p>{exitAmount(uiAmount)}</p>
+          <p>{earned?.toString()}</p>
           <span className="sub">Amount at exit</span>
         </div>
       </div>
-      {type !== "flexi" && (
-        <div className="stakerow__col--duration">
-          <div className="stakerow__title">
-            <p>Start date</p>
-            <p className="date">{dayjs(numVal(startUnix) * 1000).format("DD.MM.YYYY")}</p>
-          </div>
-          <div className="stakerow__progress">
-            <DurationProgress startUnix={numVal(startUnix)} endUnix={numVal(endUnix)} />
-          </div>
-          <div className="stakerow__title">
-            <p>End date</p>
-            <p className="date">{dayjs(numVal(endUnix) * 1000).format("DD.MM.YYYY")}</p>
-          </div>
+
+      <div className="stakerow__col--duration">
+        <div className="stakerow__title">
+          <p>Start date</p>
+          <p className="date">{dayjs(numVal(startUnix) * 1000).format("DD.MM.YYYY")}</p>
         </div>
-      )}
+        <div className="stakerow__progress">
+          <DurationProgress startUnix={numVal(startUnix)} endUnix={numVal(endUnix)} />
+        </div>
+        <div className="stakerow__title">
+          <p>End date</p>
+          <p className="date">{dayjs(numVal(endUnix) * 1000).format("DD.MM.YYYY")}</p>
+        </div>
+      </div>
       <div className="stakerow__col">
         <div className="stakerow__title">APY</div>
         <div className="stakerow__apr">{APY}%</div>
@@ -161,7 +160,15 @@ export const StakeRow = ({ lockedStakingAccount, type }: StakeRowProps): JSX.Ele
         <div className="stakerow__title">
           Status: <strong>{status}</strong>
         </div>
-        <div className="stakerow__actions">{renderActions()}</div>
+        <div className="stakerow__actions">
+          <button
+            type="button"
+            onClick={Withdraw}
+            className={`btn btn--md ${status === "locked" ? "btn--disabled" : "btn--primary"}`}>
+            Withdraw
+          </button>
+          {renderActions()}
+        </div>
       </div>
     </li>
   );

@@ -1,7 +1,7 @@
 import { useUserScore } from "@hooks/useUserScore";
 
 export const ProfileLevel = (): JSX.Element => {
-  const { profile } = useUserScore();
+  const { profile, score } = useUserScore();
 
   const level = profile.level;
   const feeReduction =
@@ -14,7 +14,9 @@ export const ProfileLevel = (): JSX.Element => {
   return (
     <article className="profile__level col">
       <div className="profile__num">
-        <span className="number">{level}</span>
+        <span className="number" title={score.toString()}>
+          {level}
+        </span>
         <span className="sub">Level</span>
       </div>
       <div className="profile__perks">
