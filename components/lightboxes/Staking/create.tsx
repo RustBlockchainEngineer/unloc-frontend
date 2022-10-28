@@ -8,7 +8,7 @@ import { observer } from "mobx-react-lite";
 import Slider from "rc-slider";
 
 import "rc-slider/assets/index.css";
-import { formatOptions } from "@constants/config";
+import { formatOptions, UNLOC_STAKING_PID } from "@constants/config";
 import { UNLOC_MINT_DECIMALS } from "@constants/currency-constants";
 import { usePoolInfo } from "@hooks/usePoolInfo";
 import { useSendTransaction } from "@hooks/useSendTransaction";
@@ -24,7 +24,7 @@ import {
   depositTokens,
   getTotalStakedAmount,
 } from "@utils/spl/unloc-staking";
-import { errorCase } from "@utils/toast-error-handler";
+import { errorCase, successCase } from "@utils/toast-error-handler";
 
 type InputEvent = ChangeEvent<HTMLInputElement>;
 
@@ -99,13 +99,24 @@ export const CreateStake = observer(() => {
       const { uiAmount, lockDuration } = StakingStore.createFormInputs;
       const amount = uiAmountToAmount(uiAmount, UNLOC_MINT_DECIMALS);
       const lockDurationEnum = convertDayDurationToEnum(lockDuration);
-      const ix1 = await createStakingUserOptionally(connection, wallet);
-      const ix2 = await depositTokens(connection, wallet, amount, lockDurationEnum);
+      const ix1 = await createStakingUserOptionally(connection, wallet, UNLOC_STAKING_PID);
+      const ix2 = await depositTokens(
+        connection,
+        wallet,
+        amount,
+        lockDurationEnum,
+        UNLOC_STAKING_PID,
+      );
       const tx = new Transaction().add(...ix1, ...ix2);
 
-      await sendAndConfirm(tx, { skipPreflight: true });
+      const { result } = await sendAndConfirm(tx);
+      if (result.value.err) {
+        console.log({ err: result.value.err });
+        throw Error("Failed to create a staking account.", { cause: result.value.err });
+      }
+      successCase("Staking account created");
     } catch (err) {
-      console.log(err);
+      console.log({ err });
       errorCase(err);
     } finally {
       Lightbox.setVisible(false);

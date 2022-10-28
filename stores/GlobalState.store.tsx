@@ -16,6 +16,7 @@ export class GlobalStateStore {
   expireLoanDuration = 0;
   commitmentLevels: Commitment[] = ["processed", "confirmed", "finalized"];
   selectedCommitment: Commitment = "confirmed";
+  skipPreflight = false;
 
   constructor(rootStore: any) {
     makeAutoObservable(this);
@@ -58,5 +59,9 @@ export class GlobalStateStore {
 
   setCommitment(level: Commitment): void {
     this.selectedCommitment = level;
+  }
+
+  setSkipPreflight(value: boolean) {
+    this.skipPreflight = value;
   }
 }
