@@ -1,5 +1,6 @@
 import { useState, useEffect, useContext } from "react";
 
+import { getAssociatedTokenAddressSync } from "@solana/spl-token";
 import { useWallet, useConnection } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
 
@@ -7,6 +8,7 @@ import { config } from "@constants/config";
 import { currencies } from "@constants/currency";
 import { USDC_MINT_DEVNET, USDC_MINT, UNLOC_MINT_DEVNET } from "@constants/currency-constants";
 import { StoreContext } from "@pages/_app";
+import { UNLOC_MINT } from "@utils/spl/unloc-constants";
 
 export const useAccountChange = (
   callback: (solAmount: number, usdcAmount: number, unlocAmount: number) => void = (
@@ -110,6 +112,13 @@ export const useAccountChange = (
 
       setAccountChangeEventIds(accountChangeEventIds.concat(usdcChangeEventId));
     }
+
+    const unlocTokenAccount = getAssociatedTokenAddressSync(UNLOC_MINT, publicKey, true);
+    const unlocChangeId = connection.onAccountChange(
+      unlocTokenAccount,
+      async () => await fetchUlocBalance(),
+    );
+    setAccountChangeEventIds((prev) => prev.concat(unlocChangeId));
   };
 
   const accountChangeDestructor = (): void => {

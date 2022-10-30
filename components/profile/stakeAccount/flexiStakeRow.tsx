@@ -1,24 +1,19 @@
 import { WalletNotConnectedError } from "@solana/wallet-adapter-base";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
-import { Transaction } from "@solana/web3.js";
-import {
-  AllowedStakingDurationMonths,
-  FlexiStakingAccount,
-  RelockType,
-  WithdrawType,
-} from "@unloc-dev/unloc-sdk-staking";
-import BN from "bn.js";
+import { FlexiStakingAccount, WithdrawType } from "@unloc-dev/unloc-sdk-staking";
 import { toast } from "react-toastify";
 import { mutate } from "swr";
 
 import { UNLOC_MINT_DECIMALS } from "@constants/currency-constants";
 import { useSendTransaction } from "@hooks/useSendTransaction";
 import { GET_STAKING_ACCOUNTS_KEY } from "@hooks/useStakingAccounts";
+import { useStore } from "@hooks/useStore";
 import { amountToUiAmount } from "@utils/bignum";
-import { depositTokens, relockStakingAccount, withdrawTokens } from "@utils/spl/unloc-staking";
+import { withdrawTokens } from "@utils/spl/unloc-staking";
 import { errorCase } from "@utils/toast-error-handler";
 
 export const FlexiStakeRow = ({ stakingData }: FlexiStakingAccount): JSX.Element => {
+  const { Lightbox } = useStore();
   const { connection } = useConnection();
   const { publicKey: wallet } = useWallet();
 
@@ -47,35 +42,15 @@ export const FlexiStakeRow = ({ stakingData }: FlexiStakingAccount): JSX.Element
     }
   };
 
-  const handleRelock = async (): Promise<void> => {
-    try {
-      if (wallet == null) throw new WalletNotConnectedError();
-      const tx = await relockStakingAccount(
-        wallet,
-        { relockType: RelockType.Flexi, index: 0 },
-        AllowedStakingDurationMonths.Zero,
-      );
-      await sendAndConfirm(tx);
-    } catch (err) {
-      console.log(err);
-      errorCase(err);
-    }
-  };
   const handleDeposit = async (): Promise<void> => {
-    try {
-      if (wallet == null) throw new WalletNotConnectedError();
-      const ix = await depositTokens(
-        connection,
-        wallet,
-        new BN(10 ** 6),
-        AllowedStakingDurationMonths.Zero,
-      );
-      const tx = new Transaction().add(...ix);
-      await sendAndConfirm(tx);
-    } catch (err) {
-      console.log(err);
-      errorCase(err);
+    if (wallet == null) {
+      toast.error("Connect your wallet");
+      return;
     }
+
+    Lightbox.setVisible(false);
+    Lightbox.setContent("depositFlexi");
+    Lightbox.setVisible(true);
   };
 
   return (
@@ -106,10 +81,10 @@ export const FlexiStakeRow = ({ stakingData }: FlexiStakingAccount): JSX.Element
           <button onClick={handleDeposit} className="btn btn--md btn--primary">
             Deposit
           </button>
-          <button onClick={handleRelock} className="btn btn--md btn--primary">
-            Relock
-          </button>
-          <button onClick={handleWithdraw} className="btn btn--md btn--primary">
+          <button
+            title="This will withdraw all the staked tokens"
+            onClick={handleWithdraw}
+            className="btn btn--md btn--primary">
             Withdraw
           </button>
         </div>
