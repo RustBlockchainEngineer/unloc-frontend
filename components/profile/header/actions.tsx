@@ -7,13 +7,14 @@ import { observer } from "mobx-react-lite";
 
 import { useSendTransaction } from "@hooks/useSendTransaction";
 import { StoreContext } from "@pages/_app";
-import { reallocUserAccount, withdrawTokens } from "@utils/spl/unloc-staking";
+import { withdrawTokens } from "@utils/spl/unloc-staking";
 
 export const StakeActions = observer(() => {
   const { connection } = useConnection();
   const { publicKey: wallet } = useWallet();
   const { Lightbox, StakingStore } = useContext(StoreContext);
   const sendAndConfirm = useSendTransaction();
+
   const handleNewStake = (): void => {
     Lightbox.setVisible(false);
     // Reset the inputs
@@ -28,13 +29,7 @@ export const StakeActions = observer(() => {
       withType: WithdrawType.LiqMining,
       index: 0,
     });
-    await sendAndConfirm(tx, "confirmed", true);
-  };
-  const handleReallocUserAccount = async (): Promise<void> => {
-    if (wallet == null) throw new WalletNotConnectedError();
-
-    const tx = await reallocUserAccount(wallet);
-    await sendAndConfirm(tx, "confirmed", true);
+    await sendAndConfirm(tx, { skipPreflight: true });
   };
 
   return (
@@ -49,12 +44,12 @@ export const StakeActions = observer(() => {
       </div>
       <div className="separator" />
       <div className="stake__buttons">
-        <button onClick={handleReallocUserAccount} className="btn btn--md btn--primary">
-          Level Up
-        </button>
-        <button onClick={handleClaimRewards} className="btn btn--md btn--bordered">
+        <button onClick={handleClaimRewards} className="btn btn--md btn--primary">
           Claim Rewards
         </button>
+        {/* <button onClick={handleClaimRewards} className="btn btn--md btn--bordered">
+          Claim Rewards
+        </button> */}
       </div>
     </article>
   );

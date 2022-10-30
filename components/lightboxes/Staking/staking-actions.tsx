@@ -103,7 +103,9 @@ export const StakingActions = ({ mode }: StakingActionsProps): JSX.Element => {
 
   const { index, lockDuration, amount } = StakingStore.accountToMerge;
   const lockedAccounts = accounts?.info?.stakingAccounts.locked.lockedStakingsData;
-  const restOfLockedAccounts = lockedAccounts?.filter((acc) => acc.index !== index && acc.isActive);
+  const restOfLockedAccounts = lockedAccounts?.filter(
+    (acc) => acc.index !== index && acc.indexInUse,
+  );
 
   const actionButton = (): JSX.Element => {
     if (mode === "merge")
@@ -133,9 +135,10 @@ export const StakingActions = ({ mode }: StakingActionsProps): JSX.Element => {
         daysToLockDuration(durationToMerge as number),
       );
 
-      await sendAndConfirm(tx, "confirmed", true);
+      const { result } = await sendAndConfirm(tx, { skipPreflight: true });
+      if (result.value.err) throw Error("Merging transaction failed");
     } catch (err) {
-      console.log(err);
+      console.log({ err });
       errorCase(err);
     } finally {
       Lightbox.setVisible(false);
@@ -151,7 +154,7 @@ export const StakingActions = ({ mode }: StakingActionsProps): JSX.Element => {
         { relockType: RelockType.Flexi, index: 0 },
         daysToLockDuration(durationToMerge as number),
       );
-      await sendAndConfirm(tx, "confirmed", true);
+      await sendAndConfirm(tx, { skipPreflight: true });
     } catch (err) {
       console.log(err);
       errorCase(err);

@@ -75,6 +75,7 @@
     "react/prop-types": "off",
     "react/jsx-props-no-spreadint": "off",
     "@typescript-eslint/no-non-null-assertion": "off",
+    "@typescript-eslint/triple-slash-reference": "off",
     "no-unused-vars": "off",
     "@typescript-eslint/no-unused-vars": "warn",
     "@typescript-eslint/no-misused-promises": ["error", { "checksVoidReturn": false }],

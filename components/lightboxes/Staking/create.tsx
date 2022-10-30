@@ -2,13 +2,13 @@ import { ChangeEvent, FormEvent, useState } from "react";
 
 import { WalletNotConnectedError } from "@solana/wallet-adapter-base";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
-import { Transaction } from "@solana/web3.js";
-import { PoolInfo } from "@unloc-dev/unloc-sdk-staking";
+import { Transaction, TransactionInstruction } from "@solana/web3.js";
+import { StakingPoolInfo } from "@unloc-dev/unloc-sdk-staking";
 import { observer } from "mobx-react-lite";
 import Slider from "rc-slider";
 
 import "rc-slider/assets/index.css";
-import { formatOptions } from "@constants/config";
+import { formatOptions, UNLOC_STAKING_PID } from "@constants/config";
 import { UNLOC_MINT_DECIMALS } from "@constants/currency-constants";
 import { usePoolInfo } from "@hooks/usePoolInfo";
 import { useSendTransaction } from "@hooks/useSendTransaction";
@@ -23,8 +23,9 @@ import {
   createStakingUserOptionally,
   depositTokens,
   getTotalStakedAmount,
+  reallocUserAccountOptionally,
 } from "@utils/spl/unloc-staking";
-import { errorCase } from "@utils/toast-error-handler";
+import { errorCase, successCase } from "@utils/toast-error-handler";
 
 type InputEvent = ChangeEvent<HTMLInputElement>;
 
@@ -78,7 +79,7 @@ export const CreateStake = observer(() => {
   const { StakingStore, Lightbox, Wallet } = useStore();
   const { connection } = useConnection();
   const { publicKey: wallet } = useWallet();
-  const { isLoading, accounts } = useStakingAccounts();
+  const { isLoading, accounts, mutate } = useStakingAccounts();
   const { score } = useUserScore();
   const { data } = usePoolInfo();
 
@@ -99,13 +100,32 @@ export const CreateStake = observer(() => {
       const { uiAmount, lockDuration } = StakingStore.createFormInputs;
       const amount = uiAmountToAmount(uiAmount, UNLOC_MINT_DECIMALS);
       const lockDurationEnum = convertDayDurationToEnum(lockDuration);
-      const ix1 = await createStakingUserOptionally(connection, wallet);
-      const ix2 = await depositTokens(connection, wallet, amount, lockDurationEnum);
-      const tx = new Transaction().add(...ix1, ...ix2);
 
-      await sendAndConfirm(tx, "confirmed", true);
+      const ix1 = await createStakingUserOptionally(connection, wallet, UNLOC_STAKING_PID);
+
+      // Maybe we need to realloc?
+      let ix2: TransactionInstruction[] = [];
+      if (accounts?.info?.stakingAccounts)
+        ix2 = reallocUserAccountOptionally(wallet, accounts.info);
+
+      const ix3 = await depositTokens(
+        connection,
+        wallet,
+        amount,
+        lockDurationEnum,
+        UNLOC_STAKING_PID,
+      );
+      const tx = new Transaction().add(...ix1, ...ix2, ...ix3);
+
+      const { result } = await sendAndConfirm(tx);
+      if (result.value.err) {
+        console.log({ err: result.value.err });
+        throw Error("Failed to create a staking account.");
+      }
+      successCase("Staking account created");
+      void mutate();
     } catch (err) {
-      console.log(err);
+      console.log({ err });
       errorCase(err);
     } finally {
       Lightbox.setVisible(false);
@@ -121,7 +141,11 @@ export const CreateStake = observer(() => {
 
       // Set the score contribution that this stake would have
       const amount = uiAmountToAmount(uiAmount, UNLOC_MINT_DECIMALS);
-      const score = getUnlocScoreContributionForLightbox(amount, lockDuration, data as PoolInfo);
+      const score = getUnlocScoreContributionForLightbox(
+        amount,
+        lockDuration,
+        data as StakingPoolInfo,
+      );
       setUserScoreContribution(score.toString());
     }
   };
@@ -135,7 +159,11 @@ export const CreateStake = observer(() => {
 
     // Set the score contribution that this stake would have
     const amount = uiAmountToAmount(uiAmount, UNLOC_MINT_DECIMALS);
-    const score = getUnlocScoreContributionForLightbox(amount, durationInDays, data as PoolInfo);
+    const score = getUnlocScoreContributionForLightbox(
+      amount,
+      durationInDays,
+      data as StakingPoolInfo,
+    );
     setUserScoreContribution(score.toString());
   };
 

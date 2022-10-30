@@ -58,6 +58,8 @@ export const successCase = (status: string, param?: string): string | number => 
       return success(status);
     case "Loan Repayed, NFT is back in your wallet":
       return success(status);
+    case "Staking account created":
+      return success(status);
     case `NFT ${param as string} returned to the wallet`:
       return success(`NFT ${param as string} returned to the wallet`);
     default:

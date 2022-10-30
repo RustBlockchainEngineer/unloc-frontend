@@ -1,12 +1,12 @@
 import { useContext } from "react";
 
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
-import { PublicKey } from "@solana/web3.js";
+import { Keypair, PublicKey } from "@solana/web3.js";
 import { observer } from "mobx-react-lite";
 
 import { useSendTransaction } from "@hooks/useSendTransaction";
 import { StoreContext } from "@pages/_app";
-import { acceptOffer } from "@utils/spl/unloc-loan";
+import { acceptLoanOffer } from "@utils/spl/unloc-loan";
 import { errorCase, successCase } from "@utils/toast-error-handler";
 
 import { LendConfirmHeader } from "./LendConfirmHeader";
@@ -28,8 +28,10 @@ export const LendConfirmation = observer(() => {
       store.Lightbox.setCanClose(false);
       store.Lightbox.setVisible(true);
 
-      const tx = await acceptOffer(connection, wallet, new PublicKey(offerPublicKey));
-      await sendAndConfirm(tx);
+      const signers: Keypair[] = [];
+      const tx = await acceptLoanOffer(connection, wallet, new PublicKey(offerPublicKey), signers);
+      tx?.sign(...signers);
+      await sendAndConfirm(tx!);
       successCase("Loan Accepted");
     } catch (e: any) {
       errorCase(e);

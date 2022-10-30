@@ -1,7 +1,13 @@
 // eslint-disable-next-line import/named
 import { bignum } from "@metaplex-foundation/beet";
 import { getAssociatedTokenAddressSync } from "@solana/spl-token";
-import { Connection, PublicKey, Transaction, TransactionInstruction } from "@solana/web3.js";
+import {
+  Connection,
+  PublicKey,
+  SYSVAR_INSTRUCTIONS_PUBKEY,
+  Transaction,
+  TransactionInstruction,
+} from "@solana/web3.js";
 import {
   AllowedStakingDurationMonths,
   createCreateUserInstruction,
@@ -10,42 +16,41 @@ import {
   createRelockAccountInstruction,
   createStakeTokensInstruction,
   createUnstakeTokensInstruction,
-  PoolInfo,
-  // PROGRAM_ID,
+  StakingPoolInfo,
+  PROGRAM_ID,
   RelockOption,
   StakingAccounts,
   WithdrawOption,
+  UserStakingsInfo,
 } from "@unloc-dev/unloc-sdk-staking";
 import BN from "bn.js";
 import dayjs from "dayjs";
 
-import { UNLOC_STAKING_PID } from "@constants/config";
 import { val } from "@utils/bignum";
+
+import { DATA_ACCOUNT, UNLOC } from "./unloc-constants";
 
 /// ////////////
 // CONSTANTS //
 /// ////////////
-export const STAKING_PID = UNLOC_STAKING_PID;
-export const UNLOC_STAKING = Buffer.from("unloc-staking");
-export const LOCKED_TOKENS = Buffer.from("locked-tokens");
-export const USER_STAKE_INFO = Buffer.from("user-stake-info");
-export const FLEXI = Buffer.from("always-unlocked");
-export const LIQUIDITY_MINING = Buffer.from("2-months-lock");
-export const UNLOC_SCORE = Buffer.from("unloc-score");
-export const STAKING_POOL = Buffer.from("staking-pool");
-export const DATA_ACCOUNT = Buffer.from("data-account");
-export const STAKING_VAULT = Buffer.from("staking-vault");
-export const REWARDS_VAULT = Buffer.from("rewards-vault");
-export const TOKEN_ACCOUNT = Buffer.from("token-account");
-export const PENALITY_DEPOSIT_VAULT = Buffer.from("penality-deposit-vault");
-export const POOL_UPDATE_CONFIGS = Buffer.from("pool-update-configs");
+export const STAKING_PID: PublicKey = PROGRAM_ID;
+export const STAKING_PROGRAM = Buffer.from("stakingProgram");
+export const STAKING_POOL_INFO = Buffer.from("stakingPoolInfo");
+export const USER_STAKINGS_INFO = Buffer.from("userStakingsInfo");
+export const USER_UNLOC_SCORE_INFO = Buffer.from("unlocScoreInfo");
+export const POOL_UPDATE_CONFIGS_INFO = Buffer.from("poolUpdateConfigsInfo");
 
+export const STAKING_REWARDS_VAULT = Buffer.from("stakingRewardsVault");
+export const STAKING_DEPOSITS_VAULT = Buffer.from("stakingDepositsVault");
+export const PENALITY_DEPOSIT_VAULT = Buffer.from("penalityDepositVault");
+
+export const MAX_ACTIVE_LOCKED_STAKING_ACCOUNTS = 500;
 /// //////////////
 // PDA helpers //
 /// //////////////
-export const getStakingPoolKey = (programId: PublicKey = STAKING_PID): PublicKey => {
+export const getStakingPoolKey = (programId: PublicKey = STAKING_PID) => {
   return PublicKey.findProgramAddressSync(
-    [UNLOC_STAKING, STAKING_POOL, DATA_ACCOUNT],
+    [UNLOC, STAKING_PROGRAM, STAKING_POOL_INFO, DATA_ACCOUNT],
     programId,
   )[0];
 };
@@ -53,19 +58,34 @@ export const getUserStakingsKey = (
   userWallet: PublicKey,
   poolKey: PublicKey = getStakingPoolKey(),
   programId: PublicKey = STAKING_PID,
-): PublicKey => {
+) => {
   return PublicKey.findProgramAddressSync(
-    [UNLOC_STAKING, USER_STAKE_INFO, userWallet.toBuffer(), poolKey.toBuffer(), DATA_ACCOUNT],
+    [
+      UNLOC,
+      STAKING_PROGRAM,
+      USER_STAKINGS_INFO,
+      userWallet.toBuffer(),
+      poolKey.toBuffer(),
+      DATA_ACCOUNT,
+    ],
     programId,
   )[0];
 };
+
 export const getUserScoreKey = (
   userWallet: PublicKey,
   poolKey: PublicKey = getStakingPoolKey(),
   programId: PublicKey = STAKING_PID,
-): PublicKey => {
+) => {
   return PublicKey.findProgramAddressSync(
-    [UNLOC_STAKING, UNLOC_SCORE, userWallet.toBuffer(), poolKey.toBuffer(), DATA_ACCOUNT],
+    [
+      UNLOC,
+      STAKING_PROGRAM,
+      USER_UNLOC_SCORE_INFO,
+      userWallet.toBuffer(),
+      poolKey.toBuffer(),
+      DATA_ACCOUNT,
+    ],
     programId,
   )[0];
 };
@@ -76,9 +96,11 @@ export const createStakingUserOptionally = async (
   connection: Connection,
   userWallet: PublicKey,
   programId = STAKING_PID,
-): Promise<TransactionInstruction[]> => {
-  const poolInfo = getStakingPoolKey(programId);
-  const userStakingsInfo = getUserStakingsKey(userWallet, programId);
+) => {
+  const stakingPoolInfo = getStakingPoolKey(programId);
+  const userStakingsInfo = getUserStakingsKey(userWallet, stakingPoolInfo, programId);
+  const unlocScoreInfo = getUserScoreKey(userWallet, stakingPoolInfo, programId);
+
   const instructions: TransactionInstruction[] = [];
   const check = await isAccountInitialized(connection, userStakingsInfo);
   if (!check)
@@ -86,9 +108,10 @@ export const createStakingUserOptionally = async (
     instructions.push(
       createCreateUserInstruction(
         {
-          poolInfo,
+          stakingPoolInfo,
           userWallet,
           userStakingsInfo,
+          unlocScoreInfo,
         },
         programId,
       ),
@@ -102,21 +125,22 @@ export const depositTokens = async (
   amount: bignum,
   lockDuration: AllowedStakingDurationMonths,
   programId = STAKING_PID,
-): Promise<TransactionInstruction[]> => {
-  const poolInfo = getStakingPoolKey(programId);
-  const poolData = await PoolInfo.fromAccountAddress(connection, poolInfo);
-  const userStakingsInfo = getUserStakingsKey(userWallet, programId);
-  const userTokenAccountToDebit = getAssociatedTokenAddressSync(poolData.tokenMint, userWallet);
+) => {
+  const stakingPoolInfo = getStakingPoolKey(programId);
+  const poolData = await StakingPoolInfo.fromAccountAddress(connection, stakingPoolInfo);
+  const userStakingsInfo = getUserStakingsKey(userWallet, stakingPoolInfo, programId);
+  const userUnlocAtaToDebit = getAssociatedTokenAddressSync(poolData.unlocTokenMint, userWallet);
   const instructions: TransactionInstruction[] = [];
   instructions.push(
     createStakeTokensInstruction(
       {
         userWallet,
-        poolInfo,
+        stakingPoolInfo,
         userStakingsInfo,
-        userTokenAccountToDebit,
-        stakingVault: poolData.stakingVault,
-        tokenMint: poolData.tokenMint,
+        userUnlocAtaToDebit,
+        stakingDepositsVault: poolData.stakingDepositsVault,
+        unlocTokenMint: poolData.unlocTokenMint,
+        instructionSysvarAccount: SYSVAR_INSTRUCTIONS_PUBKEY,
       },
       {
         amount,
@@ -134,22 +158,22 @@ export const withdrawTokens = async (
   userWallet: PublicKey,
   withdrawOption: WithdrawOption,
   programId = STAKING_PID,
-): Promise<Transaction> => {
-  const poolInfo = getStakingPoolKey(programId);
-  const poolData = await PoolInfo.fromAccountAddress(connection, poolInfo);
-  const userStakingsInfo = getUserStakingsKey(userWallet, programId);
-  const userTokenAccountToCredit = getAssociatedTokenAddressSync(poolData.tokenMint, userWallet);
+) => {
+  const stakingPoolInfo = getStakingPoolKey(programId);
+  const poolData = await StakingPoolInfo.fromAccountAddress(connection, stakingPoolInfo);
+  const userStakingsInfo = getUserStakingsKey(userWallet, stakingPoolInfo, programId);
+  const userUnlocAtaToCredit = getAssociatedTokenAddressSync(poolData.unlocTokenMint, userWallet);
   const instructions: TransactionInstruction[] = [];
   instructions.push(
     createUnstakeTokensInstruction(
       {
         userWallet,
-        poolInfo,
+        stakingPoolInfo,
         userStakingsInfo,
-        userTokenAccountToCredit,
-        stakingVault: poolData.stakingVault,
-        rewardsVault: poolData.rewardsVault,
-        tokenMint: poolData.tokenMint,
+        userUnlocAtaToCredit,
+        stakingDepositsVault: poolData.stakingDepositsVault,
+        stakingRewardsVault: poolData.stakingRewardsVault,
+        unlocTokenMint: poolData.unlocTokenMint,
         penalityDepositVault: poolData.penalityDepositVault,
       },
       {
@@ -160,19 +184,36 @@ export const withdrawTokens = async (
   );
   return new Transaction().add(...instructions);
 };
-
-export const reallocUserAccount = async (
+export const reallocUserAccountOptionally = (
   userWallet: PublicKey,
+  userStakingInfo: UserStakingsInfo,
   programId = STAKING_PID,
-): Promise<Transaction> => {
-  const poolInfo = getStakingPoolKey(programId);
-  const userStakingsInfo = getUserStakingsKey(userWallet, programId);
+) => {
+  // CHECK if reallocation is necessary
+  const instructions: TransactionInstruction[] = [];
+  if (
+    userStakingInfo &&
+    userStakingInfo.stakingAccounts.locked.numActiveLockedStakingAccounts ===
+      userStakingInfo.stakingAccounts.locked.currentMaxLockedStakingsPossible &&
+    userStakingInfo.stakingAccounts.locked.currentMaxLockedStakingsPossible <
+      MAX_ACTIVE_LOCKED_STAKING_ACCOUNTS
+  ) {
+    // Reallocation needed
+    const ix = reallocUserAccount(userWallet, programId);
+    instructions.push(...ix.instructions);
+  }
+
+  return instructions;
+};
+export const reallocUserAccount = (userWallet: PublicKey, programId = STAKING_PID) => {
+  const stakingPoolInfo = getStakingPoolKey(programId);
+  const userStakingsInfo = getUserStakingsKey(userWallet, stakingPoolInfo, programId);
   const instructions: TransactionInstruction[] = [];
   instructions.push(
     createIncreaseUserStorageInstruction(
       {
         userWallet,
-        poolInfo,
+        stakingPoolInfo,
         userStakingsInfo,
       },
       programId,
@@ -186,15 +227,15 @@ export const relockStakingAccount = async (
   relockOption: RelockOption,
   lockDuration: AllowedStakingDurationMonths,
   programId = STAKING_PID,
-): Promise<Transaction> => {
-  const poolInfo = getStakingPoolKey(programId);
-  const userStakingsInfo = getUserStakingsKey(userWallet, programId);
+) => {
+  const stakingPoolInfo = getStakingPoolKey(programId);
+  const userStakingsInfo = getUserStakingsKey(userWallet, stakingPoolInfo, programId);
   const instructions: TransactionInstruction[] = [];
   instructions.push(
     createRelockAccountInstruction(
       {
         userWallet,
-        poolInfo,
+        stakingPoolInfo,
         userStakingsInfo,
       },
       {
@@ -213,9 +254,9 @@ export const mergeStakingAccounts = async (
   indexes: number[],
   lockDuration: AllowedStakingDurationMonths,
   programId = STAKING_PID,
-): Promise<Transaction> => {
-  const poolInfo = getStakingPoolKey();
-  const userStakingsInfo = getUserStakingsKey(userWallet);
+) => {
+  const stakingPoolInfo = getStakingPoolKey(programId);
+  const userStakingsInfo = getUserStakingsKey(userWallet, stakingPoolInfo, programId);
   const instructions: TransactionInstruction[] = [];
   // eslint-disable-next-line array-callback-return
   indexes.map((index2) => {
@@ -223,7 +264,7 @@ export const mergeStakingAccounts = async (
       createMergeAccountsInstruction(
         {
           userWallet,
-          poolInfo,
+          stakingPoolInfo,
           userStakingsInfo,
         },
         {
@@ -241,26 +282,27 @@ export const mergeStakingAccounts = async (
 /// //////////////////
 // Other utilities //
 /// //////////////////
-export const lockDurationEnumToSeconds = (duration: AllowedStakingDurationMonths): number => {
+export const lockDurationEnumToSeconds = (duration: AllowedStakingDurationMonths) => {
+  const dayjslib = dayjs as any;
   switch (duration) {
     case AllowedStakingDurationMonths.Zero:
       return 0;
     case AllowedStakingDurationMonths.One:
-      return dayjs.duration(1, "month").asSeconds();
+      return dayjslib.duration(1, "month").asSeconds();
     case AllowedStakingDurationMonths.Two:
-      return dayjs.duration(2, "month").asSeconds();
+      return dayjslib.duration(2, "month").asSeconds();
     case AllowedStakingDurationMonths.Three:
-      return dayjs.duration(3, "month").asSeconds();
+      return dayjslib.duration(3, "month").asSeconds();
     case AllowedStakingDurationMonths.Six:
-      return dayjs.duration(6, "month").asSeconds();
+      return dayjslib.duration(6, "month").asSeconds();
     case AllowedStakingDurationMonths.Twelve:
-      return dayjs.duration(12, "month").asSeconds();
+      return dayjslib.duration(12, "month").asSeconds();
     case AllowedStakingDurationMonths.TwentyFour:
-      return dayjs.duration(24, "month").asSeconds();
+      return dayjslib.duration(24, "month").asSeconds();
   }
 };
 
-export const convertDayDurationToEnum = (days: number): number => {
+export const convertDayDurationToEnum = (days: number) => {
   switch (days) {
     case 0:
       return AllowedStakingDurationMonths.Zero;
@@ -281,8 +323,8 @@ export const convertDayDurationToEnum = (days: number): number => {
   }
 };
 
-export const getTotalNumberOfStakingAccounts = (stakingInfo?: StakingAccounts): number => {
-  if (stakingInfo == null) return 0;
+export const getTotalNumberOfStakingAccounts = (stakingInfo?: StakingAccounts) => {
+  if (!stakingInfo) return 0;
 
   const locked = stakingInfo?.locked.numActiveLockedStakingAccounts;
   const flexi = val(stakingInfo.flexi.stakingData.initialTokensStaked).gtn(0) ? 1 : 0;
@@ -290,11 +332,11 @@ export const getTotalNumberOfStakingAccounts = (stakingInfo?: StakingAccounts): 
   return locked + flexi + liqMin;
 };
 
-export const getTotalStakedAmount = (stakingInfo?: StakingAccounts): BN => {
-  if (stakingInfo == null) return new BN(0);
+export const getTotalStakedAmount = (stakingInfo?: StakingAccounts) => {
+  if (!stakingInfo) return new BN(0);
 
   const totalLocked = stakingInfo.locked.lockedStakingsData.reduce<BN>((sum, lockedAcc) => {
-    return lockedAcc.isActive ? sum.add(val(lockedAcc.stakingData.initialTokensStaked)) : sum;
+    return lockedAcc.indexInUse ? sum.add(val(lockedAcc.stakingData.initialTokensStaked)) : sum;
   }, new BN(0));
 
   const flexi = stakingInfo.flexi.stakingData.initialTokensStaked;
@@ -302,14 +344,14 @@ export const getTotalStakedAmount = (stakingInfo?: StakingAccounts): BN => {
   return totalLocked.add(val(flexi)).add(val(liqMin));
 };
 
-export const getTotalClaimableAmount = (stakingInfo?: StakingAccounts): BN => {
-  if (stakingInfo == null) return new BN(0);
+export const getTotalClaimableAmount = (stakingInfo?: StakingAccounts) => {
+  if (!stakingInfo) return new BN(0);
   const time = Math.round(Date.now() / 1000);
 
   // Regular locked staking accounts
   const totalLockedAvailable = stakingInfo.locked.lockedStakingsData.reduce<BN>(
     (sum, lockedAcc) => {
-      if (lockedAcc.isActive) {
+      if (lockedAcc.indexInUse) {
         const unlockTime = val(lockedAcc.stakingData.accountLastUpdatedAt).add(
           val(lockedAcc.stakingData.lockDuration),
         );
@@ -339,13 +381,10 @@ export const getTotalClaimableAmount = (stakingInfo?: StakingAccounts): BN => {
   return totalLockedAvailable.add(flexi).add(liqMin);
 };
 
-export const isAccountInitialized = async (
-  connection: Connection,
-  address: PublicKey,
-): Promise<boolean> => {
+export const isAccountInitialized = async (connection: Connection, address: PublicKey) => {
   try {
     const result = await connection.getAccountInfo(address);
-    return !(result == null) && !!result.data;
+    return !!result && !!result.data;
   } catch (err) {
     return false;
   }

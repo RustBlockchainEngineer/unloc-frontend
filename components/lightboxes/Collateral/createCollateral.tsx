@@ -11,7 +11,7 @@ import { StoreDataAdapter } from "@components/storeDataAdapter";
 import { useSendTransaction } from "@hooks/useSendTransaction";
 import { StoreContext } from "@pages/_app";
 import { fetchWhitelistedUserNfts } from "@utils/spl/metadata";
-import { createOffer } from "@utils/spl/unloc-loan";
+import { createLoanOffer } from "@utils/spl/unloc-loan";
 import { errorCase, successCase } from "@utils/toast-error-handler";
 
 import { CircleProcessing } from "../circleProcessing";
@@ -50,7 +50,7 @@ export const CreateCollateral = observer(() => {
       store.Lightbox.setCanClose(false);
       setProcessing(true);
 
-      const tx = createOffer(wallet, selectedMint);
+      const tx = await createLoanOffer(connection, wallet, selectedMint);
       await sendAndConfirm(tx);
       store.MyOffers.setActiveCategory("deposited");
 

@@ -5,7 +5,7 @@ import { Connection, PublicKey } from "@solana/web3.js";
 import { UserStakingsInfo } from "@unloc-dev/unloc-sdk-staking";
 import useSWR, { MutatorCallback, MutatorOptions } from "swr";
 
-import { requestLogger } from "@utils/middleware";
+// import { requestLogger } from "@utils/middleware";
 import { getUserStakingsKey } from "@utils/spl/unloc-staking";
 
 interface StakingAccountState {
@@ -13,7 +13,7 @@ interface StakingAccountState {
   info?: UserStakingsInfo;
 }
 
-const GET_STAKING_ACCOUNTS_KEY = "GET_USER_STAKING_ACCOUNTS";
+export const GET_STAKING_ACCOUNTS_KEY = "GET_USER_STAKING_ACCOUNTS";
 
 const fetchUserStakingAccounts =
   (connection: Connection) => async (_: string, walletBase58: string) => {
@@ -43,7 +43,7 @@ export const useStakingAccounts = (): {
   const { error, data, mutate } = useSWR<StakingAccountState, Error>(
     publicKey != null ? [GET_STAKING_ACCOUNTS_KEY, publicKey.toString()] : null,
     fetcher,
-    { refreshInterval: 45000, use: [requestLogger], errorRetryCount: 3 },
+    { refreshInterval: 45000, errorRetryCount: 3 },
   );
 
   return {

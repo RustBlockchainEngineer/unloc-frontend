@@ -11,24 +11,22 @@ interface SendTransactionReturnType {
   result: RpcResponseAndContext<SignatureResult>;
 }
 
+interface SendTransactionOptions {
+  commitment?: Commitment;
+  skipPreflight?: boolean;
+}
+
 export const useSendTransaction = (): ((
   transaction: Transaction,
-  commitment?: Commitment,
-  skipPreflight?: boolean,
+  opts?: SendTransactionOptions,
 ) => Promise<SendTransactionReturnType>) => {
-  const store = useContext(StoreContext);
-  const { selectedCommitment } = store.GlobalState;
+  const { GlobalState } = useContext(StoreContext);
 
   const { connection } = useConnection();
   const { publicKey, sendTransaction } = useWallet();
 
   return useCallback(
-    async (
-      transaction: Transaction,
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-      commitment = selectedCommitment as Commitment,
-      skipPreflight?: boolean,
-    ) => {
+    async (transaction: Transaction, opts?: SendTransactionOptions) => {
       if (publicKey === null) throw new WalletNotConnectedError();
 
       const {
@@ -38,18 +36,24 @@ export const useSendTransaction = (): ((
 
       const signature = await sendTransaction(transaction, connection, {
         minContextSlot,
-        skipPreflight,
+        skipPreflight: opts?.skipPreflight ? opts.skipPreflight : GlobalState.skipPreflight,
       });
 
       console.log(signature);
 
       const result = await connection.confirmTransaction(
         { blockhash, lastValidBlockHeight, signature },
-        commitment,
+        opts?.commitment ? opts.commitment : GlobalState.selectedCommitment,
       );
 
       return { signature, result };
     },
-    [selectedCommitment, publicKey, connection, sendTransaction],
+    [
+      GlobalState.selectedCommitment,
+      GlobalState.skipPreflight,
+      publicKey,
+      connection,
+      sendTransaction,
+    ],
   );
 };

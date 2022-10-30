@@ -3,13 +3,14 @@ import { useCallback, useContext } from "react";
 import { Metadata } from "@metaplex-foundation/mpl-token-metadata";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
+import BN from "bn.js";
 import { observer } from "mobx-react-lite";
 import Image from "next/image";
 
 import { useOffChainMetadata } from "@hooks/useOffChainMetadata";
 import { useSendTransaction } from "@hooks/useSendTransaction";
 import { StoreContext } from "@pages/_app";
-import { createSubOffer } from "@utils/spl/unloc-loan";
+import { createLoanSubOffer } from "@utils/spl/unloc-loan";
 import { errorCase, successCase } from "@utils/toast-error-handler";
 
 export const ConfirmLoan = observer(() => {
@@ -31,14 +32,14 @@ export const ConfirmLoan = observer(() => {
 
       try {
         const nftMint = new PublicKey(store.MyOffers.activeNftMint);
-        const tx = await createSubOffer(
+        const tx = await createLoanSubOffer(
           connection,
           wallet,
+          new BN(amount),
+          new BN(duration),
+          new BN(APR),
           nftMint,
-          currency,
-          APR,
-          duration,
-          amount,
+          new PublicKey(currency),
         );
         await sendAndConfirm(tx);
         successCase("Loan Offer Created");

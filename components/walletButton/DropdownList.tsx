@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useState, RefObject } from "react";
+import { useCallback, useContext, useEffect, useState, RefObject, ChangeEvent } from "react";
 
 import { useWallet } from "@solana/wallet-adapter-react";
 import { Commitment } from "@solana/web3.js";
@@ -38,6 +38,11 @@ export const DropdownList = observer(({ refer, active, openModal, base58 }: Drop
   const commitmentLevelHandler = (level: Commitment | string): void => {
     store.GlobalState.setCommitment(level as Commitment);
     localStorage.setItem("commitment_level", level);
+  };
+
+  const { skipPreflight } = store.GlobalState;
+  const handleSkipPreflightToggle = (e: ChangeEvent<HTMLInputElement>) => {
+    store.GlobalState.setSkipPreflight(e.target.checked);
   };
 
   useEffect(() => {
@@ -116,6 +121,16 @@ export const DropdownList = observer(({ refer, active, openModal, base58 }: Drop
         />
       </li>
       <span className="wallet-adapter-dropdown-list-item divider" />
+      <li className="wallet-adapter-dropdown-list-item" role="menuitem">
+        <label htmlFor="skipPreflight">Skip preflight checks</label>
+        <input
+          type="checkbox"
+          id="skipPreflight"
+          name="skipPreflight"
+          defaultChecked={skipPreflight}
+          onChange={handleSkipPreflightToggle}
+        />
+      </li>
       <li className="wallet-adapter-dropdown-list-item endpoint" role="menuitem">
         Select endpoint
         <CustomSelect
