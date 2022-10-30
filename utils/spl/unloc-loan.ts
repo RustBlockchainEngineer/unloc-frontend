@@ -1,10 +1,11 @@
-import { PROGRAM_ID as TOKEN_META_PID } from "@metaplex-foundation/mpl-token-metadata";
+import { Metadata, PROGRAM_ID as TOKEN_META_PID } from "@metaplex-foundation/mpl-token-metadata";
 import { NATIVE_MINT } from "@solana/spl-token";
 import {
   Connection,
   Keypair,
   PublicKey,
   SYSVAR_CLOCK_PUBKEY,
+  SYSVAR_INSTRUCTIONS_PUBKEY,
   Transaction,
   TransactionInstruction,
 } from "@solana/web3.js";
@@ -31,6 +32,12 @@ import {
   getWalletTokenAccount,
 } from "./common";
 import { BPF_LOADER_UPGRADEABLE_PROGRAM_ID, WSOL_MINT } from "./unloc-constants";
+import {
+  getCollectionLoanLiqMinEmissionsInfoKey,
+  getCollectionLoanLiqMinEmissionsVaultKey,
+  getLoanSubofferRewardsInfoKey,
+  LIQ_MINING_PID,
+} from "./unloc-liq-mining";
 import { getStakingPoolKey, getUserScoreKey, STAKING_PID } from "./unloc-staking";
 
 /// ////////////
@@ -207,7 +214,7 @@ export const createLoanSubOffer = async (
         userScoreInfo,
         stakingProgram,
         clock: SYSVAR_CLOCK_PUBKEY,
-      } as any,
+      },
       {
         offerAmount,
         loanDuration,
@@ -281,6 +288,7 @@ export const acceptLoanOffer = async (
   subOffer: PublicKey,
   signers: Keypair[] = [],
   programId = LOAN_PID,
+  liqMinProgram = LIQ_MINING_PID,
 ) => {
   const instructions: TransactionInstruction[] = [];
   const subOfferData = await SubOffer.fromAccountAddress(connection, subOffer);
@@ -315,6 +323,18 @@ export const acceptLoanOffer = async (
       return null;
     }
   }
+
+  const metadata = await Metadata.fromAccountAddress(connection, subOfferData.nftMint);
+  const collectionNft = metadata.collection!.key;
+  const collectionLoanLiqMinEmissionsInfo = getCollectionLoanLiqMinEmissionsInfoKey(
+    collectionNft,
+    liqMinProgram,
+  );
+  const collectionLoanLiqMinEmissionsVault = getCollectionLoanLiqMinEmissionsVaultKey(
+    collectionNft,
+    liqMinProgram,
+  );
+  const activeSubofferLoanRewardsInfo = getLoanSubofferRewardsInfoKey(subOffer, liqMinProgram);
   instructions.push(
     createAcceptOfferInstruction(
       {
@@ -327,6 +347,14 @@ export const acceptLoanOffer = async (
         borrowerOfferVault,
         lenderOfferVault,
         clock: SYSVAR_CLOCK_PUBKEY,
+
+        collectionLoanLiqMinEmissionsInfo,
+        activeSubofferLoanRewardsInfo,
+        collectionLoanLiqMinEmissionsVault,
+        collectionNft,
+        instructionSysvarAccount: SYSVAR_INSTRUCTIONS_PUBKEY,
+        loanProgram: programId,
+        liqMinProgram,
       },
       programId,
     ),
@@ -341,6 +369,7 @@ export const repayLoan = async (
   signers: Keypair[] = [],
   programId = LOAN_PID,
   stakingProgram = STAKING_PID,
+  liqMinProgram = LIQ_MINING_PID,
 ) => {
   const instructions: TransactionInstruction[] = [];
   const globalState = getLoanGlobalStateKey(programId);
@@ -393,6 +422,18 @@ export const repayLoan = async (
   const borrowerUserScoreInfo = getUserScoreKey(borrower, stakingPoolInfo, stakingProgram);
   const lenderUserScoreInfo = getUserScoreKey(lender, stakingPoolInfo, stakingProgram);
   const metadataProgram = TOKEN_META_PID;
+
+  const metadata = await Metadata.fromAccountAddress(connection, subOfferData.nftMint);
+  const collectionNft = metadata.collection!.key;
+  const collectionLoanLiqMinEmissionsInfo = getCollectionLoanLiqMinEmissionsInfoKey(
+    collectionNft,
+    liqMinProgram,
+  );
+  const collectionLoanLiqMinEmissionsVault = getCollectionLoanLiqMinEmissionsVaultKey(
+    collectionNft,
+    liqMinProgram,
+  );
+  const activeSubofferLoanRewardsInfo = getLoanSubofferRewardsInfoKey(subOffer, liqMinProgram);
   instructions.push(
     createRepayLoanInstruction(
       {
@@ -416,7 +457,15 @@ export const repayLoan = async (
         edition,
         metadataProgram,
         clock: SYSVAR_CLOCK_PUBKEY,
-      } as any,
+
+        collectionLoanLiqMinEmissionsInfo,
+        activeSubofferLoanRewardsInfo,
+        collectionLoanLiqMinEmissionsVault,
+        collectionNft,
+        instructionSysvarAccount: SYSVAR_INSTRUCTIONS_PUBKEY,
+        loanProgram: programId,
+        liqMinProgram,
+      },
       programId,
     ),
   );
@@ -430,6 +479,7 @@ export const claimLoanCollateral = async (
   signers: Keypair[] = [],
   programId = LOAN_PID,
   stakingProgram = STAKING_PID,
+  liqMinProgram = LIQ_MINING_PID,
 ) => {
   const instructions: TransactionInstruction[] = [];
   const globalState = getLoanGlobalStateKey(programId);
@@ -474,6 +524,18 @@ export const claimLoanCollateral = async (
   const stakingPoolInfo = getStakingPoolKey(stakingProgram);
   const lenderUserScoreInfo = getUserScoreKey(lender, stakingPoolInfo, stakingProgram);
   const metadataProgram = TOKEN_META_PID;
+
+  const metadata = await Metadata.fromAccountAddress(connection, subOfferData.nftMint);
+  const collectionNft = metadata.collection!.key;
+  const collectionLoanLiqMinEmissionsInfo = getCollectionLoanLiqMinEmissionsInfoKey(
+    collectionNft,
+    liqMinProgram,
+  );
+  const collectionLoanLiqMinEmissionsVault = getCollectionLoanLiqMinEmissionsVaultKey(
+    collectionNft,
+    liqMinProgram,
+  );
+  const activeSubofferLoanRewardsInfo = getLoanSubofferRewardsInfoKey(subOffer, liqMinProgram);
   instructions.push(
     createClaimCollateralInstruction(
       {
@@ -495,7 +557,15 @@ export const claimLoanCollateral = async (
         stakingProgram,
         metadataProgram,
         clock: SYSVAR_CLOCK_PUBKEY,
-      } as any,
+
+        collectionLoanLiqMinEmissionsInfo,
+        activeSubofferLoanRewardsInfo,
+        collectionLoanLiqMinEmissionsVault,
+        collectionNft,
+        instructionSysvarAccount: SYSVAR_INSTRUCTIONS_PUBKEY,
+        loanProgram: programId,
+        liqMinProgram,
+      },
       programId,
     ),
   );
