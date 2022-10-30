@@ -12,7 +12,6 @@ import dayjs from "dayjs";
 
 import { exitAmount } from "@components/profile/stakeAccount/calculations";
 import { UNLOC_MINT_DECIMALS } from "@constants/currency-constants";
-// import { usePoolInfo } from "@hooks/usePoolInfo";
 import { useSendTransaction } from "@hooks/useSendTransaction";
 import { useStore } from "@hooks/useStore";
 import { amountToUiAmount, numVal, val } from "@utils/bignum";
@@ -96,11 +95,12 @@ export const StakeRow = ({ lockedStakingAccount }: StakeRowProps): JSX.Element |
       <div className="stakerow__col--id">
         <div className="stakerow__id">{index + 1}</div>
       </div>
-      <div className="stakerow__col">
-        <div className="stakerow__title">Staked amount</div>
-        <div className="stakerow__amount">
-          {uiAmount.toLocaleString("en-us")}
-          <i className={"icon icon--sm icon--currency--UNLOC"} />
+      <div className="stakerow__col--amount">
+        <div className="wrap">
+          <div className="stakerow__title">
+            Staked amount <i className={"icon icon--tn icon--currency--UNLOC"} />
+          </div>
+          <div className="stakerow__amount">{uiAmount.toLocaleString("en-us")}</div>
         </div>
         <div className="stakerow__at-exit">
           <p>{earned?.toString()}</p>

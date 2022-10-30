@@ -1,3 +1,5 @@
 # Config files
 package.json
 .lintstagedrc.json
+
+/node_modules/
