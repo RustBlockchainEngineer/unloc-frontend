@@ -45,7 +45,6 @@ export const STAKING_DEPOSITS_VAULT = Buffer.from("stakingDepositsVault");
 export const PENALITY_DEPOSIT_VAULT = Buffer.from("penalityDepositVault");
 
 export const MAX_ACTIVE_LOCKED_STAKING_ACCOUNTS = 500;
-
 /// //////////////
 // PDA helpers //
 /// //////////////
@@ -120,28 +119,6 @@ export const createStakingUserOptionally = async (
 
   return instructions;
 };
-export const reallocUserAccountOptionally = (
-  userWallet: PublicKey,
-  userStakingInfo: UserStakingsInfo,
-  programId = STAKING_PID,
-) => {
-  // CHECK if reallocation is necessary
-  const instructions: TransactionInstruction[] = [];
-  if (
-    userStakingInfo &&
-    userStakingInfo.stakingAccounts.locked.numActiveLockedStakingAccounts ===
-      userStakingInfo.stakingAccounts.locked.currentMaxLockedStakingsPossible &&
-    userStakingInfo.stakingAccounts.locked.currentMaxLockedStakingsPossible <
-      MAX_ACTIVE_LOCKED_STAKING_ACCOUNTS
-  ) {
-    // Reallocation needed
-    const ix = reallocUserAccount(userWallet, programId);
-    instructions.push(...ix);
-  }
-
-  return instructions;
-};
-
 export const depositTokens = async (
   connection: Connection,
   userWallet: PublicKey,
@@ -207,19 +184,42 @@ export const withdrawTokens = async (
   );
   return new Transaction().add(...instructions);
 };
+export const reallocUserAccountOptionally = (
+  userWallet: PublicKey,
+  userStakingInfo: UserStakingsInfo,
+  programId = STAKING_PID,
+) => {
+  // CHECK if reallocation is necessary
+  const instructions: TransactionInstruction[] = [];
+  if (
+    userStakingInfo &&
+    userStakingInfo.stakingAccounts.locked.numActiveLockedStakingAccounts ===
+      userStakingInfo.stakingAccounts.locked.currentMaxLockedStakingsPossible &&
+    userStakingInfo.stakingAccounts.locked.currentMaxLockedStakingsPossible <
+      MAX_ACTIVE_LOCKED_STAKING_ACCOUNTS
+  ) {
+    // Reallocation needed
+    const ix = reallocUserAccount(userWallet, programId);
+    instructions.push(...ix.instructions);
+  }
 
+  return instructions;
+};
 export const reallocUserAccount = (userWallet: PublicKey, programId = STAKING_PID) => {
   const stakingPoolInfo = getStakingPoolKey(programId);
   const userStakingsInfo = getUserStakingsKey(userWallet, stakingPoolInfo, programId);
-  const ix = createIncreaseUserStorageInstruction(
-    {
-      userWallet,
-      stakingPoolInfo,
-      userStakingsInfo,
-    },
-    programId,
+  const instructions: TransactionInstruction[] = [];
+  instructions.push(
+    createIncreaseUserStorageInstruction(
+      {
+        userWallet,
+        stakingPoolInfo,
+        userStakingsInfo,
+      },
+      programId,
+    ),
   );
-  return [ix];
+  return new Transaction().add(...instructions);
 };
 
 export const relockStakingAccount = async (

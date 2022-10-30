@@ -1321,10 +1321,10 @@
     "@solana/spl-token" "^0.2.0"
     "@solana/web3.js" "^1.47.3"
 
-"@unloc-dev/unloc-sdk-liquidity-mining@0.1.26":
-  version "0.1.26"
-  resolved "https://registry.yarnpkg.com/@unloc-dev/unloc-sdk-liquidity-mining/-/unloc-sdk-liquidity-mining-0.1.26.tgz#59fc090ad41c440da864dcd4bdc04e30946bb2f8"
-  integrity sha512-LBpD8jRm1i5mwkgIv2ROl4MFywL4o7T7QRF9VBZLDj+4AcGGKJOVUumUZHgsc2dG64zn+mm8UyYGYUgw14WlaQ==
+"@unloc-dev/unloc-sdk-liquidity-mining@^0.1.28":
+  version "0.1.28"
+  resolved "https://registry.yarnpkg.com/@unloc-dev/unloc-sdk-liquidity-mining/-/unloc-sdk-liquidity-mining-0.1.28.tgz#ac0aea783ca250d96d5c1f88d780a51ca83afdbd"
+  integrity sha512-vXpN888e2tT92id6Bx2UK87/4zLrhAq/lT3+heGOVGH5GXAuajEyokwsdTywjOupVguU0CazbEWrH41FLAUQ8A==
   dependencies:
     "@solana/spl-token" "^0.2.0"
     "@solana/web3.js" "^1.47.3"
@@ -1337,18 +1337,18 @@
     "@solana/spl-token" "^0.2.0"
     "@solana/web3.js" "^1.47.3"
 
-"@unloc-dev/unloc-sdk-staking@0.1.26":
-  version "0.1.26"
-  resolved "https://registry.yarnpkg.com/@unloc-dev/unloc-sdk-staking/-/unloc-sdk-staking-0.1.26.tgz#6a9a970fadf105f7d73b262162a0eee7ba458faf"
-  integrity sha512-XCETlye6pzNg2NTaEnhXBamL4zzJa2MCYpkDSzzbY1td+1p1nULuDmr2w2uUaCo5b1McVf8ky5f+qdD5drajSQ==
+"@unloc-dev/unloc-sdk-staking@^0.1.28":
+  version "0.1.28"
+  resolved "https://registry.yarnpkg.com/@unloc-dev/unloc-sdk-staking/-/unloc-sdk-staking-0.1.28.tgz#3d4376214b037f9312240e9d8fcfc840ddbfdda4"
+  integrity sha512-nT0TRJ8AS/wzKglQKlkDd/UB6yP6gv22Qa4tB3vWpgcfFAbguENCI33aJR2tfuOKnoSekY4eBSLRf2Dej95jMQ==
   dependencies:
     "@solana/spl-token" "^0.2.0"
     "@solana/web3.js" "^1.47.3"
 
-"@unloc-dev/unloc-sdk-voting@0.1.26":
-  version "0.1.26"
-  resolved "https://registry.yarnpkg.com/@unloc-dev/unloc-sdk-voting/-/unloc-sdk-voting-0.1.26.tgz#888c414f5075a1779e31c072d553250540818c69"
-  integrity sha512-HQ6I7gqGFxxikToIcFNAln1gvGsflV8KCkJmRq5a5cCE3iGbuhijSFx0ZOPlMP+L7FLT8L7VAdww0/ZPWiYd0A==
+"@unloc-dev/unloc-sdk-voting@^0.1.28":
+  version "0.1.28"
+  resolved "https://registry.yarnpkg.com/@unloc-dev/unloc-sdk-voting/-/unloc-sdk-voting-0.1.28.tgz#db535c3ca641dad57cd8b5a1545e0e946dee6c6d"
+  integrity sha512-yeJBeA3UIaSKpN6ptBZI4C3pujZJ02Heco7MrimsFrepnmACIXN78i2HPSBcfY7q2Msa3gaaB0MMKIkqUlAgdw==
   dependencies:
     "@solana/spl-token" "^0.2.0"
     "@solana/web3.js" "^1.47.3"
