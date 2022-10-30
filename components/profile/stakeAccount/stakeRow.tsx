@@ -160,7 +160,7 @@ export const StakeRow = ({ lockedStakingAccount, type }: StakeRowProps): JSX.Ele
           </div>
         </div>
       )}
-      <div className="stakerow__col apy">
+      <div className="stakerow__col">
         <div className="stakerow__title">APY</div>
         <div className="stakerow__apr">{APY}%</div>
       </div>
