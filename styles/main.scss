@@ -65,6 +65,10 @@
 @import "./mobile/lightboxBaseMobile";
 @import "./mobile/acceptOfferMobile";
 
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 body {
   @include theme-aware("background-color", "color-background");
   @include theme-aware("background-image", "bg-gradient-home");

@@ -56,7 +56,7 @@ const Unloc = observer(({ Component, pageProps }: AppProps) => {
 
   useEffect(() => {
     document.documentElement.className = "";
-    document.documentElement.classList.add("theme-dark");
+    document.documentElement.classList.add("theme-dark", "tw-theme-dark");
   }, []);
 
   return (

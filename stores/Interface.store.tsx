@@ -12,6 +12,6 @@ export class InterfaceStore {
   @action.bound setTheme(theme: "light" | "dark"): void {
     this.theme = theme;
     document.documentElement.className = "";
-    document.documentElement.classList.add(`theme-${theme}`);
+    document.documentElement.classList.add(`theme-${theme}`, `tw-theme-${theme}`);
   }
 }
