@@ -8,6 +8,7 @@ import { LendConfirmation } from "@components/lightboxes/LendConfirm";
 import { ConfirmLoan } from "@components/lightboxes/Loan/confirmLoan";
 import { CreateLoan } from "@components/lightboxes/Loan/createLoan";
 import { CreateStake } from "@components/lightboxes/Staking/create";
+import { DepositFlexi } from "@components/lightboxes/Staking/depositFlexi";
 import { StakingActions } from "@components/lightboxes/Staking/staking-actions";
 import { CircleProcessing } from "@components/lightboxes/circleProcessing";
 import { Lightbox } from "@components/lightboxes/lightbox";
@@ -55,6 +56,7 @@ export const LayoutTop = observer(() => {
             {content === "createStake" && <CreateStake />}
             {content === "mergeStakes" && <StakingActions mode="merge" />}
             {content === "relockStakes" && <StakingActions mode="relock" />}
+            {content === "depositFlexi" && <DepositFlexi />}
           </>
         </Lightbox>
       ) : (

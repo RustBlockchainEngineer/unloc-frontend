@@ -8,6 +8,7 @@ import {
   RelockType,
 } from "@unloc-dev/unloc-sdk-staking";
 import Slider from "rc-slider";
+import { toast } from "react-toastify";
 
 import { UNLOC_MINT_DECIMALS } from "@constants/currency-constants";
 import { useSendTransaction } from "@hooks/useSendTransaction";
@@ -90,7 +91,7 @@ interface StakingActionsProps {
 
 export const StakingActions = ({ mode }: StakingActionsProps): JSX.Element => {
   const { publicKey: wallet } = useWallet();
-  const { accounts } = useStakingAccounts();
+  const { accounts, mutate } = useStakingAccounts();
   const { StakingStore, Lightbox } = useStore();
   const sendAndConfirm = useSendTransaction();
 
@@ -137,6 +138,9 @@ export const StakingActions = ({ mode }: StakingActionsProps): JSX.Element => {
 
       const { result } = await sendAndConfirm(tx, { skipPreflight: true });
       if (result.value.err) throw Error("Merging transaction failed");
+
+      toast.success("Merge success!");
+      void mutate();
     } catch (err) {
       console.log({ err });
       errorCase(err);
@@ -154,7 +158,10 @@ export const StakingActions = ({ mode }: StakingActionsProps): JSX.Element => {
         { relockType: RelockType.Flexi, index: 0 },
         daysToLockDuration(durationToMerge as number),
       );
-      await sendAndConfirm(tx, { skipPreflight: true });
+      const { result } = await sendAndConfirm(tx, { skipPreflight: true });
+      if (result.value.err) throw Error("Relocking transaction failed");
+      toast.success("Relock success!");
+      void mutate();
     } catch (err) {
       console.log(err);
       errorCase(err);
