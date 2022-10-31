@@ -7,14 +7,14 @@
   transition: background-color 50ms ease-in-out;
   //display: grid;
 
-  & > div {
-    border-top: 1px solid;
-    @include theme-aware("border-color", "profile-separator");
-  }
-
   @media (max-width: 1127px) {
     display: grid;
     grid-template-columns: 2fr 6fr 9fr;
+
+    & > div {
+      border-top: 1px solid;
+      @include theme-aware("border-color", "profile-separator");
+    }
 
     & > *:nth-child(2) {
       grid-column-start: 3;
