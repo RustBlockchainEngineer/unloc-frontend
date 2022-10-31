@@ -7,6 +7,11 @@
   transition: background-color 50ms ease-in-out;
   //display: grid;
 
+  & > div {
+    border-top: 1px solid;
+    @include theme-aware("border-color", "profile-separator");
+  }
+
   @media (max-width: 1127px) {
     display: grid;
     grid-template-columns: 2fr 6fr 9fr;
@@ -99,6 +104,11 @@
             grid-row-end: 2;
             grid-column-start: 3;
             grid-column-end: 4;
+          }
+          & ~ *:last-child {
+            border-top: 1px solid;
+            border-right: 1px solid;
+            @include theme-aware("border-color", "profile-separator");
           }
         }
       }
