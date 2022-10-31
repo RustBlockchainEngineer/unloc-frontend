@@ -39,7 +39,7 @@ export const StakeRow = ({ lockedStakingAccount }: StakeRowProps): JSX.Element |
   const endUnix = startUnix.addn(lockDurationInSeconds);
   const APY = 40;
   // const earned = isLoading ? "Loading..." : getEarnedSoFar(stakingData, data as StakingPoolInfo);
-  const earned = exitAmount(uiAmount);
+  // const earned = exitAmount(uiAmount);
 
   const time = Date.now();
   const status = endUnix.gten(time) ? "locked" : "unlocked";
@@ -102,9 +102,15 @@ export const StakeRow = ({ lockedStakingAccount }: StakeRowProps): JSX.Element |
           </div>
           <div className="stakerow__amount">{uiAmount.toLocaleString("en-us")}</div>
         </div>
-        <div className="stakerow__at-exit">
-          <p>{earned?.toString()}</p>
-          <span className="sub">Amount at exit</span>
+        <div className="wrap earned">
+          <div className="stakerow__title">
+            AMOUNT EARNED <i className={"icon icon--tn icon--currency--UNLOC"} />
+          </div>
+          <div className="stakerow__amount">{exitAmount(uiAmount)}</div>
+          <div className="stakerow__amount rise">
+            <i className={"icon icon--svs rise-reward"} /> +
+            {(Number(exitAmount(uiAmount)) - Number(uiAmount.toLocaleString("en-us"))).toFixed(2)}
+          </div>
         </div>
       </div>
 
