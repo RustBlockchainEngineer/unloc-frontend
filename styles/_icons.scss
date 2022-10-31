@@ -2,7 +2,7 @@
   display: inline-block;
   background-repeat: no-repeat;
   background-position: center center;
-  background-size: contain;
+  // background-size: contain;
 }
 
 .icon--interactive {
@@ -243,6 +243,7 @@
 }
 
 .icon--tn {
+  background-size: contain;
   width: 12px;
   height: 12px;
 }
