@@ -1,0 +1,163 @@
+import React, { useContext } from "react";
+
+import { observer } from "mobx-react-lite";
+import { PieChart } from "react-minimal-pie-chart";
+
+import { useUserScore, useVotingSession } from "@hooks/index";
+import { useCollectionsInfo } from "@hooks/useCollectionsInfo";
+import { StoreContext } from "@pages/_app";
+import { numVal } from "@utils/spl/common";
+import { compressAddress } from "@utils/stringUtils/compressAdress";
+
+export const VotingPage = observer(() => {
+  const store = useContext(StoreContext);
+  const { score } = useUserScore();
+  const { data } = useVotingSession();
+  const { nameMap } = useCollectionsInfo();
+  const now = Math.floor(Date.now() / 1000);
+
+  const isVotingActive = data
+    ? now >= numVal(data.voting.startTimestamp) && now <= numVal(data.voting.endTimestamp)
+    : false;
+
+  // useEffect(() => {
+  //   console.log(numVal(data?.voting.startTimestamp!));
+  //   console.log(now);
+  //   console.log(numVal(data?.voting.endTimestamp));
+  // }, [data]);
+
+  // const nextVoteValues = { SMB: 20, DAA: 20, DeGods: 20, DT: 15, SolGods: 25 };
+
+  const colorList = [
+    "#d63abe",
+    "#0262d2",
+    "#02d2d2",
+    "#1fd202",
+    "#d2ca02",
+    "#9c02d2",
+    "#d2025a",
+    "#d20202",
+    "#d27f02",
+    "#b5d202",
+    "#02d26e",
+    "#c202d2",
+    "#258f00",
+    "#930069",
+    "#005593",
+    "#00a711",
+    "#930000",
+    "#00936f",
+    "#000f93",
+    "#a24e00",
+  ];
+
+  const voteData = [
+    { title: "SMB", value: 55, color: colorList[0] },
+    { title: "DAA", value: 20, color: colorList[1] },
+    { title: "DeGods", value: 10, color: colorList[2] },
+    { title: "DT", value: 10, color: colorList[3] },
+    { title: "SolGods", value: 5, color: colorList[4] },
+  ];
+
+  // const nextVoteData = voteData.map((vote) => {
+  //   return { title: vote.title, value: nextVoteValues[vote.title], color: vote.color };
+  // });
+
+  const setVote = () => {
+    store.Lightbox.setVisible(false);
+    store.Lightbox.setContent("vote");
+    store.Lightbox.setVisible(true);
+  };
+
+  const renderColumn = (
+    voteInfo: Array<{ title: string; value: number; color: string }>,
+    side: "left" | "right",
+  ) => {
+    return (
+      <div className="vote-column">
+        <div className="vote-column__header">
+          {side === "left" ? "THIS WEEK’S DISTRIBUTION" : "NEXT WEEK’S DISTRIBUTION"}
+        </div>
+        <div className="vote-column__live">{side === "left" ? "" : "LIVE VOTE"}</div>
+        <div className="vote-column__percent-column">
+          {voteInfo.map(function (data, index) {
+            return (
+              <div className="row" key={data.title}>
+                <span className="row__title">
+                  <div
+                    className={`row__title--dot color--${index + 1}`}
+                    style={{ backgroundColor: data.color }}
+                  />
+                  {data.title}:
+                </span>
+                <span className="row__data">{data.value}%</span>
+              </div>
+            );
+          })}
+        </div>
+
+        <div className="vote-column__chart">
+          <PieChart data={[...voteInfo]} animate={true} lineWidth={25} />
+        </div>
+      </div>
+    );
+  };
+
+  const renderActiveVote = (
+    <div className="vote-column">
+      <div className="vote-column__header">VOTE FOR CHANGES TO REWARD DISTRIBUTION</div>
+      <div className="vote-column__live">LIVE VOTE</div>
+      <div className="vote-column__percent-column">
+        {data?.projects.projects
+          .filter((project) => project.active)
+          .map((data, index) => (
+            <div className="row" key={data.id}>
+              <span className="row__title">
+                <div
+                  className={`row__title--dot color--${index + 1}`}
+                  style={{ backgroundColor: voteData[data.id].color }}
+                />
+                {nameMap
+                  ? nameMap[data?.collectionNft?.toBase58()]?.symbol
+                  : compressAddress(4, data?.collectionNft?.toBase58())}
+              </span>
+              <span className="row__data">{data.votesCount.toString()}</span>
+            </div>
+          ))}
+      </div>
+
+      {/* <div className="vote-column__chart">
+        <PieChart data={[...voteInfo]} animate={true} lineWidth={25} />
+      </div> */}
+    </div>
+  );
+
+  return (
+    <div className="voting-page">
+      <div className="voting-page__power">
+        VOTING POWER <span>{score.toString()}</span> <i className="icon icon--info icon--vs1" />
+      </div>
+      <div className="voting-page__distribution">
+        <div className="voting-page__distribution--wrapper">
+          {renderColumn(voteData, "left")}
+          <div className="separator"></div>
+          {isVotingActive ? (
+            renderActiveVote
+          ) : (
+            <div className="vote-column">
+              <div className="vote-column__header">No active vote</div>
+            </div>
+          )}
+        </div>
+        <div className="voting-page__distribution__button">
+          <button
+            disabled={!isVotingActive}
+            className={`btn ${isVotingActive ? "btn--primary" : "btn--disabled"}`}
+            onClick={setVote}>
+            Vote
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+});

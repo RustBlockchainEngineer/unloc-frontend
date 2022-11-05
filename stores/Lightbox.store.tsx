@@ -9,6 +9,7 @@ type LightboxContent =
   | "circleProcessing"
   | "lendConfirmation"
   | "acceptOffer"
+  | "vote"
   | "createStake"
   | "mergeStakes"
   | "relockStakes"

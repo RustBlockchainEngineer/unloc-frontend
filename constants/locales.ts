@@ -8,7 +8,7 @@ export const localesTop = {
   home: "Home",
   myOffers: "My Offers",
   Profile: "Profile",
-  Vote: "Vote",
+  Vote: "Voting",
 };
 
 export const localesFooterCommunity: DynamicKeyStringPair = {

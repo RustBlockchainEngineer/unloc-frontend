@@ -83,7 +83,7 @@ const Unloc = observer(({ Component, pageProps }: AppProps) => {
             <div className="home-bg-bottom" />
             <Component {...pageProps} />
             <ToastContainer
-              position="top-center"
+              position="bottom-left"
               autoClose={5000}
               hideProgressBar={false}
               newestOnTop={false}

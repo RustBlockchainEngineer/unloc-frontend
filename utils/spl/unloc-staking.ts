@@ -22,6 +22,7 @@ import {
   StakingAccounts,
   WithdrawOption,
   UserStakingsInfo,
+  createRefreshUserUnlocScoreInstruction,
 } from "@unloc-dev/unloc-sdk-staking";
 import BN from "bn.js";
 import dayjs from "dayjs";
@@ -277,6 +278,23 @@ export const mergeStakingAccounts = async (
     );
   });
   return new Transaction().add(...instructions);
+};
+
+export const refreshUserScore = (userWallet: PublicKey, programId = STAKING_PID) => {
+  const stakingPoolInfo = getStakingPoolKey(programId);
+  const userStakingsInfo = getUserStakingsKey(userWallet, stakingPoolInfo, programId);
+  const unlocScoreInfo = getUserScoreKey(userWallet, stakingPoolInfo, programId);
+
+  const ix = createRefreshUserUnlocScoreInstruction(
+    {
+      userWallet,
+      stakingPoolInfo,
+      userStakingsInfo,
+      unlocScoreInfo,
+    },
+    programId,
+  );
+  return ix;
 };
 
 /// //////////////////

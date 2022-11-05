@@ -13,6 +13,7 @@ import { StakingActions } from "@components/lightboxes/Staking/staking-actions";
 import { CircleProcessing } from "@components/lightboxes/circleProcessing";
 import { Lightbox } from "@components/lightboxes/lightbox";
 import { Processing } from "@components/lightboxes/processing";
+import { Vote } from "@components/lightboxes/vote";
 import { StoreContext } from "@pages/_app";
 
 import { TopMenu } from "./topMenu";
@@ -52,6 +53,7 @@ export const LayoutTop = observer(() => {
             {content === "processing" ? <Processing /> : <></>}
             {content === "lendConfirmation" ? <LendConfirmation /> : <></>}
             {content === "acceptOffer" ? <AcceptOffer /> : <></>}
+            {content === "vote" ? <Vote /> : <></>}
             {content === "circleProcessing" ? <CircleProcessing /> : <></>}
             {content === "createStake" && <CreateStake />}
             {content === "mergeStakes" && <StakingActions mode="merge" />}

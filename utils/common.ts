@@ -24,3 +24,10 @@ export function getQueryParamAsString(paramValue: string | string[] | undefined)
   if (paramValue) return typeof paramValue === "string" ? paramValue : paramValue[0];
   else return "";
 }
+
+export function stripNulChars(text: string) {
+  // This is used to remove nul-chars that token metadata fields can have
+  // because of zero-padding.
+  // eslint-disable-next-line no-control-regex
+  return text.replace(/\u0000/g, "");
+}
