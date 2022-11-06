@@ -81,16 +81,15 @@ export const OfferActionsHook = (): IOfferActionsHook => {
 
       try {
         if (wallet == null) throw new Error("Wallet not connected");
-        const signers: Keypair[] = [];
-        const tx = await deleteLoanOffer(connection, wallet, nftMint, signers);
-        tx.sign(...signers);
-        await sendAndConfirm(tx);
+        const tx = await deleteLoanOffer(connection, wallet, nftMint, []);
+        const { result } = await sendAndConfirm(tx);
+        if (result.value.err) throw Error("Failed to cancel offer.");
         successCase(`NFT ${name} returned to the wallet`, name);
         store.Lightbox.setCanClose(true);
         store.Lightbox.setVisible(false);
-      } catch (e) {
-        console.log(e);
-        errorCase(e);
+      } catch (error) {
+        console.log({ error });
+        errorCase(error);
       } finally {
         await closeLightBox();
       }

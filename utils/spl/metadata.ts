@@ -3,6 +3,8 @@ import { TOKEN_PROGRAM_ID } from "@solana/spl-token";
 import { Connection, PublicKey } from "@solana/web3.js";
 import axios from "axios";
 
+import { notEmpty } from "@utils/common";
+
 import { GmaBuilder } from "./GmaBuilder";
 
 export function findMetadataPda(mint: PublicKey): PublicKey {
@@ -48,7 +50,7 @@ export const fetchWhitelistedUserNfts = async (
       },
     )
   )
-    .filter((item): item is Metadata => item !== null)
+    .filter(notEmpty)
     .sort((a, b) => a.data.name.localeCompare(b.data.name));
 
   return result;

@@ -42,19 +42,6 @@ export const uiAmountToAmount = (amount: number | string, mintDecimals: number) 
   return new BN(converted).muln(10 ** (mintDecimals - fraction.length));
 };
 
-// Bignum helpers
-export function val(num: any) {
-  if (BN.isBN(num)) return num;
-
-  return new BN(num);
-}
-
-export function numVal(num: bignum) {
-  if (BN.isBN(num)) return num.toNumber();
-
-  return num;
-}
-
 export const getWalletTokenAccount = async (
   connection: Connection,
   walletPubkey: PublicKey,

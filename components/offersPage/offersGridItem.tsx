@@ -2,7 +2,7 @@ import React, { useMemo, useState } from "react";
 
 import { Metadata } from "@metaplex-foundation/mpl-token-metadata";
 import { PublicKey } from "@solana/web3.js";
-import { SubOffer } from "@unloc-dev/unloc-loan-solita";
+import { SubOffer } from "@unloc-dev/unloc-sdk-loan";
 import BN from "bn.js";
 import Image from "next/image";
 import Link from "next/link";

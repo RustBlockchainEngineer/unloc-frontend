@@ -1,6 +1,6 @@
 import { Metadata } from "@metaplex-foundation/mpl-token-metadata";
 import { AccountInfo, PublicKey } from "@solana/web3.js";
-import { Offer, SubOffer } from "@unloc-dev/unloc-loan-solita";
+import { Offer, SubOffer } from "@unloc-dev/unloc-sdk-loan";
 
 // AccountInfo with publicKey
 export interface Account<T> {

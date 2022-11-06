@@ -3,11 +3,12 @@ import { useCallback, useEffect, useState } from "react";
 import { Metadata } from "@metaplex-foundation/mpl-token-metadata";
 import { useConnection } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
-import { Offer, SubOffer } from "@unloc-dev/unloc-loan-solita";
+import { Offer, SubOffer } from "@unloc-dev/unloc-sdk-loan";
 import BN from "bn.js";
 
 import { NFT_LOAN_PID, SUB_OFFER_TAG } from "@constants/config";
-import { range } from "@utils/common";
+import { numVal } from "@utils/bignum";
+import { notEmpty, range } from "@utils/common";
 import { GmaBuilder } from "@utils/spl/GmaBuilder";
 import { findMetadataPda } from "@utils/spl/metadata";
 import { SubOfferAccount, OfferAccount } from "@utils/spl/types";
@@ -36,11 +37,8 @@ export const useSingleOffer = (offerKey: PublicKey | null): UseSingleOfferInterf
       const metadataPda = findMetadataPda(offerInfo.nftMint);
       const metadata = await Metadata.fromAccountAddress(connection, metadataPda);
 
-      const { startSubOfferNum, subOfferCount } = offerInfo;
-      const subOfferRange = range(
-        new BN(startSubOfferNum).toNumber(),
-        new BN(subOfferCount).toNumber(),
-      );
+      const { subOfferCount } = offerInfo;
+      const subOfferRange = range(0, numVal(subOfferCount));
 
       const subOfferAddresses = subOfferRange.map(
         (num) =>
@@ -55,7 +53,7 @@ export const useSingleOffer = (offerKey: PublicKey | null): UseSingleOfferInterf
           if (!account.exists) return null;
           return { pubkey: account.publicKey, account: SubOffer.deserialize(account.data)[0] };
         })
-      ).filter((item): item is SubOfferAccount => item !== null);
+      ).filter(notEmpty);
 
       setOffer({ pubkey: offerKey, account: offerInfo });
       setNftData(metadata);

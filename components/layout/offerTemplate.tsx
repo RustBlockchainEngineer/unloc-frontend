@@ -2,7 +2,7 @@ import { useContext } from "react";
 
 import { Metadata } from "@metaplex-foundation/mpl-token-metadata";
 import { PublicKey } from "@solana/web3.js";
-import { OfferState, SubOffer } from "@unloc-dev/unloc-loan-solita";
+import { OfferState, SubOffer } from "@unloc-dev/unloc-sdk-loan";
 import BN from "bn.js";
 import { Duration } from "dayjs/plugin/duration";
 import { observer } from "mobx-react-lite";

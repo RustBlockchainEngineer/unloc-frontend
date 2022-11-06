@@ -8,7 +8,7 @@ import { CircleLoader } from "@components/layout/circleLoader";
 import { useStore, useUserScore, useVotingSession } from "@hooks/index";
 import { useCollectionsInfo } from "@hooks/useCollectionsInfo";
 import { useUserVoteChoices } from "@hooks/useUserVoteChoices";
-import { numVal } from "@utils/spl/common";
+import { numVal } from "@utils/bignum";
 import { compressAddress } from "@utils/stringUtils/compressAdress";
 
 import { VotePieChart } from "./VotePieChart";

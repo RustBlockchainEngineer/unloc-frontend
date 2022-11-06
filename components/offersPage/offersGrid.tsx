@@ -1,7 +1,7 @@
 import { ReactElement, useContext } from "react";
 
 import { useWallet } from "@solana/wallet-adapter-react";
-import { SubOfferState } from "@unloc-dev/unloc-loan-solita";
+import { SubOfferState } from "@unloc-dev/unloc-sdk-loan";
 import BN from "bn.js";
 import { observer } from "mobx-react-lite";
 

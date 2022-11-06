@@ -6,7 +6,7 @@ import { Connection } from "@solana/web3.js";
 import { ProjectData } from "@unloc-dev/unloc-sdk-voting";
 import useSWRImmutable from "swr/immutable";
 
-import { zipMap } from "@utils/common";
+import { notEmpty, zipMap } from "@utils/common";
 import { GmaBuilder } from "@utils/spl/GmaBuilder";
 import { getNftMetadataKey } from "@utils/spl/unloc-voting";
 
@@ -26,7 +26,7 @@ const mapCollectionNftsToNames = (connection: Connection, projects: ProjectData[
   const collectionToName = zipMap(collectionNfts, projectMetadata, (c, nft) => {
     if (!nft) return null;
     else return { publicKey: c.toBase58(), name: nft.data.name, symbol: nft.data.symbol };
-  }).filter((item): item is { publicKey: string; name: string; symbol: string } => item !== null);
+  }).filter(notEmpty);
 
   type CollectionToName = Record<string, { name: string; symbol: string }>;
   const mapped = collectionToName.reduce<CollectionToName>((map, obj) => {

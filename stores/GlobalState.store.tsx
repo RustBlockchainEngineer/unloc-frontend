@@ -1,9 +1,10 @@
 import { Commitment, Connection, PublicKey } from "@solana/web3.js";
-import { GlobalState } from "@unloc-dev/unloc-loan-solita";
+import { GlobalState } from "@unloc-dev/unloc-sdk-loan";
 import BN from "bn.js";
 import { makeAutoObservable, runInAction } from "mobx";
 
 import { GLOBAL_STATE_TAG, NFT_LOAN_PID } from "@constants/config";
+import { numVal } from "@utils/bignum";
 
 export class GlobalStateStore {
   rootStore;
@@ -30,24 +31,12 @@ export class GlobalStateStore {
 
     runInAction(() => {
       if (data) {
-        this.accruedInterestNumerator = new BN(data.accruedInterestNumerator).toNumber();
-        this.aprNumerator = new BN(data.aprNumerator).toNumber();
-        this.denominator = new BN(data.denominator).toNumber();
-        this.expireLoanDuration = new BN(data.expireLoanDuration).toNumber();
+        this.accruedInterestNumerator = numVal(data.accruedInterestNumerator);
+        this.aprNumerator = numVal(data.aprNumerator);
+        this.denominator = numVal(data.denominator);
+        this.expireLoanDuration = numVal(data.expireLoanDuration);
       }
     });
-  }
-
-  setAccruedInterestNumerator(accruedInterestNumerator: BN): void {
-    this.accruedInterestNumerator = accruedInterestNumerator.toNumber();
-  }
-
-  setAprNumerator(aprNumerator: BN): void {
-    this.aprNumerator = aprNumerator.toNumber();
-  }
-
-  setDenominator(denominator: BN): void {
-    this.denominator = denominator.toNumber();
   }
 
   setExpireLoanDuration(expireLoanDuration: BN): void {

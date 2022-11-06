@@ -1,6 +1,6 @@
 import { Metadata } from "@metaplex-foundation/mpl-token-metadata";
 import { Connection, PublicKey } from "@solana/web3.js";
-import { Offer } from "@unloc-dev/unloc-loan-solita";
+import { Offer } from "@unloc-dev/unloc-sdk-loan";
 import { makeAutoObservable, runInAction } from "mobx";
 
 import { findMetadataPda } from "@utils/spl/metadata";

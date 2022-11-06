@@ -1,5 +1,5 @@
 import { initCusper } from "@metaplex-foundation/cusper";
-import { errorFromCode } from "@unloc-dev/unloc-loan-solita";
+import { errorFromCode } from "@unloc-dev/unloc-sdk-loan";
 import { toast, ToastOptions } from "react-toastify";
 
 const options: ToastOptions = {

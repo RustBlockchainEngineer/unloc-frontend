@@ -4,7 +4,7 @@ import type { Data } from "react-minimal-pie-chart/types/commonTypes";
 
 import { CircleLoader } from "@components/layout/circleLoader";
 import { useCollectionsInfo } from "@hooks/useCollectionsInfo";
-import { numVal } from "@utils/spl/common";
+import { numVal } from "@utils/bignum";
 
 const colorList = [
   "#d63abe",

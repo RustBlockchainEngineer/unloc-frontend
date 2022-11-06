@@ -1,6 +1,6 @@
 import { Metadata } from "@metaplex-foundation/mpl-token-metadata";
 import { PublicKey } from "@solana/web3.js";
-import { SubOffer } from "@unloc-dev/unloc-loan-solita";
+import { SubOffer } from "@unloc-dev/unloc-sdk-loan";
 import axios from "axios";
 import BN from "bn.js";
 import { action, makeAutoObservable, runInAction } from "mobx";
@@ -8,7 +8,7 @@ import { action, makeAutoObservable, runInAction } from "mobx";
 import { currencyMints } from "@constants/currency";
 import { getDecimalsForOfferMint } from "@integration/getDecimalForLoanAmount";
 import { getFrontPageSubOffers } from "@integration/nftLoan";
-import { zipMap } from "@utils/common";
+import { notEmpty, zipMap } from "@utils/common";
 import { GmaBuilder } from "@utils/spl/GmaBuilder";
 import { findMetadataPda } from "@utils/spl/metadata";
 import { SubOfferAccount } from "@utils/spl/types";
@@ -266,7 +266,7 @@ export class OffersStore {
         if (!account.exists) return null;
         return { pubkey: account.publicKey, account: SubOffer.deserialize(account.data)[0] };
       })
-    ).filter((item): item is SubOfferAccount => item !== null);
+    ).filter(notEmpty);
 
     const nftPdas = subOffers.map((subOffer) => findMetadataPda(subOffer.account.nftMint));
     const nfts = await GmaBuilder.make(connection, nftPdas).getAndMap((account) => {

@@ -6,14 +6,12 @@ import {
   SubOffer,
   subOfferDiscriminator,
   SubOfferState,
-} from "@unloc-dev/unloc-loan-solita";
+} from "@unloc-dev/unloc-sdk-loan";
 import BN from "bn.js";
 
 import { NFT_LOAN_PID, SUB_OFFER_TAG } from "@constants/config";
-import { gte } from "@utils/bignum";
-import { range } from "@utils/common";
+import { notEmpty, range } from "@utils/common";
 import { GmaBuilder } from "@utils/spl/GmaBuilder";
-import { OfferAccount, SubOfferAccount } from "@utils/spl/types";
 
 export const getOffersBy = async (
   connection: Connection,
@@ -75,7 +73,6 @@ export const getSubOffersInRange = async (
   connection: Connection,
   offer: PublicKey,
   range: number[],
-  state?: number,
 ): Promise<Array<{ pubkey: PublicKey; account: SubOffer }>> => {
   const subOfferAddresses = range.map((num) => {
     return PublicKey.findProgramAddressSync(
@@ -84,20 +81,12 @@ export const getSubOffersInRange = async (
     )[0];
   });
 
-  const data = await connection.getMultipleAccountsInfo(subOfferAddresses);
-  return subOfferAddresses.reduce<Array<{ pubkey: PublicKey; account: SubOffer }>>(
-    (list, pubkey, i) => {
-      const accountInfo = data[i];
-      if (accountInfo == null) return list;
-
-      const [account] = SubOffer.fromAccountInfo(accountInfo);
-      state
-        ? account.state === state && list.push({ pubkey, account })
-        : list.push({ pubkey, account });
-      return list;
-    },
-    [],
-  );
+  return (
+    await GmaBuilder.make(connection, subOfferAddresses).getAndMap((acc) => {
+      if (!acc.exists) return null;
+      return { pubkey: acc.publicKey, account: SubOffer.deserialize(acc.data)[0] };
+    })
+  ).filter(notEmpty);
 };
 
 export const getFrontPageSubOffers = async (
@@ -131,17 +120,13 @@ export const getFrontPageSubOffers = async (
     .flat();
 };
 
-export const getSubOfferMultiple = async (
-  connection: Connection,
-  keys: PublicKey[],
-  offerState?: OfferState,
-): Promise<any[]> => {
+export const getSubOfferMultiple = async (connection: Connection, keys: PublicKey[]) => {
   const subOffers = (
     await GmaBuilder.make(connection, keys, { commitment: "confirmed" }).getAndMap((account) => {
       if (!account.exists) return null;
       return { pubkey: account.publicKey, account: SubOffer.deserialize(account.data)[0] };
     })
-  ).filter((account): account is SubOfferAccount => account !== null);
+  ).filter(notEmpty);
 
   const offerKeys = [...new Set(subOffers.map(({ account }) => account.offer))];
   const offers = (
@@ -151,27 +136,15 @@ export const getSubOfferMultiple = async (
       if (!account.exists) return null;
       return { pubkey: account.publicKey, account: Offer.deserialize(account.data)[0] };
     })
-  ).filter((account): account is OfferAccount => account !== null);
+  ).filter(notEmpty);
 
-  const result = [];
-  for (let i = 0; i < subOffers.length; i++)
-    if (subOffers[i]) {
-      const offerKey = subOffers[i].account.offer;
-      const offer = offers.find(({ pubkey }) => pubkey.equals(offerKey));
-      if (offer == null) continue;
-
-      // If we want to, check the offer state too.
-      // Suboffer can be proposed when the offer isn't, so that's why we check the state on the offer, not just the suboffer.
-      // Be careful, offerState = 0 can coerce to false.
-      if (typeof offerState === "number") {
-        if (
-          gte(subOffers[i].account.subOfferNumber, offer.account.startSubOfferNum) &&
-          offer.account.state === offerState
-        )
-          result.push(subOffers[i]);
-      } else if (gte(subOffers[i].account.subOfferNumber, offer.account.startSubOfferNum))
-        result.push(subOffers[i]);
-    }
-
+  const result: typeof subOffers = [];
+  // TODO: am I missing some check here or filter?
+  for (let i = 0; i < subOffers.length; i++) {
+    const offerKey = subOffers[i].account.offer;
+    const offer = offers.find(({ pubkey }) => pubkey.equals(offerKey));
+    if (!offer) continue;
+    result.push(subOffers[i]);
+  }
   return result;
 };

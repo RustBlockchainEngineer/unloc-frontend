@@ -31,3 +31,7 @@ export function stripNulChars(text: string) {
   // eslint-disable-next-line no-control-regex
   return text.replace(/\u0000/g, "");
 }
+
+export const notEmpty = <T>(item: T): item is NonNullable<T> => {
+  return !!item;
+};

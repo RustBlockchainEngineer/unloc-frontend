@@ -3,7 +3,7 @@ import { ReactNode, useContext, useEffect, useMemo, useState } from "react";
 import { Metadata } from "@metaplex-foundation/mpl-token-metadata";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
-import { OfferState, SubOfferState } from "@unloc-dev/unloc-loan-solita";
+import { OfferState, SubOfferState } from "@unloc-dev/unloc-sdk-loan";
 import { observer } from "mobx-react-lite";
 import { usePopperTooltip } from "react-popper-tooltip";
 
@@ -13,7 +13,7 @@ import { OfferTemplate } from "@components/layout/offerTemplate";
 import { SkeletonRectangle } from "@components/skeleton/rectangle";
 import { OfferActionsHook } from "@hooks/offerActionsHook";
 import { StoreContext } from "@pages/_app";
-import { eq, gt, gte } from "@utils/bignum";
+import { eq } from "@utils/bignum";
 import { OfferAccount, SubOfferAccount } from "@utils/spl/types";
 
 export interface SanitizedOffer {
@@ -161,8 +161,7 @@ const selectAcceptedOffers = (
     const filtered = subOffers.filter(
       (subOffer) =>
         subOffer.account.offer.equals(offer.pubkey) &&
-        subOffer.account.state === SubOfferState.Accepted &&
-        gte(subOffer.account.subOfferNumber, offer.account.startSubOfferNum),
+        subOffer.account.state === SubOfferState.Accepted,
     );
 
     // if (filtered.length !== 1) {
@@ -203,8 +202,7 @@ const selectProposedOffers = (
     const filtered = subOffers.filter(
       (subOffer) =>
         subOffer.account.offer.equals(offer.pubkey) &&
-        subOffer.account.state === SubOfferState.Proposed &&
-        gte(subOffer.account.subOfferNumber, offer.account.startSubOfferNum),
+        subOffer.account.state === SubOfferState.Proposed,
     );
 
     const selectedNft = nftData.find((nft) => nft.mint.equals(offer.account.nftMint));
@@ -237,15 +235,13 @@ const selectDepositedOffers = (
     // Short-circuit
     if (account.state !== OfferState.Proposed) return false;
 
-    if (eq(account.startSubOfferNum, account.subOfferCount)) return true;
+    if (eq(account.subOfferCount, account.deletedSubOfferCount)) return true;
 
     return (
       subOffers.filter(
         (subOffer) =>
           subOffer.account.offer.equals(pubkey) &&
-          subOffer.account.state === SubOfferState.Proposed &&
-          gte(subOffer.account.subOfferNumber, account.startSubOfferNum) &&
-          gt(account.subOfferCount, subOffer.account.subOfferNumber),
+          subOffer.account.state === SubOfferState.Proposed,
       ).length === 0
     );
   });

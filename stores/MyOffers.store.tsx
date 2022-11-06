@@ -1,7 +1,6 @@
 import { Metadata } from "@metaplex-foundation/mpl-token-metadata";
 import { Connection, PublicKey } from "@solana/web3.js";
-import { Offer, SubOffer, SubOfferState } from "@unloc-dev/unloc-loan-solita";
-import BN from "bn.js";
+import { Offer, SubOffer, SubOfferState } from "@unloc-dev/unloc-sdk-loan";
 import { makeAutoObservable, runInAction } from "mobx";
 
 import {
@@ -10,7 +9,8 @@ import {
   getSubOfferMultiple,
   getSubOffersInRange,
 } from "@integration/nftLoan";
-import { range, zipMap } from "@utils/common";
+import { numVal } from "@utils/bignum";
+import { notEmpty, range, zipMap } from "@utils/common";
 import { GmaBuilder } from "@utils/spl/GmaBuilder";
 import { findMetadataPda } from "@utils/spl/metadata";
 import type {
@@ -92,11 +92,8 @@ export class MyOffersStore {
       const data: SubOfferAccount[] = [];
       for (const offer of this.offers)
         if (offer) {
-          const { startSubOfferNum, subOfferCount } = offer.account;
-          const subOfferRange = range(
-            new BN(startSubOfferNum).toNumber(),
-            new BN(subOfferCount).toNumber(),
-          );
+          const { subOfferCount } = offer.account;
+          const subOfferRange = range(0, numVal(subOfferCount));
           const subOfferData = await getSubOffersInRange(connection, offer.pubkey, subOfferRange);
           data.push(...subOfferData);
         }
@@ -123,7 +120,7 @@ export class MyOffersStore {
             return Metadata.deserialize(account.data)[0];
           },
         )
-      ).filter((item): item is Metadata => item !== null);
+      ).filter(notEmpty);
       runInAction(() => {
         this.nftData = metadatas;
       });
