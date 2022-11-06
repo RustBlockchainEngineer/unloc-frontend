@@ -37,19 +37,18 @@ export const StakeActions = observer(() => {
       <div className="stake__plus">
         <span className="title">New staking account</span>
         <div className="add-new">
-          <button type="button" className="button--plus" onClick={handleNewStake}>
+          <button
+            onClick={handleNewStake}
+            className="hover:tw-cursor-pointer hover:tw-bg-primary/10 tw-inline-flex tw-justify-center tw-items-center tw-mt-4 tw-text-5xl tw-bg-transparent xs:tw-text-6xl tw-rounded-md xs:tw-rounded-full tw-h-9 tw-w-full xs:tw-h-16 xs:tw-w-16 tw-border xs:tw-border-[3px] tw-border-primary tw-text-primary">
             &#43;
           </button>
         </div>
       </div>
       <div className="separator" />
-      <div className="stake__buttons">
+      <div className="stake__buttons -tw-mt-4 xs:tw-mt-0">
         <button onClick={handleClaimRewards} className="btn btn--md btn--primary">
           Claim Rewards
         </button>
-        {/* <button onClick={handleClaimRewards} className="btn btn--md btn--bordered">
-          Claim Rewards
-        </button> */}
       </div>
     </article>
   );

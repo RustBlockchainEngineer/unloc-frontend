@@ -219,3 +219,13 @@ a {
     opacity: 0.5;
   }
 }
+
+// Quick border reset, for tailwind.
+// This gives every element a default border style of solid.
+// Hopefully it doesn't break anything.
+*,
+::before,
+::after {
+  border-width: 0;
+  border-style: solid;
+}

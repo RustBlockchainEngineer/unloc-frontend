@@ -17,7 +17,7 @@ export const StakeRows = (): JSX.Element | null => {
   const isFlexiActive = val(flexiData.stakingData.initialTokensStaked).gtn(0);
 
   return (
-    <ul role="list" ref={parent} className="profile__stake-accounts">
+    <ul role="list" ref={parent} className="profile__stake-accounts tw-mx-4 sm:tw-mx-0">
       {isFlexiActive && <FlexiStakeRow stakingData={flexiData.stakingData} />}
       {lockedAccounts?.map((row) => (
         <StakeRow key={row.index} lockedStakingAccount={row} />
