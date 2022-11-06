@@ -1,11 +1,12 @@
-import { useContext, useEffect, ReactNode } from "react";
+import { useEffect, ReactNode } from "react";
 
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
+import { Connection, SYSVAR_CLOCK_PUBKEY } from "@solana/web3.js";
 import axios from "axios";
 import { observer } from "mobx-react-lite";
 
 import { useAccountChange } from "@hooks/useAccountChange";
-import { StoreContext } from "@pages/_app";
+import { useStore } from "@hooks/useStore";
 import { errorCase } from "@utils/toast-error-handler";
 
 interface Props {
@@ -15,7 +16,7 @@ interface Props {
 export const StoreDataAdapter = observer(({ children }: Props) => {
   const { wallet, disconnect, publicKey } = useWallet();
   const { connection } = useConnection();
-  const store = useContext(StoreContext);
+  const { Wallet, GlobalState } = useStore();
 
   const [onAccountChange, accountChangeDestructor] = useAccountChange();
 
@@ -36,10 +37,10 @@ export const StoreDataAdapter = observer(({ children }: Props) => {
 
         await onAccountChange();
 
-        store.Wallet.setWalletKey(publicKey);
-        store.Wallet.setWallet(wallet);
-        store.Wallet.setConnection(connection);
-        await store.GlobalState.fetchGlobalState(connection);
+        Wallet.setWalletKey(publicKey);
+        Wallet.setWallet(wallet);
+        Wallet.setConnection(connection);
+        await GlobalState.fetchGlobalState(connection);
       }
     };
 
@@ -48,5 +49,26 @@ export const StoreDataAdapter = observer(({ children }: Props) => {
     return accountChangeDestructor;
   }, [wallet, publicKey, connection]);
 
+  useEffect(() => {
+    void getSolanaUnixTime(connection).then((unix) => {
+      GlobalState.setTimer(unix);
+    });
+
+    const interval = setInterval(() => {
+      GlobalState.increaseTimer();
+    }, 1000);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [connection]);
+
   return <>{children}</>;
 });
+
+const getSolanaUnixTime = async (connection: Connection) => {
+  const clockBuffer = await connection.getAccountInfo(SYSVAR_CLOCK_PUBKEY);
+  const unixTimestampBigInt = clockBuffer?.data.subarray(32, 40).readBigInt64LE();
+  const unixTimestamp = Number(unixTimestampBigInt);
+  return unixTimestamp;
+};

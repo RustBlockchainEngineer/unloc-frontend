@@ -17,6 +17,7 @@ export class GlobalStateStore {
   commitmentLevels: Commitment[] = ["processed", "confirmed", "finalized"];
   selectedCommitment: Commitment = "confirmed";
   skipPreflight = false;
+  currentTime = 0;
 
   constructor(rootStore: any) {
     makeAutoObservable(this);
@@ -63,5 +64,14 @@ export class GlobalStateStore {
 
   setSkipPreflight(value: boolean) {
     this.skipPreflight = value;
+  }
+
+  setTimer(value: number) {
+    this.currentTime = value;
+  }
+
+  increaseTimer() {
+    // Secondly
+    this.currentTime += 1;
   }
 }

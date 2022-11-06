@@ -35,7 +35,7 @@
 //     }
 // }
 .voting-page {
-  width: 100%;
+  // width: 100%;
   margin-top: 50px;
   @include theme-aware("color", "color-white");
 
@@ -67,20 +67,31 @@
     &--wrapper {
       display: flex;
       align-items: center;
+
+      @media (max-width: $bp-phone) {
+        flex-direction: column;
+      }
+
       .separator {
         width: 2px;
         height: 225px;
         margin-top: 50px;
         @include theme-aware("background-color", "voting-separator");
+        @media (max-width: $bp-phone) {
+          display: none;
+        }
         //margin: 0 10px;
       }
     }
 
     &__button {
       display: flex;
+      flex-direction: column;
+      gap: 12px;
       align-items: center;
       justify-content: center;
       height: 60px;
+      margin: 24px auto;
 
       button {
         width: 250px;
@@ -105,6 +116,10 @@
   grid-row-gap: 0px;
   font-size: $tp-md;
   font-weight: $wg-hv;
+
+  @media (max-width: $bp-phone) {
+    padding: 0;
+  }
 
   svg {
     width: 75%;

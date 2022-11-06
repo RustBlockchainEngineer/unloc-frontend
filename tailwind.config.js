@@ -8,7 +8,11 @@ module.exports = {
   darkMode: ["class", ".theme-dark"],
   important: true,
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        primary: "#e00a7f",
+      },
+    },
   },
   plugins: [],
 };

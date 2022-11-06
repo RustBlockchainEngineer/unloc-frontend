@@ -13,7 +13,8 @@ type LightboxContent =
   | "createStake"
   | "mergeStakes"
   | "relockStakes"
-  | "depositFlexi";
+  | "depositFlexi"
+  | "voteChoices";
 
 export interface IsubOfferData {
   offerAmount: number;

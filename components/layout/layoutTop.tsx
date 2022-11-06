@@ -14,6 +14,7 @@ import { CircleProcessing } from "@components/lightboxes/circleProcessing";
 import { Lightbox } from "@components/lightboxes/lightbox";
 import { Processing } from "@components/lightboxes/processing";
 import { Vote } from "@components/lightboxes/vote";
+import { VoteChoices } from "@components/lightboxes/voteChoices";
 import { StoreContext } from "@pages/_app";
 
 import { TopMenu } from "./topMenu";
@@ -59,6 +60,7 @@ export const LayoutTop = observer(() => {
             {content === "mergeStakes" && <StakingActions mode="merge" />}
             {content === "relockStakes" && <StakingActions mode="relock" />}
             {content === "depositFlexi" && <DepositFlexi />}
+            {content === "voteChoices" && <VoteChoices />}
           </>
         </Lightbox>
       ) : (

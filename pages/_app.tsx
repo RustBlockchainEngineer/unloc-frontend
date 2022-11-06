@@ -11,6 +11,7 @@ import { SolflareWalletAdapter } from "@solana/wallet-adapter-solflare";
 import { clusterApiUrl } from "@solana/web3.js";
 import { extend } from "dayjs";
 import duration from "dayjs/plugin/duration";
+import relativeTime from "dayjs/plugin/relativeTime";
 import { observer } from "mobx-react-lite";
 import type { AppProps } from "next/app";
 import Head from "next/head";
@@ -26,6 +27,7 @@ import "@styles/main.scss";
 import "react-toastify/dist/ReactToastify.css";
 
 extend(duration);
+extend(relativeTime);
 export const StoreContext = createContext(rootStore);
 
 const Unloc = observer(({ Component, pageProps }: AppProps) => {

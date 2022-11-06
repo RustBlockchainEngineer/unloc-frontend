@@ -1,32 +1,56 @@
-import React, { useContext } from "react";
-
+import dayjs from "dayjs";
+import { Duration } from "dayjs/plugin/duration";
 import { observer } from "mobx-react-lite";
 import { PieChart } from "react-minimal-pie-chart";
 
-import { useUserScore, useVotingSession } from "@hooks/index";
+import { CircleLoader } from "@components/layout/circleLoader";
+import { useStore, useUserScore, useVotingSession } from "@hooks/index";
 import { useCollectionsInfo } from "@hooks/useCollectionsInfo";
-import { StoreContext } from "@pages/_app";
+import { useUserVoteChoices } from "@hooks/useUserVoteChoices";
 import { numVal } from "@utils/spl/common";
 import { compressAddress } from "@utils/stringUtils/compressAdress";
 
+import { VotePieChart } from "./VotePieChart";
+
 export const VotingPage = observer(() => {
-  const store = useContext(StoreContext);
+  const { Lightbox, GlobalState } = useStore();
   const { score } = useUserScore();
   const { data } = useVotingSession();
   const { nameMap } = useCollectionsInfo();
+  const { voteChoiceData } = useUserVoteChoices();
   const now = Math.floor(Date.now() / 1000);
 
   const isVotingActive = data
     ? now >= numVal(data.voting.startTimestamp) && now <= numVal(data.voting.endTimestamp)
     : false;
 
-  // useEffect(() => {
-  //   console.log(numVal(data?.voting.startTimestamp!));
-  //   console.log(now);
-  //   console.log(numVal(data?.voting.endTimestamp));
-  // }, [data]);
+  // Check if the user has already voted in the ongoing election
+  const hasVoted =
+    voteChoiceData && data
+      ? numVal(voteChoiceData.lastVotedAt) >= numVal(data.voting.startTimestamp) &&
+        numVal(voteChoiceData.lastVotedAt) <= numVal(data.voting.endTimestamp)
+      : false;
 
-  // const nextVoteValues = { SMB: 20, DAA: 20, DeGods: 20, DT: 15, SolGods: 25 };
+  // If voting is active, we need the sum of all votes
+  const totalVotes =
+    data && isVotingActive
+      ? data?.projects.projects.reduce(
+          (sum, voteInfo) => (sum += voteInfo.active ? numVal(voteInfo.votesCount) : 0),
+          0,
+        )
+      : 0;
+
+  if (!data)
+    return (
+      <div>
+        <CircleLoader size="large" />
+      </div>
+    );
+
+  const remainingTime = dayjs.duration(
+    numVal(data.voting.endTimestamp) - GlobalState.currentTime,
+    "s",
+  );
 
   const colorList = [
     "#d63abe",
@@ -64,9 +88,15 @@ export const VotingPage = observer(() => {
   // });
 
   const setVote = () => {
-    store.Lightbox.setVisible(false);
-    store.Lightbox.setContent("vote");
-    store.Lightbox.setVisible(true);
+    Lightbox.setVisible(false);
+    Lightbox.setContent("vote");
+    Lightbox.setVisible(true);
+  };
+
+  const handleViewChoices = () => {
+    Lightbox.setVisible(false);
+    Lightbox.setContent("voteChoices");
+    Lightbox.setVisible(true);
   };
 
   const renderColumn = (
@@ -106,34 +136,36 @@ export const VotingPage = observer(() => {
   const renderActiveVote = (
     <div className="vote-column">
       <div className="vote-column__header">VOTE FOR CHANGES TO REWARD DISTRIBUTION</div>
-      <div className="vote-column__live">LIVE VOTE</div>
+      <div className="vote-column__live">LIVE VOTE - Ends in {formatDuration(remainingTime)}</div>
       <div className="vote-column__percent-column">
         {data?.projects.projects
           .filter((project) => project.active)
-          .map((data, index) => (
-            <div className="row" key={data.id}>
+          .map((projectData, index) => (
+            <div className="row" key={projectData.id}>
               <span className="row__title">
                 <div
                   className={`row__title--dot color--${index + 1}`}
-                  style={{ backgroundColor: voteData[data.id].color }}
+                  style={{ backgroundColor: voteData[projectData.id].color }}
                 />
                 {nameMap
-                  ? nameMap[data?.collectionNft?.toBase58()]?.symbol
-                  : compressAddress(4, data?.collectionNft?.toBase58())}
+                  ? nameMap[projectData?.collectionNft?.toBase58()]?.symbol
+                  : compressAddress(4, projectData?.collectionNft?.toBase58())}
               </span>
-              <span className="row__data">{data.votesCount.toString()}</span>
+              <span className="row__data">
+                {((numVal(projectData.votesCount) / totalVotes) * 100).toFixed(2)}%
+              </span>
             </div>
           ))}
       </div>
 
-      {/* <div className="vote-column__chart">
-        <PieChart data={[...voteInfo]} animate={true} lineWidth={25} />
-      </div> */}
+      <div className="vote-column__chart">
+        <VotePieChart voteData={data} />
+      </div>
     </div>
   );
 
   return (
-    <div className="voting-page">
+    <div className="voting-page tw-mx-3 sm:tw-mx-auto">
       <div className="voting-page__power">
         VOTING POWER <span>{score.toString()}</span> <i className="icon icon--info icon--vs1" />
       </div>
@@ -150,14 +182,32 @@ export const VotingPage = observer(() => {
           )}
         </div>
         <div className="voting-page__distribution__button">
+          {hasVoted && (
+            <div className="tw-text-center">
+              You&apos;ve already voted in the last session! Click the button to view how you
+              distributed your vote.
+            </div>
+          )}
           <button
             disabled={!isVotingActive}
-            className={`btn ${isVotingActive ? "btn--primary" : "btn--disabled"}`}
-            onClick={setVote}>
-            Vote
+            className={`btn ${isVotingActive ? "btn--primary" : "btn--disabled"} tw-py-4`}
+            // onClick={hasVoted ? setVote}>
+            onClick={() => (hasVoted ? handleViewChoices() : setVote())}>
+            {hasVoted ? "Your voting choices" : "Vote"}
           </button>
         </div>
       </div>
     </div>
   );
 });
+
+const formatDuration = (dur: Duration) => {
+  const days = dur.days();
+  const hours = dur.hours().toString();
+  const minutes = dur.minutes().toString().padStart(2, "0");
+  const seconds = dur.seconds().toString().padStart(2, "0");
+  const dayStr = days === 0 ? "" : days === 1 ? "1 day" : `${days} days`;
+  const left = `${hours}:${minutes}:${seconds}`;
+
+  return `${dayStr} and ${left}`;
+};
