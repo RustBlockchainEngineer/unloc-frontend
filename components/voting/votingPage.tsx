@@ -2,6 +2,7 @@ import dayjs from "dayjs";
 import { Duration } from "dayjs/plugin/duration";
 import { observer } from "mobx-react-lite";
 import { PieChart } from "react-minimal-pie-chart";
+import { usePopperTooltip } from "react-popper-tooltip";
 
 import { CircleLoader } from "@components/layout/circleLoader";
 import { useStore, useUserScore, useVotingSession } from "@hooks/index";
@@ -18,6 +19,8 @@ export const VotingPage = observer(() => {
   const { data } = useVotingSession();
   const { nameMap } = useCollectionsInfo();
   const { voteChoiceData } = useUserVoteChoices();
+  const { getTooltipProps, setTooltipRef, setTriggerRef, visible } = usePopperTooltip();
+
   const now = Math.floor(Date.now() / 1000);
 
   const isVotingActive = data
@@ -167,7 +170,17 @@ export const VotingPage = observer(() => {
   return (
     <div className="voting-page tw-mx-3 sm:tw-mx-auto">
       <div className="voting-page__power">
-        VOTING POWER <span>{score.toString()}</span> <i className="icon icon--info icon--vs1" />
+        VOTING POWER <span>{score.toString()}</span>
+        <i ref={setTriggerRef} className="icon icon--info icon--vs1" />
+        {visible && (
+          <div
+            className="tw-max-w-[25ch]"
+            ref={setTooltipRef}
+            {...getTooltipProps({ className: "tooltip-container" })}>
+            Your voting power is based on your staking accounts! Create new staking accounts with
+            longer lock durations to increase your voting power!
+          </div>
+        )}
       </div>
       <div className="voting-page__distribution">
         <div className="voting-page__distribution--wrapper">
