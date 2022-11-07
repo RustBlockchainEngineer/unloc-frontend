@@ -42,15 +42,6 @@ export interface SanitizedData {
   metadata: Metadata;
 }
 
-export interface PreparedOfferData {
-  nftMint: string;
-  amount: number;
-  duration: number;
-  APR: number;
-  currency: string;
-  repayValue: string;
-}
-
 // NFT Off-chain metadata types
 export interface IArweaveMetadata {
   image: string;

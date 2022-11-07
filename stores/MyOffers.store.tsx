@@ -13,12 +13,7 @@ import { numVal } from "@utils/bignum";
 import { notEmpty, range, zipMap } from "@utils/common";
 import { GmaBuilder } from "@utils/spl/GmaBuilder";
 import { findMetadataPda } from "@utils/spl/metadata";
-import type {
-  OfferAccount,
-  PreparedOfferData,
-  SanitizedData,
-  SubOfferAccount,
-} from "@utils/spl/types";
+import type { OfferAccount, SanitizedData, SubOfferAccount } from "@utils/spl/types";
 
 import { RootStore } from "./Root.store";
 
@@ -44,10 +39,10 @@ export class MyOffersStore {
   lendingList: Array<{ pubkey: PublicKey; account: SubOffer; nftData: Metadata }> = [];
   activeCategory: OfferCategory = "active";
   activeLoans: string = "all";
-  preparedOfferData: PreparedOfferData = {
+  preparedOfferData = {
     nftMint: "",
-    amount: 0,
-    duration: 0,
+    uiAmount: 0,
+    uiDuration: 0,
     APR: 0,
     currency: "",
     repayValue: "0.00",
@@ -169,7 +164,7 @@ export class MyOffersStore {
     this.activeCategory = category;
   }
 
-  setPreparedOfferData(data: PreparedOfferData): void {
+  setPreparedOfferData(data: typeof this.preparedOfferData): void {
     this.preparedOfferData = data;
   }
 

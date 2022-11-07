@@ -1,7 +1,7 @@
 import { useContext } from "react";
 
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
-import { Keypair, PublicKey } from "@solana/web3.js";
+import { PublicKey } from "@solana/web3.js";
 import { observer } from "mobx-react-lite";
 
 import { useSendTransaction } from "@hooks/useSendTransaction";
@@ -28,13 +28,12 @@ export const AcceptOffer = observer(() => {
       store.Lightbox.setCanClose(false);
       store.Lightbox.setVisible(true);
 
-      const signers: Keypair[] = [];
-      const tx = await acceptLoanOffer(connection, wallet, new PublicKey(offerPublicKey), signers);
-      tx?.sign(...signers);
+      const tx = await acceptLoanOffer(connection, wallet, new PublicKey(offerPublicKey), []);
       await sendAndConfirm(tx!);
       successCase("Loan Accepted");
-    } catch (e: any) {
-      errorCase(e);
+    } catch (error: any) {
+      console.log({ error });
+      errorCase(error);
     } finally {
       store.Lightbox.setCanClose(true);
       store.Lightbox.setVisible(false);

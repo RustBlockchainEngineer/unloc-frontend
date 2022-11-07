@@ -98,43 +98,8 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      //margin-top: $mr-sm;
       width: 100%;
       background-color: transparent;
-
-      .button--plus {
-        outline: inherit;
-        background-color: transparent;
-        @media (max-width: $bp-phone) {
-          width: 100%;
-        }
-        color: #fff;
-        @include theme-aware("border-color", "color-primary");
-        @include theme-aware("color", "color-primary");
-        border: 3px solid;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: 64px;
-        height: 64px;
-        font-size: 60px;
-        cursor: pointer;
-        border-radius: 50%;
-        transition: color 0.1s ease-in-out;
-        transition: border-color 0.1s ease-in-out;
-
-        @media (max-width: $bp-phone) {
-          width: 100%;
-          border-radius: $brd-rds-2tn;
-          height: unset;
-          font-size: 36px;
-        }
-
-        &:hover {
-          @include theme-aware("border-color", "color-primary-dark");
-          @include theme-aware("color", "color-primary-dark");
-        }
-      }
     }
   }
 

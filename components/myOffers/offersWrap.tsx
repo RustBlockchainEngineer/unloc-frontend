@@ -1,4 +1,4 @@
-import { ReactNode, useContext, useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 
 import { Metadata } from "@metaplex-foundation/mpl-token-metadata";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
@@ -107,24 +107,22 @@ export const OffersWrap = observer(() => {
     } else return depositButton();
   }, [offers, subOffers, nftData]);
 
-  const loansGroups = (): ReactNode => {
-    return (
-      <>
-        {activeLoans !== "lends" && (
-          <>
-            <div className="loans-group">Borrows</div>
-            <div className="list-row">{accepted}</div>
-          </>
-        )}
-        {activeLoans !== "borrows" && (
-          <>
-            <div className="loans-group">Lends</div>
-            <div className="list-row">{lends}</div>
-          </>
-        )}
-      </>
-    );
-  };
+  const loansGroups = (
+    <>
+      {activeLoans !== "lends" && (
+        <>
+          <div className="loans-group">Borrows</div>
+          <div className="list-row">{accepted}</div>
+        </>
+      )}
+      {activeLoans !== "borrows" && (
+        <>
+          <div className="loans-group">Lends</div>
+          <div className="list-row">{lends}</div>
+        </>
+      )}
+    </>
+  );
 
   return (
     <div className="my-offers-wrap">
@@ -132,7 +130,7 @@ export const OffersWrap = observer(() => {
         <SkeletonRectangle offerType="my-offers" />
       ) : (
         <>
-          {activeCategory === "active" && loansGroups()}
+          {activeCategory === "active" && loansGroups}
           {activeCategory === "proposed" && proposed}
           <div className="list-row">{activeCategory === "deposited" && deposited}</div>
         </>

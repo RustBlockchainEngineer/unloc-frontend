@@ -1,37 +1,44 @@
-import { useCallback, useContext } from "react";
+import { useCallback } from "react";
 
 import { Metadata } from "@metaplex-foundation/mpl-token-metadata";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
 import BN from "bn.js";
+import dayjs from "dayjs";
 import { observer } from "mobx-react-lite";
 import Image from "next/image";
 
+import { currencies, findTokenBySymbol } from "@constants/currency";
 import { useOffChainMetadata } from "@hooks/useOffChainMetadata";
 import { useSendTransaction } from "@hooks/useSendTransaction";
-import { StoreContext } from "@pages/_app";
+import { useStore } from "@hooks/useStore";
+import { uiAmountToAmount } from "@utils/spl/common";
 import { createLoanSubOffer } from "@utils/spl/unloc-loan";
 import { errorCase, successCase } from "@utils/toast-error-handler";
 
 export const ConfirmLoan = observer(() => {
-  const store = useContext(StoreContext);
+  const { Lightbox, MyOffers } = useStore();
   const { connection } = useConnection();
   const { publicKey: wallet } = useWallet();
   const sendAndConfirm = useSendTransaction();
   const {
-    preparedOfferData: { amount, duration, currency, APR, repayValue },
+    preparedOfferData: { uiAmount, uiDuration, currency, APR, repayValue },
     sanitized: { metadata },
-  } = store.MyOffers;
+  } = MyOffers;
   const { isLoading, json } = useOffChainMetadata((metadata as Metadata).data.uri);
 
   const confirm = useCallback(async (): Promise<void> => {
     if (wallet != null) {
-      store.Lightbox.setContent("circleProcessing");
-      store.Lightbox.setCanClose(false);
-      store.Lightbox.setVisible(true);
+      Lightbox.setContent("circleProcessing");
+      Lightbox.setCanClose(false);
+      Lightbox.setVisible(true);
 
       try {
-        const nftMint = new PublicKey(store.MyOffers.activeNftMint);
+        const token = findTokenBySymbol(currency);
+        const nftMint = new PublicKey(MyOffers.activeNftMint);
+        const amount = uiAmountToAmount(uiAmount, token.decimals);
+        const duration = dayjs.duration(uiDuration, "days").asSeconds();
+
         const tx = await createLoanSubOffer(
           connection,
           wallet,
@@ -39,17 +46,17 @@ export const ConfirmLoan = observer(() => {
           new BN(duration),
           new BN(APR),
           nftMint,
-          new PublicKey(currency),
+          new PublicKey(currencies[currency].mint),
         );
         await sendAndConfirm(tx);
         successCase("Loan Offer Created");
-      } catch (e: any) {
-        console.log(e);
-        errorCase(e);
+      } catch (error: any) {
+        console.log({ error });
+        errorCase(error);
       } finally {
-        store.Lightbox.setVisible(false);
-        store.Lightbox.setCanClose(true);
-        await store.MyOffers.refetchStoreData();
+        Lightbox.setVisible(false);
+        Lightbox.setCanClose(true);
+        await MyOffers.refetchStoreData();
       }
     }
   }, []);
@@ -57,8 +64,8 @@ export const ConfirmLoan = observer(() => {
   const edit = useCallback(async (): Promise<void> => {
     if (wallet != null)
       try {
-        store.Lightbox.setContent("loanCreate");
-        store.Lightbox.setVisible(true);
+        Lightbox.setContent("loanCreate");
+        Lightbox.setVisible(true);
       } catch (e: any) {
         errorCase(e);
       }
@@ -85,13 +92,13 @@ export const ConfirmLoan = observer(() => {
         <div>
           <span>Loan</span>
           <span>
-            {amount} {currency}
+            {uiAmount} {currency}
           </span>
         </div>
         <div>
           <span>Duration</span>
           <span>
-            {duration} {duration > 1 ? "Days" : "Day"}
+            {uiDuration} {uiDuration > 1 ? "Days" : "Day"}
           </span>
         </div>
         <div>

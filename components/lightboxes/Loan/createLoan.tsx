@@ -142,8 +142,8 @@ export const CreateLoan = observer(({ mode }: CreateLoanProps) => {
 
           store.MyOffers.setPreparedOfferData({
             nftMint: store.MyOffers.activeNftMint,
-            amount: Number(amount),
-            duration: Number(duration),
+            uiAmount: Number(amount),
+            uiDuration: Number(duration),
             APR: Number(apr),
             currency: token,
             repayValue: total ?? "0.00",

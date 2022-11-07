@@ -114,6 +114,7 @@ export const getDurationColor = (duration: Duration): DurationColorStatus => {
  * @returns {Duration}       remaining duration
  */
 export const getTimeLeft = (duration: number, startTime: number): Duration => {
+  // eslint-disable-next-line import/no-named-as-default-member
   const endTime = dayjs.unix(startTime).add(duration, "seconds");
   const diffFromNow = endTime.diff(dayjs());
 

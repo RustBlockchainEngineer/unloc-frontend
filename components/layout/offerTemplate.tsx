@@ -1,6 +1,7 @@
 import { useContext } from "react";
 
 import { Metadata } from "@metaplex-foundation/mpl-token-metadata";
+import { useWallet } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
 import { OfferState, SubOffer } from "@unloc-dev/unloc-sdk-loan";
 import BN from "bn.js";
@@ -17,14 +18,14 @@ import {
   lendsTimeLeftHelpers,
   loanStatus,
 } from "@components/myOffers/controllers/lendsTimeLeftHelpers";
-import { currencyMints } from "@constants/currency";
+import { findTokenByMint } from "@constants/currency";
 import { OfferActionsHook } from "@hooks/offerActionsHook";
 import { useCollectionName } from "@hooks/useCollectionName";
 import { useOffChainMetadata } from "@hooks/useOffChainMetadata";
-import { getDecimalsForLoanAmountAsString } from "@integration/getDecimalForLoanAmount";
 import { StoreContext } from "@pages/_app";
 import { getQueryParamAsString } from "@utils/common";
 import { calculateRepayValue } from "@utils/loansMath";
+import { amountToUiAmount } from "@utils/spl/common";
 import { compressAddress } from "@utils/stringUtils/compressAdress";
 import {
   getDurationColor,
@@ -54,17 +55,19 @@ export const OfferTemplate = observer(
     nftData,
     pubkey,
   }: OfferTemplateData) => {
+    const { publicKey } = useWallet();
     const router = useRouter();
     const { setTriggerRef, visible, getTooltipProps, setTooltipRef } = usePopperTooltip();
     const store = useContext(StoreContext);
     const { activeCategory } = store.MyOffers;
     const { theme } = store.Interface;
-    const { isYours } = store.SingleOffer;
     const { denominator } = store.GlobalState;
     const { json, isLoading } = useOffChainMetadata(nftData.data.uri);
     const { collection, isLoading: isLoadingCollection } = useCollectionName(
       nftData.mint.toBase58(),
     );
+
+    const isYours = publicKey?.equals(account.borrower) ?? false;
 
     const {
       handleCancelOffer,
@@ -84,6 +87,7 @@ export const OfferTemplate = observer(
       aprNumerator,
       offer,
       state,
+      offerMintDecimals,
     } = account;
 
     const timeLeft = getTimeLeft(
@@ -92,13 +96,8 @@ export const OfferTemplate = observer(
     );
     const timeColor = getDurationColor(timeLeft);
 
-    const amount = getDecimalsForLoanAmountAsString(
-      new BN(offerAmount).toNumber(),
-      offerMint?.toBase58(),
-      0,
-    );
-
-    const currency = currencyMints[offerMint?.toBase58()];
+    const uiAmount = amountToUiAmount(offerAmount, offerMintDecimals);
+    const token = findTokenByMint(offerMint);
     const duration = getDurationFromContractData(new BN(loanDuration).toNumber(), "days");
 
     const canClaim = (timeLeft: Duration): boolean => {
@@ -205,7 +204,9 @@ export const OfferTemplate = observer(
           <div className="data-row proposal-details">
             <div>
               <p>Amount</p>
-              <span>{`${amount} ${currency}`}</span>
+              <span>
+                {uiAmount} {token.symbol}
+              </span>
             </div>
             <div>
               <p>APR</p>
@@ -217,8 +218,10 @@ export const OfferTemplate = observer(
               </div>
             )}
             <div>
-              <p>Min repaid value</p>
-              <span>10 USDC</span>
+              <p>Min repayment</p>
+              <span>
+                {uiAmount / 2} {token.symbol}
+              </span>
             </div>
           </div>
         )}
@@ -278,24 +281,24 @@ export const OfferTemplate = observer(
           <div className="data-row actions">
             <button
               ref={setTriggerRef}
+              disabled={isYours}
               className={`btn btn--md btn--primary ${isYours ? "disabled" : ""}`}
               onClick={() =>
-                !isYours &&
                 handleConfirmOffer({
                   offerPublicKey: pubkey.toBase58(),
-                  amount,
+                  amount: uiAmount.toString(),
                   APR: aprNumerator.toString(),
                   duration: duration.toString(),
                   totalRepay: calculateRepayValue(
-                    Number(amount),
+                    Number(uiAmount),
                     new BN(aprNumerator).toNumber(),
                     duration,
                     denominator,
                   ),
-                  currency,
+                  currency: token.symbol,
                 })
               }>
-              {isYours ? "Can't lend" : `Lend ${currency}`}
+              {`Lend ${token.symbol}`}
             </button>
           </div>
         ) : (
