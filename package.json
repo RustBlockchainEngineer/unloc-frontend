@@ -34,7 +34,7 @@
     "@solana/web3.js": "^1.56.2",
     "@types/ws": "^8.5.3",
     "@unloc-dev/unloc-sdk-liquidity-mining": "^0.1.28",
-    "@unloc-dev/unloc-sdk-loan": "^0.1.28",
+    "@unloc-dev/unloc-sdk-loan": "^0.1.29",
     "@unloc-dev/unloc-sdk-staking": "^0.1.28",
     "@unloc-dev/unloc-sdk-voting": "^0.1.28",
     "@unloc-dev/unloc-staking-solita": "^2.1.0",
