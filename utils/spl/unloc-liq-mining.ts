@@ -1,4 +1,5 @@
 import { Metadata } from "@metaplex-foundation/mpl-token-metadata";
+import { getAssociatedTokenAddressSync } from "@solana/spl-token";
 import {
   Connection,
   PublicKey,
@@ -81,6 +82,7 @@ export const claimUserRewards = async (
 ) => {
   const instructions: TransactionInstruction[] = [];
   const subOfferData = await SubOffer.fromAccountAddress(connection, subOffer);
+  const lenderWallet = subOfferData.lender;
   const nftMetadata = getNftMetadataKey(subOfferData.nftMint);
   const metadata = await Metadata.fromAccountAddress(connection, nftMetadata);
   const collectionNft = metadata.collection!.key;
@@ -98,13 +100,16 @@ export const claimUserRewards = async (
   const userStakingsInfo = getUserStakingsKey(userWallet, stakingPoolInfo, stakingProgram);
   const stakingDepositsVault = stakingPoolData.stakingDepositsVault;
   const unlocTokenMint = stakingPoolData.unlocTokenMint;
+  const userUnlocAtaToDebit = getAssociatedTokenAddressSync(unlocTokenMint, userWallet);
   instructions.push(
     createClaimUserRewardsInstruction(
       {
         userWallet,
+        lenderWallet,
         collectionNft,
         collectionLoanLiqMinEmissionsInfo,
         collectionLoanLiqMinEmissionsVault,
+        userUnlocAtaToDebit,
         loanSubofferRewardsInfo,
         instructionSysvarAccount: SYSVAR_INSTRUCTIONS_PUBKEY,
         stakingProgram,

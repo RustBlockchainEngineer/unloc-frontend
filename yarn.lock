@@ -1411,10 +1411,10 @@
     "@typescript-eslint/types" "5.41.0"
     eslint-visitor-keys "^3.3.0"
 
-"@unloc-dev/unloc-sdk-liquidity-mining@^0.1.28":
-  version "0.1.28"
-  resolved "https://registry.yarnpkg.com/@unloc-dev/unloc-sdk-liquidity-mining/-/unloc-sdk-liquidity-mining-0.1.28.tgz#ac0aea783ca250d96d5c1f88d780a51ca83afdbd"
-  integrity sha512-vXpN888e2tT92id6Bx2UK87/4zLrhAq/lT3+heGOVGH5GXAuajEyokwsdTywjOupVguU0CazbEWrH41FLAUQ8A==
+"@unloc-dev/unloc-sdk-liquidity-mining@^0.1.29":
+  version "0.1.29"
+  resolved "https://registry.yarnpkg.com/@unloc-dev/unloc-sdk-liquidity-mining/-/unloc-sdk-liquidity-mining-0.1.29.tgz#f8d4586b02e106ad22479db3dcb31c34dd98dbb5"
+  integrity sha512-Hkbgwl6JKbw/8jUdmqZcV57JzGEItVVZ8+DYEjEeeYkukx2P3d/9lqQv5g024gGj/JpWIUUAksu7jIQ0YnUxAg==
   dependencies:
     "@solana/spl-token" "^0.2.0"
     "@solana/web3.js" "^1.47.3"
