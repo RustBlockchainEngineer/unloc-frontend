@@ -1,41 +1,59 @@
+import type { bignum } from "@metaplex-foundation/beet";
 import { WalletNotConnectedError } from "@solana/wallet-adapter-base";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
-import { FlexiStakingAccount, WithdrawType } from "@unloc-dev/unloc-sdk-staking";
+import { FlexiStakingAccount, NumDenPair, WithdrawType } from "@unloc-dev/unloc-sdk-staking";
+import BN from "bn.js";
+import dayjs from "dayjs";
 import { toast } from "react-toastify";
 import { mutate } from "swr";
 
+import { CircleLoader } from "@components/layout/circleLoader";
 import { UNLOC_MINT_DECIMALS } from "@constants/currency-constants";
 import { usePoolInfo } from "@hooks/usePoolInfo";
 import { useSendTransaction } from "@hooks/useSendTransaction";
 import { GET_STAKING_ACCOUNTS_KEY } from "@hooks/useStakingAccounts";
 import { useStore } from "@hooks/useStore";
-import { amountToUiAmount, val } from "@utils/bignum";
-import { getEarnedSoFar } from "@utils/spl/unloc-score";
+import { amountToUiAmount, numVal, val } from "@utils/bignum";
 import { withdrawTokens } from "@utils/spl/unloc-staking";
 import { errorCase } from "@utils/toast-error-handler";
 
 export const FlexiStakeRow = ({ stakingData }: FlexiStakingAccount): JSX.Element => {
-  const { Lightbox } = useStore();
+  const { Lightbox, GlobalState } = useStore();
   const { connection } = useConnection();
   const { publicKey: wallet } = useWallet();
   const { data: poolData } = usePoolInfo();
-
   const sendAndConfirm = useSendTransaction();
+
+  if (!poolData)
+    return (
+      <div className="tw-w-full tw-mx-auto tw-flex tw-justify-center">
+        <CircleLoader size="large" />
+      </div>
+    );
+
   const uiAmount = amountToUiAmount(stakingData.initialTokensStaked, UNLOC_MINT_DECIMALS);
-  const earned = poolData && getEarnedSoFar(stakingData, poolData);
-  const uiEarned = earned ? amountToUiAmount(earned, UNLOC_MINT_DECIMALS) : "Loading...";
-  const uiDiff = earned
-    ? amountToUiAmount(earned.sub(val(stakingData.initialTokensStaked)), UNLOC_MINT_DECIMALS)
-    : "Loading...";
+  const duration = dayjs
+    .duration(GlobalState.currentTime - numVal(stakingData.accountLastUpdatedAt), "s")
+    .asDays();
+  const uiEarned = calculateTotalEarnings(uiAmount, duration, poolData.interestRateFraction.flexi);
+  const uiDiff = uiEarned - uiAmount;
 
   // Has the user earned anything yet?
   const inPlus = typeof uiDiff === "number" && uiDiff > 0;
 
-  const APY = 0.5;
+  const APY = divideBnToNumber(
+    val(poolData.interestRateFraction.flexi.numerator),
+    val(poolData.interestRateFraction.flexi.denominator),
+  );
 
   const handleWithdraw = async (): Promise<void> => {
     try {
       if (wallet == null) throw new WalletNotConnectedError();
+
+      const duration = dayjs
+        .duration(GlobalState.currentTime - numVal(stakingData.accountLastUpdatedAt), "s")
+        .asDays();
+      console.log(duration);
 
       const tx = await withdrawTokens(connection, wallet, {
         withType: WithdrawType.Flexi,
@@ -84,7 +102,7 @@ export const FlexiStakeRow = ({ stakingData }: FlexiStakingAccount): JSX.Element
                 <i className={"icon icon--tn icon--currency--UNLOC"} />
               </dd>
               <dt className="tw-font-bold tw-text-2xl tw-flex tw-items-center tw-justify-center sm:tw-mt-6">
-                {uiAmount.toLocaleString("en-us")}
+                {uiAmount.toLocaleString("en-us", { maximumFractionDigits: 3 })}
                 <i className={"icon icon--sm icon--currency--UNLOC"} />
               </dt>
             </div>
@@ -96,14 +114,15 @@ export const FlexiStakeRow = ({ stakingData }: FlexiStakingAccount): JSX.Element
                 </div>
               </dd>
               <dt className={`tw-font-bold tw-text-2xl ${inPlus ? "tw-text-[#00d756]" : ""}`}>
-                {uiEarned}
+                {uiEarned.toLocaleString("en-us", { maximumFractionDigits: 3 })}
               </dt>
               {inPlus && (
                 <div
                   className={`${
                     inPlus ? "tw-text-[#00d756]" : ""
                   } tw-flex tw-items-center tw-gap-x-1`}>
-                  <i className="icon icon--svs rise-reward" /> +{uiDiff}
+                  <i className="icon icon--svs rise-reward" /> +
+                  {uiDiff.toLocaleString("en-us", { maximumFractionDigits: 3 })}
                 </div>
               )}
             </div>
@@ -111,7 +130,9 @@ export const FlexiStakeRow = ({ stakingData }: FlexiStakingAccount): JSX.Element
         </div>
         <div className="tw-px-6 tw-pt-4 tw-pb-2 sm:tw-col-span-2">
           <dd className="tw-uppercase tw-text-xs tw-text-center">APY</dd>
-          <dt className="tw-font-bold tw-text-xl tw-mt-3 sm:tw-mt-6 tw-text-center">{APY}%</dt>
+          <dt className="tw-font-bold tw-text-xl tw-mt-3 sm:tw-mt-6 tw-text-center">
+            {APY * 100}%
+          </dt>
         </div>
         <div className="tw-px-10 tw-border-t tw-border-[#6743aa] sm:tw-border-t-0 tw-pt-4 tw-pb-2 sm:tw-col-span-6 tw-flex tw-flex-col tw-items-center tw-gap-x-4">
           <div className="tw-uppercase tw-text-xs tw-mx-auto">
@@ -135,3 +156,21 @@ export const FlexiStakeRow = ({ stakingData }: FlexiStakingAccount): JSX.Element
     </li>
   );
 };
+
+function calculateTotalEarnings(
+  initialStaked: bignum,
+  durationInDays: number,
+  aprFraction: NumDenPair,
+) {
+  const apr = divideBnToNumber(val(aprFraction.numerator), val(aprFraction.denominator));
+  const compoundings = Math.floor(durationInDays);
+  const factor = Math.pow(apr + 1, compoundings);
+  return numVal(initialStaked) * factor;
+}
+
+function divideBnToNumber(numerator: BN, denominator: BN): number {
+  const quotient = numerator.div(denominator).toNumber();
+  const rem = numerator.umod(denominator);
+  const gcd = rem.gcd(denominator);
+  return quotient + rem.div(gcd).toNumber() / denominator.div(gcd).toNumber();
+}
