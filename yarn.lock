@@ -1419,10 +1419,10 @@
     "@solana/spl-token" "^0.2.0"
     "@solana/web3.js" "^1.47.3"
 
-"@unloc-dev/unloc-sdk-loan@^0.1.28":
-  version "0.1.28"
-  resolved "https://registry.yarnpkg.com/@unloc-dev/unloc-sdk-loan/-/unloc-sdk-loan-0.1.28.tgz#acebc6a318510f7046ec302531b14017faf3e125"
-  integrity sha512-oZEQtVRHaZq+2h7lP3l+NYKrrc7zPxT07kC/Nib2zJw+AsmaZID4zFu27uC2NS2bRpzFzQXKjQIYWW2T88Yntg==
+"@unloc-dev/unloc-sdk-loan@^0.1.29":
+  version "0.1.29"
+  resolved "https://registry.yarnpkg.com/@unloc-dev/unloc-sdk-loan/-/unloc-sdk-loan-0.1.29.tgz#1d3ed485e6cca89ccfe89284d1f02133873eb6d0"
+  integrity sha512-6Hy4HOnrwFLkmgPAO4u0rG5VE4A8HW5ydh8bzjgcRizHOiV4HsD7zgKEkapaEhoEHk8/7LPHpCbL4YrPm3yxcw==
   dependencies:
     "@solana/spl-token" "^0.2.0"
     "@solana/web3.js" "^1.47.3"
