@@ -324,7 +324,8 @@ export const acceptLoanOffer = async (
     }
   }
 
-  const metadata = await Metadata.fromAccountAddress(connection, subOfferData.nftMint);
+  const nftMetadata = getNftMetadataKey(subOfferData.nftMint);
+  const metadata = await Metadata.fromAccountAddress(connection, nftMetadata);
   const collectionNft = metadata.collection!.key;
   const collectionLoanLiqMinEmissionsInfo = getCollectionLoanLiqMinEmissionsInfoKey(
     collectionNft,
@@ -423,7 +424,8 @@ export const repayLoan = async (
   const lenderUserScoreInfo = getUserScoreKey(lender, stakingPoolInfo, stakingProgram);
   const metadataProgram = TOKEN_META_PID;
 
-  const metadata = await Metadata.fromAccountAddress(connection, subOfferData.nftMint);
+  const nftMetadata = getNftMetadataKey(subOfferData.nftMint);
+  const metadata = await Metadata.fromAccountAddress(connection, nftMetadata);
   const collectionNft = metadata.collection!.key;
   const collectionLoanLiqMinEmissionsInfo = getCollectionLoanLiqMinEmissionsInfoKey(
     collectionNft,
@@ -525,7 +527,8 @@ export const claimLoanCollateral = async (
   const lenderUserScoreInfo = getUserScoreKey(lender, stakingPoolInfo, stakingProgram);
   const metadataProgram = TOKEN_META_PID;
 
-  const metadata = await Metadata.fromAccountAddress(connection, subOfferData.nftMint);
+  const nftMetadata = getNftMetadataKey(subOfferData.nftMint);
+  const metadata = await Metadata.fromAccountAddress(connection, nftMetadata);
   const collectionNft = metadata.collection!.key;
   const collectionLoanLiqMinEmissionsInfo = getCollectionLoanLiqMinEmissionsInfoKey(
     collectionNft,
